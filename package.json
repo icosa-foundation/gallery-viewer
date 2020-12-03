@@ -1,0 +1,37 @@
+{
+  "name": "icosa",
+  "version": "1.0.0",
+  "description": "Replacement for Poly",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeskydev/icosa.git"
+  },
+  "author": "MikeskyDev",
+  "license": "UNLICENCED",
+  "bugs": {
+    "url": "https://github.com/mikeskydev/icosa/issues"
+  },
+  "homepage": "https://github.com/mikeskydev/icosa#readme",
+  "devDependencies": {
+    "@types/three": "^0.103.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.3.2",
+    "css-loader": "^5.0.1",
+    "sass": "^1.29.0",
+    "sass-loader": "^10.1.0",
+    "style-loader": "^2.0.0",
+    "ts-loader": "^8.0.11",
+    "typescript": "^4.1.2",
+    "webpack": "^5.9.0",
+    "webpack-cli": "^4.2.0"
+  },
+  "dependencies": {
+    "camera-controls": "^1.25.2",
+    "three": "^0.123.0"
+  }
+}
