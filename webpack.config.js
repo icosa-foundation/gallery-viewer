@@ -1,5 +1,5 @@
 const path = require('path');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const RemovePlugin  = require('remove-files-webpack-plugin');
 const copyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -36,7 +36,19 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ],
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    new RemovePlugin({
+      before: {
+        test: [
+          {
+            folder: '.dist',
+            method: () => true
+          }
+        ],
+        exclude: [
+          './dist/.git'
+        ]
+      }
+    }),
     new copyWebpackPlugin({
       patterns: [
         {from:'src/html', to:'.'}
