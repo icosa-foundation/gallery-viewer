@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import CameraControls from 'camera-controls';
-
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import '../css/style.scss';
 
 function main() {
@@ -35,9 +35,15 @@ function main() {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xFFE5B4);
 
-    const box = new THREE.BoxGeometry();
-    const boxmesh = new THREE.Mesh(box);
-    scene.add(boxmesh);
+    const light = new THREE.DirectionalLight();
+    light.intensity = 2.0;
+    scene.add(light);
+
+    const loader = new GLTFLoader();
+    loader.load('res/testmodels/myreality.glb', (gltf) => {
+        const root = gltf.scene;
+        scene.add(root);
+    })
 
     function render() {
 

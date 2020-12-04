@@ -51,7 +51,8 @@ module.exports = {
     }),
     new copyWebpackPlugin({
       patterns: [
-        {from:'src/html', to:'.'}
+        {from:'src/html', to:'.'},
+        {from:'src/res', to:'res'}
       ]
     }),
   ],
