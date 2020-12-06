@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import CameraControls from 'camera-controls';
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { TiltLoader } from './loaders/TiltLoader'
 import '../css/style.scss';
 
 function main() {
@@ -39,11 +40,17 @@ function main() {
     light.intensity = 2.0;
     scene.add(light);
 
-    const loader = new GLTFLoader();
-    loader.load('res/testmodels/myreality.glb', (gltf) => {
-        const root = gltf.scene;
-        scene.add(root);
-    })
+    // const loader = new GLTFLoader();
+    // loader.load('res/testmodels/myreality.glb', (gltf) => {
+    //     const root = gltf.scene;
+    //     scene.add(root);
+    // })
+
+    const tiltLoader = new TiltLoader();
+    tiltLoader.load('https://poly.googleapis.com/downloads/fp/1607125859832681/ewUb8s99x_k/9PM8RdubhqO/sketch.tilt', (tilt) => {
+        scene.add(tilt);
+        render();
+    });
 
     function render() {
 
