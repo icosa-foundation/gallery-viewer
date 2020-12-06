@@ -47,7 +47,7 @@ function main() {
     // })
 
     const tiltLoader = new TiltLoader();
-    tiltLoader.load('https://poly.googleapis.com/downloads/fp/1607125859832681/ewUb8s99x_k/9PM8RdubhqO/sketch.tilt', (tilt) => {
+    tiltLoader.load('https://poly.googleapis.com/downloads/fp/1607032596054003/c_l71DaVU_3/eXm3-XZeE0A/sketch.tilt', (tilt) => {
         scene.add(tilt);
         render();
     });
