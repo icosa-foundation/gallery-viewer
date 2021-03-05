@@ -1,38 +1,57 @@
 {
-  "name": "icosa",
-  "version": "1.0.0",
-  "description": "Replacement for Poly",
-  "private": true,
+  "name": "icosa-viewer",
+  "version": "0.1.1",
+  "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
-    "build": "webpack",
+    "dev": "rollup --config --watch",
+    "build": "rollup --config && terser dist/icosa-viewer.js -o dist/icosa-viewer.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mikeskydev/icosa.git"
+    "url": "git+https://github.com/icosa-gallery/icosa-viewer.git"
   },
-  "author": "MikeskyDev",
-  "license": "UNLICENCED",
+  "author": "Icosa Gallery",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/mikeskydev/icosa/issues"
+    "url": "https://github.com/icosa-gallery/icosa-viewer/issues"
   },
-  "homepage": "https://github.com/mikeskydev/icosa#readme",
+  "homepage": "https://github.com/icosa-gallery/icosa-viewer#readme",
   "devDependencies": {
-    "@types/three": "^0.103.2",
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^6.3.2",
-    "css-loader": "^5.0.1",
-    "remove-files-webpack-plugin": "^1.4.4",
-    "sass": "^1.29.0",
-    "sass-loader": "^10.1.0",
-    "style-loader": "^2.0.0",
-    "ts-loader": "^8.0.11",
-    "typescript": "^4.1.2",
-    "webpack": "^5.9.0",
-    "webpack-cli": "^4.2.0"
+    "@types/dat.gui": "^0.7.6",
+    "@types/three": "^0.125.3",
+    "node-sass": "^5.0.0",
+    "postcss": "^8.2.6",
+    "rollup": "^2.40.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.0",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "terser": "^5.6.0",
+    "typescript": "^4.1.3"
+  },
+  "peerDependencies": {
+    "three": "^0.125.0",
+    "camera-controls": "^1.25.3",
+    "hold-event": "0.0.1"
   },
   "dependencies": {
-    "camera-controls": "^1.25.2",
-    "three": "^0.123.0"
-  }
+    "camera-controls": "^1.25.3",
+    "hold-event": "0.0.1",
+    "three": "^0.125.0"
+  },
+  "funding": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/icosa"
+  },
+  "keywords": [
+    "three",
+    "three.js",
+    "viewer",
+    "openbrush",
+    "tiltbrush",
+    "creative",
+    "camera",
+    "vr",
+    "xr"
+  ]
 }

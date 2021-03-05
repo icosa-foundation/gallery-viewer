@@ -1,11 +1,17 @@
 {
-    "compilerOptions": {
-      "outDir": "./dist/",
-      "noImplicitAny": true,
-      "module": "es6",
-      "moduleResolution": "node",
-      "target": "es5",
-      "allowJs": true,
-    },
-    "include": [ "./src/**/*.ts" ],
-  }
+  "compilerOptions": {
+    "baseUrl": "src",
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationDir": "./dist",
+    "target": "es5",
+    "strict": true,
+    "removeComments": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
