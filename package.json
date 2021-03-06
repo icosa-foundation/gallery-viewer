@@ -23,6 +23,7 @@
     "node-sass": "^5.0.0",
     "postcss": "^8.2.6",
     "rollup": "^2.40.0",
+    "rollup-plugin-glslify": "^1.2.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.0",
     "rollup-plugin-typescript2": "^0.30.0",

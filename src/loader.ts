@@ -14,7 +14,7 @@
 
 import CameraControls from "camera-controls";
 import { Color, Scene } from "three";
-import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
+import { TiltLoader } from './TiltLoader'
 import { Convert, JSONPoly } from "./JSONSchema";
 
 export class Loader {
