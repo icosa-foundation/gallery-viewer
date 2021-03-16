@@ -13,6 +13,8 @@
   },
   "author": "Icosa Gallery",
   "license": "Apache-2.0",
+  "main": "dist/icosa-viewer.js",
+  "module": "dist/icosa-viewer.module.js",
   "bugs": {
     "url": "https://github.com/icosa-gallery/icosa-viewer/issues"
   },
