@@ -85,7 +85,7 @@ export class Viewer {
         renderer.setPixelRatio(window.devicePixelRatio);
 
         renderer.xr.enabled = true;
-        document.body.appendChild( VRButton.createButton( renderer ) );
+        this.icosa_frame.appendChild( VRButton.createButton( renderer ) );
 
         CameraControls.install({THREE: THREE});
 
