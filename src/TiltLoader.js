@@ -153,6 +153,7 @@ class TiltLoader extends Loader {
 
 			const geometry = new StrokeGeometry( brushes[ brush_index ] );
 			const material = getMaterial( metadata.BrushIndex[ brush_index ] );
+			material.name = BRUSH_LIST_ARRAY[ metadata.BrushIndex[ brush_index ] ];
 
 			group.add( new Mesh( geometry, material ) );
 
