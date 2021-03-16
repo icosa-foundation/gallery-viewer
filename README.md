@@ -13,7 +13,7 @@ The viewer is still a work in progress and subject to change. Please join the [D
 
 ## Examples
 
-- [.tilt file](https://github.com/icosa-gallery/icosa-viewer/examples/tilt-viewer.html)
+- [.tilt file](https://github.com/icosa-gallery/icosa-viewer/blob/main/examples/tilt-viewer.html)
 
 ## Installation
 
