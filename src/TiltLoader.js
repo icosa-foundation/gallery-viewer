@@ -367,6 +367,34 @@ const shaders = {
 		blendSrc: 201,
 		blendSrcAlpha: 201,
 	},
+	'Smoke': {
+		uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_TintColor: { value: new Vector4(1, 1, 1, 1) },
+			u_MainTex: { value: loader.load( 'brushes/Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-MainTex.png', 
+				function (texture) {
+					texture.wrapS = RepeatWrapping;
+					texture.wrapT = RepeatWrapping;
+					texture.flipY = false;
+				}) 
+			}
+		},
+		vertexShader: TiltBrushShaders.Splatter.Vert,
+		fragmentShader: TiltBrushShaders.Splatter.Frag,
+		side: 2,
+		transparent: true,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		blendDst: 201,
+		blendDstAlpha: 201,
+		blendEquation: 100,
+		blendEquationAlpha: 100,
+		blendSrc: 201,
+		blendSrcAlpha: 201,
+	},
 	'Splatter': {
 		uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
@@ -399,8 +427,7 @@ const shaders = {
 		blendEquationAlpha: 100,
 		blendSrc: 201,
 		blendSrcAlpha: 201,
-	},
-
+	}
 };
 
 function getMaterial( GUID ) {
@@ -411,6 +438,8 @@ function getMaterial( GUID ) {
 
 		case 'Light':
 			return new RawShaderMaterial( shaders.Light );
+		case 'Smoke':
+			return new RawShaderMaterial( shaders.Smoke );
 		case 'Splatter':
 			return new RawShaderMaterial( shaders.Splatter );
 
