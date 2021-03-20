@@ -114,8 +114,8 @@ export class Viewer {
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0xFFE5B4);
 
-        const light = new THREE.DirectionalLight();
-        light.intensity = 2.0;
+        const light = new THREE.HemisphereLight();
+        light.intensity = 1.0;
         scene.add(light);
 
         // const loader = new GLTFLoader();
@@ -161,5 +161,9 @@ export class Viewer {
 
     public load(url : string) {
         this.icosa_viewer?.loadPoly(url);
+    }
+
+    public loadGLTF(url : string) {
+        this.icosa_viewer?.load(url);
     }
 }
