@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { Color, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, ShaderMaterialParameters, RepeatWrapping, TextureLoader, Object3D } from "three";
+import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, BufferAttribute } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Convert, JSONPoly } from "./JSONSchema";
@@ -38,16 +38,33 @@ export class Loader {
                 if(object.type === "Mesh") {
                     var mesh = object as Mesh;
                     var t = (mesh.material) as Material;
+                    switch(t.name) {
+                        case "brush_Light":
+                            console.log(Object.keys(mesh.geometry.attributes));
+                            mesh.geometry.name = "geometry_Light";
 
-                    if(t.name === "brush_Light") {
-                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                        mesh.material = new RawShaderMaterial(TiltBrushShaders["Light"]);
-                    }
-                    else {
-                        //mesh.material = new MeshStandardMaterial( { visible: false });
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Light"]);
+                            mesh.material.name = "material_Light";
+                            mesh.material.alphaTest = 0.9;
+                            break;
+                        case "brush_Smoke":
+                            console.log(Object.keys(mesh.geometry.attributes));
+                            mesh.geometry.name = "geometry_Smoke";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("position")); //in theory this should be "_tb_unity_normal" but I can't see anything with that.
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Smoke"]);
+                            mesh.material.name = "material_Smoke";
+                            break;
+                        default:
+                            mesh.material = new MeshStandardMaterial( { visible: false });
                     }
                 }
             });

@@ -112,7 +112,7 @@ export class Viewer {
         this.setupNavigation(cameraControls);
 
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xFFE5B4);
+        //scene.background = new THREE.Color(0xFFE5B4);
 
         const light = new THREE.HemisphereLight();
         light.intensity = 1.0;
