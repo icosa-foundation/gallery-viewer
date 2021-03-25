@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, BufferAttribute } from "three";
+import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, BufferAttribute, DirectionalLight, HemisphereLight } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Convert, JSONPoly } from "./JSONSchema";
@@ -39,6 +39,18 @@ export class Loader {
                     var mesh = object as Mesh;
                     var t = (mesh.material) as Material;
                     switch(t.name) {
+                        case "brush_MatteHull":
+                            console.log(Object.keys(mesh.geometry.attributes));
+                            mesh.geometry.name = "geometry_MatteHull";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["MatteHull"]);
+                            //mesh.material = new MeshStandardMaterial();
+                            mesh.material.name = "material_MatteHull";
+                            break;
                         case "brush_Light":
                             console.log(Object.keys(mesh.geometry.attributes));
                             mesh.geometry.name = "geometry_Light";
@@ -69,6 +81,21 @@ export class Loader {
                 }
             });
             this.scene.add(gltf.scene);
+
+            //DEBUG LIGHTING
+            var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
+            keyLightNode.position.set(-19.021, 34.882, -19.134);
+            keyLightNode.scale.set(0, 0, 16.828);
+            this.scene.add(keyLightNode);
+
+            var headLightNode = new DirectionalLight(0xFFEEDD, 0.250);
+            headLightNode.position.set(-16.661, 8.330, 8.330);
+            headLightNode.scale.set(1, 1, 1);
+            this.scene.add(headLightNode);
+
+            var __hemi__ = new HemisphereLight(0xEFEFFF, 0xB2B2B2, 0);
+            __hemi__.position.set(0, 1, 0);
+            this.scene.add(__hemi__);
         });
     }
 

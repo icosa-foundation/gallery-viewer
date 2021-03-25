@@ -114,10 +114,6 @@ export class Viewer {
         const scene = new THREE.Scene();
         //scene.background = new THREE.Color(0xFFE5B4);
 
-        const light = new THREE.HemisphereLight();
-        light.intensity = 1.0;
-        scene.add(light);
-
         // const loader = new GLTFLoader();
         // loader.load('res/testmodels/myreality.glb', (gltf) => {
         //     const root = gltf.scene;
