@@ -40,7 +40,6 @@ export class Loader {
                     var t = (mesh.material) as Material;
                     switch(t.name) {
                         case "brush_MatteHull":
-                            console.log(Object.keys(mesh.geometry.attributes));
                             mesh.geometry.name = "geometry_MatteHull";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
@@ -48,11 +47,22 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["MatteHull"]);
-                            //mesh.material = new MeshStandardMaterial();
                             mesh.material.name = "material_MatteHull";
                             break;
-                        case "brush_Light":
+
+                        case "brush_Icing":
                             console.log(Object.keys(mesh.geometry.attributes));
+                            mesh.geometry.name = "geometry_Icing";
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Icing"]);
+                            mesh.material.name = "material_Icing";
+                            break;
+
+                        case "brush_Light":
                             mesh.geometry.name = "geometry_Light";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
@@ -61,10 +71,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Light"]);
                             mesh.material.name = "material_Light";
-                            mesh.material.alphaTest = 0.9;
                             break;
+
                         case "brush_Smoke":
-                            console.log(Object.keys(mesh.geometry.attributes));
                             mesh.geometry.name = "geometry_Smoke";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
@@ -75,6 +84,7 @@ export class Loader {
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Smoke"]);
                             mesh.material.name = "material_Smoke";
                             break;
+
                         default:
                             mesh.material = new MeshStandardMaterial( { visible: false });
                     }
