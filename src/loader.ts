@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, BufferAttribute, DirectionalLight, HemisphereLight } from "three";
+import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Convert, JSONPoly } from "./JSONSchema";
@@ -95,6 +95,16 @@ export class Loader {
                             mesh.material.name = "material_Splatter";
                             break;
 
+                        case "brush_Toon":
+                            mesh.geometry.name = "geometry_Toon";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Toon"]);
+                            mesh.material.name = "material_Toon";
+                            break;
+
                         case "brush_UnlitHull":
                             mesh.geometry.name = "geometry_UnlitHull";
 
@@ -116,7 +126,7 @@ export class Loader {
                             break;
 
                         default:
-                            mesh.material = new MeshStandardMaterial( { visible: false });
+                            mesh.material = new MeshStandardMaterial( { visible: false } );
                     }
                 }
             });
