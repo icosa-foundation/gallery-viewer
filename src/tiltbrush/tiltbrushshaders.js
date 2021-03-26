@@ -15,6 +15,9 @@ import smokeFrag from './brushes/Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smok
 import splatterVert from './brushes/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-vertex.glsl';
 import splatterFrag from './brushes/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-fragment.glsl';
 
+import unlitHullVert from './brushes/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d-v10.0-vertex.glsl';
+import unlitHullFrag from './brushes/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d-v10.0-fragment.glsl';
+
 const TiltBrushShaders = {
 	"MatteHull" : {
         uniforms: {
@@ -166,6 +169,20 @@ const TiltBrushShaders = {
 		blendEquationAlpha: 100,
 		blendSrc: 201,
 		blendSrcAlpha: 201,
+    },
+	"UnlitHull" : {
+        uniforms: {
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 }
+		},
+		vertexShader: unlitHullVert,
+		fragmentShader: unlitHullFrag,
+		side: 2,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
     },
 }
 

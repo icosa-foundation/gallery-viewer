@@ -45,7 +45,6 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["MatteHull"]);
                             mesh.material.name = "material_MatteHull";
                             break;
@@ -84,16 +83,27 @@ export class Loader {
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Smoke"]);
                             mesh.material.name = "material_Smoke";
                             break;
-                            case "brush_Splatter":
-                                mesh.geometry.name = "geometry_Splatter";
 
-                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                                mesh.material = new RawShaderMaterial(TiltBrushShaders["Splatter"]);
-                                mesh.material.name = "material_Splatter";
-                                break;
+                        case "brush_Splatter":
+                            mesh.geometry.name = "geometry_Splatter";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Splatter"]);
+                            mesh.material.name = "material_Splatter";
+                            break;
+
+                        case "brush_UnlitHull":
+                            mesh.geometry.name = "geometry_UnlitHull";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["UnlitHull"]);
+                            mesh.material.name = "material_UnlitHull";
+                            break;
 
                         default:
                             mesh.material = new MeshStandardMaterial( { visible: false });
