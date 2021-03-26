@@ -18,6 +18,10 @@ import splatterFrag from './brushes/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617
 import unlitHullVert from './brushes/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d-v10.0-vertex.glsl';
 import unlitHullFrag from './brushes/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d-v10.0-fragment.glsl';
 
+import wireVert from './brushes/Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4391385a-cf83-4396-9e33-31e4e4930b27-v10.0-vertex.glsl';
+import wireFrag from './brushes/Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4391385a-cf83-4396-9e33-31e4e4930b27-v10.0-fragment.glsl';
+
+
 const TiltBrushShaders = {
 	"MatteHull" : {
         uniforms: {
@@ -177,6 +181,20 @@ const TiltBrushShaders = {
 		},
 		vertexShader: unlitHullVert,
 		fragmentShader: unlitHullFrag,
+		side: 2,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+    },
+	"Wire" : {
+        uniforms: {
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 }
+		},
+		vertexShader: wireVert,
+		fragmentShader: wireFrag,
 		side: 2,
 		transparent: false,
 		depthFunc: 2,

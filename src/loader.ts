@@ -105,6 +105,16 @@ export class Loader {
                             mesh.material.name = "material_UnlitHull";
                             break;
 
+                        case "brush_Wire":
+                            mesh.geometry.name = "geometry_Wire";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Wire"]);
+                            mesh.material.name = "material_Wire";
+                            break;
+
                         default:
                             mesh.material = new MeshStandardMaterial( { visible: false });
                     }
