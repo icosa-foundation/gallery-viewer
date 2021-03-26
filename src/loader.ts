@@ -51,8 +51,8 @@ export class Loader {
                             break;
 
                         case "brush_Icing":
-                            console.log(Object.keys(mesh.geometry.attributes));
                             mesh.geometry.name = "geometry_Icing";
+
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
@@ -84,6 +84,16 @@ export class Loader {
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Smoke"]);
                             mesh.material.name = "material_Smoke";
                             break;
+                            case "brush_Splatter":
+                                mesh.geometry.name = "geometry_Splatter";
+
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                                mesh.material = new RawShaderMaterial(TiltBrushShaders["Splatter"]);
+                                mesh.material.name = "material_Splatter";
+                                break;
 
                         default:
                             mesh.material = new MeshStandardMaterial( { visible: false });
