@@ -1,5 +1,8 @@
 import { RepeatWrapping, TextureLoader, Vector3, Vector4 } from 'three';
 
+import diamondHullVert from './brushes/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-vertex.glsl';
+import diamondHullFrag from './brushes/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-fragment.glsl';
+
 import matteHullVert from './brushes/MatteHull-79348357-432d-4746-8e29-0e25c112e3aa/MatteHull-79348357-432d-4746-8e29-0e25c112e3aa-v10.0-vertex.glsl';
 import matteHullFrag from './brushes/MatteHull-79348357-432d-4746-8e29-0e25c112e3aa/MatteHull-79348357-432d-4746-8e29-0e25c112e3aa-v10.0-fragment.glsl';
 
@@ -26,6 +29,41 @@ import wireFrag from './brushes/Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4
 
 
 const TiltBrushShaders = {
+	"DiamondHull" : {
+        uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_time: { value: new Vector4() },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			cameraPosition: { value: new Vector3() },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-MainTex.png',
+			function (texture) {
+				texture.name = "DiamondHull_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    }) 
+		    },
+		},
+		vertexShader: diamondHullVert,
+		fragmentShader: diamondHullFrag,
+		side: 2,
+		transparent: true,
+		depthFunc: 2,
+		depthWrite: false,
+		depthTest: true,
+		blending: 5,
+		blendDstAlpha: 201,
+		blendDst: 201,
+		blendEquationAlpha: 100,
+		blendEquation: 100,
+		blendSrcAlpha: 201,
+		blendSrc: 201,
+    },
 	"MatteHull" : {
         uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },

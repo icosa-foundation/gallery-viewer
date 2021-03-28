@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight } from "three";
+import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4 } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Convert, JSONPoly } from "./JSONSchema";
@@ -24,21 +24,59 @@ export class Loader {
     //private tiltLoader : TiltLoader;
     private gltfLoader : GLTFLoader;
 
-    constructor (scene : Scene, camercontrols : CameraControls) {
+    private sceneCamera : Camera;
+
+    private loadedModel? : Object3D;
+
+    private loaded : boolean = false;
+
+    private updateableMeshes : Mesh[] = [];
+
+    constructor (scene : Scene, sceneCamera : Camera) {
         //this.tiltLoader = new TiltLoader();
         this.gltfLoader = new GLTFLoader();
         this.scene = scene;
+        this.sceneCamera = sceneCamera;
         new RawShaderMaterial()
+    }
+
+    public update(deltaTime : number) {
+        if(this.loaded) {
+            // Update uniforms of meshes that need it.
+            this.updateableMeshes.forEach((mesh) => {
+                var material = mesh.material as Material;
+                switch (material.name) {
+                    case "material_DiamondHull":
+                        console.log(this.sceneCamera.position);
+                        (material as RawShaderMaterial).uniforms!["cameraPosition"].value = this.sceneCamera.position;
+                        (material as RawShaderMaterial).uniforms!["u_time"].value = new Vector4(deltaTime/10, 0, 0 ,0);
+                        break;
+                }
+            });
+        }
     }
 
     public load(assetID : string) {
         this.gltfLoader.load(assetID, (gltf) => {
-            var model = gltf.scene;
-            model.traverse((object : Object3D) => {
+            this.loadedModel = gltf.scene;
+            this.loadedModel.traverse((object : Object3D) => {
                 if(object.type === "Mesh") {
                     var mesh = object as Mesh;
-                    var t = (mesh.material) as Material;
-                    switch(t.name) {
+                    var material = mesh.material as Material;
+                    switch(material.name) {
+                        case "brush_DiamondHull":
+                            mesh.geometry.name = "geometry_DiamondHull";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DiamondHull"]);
+                            mesh.material.name = "material_DiamondHull";
+                            //mesh.material.needsUpdate = true;
+                            this.updateableMeshes.push(mesh);
+                            break;
+
                         case "brush_MatteHull":
                             mesh.geometry.name = "geometry_MatteHull";
 
@@ -130,7 +168,8 @@ export class Loader {
                     }
                 }
             });
-            this.scene.add(gltf.scene);
+            this.scene.add(this.loadedModel);
+
 
             //DEBUG LIGHTING
             var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
@@ -146,6 +185,8 @@ export class Loader {
             var __hemi__ = new HemisphereLight(0xEFEFFF, 0xB2B2B2, 0);
             __hemi__.position.set(0, 1, 0);
             this.scene.add(__hemi__);
+
+            this.loaded = true;
         });
     }
 
