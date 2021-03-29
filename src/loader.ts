@@ -151,6 +151,17 @@ export class Loader {
                             mesh.material.name = "material_Smoke";
                             break;
 
+                        case "brush_SoftHighlighter":
+                            mesh.geometry.name = "geometry_SoftHighlighter";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["SoftHighlighter"]);
+                            mesh.material.name = "material_SoftHighlighter";
+                            break;
+
                         case "brush_Splatter":
                             mesh.geometry.name = "geometry_Splatter";
 

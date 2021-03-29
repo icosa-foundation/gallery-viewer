@@ -21,6 +21,9 @@ import oilPaintFrag from './brushes/OilPaint-f72ec0e7-a844-4e38-82e3-140c4477269
 import smokeVert from './brushes/Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-vertex.glsl';
 import smokeFrag from './brushes/Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-fragment.glsl';
 
+import softHighlighterVert from './brushes/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-vertex.glsl';
+import softHighlighterFrag from './brushes/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-fragment.glsl';
+
 import splatterVert from './brushes/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-vertex.glsl';
 import splatterFrag from './brushes/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-fragment.glsl';
 
@@ -249,6 +252,35 @@ const TiltBrushShaders = {
 		blendSrcAlpha: 201,
 		blendSrc: 201,
 	},
+	"SoftHighlighter" : {
+        uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-MainTex.png',
+			function (texture) {
+				texture.name = "SoftHighliter_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    }) 
+		    },
+			u_Cutoff: { value: 0.2 },
+		},
+		vertexShader: softHighlighterVert,
+		fragmentShader: softHighlighterFrag,
+		side: 2,
+		transparent: true,
+		depthFunc: 2,
+		depthWrite: false,
+		depthTest: true,
+		blending: 5,
+		blendDstAlpha: 201,
+		blendDst: 201,
+		blendEquationAlpha: 100,
+		blendEquation: 100,
+		blendSrcAlpha: 201,
+		blendSrc: 201,
+    },
 	"Splatter" : {
         uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
