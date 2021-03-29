@@ -144,13 +144,13 @@ const TiltBrushShaders = {
 		depthFunc: 2,
 		depthWrite: true,
 		depthTest: true,
-		blending: 1,
-		blendDst: 201,
+		blending: 5,
 		blendDstAlpha: 201,
-		blendEquation: 100,
+		blendDst: 201,
 		blendEquationAlpha: 100,
-		blendSrc: 201,
+		blendEquation: 100,
 		blendSrcAlpha: 201,
+		blendSrc: 201,
     },
 	"Smoke": {
 		uniforms: {
@@ -174,12 +174,12 @@ const TiltBrushShaders = {
 		depthWrite: false,
 		depthTest: true,
 		blending: 5,
-		blendDst: 201,
 		blendDstAlpha: 201,
-		blendEquation: 100,
+		blendDst: 201,
 		blendEquationAlpha: 100,
-		blendSrc: 201,
+		blendEquation: 100,
 		blendSrcAlpha: 201,
+		blendSrc: 201,
 	},
 	"Splatter" : {
         uniforms: {
@@ -207,13 +207,7 @@ const TiltBrushShaders = {
 		depthFunc: 2,
 		depthWrite: true,
 		depthTest: true,
-		blending: 1,
-		blendDst: 201,
-		blendDstAlpha: 201,
-		blendEquation: 100,
-		blendEquationAlpha: 100,
-		blendSrc: 201,
-		blendSrcAlpha: 201,
+		blending: 0
     },
 	"Toon" : {
         uniforms: {
