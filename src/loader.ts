@@ -55,6 +55,9 @@ export class Loader {
                     (material as RawShaderMaterial).uniforms!["cameraPosition"].value = this.sceneCamera.position;
                     (material as RawShaderMaterial).uniforms!["u_time"].value = time;
                     break;
+                case "material_NeonPulse":
+                    (material as RawShaderMaterial).uniforms!["u_time"].value = time;
+                    break;
             }
         });
     }
@@ -76,18 +79,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["DiamondHull"]);
                             mesh.material.name = "material_DiamondHull";
-                            //mesh.material.needsUpdate = true;
                             this.updateableMeshes.push(mesh);
-                            break;
-
-                        case "brush_MatteHull":
-                            mesh.geometry.name = "geometry_MatteHull";
-
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["MatteHull"]);
-                            mesh.material.name = "material_MatteHull";
                             break;
 
                         case "brush_Icing":
@@ -102,6 +94,16 @@ export class Loader {
                             mesh.material.name = "material_Icing";
                             break;
 
+                        case "brush_MatteHull":
+                            mesh.geometry.name = "geometry_MatteHull";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["MatteHull"]);
+                            mesh.material.name = "material_MatteHull";
+                            break;
+
                         case "brush_Light":
                             mesh.geometry.name = "geometry_Light";
 
@@ -111,6 +113,18 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Light"]);
                             mesh.material.name = "material_Light";
+                            break;
+
+                        case "brush_NeonPulse":
+                            mesh.geometry.name = "geometry_NeonPulse";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["NeonPulse"]);
+                            mesh.material.name = "material_NeonPulse";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Smoke":
