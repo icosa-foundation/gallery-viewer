@@ -41,19 +41,22 @@ export class Loader {
     }
 
     public update(deltaTime : number) {
-        if(this.loaded) {
-            // Update uniforms of meshes that need it.
-            this.updateableMeshes.forEach((mesh) => {
-                var material = mesh.material as Material;
-                switch (material.name) {
-                    case "material_DiamondHull":
-                        console.log(this.sceneCamera.position);
-                        (material as RawShaderMaterial).uniforms!["cameraPosition"].value = this.sceneCamera.position;
-                        (material as RawShaderMaterial).uniforms!["u_time"].value = new Vector4(deltaTime/10, 0, 0 ,0);
-                        break;
-                }
-            });
-        }
+        if(!this.loaded)
+            return;
+
+        // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
+        var time = new Vector4(deltaTime/20, deltaTime, deltaTime*2, deltaTime*3);
+
+        // Update uniforms of meshes that need it.
+        this.updateableMeshes.forEach((mesh) => {
+            var material = mesh.material as Material;
+            switch (material.name) {
+                case "material_DiamondHull":
+                    (material as RawShaderMaterial).uniforms!["cameraPosition"].value = this.sceneCamera.position;
+                    (material as RawShaderMaterial).uniforms!["u_time"].value = time;
+                    break;
+            }
+        });
     }
 
     public load(assetID : string) {
