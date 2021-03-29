@@ -94,16 +94,6 @@ export class Loader {
                             mesh.material.name = "material_Icing";
                             break;
 
-                        case "brush_MatteHull":
-                            mesh.geometry.name = "geometry_MatteHull";
-
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["MatteHull"]);
-                            mesh.material.name = "material_MatteHull";
-                            break;
-
                         case "brush_Light":
                             mesh.geometry.name = "geometry_Light";
 
@@ -113,6 +103,16 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Light"]);
                             mesh.material.name = "material_Light";
+                            break;
+
+                        case "brush_MatteHull":
+                            mesh.geometry.name = "geometry_MatteHull";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["MatteHull"]);
+                            mesh.material.name = "material_MatteHull";
                             break;
 
                         case "brush_NeonPulse":
@@ -125,6 +125,18 @@ export class Loader {
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["NeonPulse"]);
                             mesh.material.name = "material_NeonPulse";
                             this.updateableMeshes.push(mesh);
+                            break;
+                        
+                        case "brush_OilPaint":
+                            mesh.geometry.name = "geometry_OilPaint";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["OilPaint"]);
+                            mesh.material.name = "material_OilPaint";
                             break;
 
                         case "brush_Smoke":
