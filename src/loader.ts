@@ -22,6 +22,7 @@ import { TiltBrushShaders } from "./tiltbrush/tiltbrushshaders";
 
 export class Loader {
     private scene : Scene;
+
     private tiltLoader : TiltLoader;
     private gltfLoader : GLTFLoader;
     private legacygltf : LegacyGLTFLoader;
@@ -71,8 +72,8 @@ export class Loader {
         });
     }
 
-    public load(assetID : string) {
-        this.gltfLoader.load(assetID, (gltf) => {
+    private initGltf(url : string) {
+        this.gltfLoader.load(url, (gltf) => {
             this.loadedModel = gltf.scene;
             this.loadedModel.traverse((object : Object3D) => {
                 if(object.type === "Mesh") {
@@ -794,7 +795,25 @@ export class Loader {
         });
     }
 
-    public loadPoly(assetID : string) {
+    private initTilt(url : string) {
+        this.tiltLoader.load(url, (tilt) => {
+            this.scene.clear();
+            this.scene.add(tilt);
+        });
+    }
+
+    private initPolyGltf(url : string) {
+        this.legacygltf.load(url, (gltf) => {
+            this.scene.clear();
+            this.scene.add(gltf.scene);
+        });
+    }
+
+    public loadGLTF(url : string) {
+        this.initGltf(url);
+    }
+
+    public loadPolyAsset(assetID : string, format? : string) {
         const http = new XMLHttpRequest();
         const url = `https://api.icosa.gallery/poly/assets/${assetID}`;
 
@@ -805,10 +824,30 @@ export class Loader {
 
                 //To dict, for format preference sorting
                 let types: { [name: string]: JSONPolyFormat } = {}; 
+
                 polyAsset.formats.forEach(format => {
                     types[format.formatType] = format;
-                    
                 });
+
+                //Check if specific format requested, otherwise loop through order of preference
+                if(format) {
+                    switch (format) {
+                        case "GLTF":
+                            if(types.hasOwnProperty("GLTF")) {
+                                that.initPolyGltf(types.GLTF.root.url);
+                                return;
+                            }
+                            break;
+                        case "TILT":
+                            if(types.hasOwnProperty("TILT")) {
+                                that.initTilt(types.TILT.root.url);
+                                return;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
 
                 if(types.hasOwnProperty("GLTF")) {
                     that.initPolyGltf(types.GLTF.root.url);
@@ -826,23 +865,17 @@ export class Loader {
         http.send();
     }
 
-    public loadPolyURL(url : string) {
+    public loadPolyUrl(url : string, format? : string) {
         var splitURL = url.split('/');
         if(splitURL[2] === "poly.google.com")
-            this.loadPoly(splitURL[4]);
+            this.loadPolyAsset(splitURL[4], format);
     }
 
-    private initTilt(url : string) {
-        this.tiltLoader.load(url, (tilt) => {
-            this.scene.clear();
-            this.scene.add(tilt);
-        });
+    public loadPolyTilt(url : string) {
+        this.loadPolyUrl(url, "TILT");
     }
 
-    private initPolyGltf(url : string) {
-        this.legacygltf.load(url, (gltf) => {
-            this.scene.clear();
-            this.scene.add(gltf.scene);
-        });
+    public loadPolyGltf(url : string) {
+        this.loadPolyUrl(url, "GLTF");
     }
 }

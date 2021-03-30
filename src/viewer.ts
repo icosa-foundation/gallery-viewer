@@ -159,11 +159,19 @@ export class Viewer {
         animate();
     }
 
-    public load(url : string) {
-        this.icosa_viewer?.loadPoly(url);
+    public loadGLTF(url : string) {
+        this.icosa_viewer?.loadGLTF(url);
     }
 
-    public loadGLTF(url : string) {
-        this.icosa_viewer?.load(url);
+    public loadPoly(assetID : string) {
+        this.icosa_viewer?.loadPolyAsset(assetID);
+    }
+
+    public loadPolyTilt(url : string) {
+        this.icosa_viewer?.loadPolyTilt(url);
+    }
+
+    public loadPolyGLTF(url : string) {
+        this.icosa_viewer?.loadPolyGltf(url);
     }
 }
