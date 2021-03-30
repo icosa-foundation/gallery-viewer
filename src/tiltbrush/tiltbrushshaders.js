@@ -400,6 +400,30 @@ const TiltBrushShaders = {
 		depthTest: true,
 		blending: 0
 	},
+	"Rainbow" : {
+        uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_time: { value: new Vector4() },
+			u_EmissionGain: { value: 0.45 },
+		},
+		vertexShader: rainbowVert,
+		fragmentShader: rainbowFrag,
+		side: 2,
+		transparent: true,
+		depthFunc: 2,
+		depthWrite: false,
+		depthTest: true,
+		blending: 5,
+		blendDstAlpha: 201,
+		blendDst: 201,
+		blendEquationAlpha: 100,
+		blendEquation: 100,
+		blendSrcAlpha: 201,
+		blendSrc: 201,
+    },
 	"Smoke": {
 		uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
