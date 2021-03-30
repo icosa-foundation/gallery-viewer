@@ -183,20 +183,324 @@ import wireFrag from './brushes/Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4
 
 const TiltBrushShaders = {
     "BlocksBasic" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "BlocksGem" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "BlocksGlass" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Bubbles" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "CelVinyl" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "ChromaticWave" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "CoarseBristles" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Comet" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
 	"DiamondHull" : {
         uniforms: {
@@ -234,10 +538,124 @@ const TiltBrushShaders = {
 		blendSrc: 201,
     },
     "Disco" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "DotMarker" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Dots" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "DoubleTaperedFlat" : {
         uniforms: {
@@ -360,14 +778,204 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "Electricity" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Embers" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "EnvironmentDiffuse" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "EnvironmentDiffuseLightMap" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Fire" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Flat" : {
     	uniforms: {
@@ -410,12 +1018,164 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "FlatDeprecated" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Highlighter" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Hypercolor" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "HyperGrid" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
 	"Icing" : {
         uniforms: {
@@ -498,6 +1258,44 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "Leaves" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
 	"Light" : {
         uniforms: {
@@ -529,8 +1327,84 @@ const TiltBrushShaders = {
 		blendSrc: 201,
     },
     "LightWire" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Lofted" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Marker" : {
     	uniforms: {
@@ -694,12 +1568,164 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "PbrTemplate" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "PbrTransparentTemplate" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Petal" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Plasma" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
 	"Rainbow" : {
         uniforms: {
@@ -726,6 +1752,44 @@ const TiltBrushShaders = {
 		blendSrc: 201,
     },
     "ShinyHull" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
 	"Smoke": {
 		uniforms: {
@@ -757,6 +1821,44 @@ const TiltBrushShaders = {
 		blendSrc: 201,
 	},
     "Snow" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
 	"SoftHighlighter" : {
         uniforms: {
@@ -788,6 +1890,44 @@ const TiltBrushShaders = {
 		blendSrc: 201,
     },
     "Spikes" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
 	"Splatter" : {
         uniforms: {
@@ -818,10 +1958,124 @@ const TiltBrushShaders = {
 		blending: 0
     },
     "Stars" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Streamers" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "Taffy" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "TaperedFlat" : {
     	uniforms: {
@@ -1054,6 +2308,44 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "Waveform" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
     "WetPaint" : {
     	uniforms: {
@@ -1096,6 +2388,44 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "WigglyGraphite" : {
+    	uniforms: {
+			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+			u_SpecColor: { value: new Vector3(0, 0, 0) },
+			u_Shininess: { value: 0.1500 },
+			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+			u_fogDensity: { value: 0 },
+			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_BumpMap";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
+			function (texture) {
+				texture.name = "Icing_MainTex";
+				texture.wrapS = RepeatWrapping;
+				texture.wrapT = RepeatWrapping;
+				texture.flipY = false;
+			    })
+		    },
+			u_Cutoff: { value: 0.2 }
+		},
+		vertexShader: icingVert,
+		fragmentShader: icingFrag,
+		side: 0,
+		transparent: false,
+		depthFunc: 2,
+		depthWrite: true,
+		depthTest: true,
+		blending: 0,
+		extensions: { derivatives: true }
     },
 	"Wire" : {
         uniforms: {
