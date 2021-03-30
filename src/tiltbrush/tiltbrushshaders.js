@@ -280,7 +280,7 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
 	},
     "DoubleTaperedMarker" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -320,7 +320,7 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "DuctTape" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -370,7 +370,7 @@ const TiltBrushShaders = {
     "Fire" : {
     },
     "Flat" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -458,7 +458,7 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "Ink" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -533,7 +533,7 @@ const TiltBrushShaders = {
     "Lofted" : {
     },
     "Marker" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -654,7 +654,7 @@ const TiltBrushShaders = {
 		blending: 0
 	},
     "Paper" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -824,7 +824,7 @@ const TiltBrushShaders = {
     "Taffy" : {
     },
     "TaperedFlat" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -864,7 +864,7 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "TaperedMarker" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -904,7 +904,7 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "TaperedMarker_Flat" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -944,7 +944,7 @@ const TiltBrushShaders = {
 		extensions: { derivatives: true }
     },
     "ThickPaint" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -1014,7 +1014,7 @@ const TiltBrushShaders = {
 		blending: 0,
     },
     "VelvetInk" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
@@ -1056,7 +1056,7 @@ const TiltBrushShaders = {
     "Waveform" : {
     },
     "WetPaint" : {
-            uniforms: {
+    	uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
