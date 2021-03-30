@@ -21,7 +21,7 @@ import { TiltBrushShaders } from "./tiltbrush/tiltbrushshaders";
 
 export class Loader {
     private scene : Scene;
-    //private tiltLoader : TiltLoader;
+    private tiltLoader : TiltLoader;
     private gltfLoader : GLTFLoader;
 
     private sceneCamera : Camera;
@@ -33,7 +33,7 @@ export class Loader {
     private updateableMeshes : Mesh[] = [];
 
     constructor (scene : Scene, sceneCamera : Camera) {
-        //this.tiltLoader = new TiltLoader();
+        this.tiltLoader = new TiltLoader();
         this.gltfLoader = new GLTFLoader();
         this.scene = scene;
         this.sceneCamera = sceneCamera;
@@ -804,8 +804,8 @@ export class Loader {
 
     private initTilt(url : string) {
         this.scene.clear();
-        // this.tiltLoader.load(url, (tilt) => {
-        //     this.scene.add(tilt);
-        // });
+        this.tiltLoader.load(url, (tilt) => {
+            this.scene.add(tilt);
+        });
     }
 }
