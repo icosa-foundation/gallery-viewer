@@ -215,6 +215,22 @@ import wireFrag from './brushes/Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4
 
 
 const TiltBrushShaders = {
+    "BlocksBasic" : {
+    },
+    "BlocksGem" : {
+    },
+    "BlocksGlass" : {
+    },
+    "Bubbles" : {
+    },
+    "CelVinyl" : {
+    },
+    "ChromaticWave" : {
+    },
+    "CoarseBristles" : {
+    },
+    "Comet" : {
+    },
 	"DiamondHull" : {
         uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
@@ -232,7 +248,7 @@ const TiltBrushShaders = {
 				texture.wrapS = RepeatWrapping;
 				texture.wrapT = RepeatWrapping;
 				texture.flipY = false;
-			    }) 
+			    })
 		    },
 		},
 		vertexShader: diamondHullVert,
@@ -249,6 +265,38 @@ const TiltBrushShaders = {
 		blendEquation: 100,
 		blendSrcAlpha: 201,
 		blendSrc: 201,
+    },
+    "Disco" : {
+    },
+    "DotMarker" : {
+    },
+    "Dots" : {
+    },
+    "DoubleTaperedFlat" : {
+    },
+    "DoubleTaperedMarker" : {
+    },
+    "DuctTape" : {
+    },
+    "Electricity" : {
+    },
+    "Embers" : {
+    },
+    "EnvironmentDiffuse" : {
+    },
+    "EnvironmentDiffuseLightMap" : {
+    },
+    "Fire" : {
+    },
+    "Flat" : {
+    },
+    "FlatDeprecated" : {
+    },
+    "Highlighter" : {
+    },
+    "Hypercolor" : {
+    },
+    "HyperGrid" : {
     },
 	"Icing" : {
         uniforms: {
@@ -268,7 +316,7 @@ const TiltBrushShaders = {
 				texture.wrapS = RepeatWrapping;
 				texture.wrapT = RepeatWrapping;
 				texture.flipY = false;
-			    }) 
+			    })
 		    },
 			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
 			function (texture) {
@@ -276,7 +324,7 @@ const TiltBrushShaders = {
 				texture.wrapS = RepeatWrapping;
 				texture.wrapT = RepeatWrapping;
 				texture.flipY = false;
-			    }) 
+			    })
 		    },
 			u_Cutoff: { value: 0.2 }
 		},
@@ -290,6 +338,10 @@ const TiltBrushShaders = {
 		blending: 0,
 		extensions: { derivatives: true }
     },
+    "Ink" : {
+    },
+    "Leaves" : {
+    },
 	"Light" : {
         uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
@@ -300,7 +352,7 @@ const TiltBrushShaders = {
 				texture.wrapS = RepeatWrapping;
 				texture.wrapT = RepeatWrapping;
 				texture.flipY = false;
-			    }) 
+			    })
 		    },
 			u_EmissionGain: { value: 0.45 },
 		},
@@ -318,6 +370,12 @@ const TiltBrushShaders = {
 		blendEquation: 100,
 		blendSrcAlpha: 201,
 		blendSrc: 201,
+    },
+    "LightWire" : {
+    },
+    "Lofted" : {
+    },
+    "Marker" : {
     },
 	"MatteHull" : {
         uniforms: {
@@ -374,21 +432,21 @@ const TiltBrushShaders = {
 			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
 			u_fogDensity: { value: 0 },
 			u_BumpMap_TexelSize: { value: new Vector4(0.0020, 0.0020, 512, 512) },
-			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-MainTex.png', 
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-MainTex.png',
 				function (texture) {
 					texture.name = "OilPaint_MainTex";
 					texture.wrapS = RepeatWrapping;
 					texture.wrapT = RepeatWrapping;
 					texture.flipY = false;
-				}) 
+				})
 			},
-			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-BumpMap.png', 
+			u_BumpMap: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-BumpMap.png',
 				function (texture) {
 					texture.name = "OilPaint_BumpMap";
 					texture.wrapS = RepeatWrapping;
 					texture.wrapT = RepeatWrapping;
 					texture.flipY = false;
-				}) 
+				})
 			}
 		},
 		vertexShader: oilPaintVert,
@@ -400,6 +458,16 @@ const TiltBrushShaders = {
 		depthTest: true,
 		blending: 0
 	},
+    "Paper" : {
+    },
+    "PbrTemplate" : {
+    },
+    "PbrTransparentTemplate" : {
+    },
+    "Petal" : {
+    },
+    "Plasma" : {
+    },
 	"Rainbow" : {
         uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
@@ -424,18 +492,20 @@ const TiltBrushShaders = {
 		blendSrcAlpha: 201,
 		blendSrc: 201,
     },
+    "ShinyHull" : {
+    },
 	"Smoke": {
 		uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
 			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
 			u_TintColor: { value: new Vector4(1, 1, 1, 1) },
-			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-MainTex.png', 
+			u_MainTex: { value: new TextureLoader().load( 'https://www.tiltbrush.com/shaders/brushes/Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-MainTex.png',
 				function (texture) {
 					texture.name = "Smoke_MainTex";
 					texture.wrapS = RepeatWrapping;
 					texture.wrapT = RepeatWrapping;
 					texture.flipY = false;
-				}) 
+				})
 			}
 		},
 		vertexShader: smokeVert,
@@ -453,6 +523,8 @@ const TiltBrushShaders = {
 		blendSrcAlpha: 201,
 		blendSrc: 201,
 	},
+    "Snow" : {
+    },
 	"SoftHighlighter" : {
         uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
@@ -463,7 +535,7 @@ const TiltBrushShaders = {
 				texture.wrapS = RepeatWrapping;
 				texture.wrapT = RepeatWrapping;
 				texture.flipY = false;
-			    }) 
+			    })
 		    },
 			u_Cutoff: { value: 0.2 },
 		},
@@ -482,6 +554,8 @@ const TiltBrushShaders = {
 		blendSrcAlpha: 201,
 		blendSrc: 201,
     },
+    "Spikes" : {
+    },
 	"Splatter" : {
         uniforms: {
 			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
@@ -497,7 +571,7 @@ const TiltBrushShaders = {
 				texture.wrapS = RepeatWrapping;
 				texture.wrapT = RepeatWrapping;
 				texture.flipY = false;
-			    }) 
+			    })
 		    },
 			u_Cutoff: { value: 0.2 },
 		},
@@ -509,6 +583,20 @@ const TiltBrushShaders = {
 		depthWrite: true,
 		depthTest: true,
 		blending: 0
+    },
+    "Stars" : {
+    },
+    "Streamers" : {
+    },
+    "Taffy" : {
+    },
+    "TaperedFlat" : {
+    },
+    "TaperedMarker" : {
+    },
+    "TaperedMarker_Flat" : {
+    },
+    "ThickPaint" : {
     },
 	"Toon" : {
         uniforms: {
@@ -539,6 +627,14 @@ const TiltBrushShaders = {
 		depthWrite: true,
 		depthTest: true,
 		blending: 0,
+    },
+    "VelvetInk" : {
+    },
+    "Waveform" : {
+    },
+    "WetPaint" : {
+    },
+    "WigglyGraphite" : {
     },
 	"Wire" : {
         uniforms: {
