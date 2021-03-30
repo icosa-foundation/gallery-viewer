@@ -310,17 +310,6 @@ export class Loader {
                             mesh.material.name = "material_Flat";
                             break;
 
-                        case "brush_FlatDeprecated":
-                            mesh.geometry.name = "geometry_FlatDeprecated";
-
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["FlatDeprecated"]);
-                            mesh.material.name = "material_FlatDeprecated";
-                            break;
-
                         case "brush_Highlighter":
                             mesh.geometry.name = "geometry_Highlighter";
 
