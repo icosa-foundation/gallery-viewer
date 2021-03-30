@@ -55,13 +55,23 @@ export class Loader {
                     (material as RawShaderMaterial).uniforms!["cameraPosition"].value = this.sceneCamera.position;
                     (material as RawShaderMaterial).uniforms!["u_time"].value = time;
                     break;
-                case "material_NeonPulse":
-                    (material as RawShaderMaterial).uniforms!["u_time"].value = time;
-                    break;
-                case "material_Rainbow":
-                    (material as RawShaderMaterial).uniforms!["u_time"].value = time;
-                    break;
                 case "material_ChromaticWave":
+                case "material_Comet":
+                case "material_Disco":
+                case "material_Electricity":
+                case "material_Embers":
+                case "material_Fire":
+                case "material_Hypercolor":
+                case "material_HyperGrid":
+                case "material_LightWire":
+                case "material_NeonPulse":
+                case "material_Plasma":
+                case "material_Rainbow":
+                case "material_Snow":
+                case "material_Stars":
+                case "material_Streamers":
+                case "material_Waveform":
+                case "material_WigglyGraphite":
                     (material as RawShaderMaterial).uniforms!["u_time"].value = time;
                     break;
             }
@@ -133,7 +143,7 @@ export class Loader {
                             break;
 
                         case "brush_ChromaticWave":
-                            mesh.geometry.name = "geometry_DiamondHull";
+                            mesh.geometry.name = "geometry_ChromaticWave";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
@@ -164,6 +174,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Comet"]);
                             mesh.material.name = "material_Comet";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_DiamondHull":
@@ -187,6 +198,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Disco"]);
                             mesh.material.name = "material_Disco";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_DotMarker":
@@ -253,6 +265,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Electricity"]);
                             mesh.material.name = "material_Electricity";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Embers":
@@ -264,6 +277,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Embers"]);
                             mesh.material.name = "material_Embers";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_EnvironmentDiffuse":
@@ -297,6 +311,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Fire"]);
                             mesh.material.name = "material_Fire";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Flat":
@@ -330,6 +345,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Hypercolor"]);
                             mesh.material.name = "material_Hypercolor";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_HyperGrid":
@@ -341,6 +357,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["HyperGrid"]);
                             mesh.material.name = "material_HyperGrid";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Icing":
@@ -389,14 +406,15 @@ export class Loader {
                             break;
 
                         case "brush_LightWire":
-                            mesh.geometry.name = "geometry_DiamondHull";
+                            mesh.geometry.name = "geometry_LightWire";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DiamondHull"]);
-                            mesh.material.name = "material_DiamondHull";
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["LightWire"]);
+                            mesh.material.name = "material_LightWire";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Lofted":
@@ -508,6 +526,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Plasma"]);
                             mesh.material.name = "material_Plasma";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Rainbow":
@@ -555,6 +574,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Snow"]);
                             mesh.material.name = "material_Snow";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_SoftHighlighter":
@@ -599,6 +619,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Stars"]);
                             mesh.material.name = "material_Stars";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Streamers":
@@ -610,17 +631,18 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Streamers"]);
                             mesh.material.name = "material_Streamers";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Taffy":
-                            mesh.geometry.name = "geometry_DiamondHull";
+                            mesh.geometry.name = "geometry_Taffy";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DiamondHull"]);
-                            mesh.material.name = "material_DiamondHull";
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Taffy"]);
+                            mesh.material.name = "material_Taffy";
                             break;
 
                         case "brush_TaperedFlat":
@@ -707,6 +729,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Waveform"]);
                             mesh.material.name = "material_Waveform";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_WetPaint":
@@ -729,6 +752,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["WigglyGraphite"]);
                             mesh.material.name = "material_WigglyGraphite";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Wire":
@@ -744,6 +768,14 @@ export class Loader {
                         default:
                             mesh.material = new MeshStandardMaterial( { visible: false } );
                     }
+                    // if (material.name!=="brush_TaperedMarker")
+                    // {
+                    //     mesh.material = new MeshStandardMaterial( { visible: false } );
+                    // }
+                    // else
+                    // {
+                    //     console.log(Object.keys(mesh.geometry.attributes));
+                    // }
                 }
             });
             this.scene.add(this.loadedModel);
