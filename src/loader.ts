@@ -15,14 +15,16 @@
 import CameraControls from "camera-controls";
 import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
+import { LegacyGLTFLoader } from "./Legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Convert, JSONPoly } from "./JSONSchema";
+import { Convert, JSONPolyFormat } from "./JSONSchema";
 import { TiltBrushShaders } from "./tiltbrush/tiltbrushshaders"; 
 
 export class Loader {
     private scene : Scene;
     private tiltLoader : TiltLoader;
     private gltfLoader : GLTFLoader;
+    private legacygltf : LegacyGLTFLoader;
 
     private sceneCamera : Camera;
 
@@ -37,6 +39,7 @@ export class Loader {
     constructor (scene : Scene, sceneCamera : Camera, cameraControls : CameraControls) {
         this.tiltLoader = new TiltLoader();
         this.gltfLoader = new GLTFLoader();
+        this.legacygltf = new LegacyGLTFLoader();
         this.scene = scene;
         this.sceneCamera = sceneCamera;
         this.cameraControls = cameraControls;
@@ -756,6 +759,7 @@ export class Loader {
                     }
                 }
             });
+            this.scene.clear();
             this.scene.add(this.loadedModel);
 
             //Setup camera to center model
@@ -798,12 +802,23 @@ export class Loader {
         http.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 const polyAsset = Convert.toPoly(this.response);
+
+                //To dict, for format preference sorting
+                let types: { [name: string]: JSONPolyFormat } = {}; 
                 polyAsset.formats.forEach(format => {
-                    if(format.formatType === "TILT") {
-                        that.initTilt(format.root.url);
-                        return;
-                    }
-                })
+                    types[format.formatType] = format;
+                    
+                });
+
+                if(types.hasOwnProperty("GLTF")) {
+                    that.initPolyGltf(types.GLTF.root.url);
+                    return;
+                }
+
+                if(types.hasOwnProperty("TILT")) {
+                    that.initTilt(types.TILT.root.url);
+                    return;
+                }
             }
         }
 
@@ -818,9 +833,16 @@ export class Loader {
     }
 
     private initTilt(url : string) {
-        this.scene.clear();
         this.tiltLoader.load(url, (tilt) => {
+            this.scene.clear();
             this.scene.add(tilt);
+        });
+    }
+
+    private initPolyGltf(url : string) {
+        this.legacygltf.load(url, (gltf) => {
+            this.scene.clear();
+            this.scene.add(gltf.scene);
         });
     }
 }
