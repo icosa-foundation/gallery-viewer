@@ -163,7 +163,11 @@ export class Viewer {
         this.icosa_viewer?.loadGLTF(url);
     }
 
-    public loadPoly(assetID : string) {
+    public loadPolyUrl(url : string) {
+        this.icosa_viewer?.loadPolyUrl(url);
+    }
+
+    public loadPolyAsset(assetID : string) {
         this.icosa_viewer?.loadPolyAsset(assetID);
     }
 
