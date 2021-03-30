@@ -111,7 +111,7 @@ export class Loader {
                             mesh.geometry.name = "geometry_Bubbles";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Bubbles"]);
@@ -200,7 +200,7 @@ export class Loader {
                             mesh.geometry.name = "geometry_Dots";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Dots"]);
@@ -255,7 +255,7 @@ export class Loader {
                             mesh.geometry.name = "geometry_Embers";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Embers"]);
@@ -557,7 +557,7 @@ export class Loader {
                             mesh.geometry.name = "geometry_Snow";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Snow"]);
