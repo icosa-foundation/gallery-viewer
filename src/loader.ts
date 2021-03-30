@@ -61,6 +61,9 @@ export class Loader {
                 case "material_Rainbow":
                     (material as RawShaderMaterial).uniforms!["u_time"].value = time;
                     break;
+                case "material_ChromaticWave":
+                    (material as RawShaderMaterial).uniforms!["u_time"].value = time;
+                    break;
             }
         });
     }
@@ -138,6 +141,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["ChromaticWave"]);
                             mesh.material.name = "material_ChromaticWave";
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_CoarseBristles":
