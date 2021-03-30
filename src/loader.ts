@@ -73,6 +73,39 @@ export class Loader {
                     var mesh = object as Mesh;
                     var material = mesh.material as Material;
                     switch(material.name) {
+
+                            case "brush_BlocksBasic":
+                            break;
+
+
+                            case "brush_BlocksGem":
+                            break;
+
+
+                            case "brush_BlocksGlass":
+                            break;
+
+
+                            case "brush_Bubbles":
+                            break;
+
+
+                            case "brush_CelVinyl":
+                            break;
+
+
+                            case "brush_ChromaticWave":
+                            break;
+
+
+                            case "brush_CoarseBristles":
+                            break;
+
+
+                            case "brush_Comet":
+                            break;
+
+
                         case "brush_DiamondHull":
                             mesh.geometry.name = "geometry_DiamondHull";
 
@@ -84,6 +117,70 @@ export class Loader {
                             mesh.material.name = "material_DiamondHull";
                             this.updateableMeshes.push(mesh);
                             break;
+
+                            case "brush_Disco":
+                            break;
+
+
+                            case "brush_DotMarker":
+                            break;
+
+
+                            case "brush_Dots":
+                            break;
+
+
+                            case "brush_DoubleTaperedFlat":
+                            break;
+
+
+                            case "brush_DoubleTaperedMarker":
+                            break;
+
+
+                            case "brush_DuctTape":
+                            break;
+
+
+                            case "brush_Electricity":
+                            break;
+
+
+                            case "brush_Embers":
+                            break;
+
+
+                            case "brush_EnvironmentDiffuse":
+                            break;
+
+
+                            case "brush_EnvironmentDiffuseLightMap":
+                            break;
+
+
+                            case "brush_Fire":
+                            break;
+
+
+                            case "brush_Flat":
+                            break;
+
+
+                            case "brush_FlatDeprecated":
+                            break;
+
+
+                            case "brush_Highlighter":
+                            break;
+
+
+                            case "brush_Hypercolor":
+                            break;
+
+
+                            case "brush_HyperGrid":
+                            break;
+
 
                         case "brush_Icing":
                             mesh.geometry.name = "geometry_Icing";
@@ -97,6 +194,14 @@ export class Loader {
                             mesh.material.name = "material_Icing";
                             break;
 
+                            case "brush_Ink":
+                            break;
+
+
+                            case "brush_Leaves":
+                            break;
+
+
                         case "brush_Light":
                             mesh.geometry.name = "geometry_Light";
 
@@ -107,6 +212,18 @@ export class Loader {
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Light"]);
                             mesh.material.name = "material_Light";
                             break;
+
+                            case "brush_LightWire":
+                            break;
+
+
+                            case "brush_Lofted":
+                            break;
+
+
+                            case "brush_Marker":
+                            break;
+
 
                         case "brush_MatteHull":
                             mesh.geometry.name = "geometry_MatteHull";
@@ -129,7 +246,7 @@ export class Loader {
                             mesh.material.name = "material_NeonPulse";
                             this.updateableMeshes.push(mesh);
                             break;
-                        
+
                         case "brush_OilPaint":
                             mesh.geometry.name = "geometry_OilPaint";
 
@@ -141,6 +258,26 @@ export class Loader {
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["OilPaint"]);
                             mesh.material.name = "material_OilPaint";
                             break;
+
+                            case "brush_Paper":
+                            break;
+
+
+                            case "brush_PbrTemplate":
+                            break;
+
+
+                            case "brush_PbrTransparentTemplate":
+                            break;
+
+
+                            case "brush_Petal":
+                            break;
+
+
+                            case "brush_Plasma":
+                            break;
+
 
                         case "brush_Rainbow":
                             mesh.geometry.name = "geometry_Rainbow";
@@ -155,6 +292,10 @@ export class Loader {
                             this.updateableMeshes.push(mesh);
                             break;
 
+                            case "brush_ShinyHull":
+                            break;
+
+
                         case "brush_Smoke":
                             mesh.geometry.name = "geometry_Smoke";
 
@@ -167,6 +308,10 @@ export class Loader {
                             mesh.material.name = "material_Smoke";
                             break;
 
+                            case "brush_Snow":
+                            break;
+
+
                         case "brush_SoftHighlighter":
                             mesh.geometry.name = "geometry_SoftHighlighter";
 
@@ -178,6 +323,10 @@ export class Loader {
                             mesh.material.name = "material_SoftHighlighter";
                             break;
 
+                            case "brush_Spikes":
+                            break;
+
+
                         case "brush_Splatter":
                             mesh.geometry.name = "geometry_Splatter";
 
@@ -188,6 +337,34 @@ export class Loader {
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["Splatter"]);
                             mesh.material.name = "material_Splatter";
                             break;
+
+                            case "brush_Stars":
+                            break;
+
+
+                            case "brush_Streamers":
+                            break;
+
+
+                            case "brush_Taffy":
+                            break;
+
+
+                            case "brush_TaperedFlat":
+                            break;
+
+
+                            case "brush_TaperedMarker":
+                            break;
+
+
+                            case "brush_TaperedMarker_Flat":
+                            break;
+
+
+                            case "brush_ThickPaint":
+                            break;
+
 
                         case "brush_Toon":
                             mesh.geometry.name = "geometry_Toon";
@@ -208,6 +385,22 @@ export class Loader {
                             mesh.material = new RawShaderMaterial(TiltBrushShaders["UnlitHull"]);
                             mesh.material.name = "material_UnlitHull";
                             break;
+
+                            case "brush_VelvetInk":
+                            break;
+
+
+                            case "brush_Waveform":
+                            break;
+
+
+                            case "brush_WetPaint":
+                            break;
+
+
+                            case "brush_WigglyGraphite":
+                            break;
+
 
                         case "brush_Wire":
                             mesh.geometry.name = "geometry_Wire";
