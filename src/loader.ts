@@ -74,37 +74,93 @@ export class Loader {
                     var material = mesh.material as Material;
                     switch(material.name) {
 
-                            case "brush_BlocksBasic":
+                        case "brush_BlocksBasic":
+                            mesh.geometry.name = "geometry_BlocksBasic";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["BlocksBasic"]);
+                            mesh.material.name = "material_BlocksBasic";
                             break;
 
+                        case "brush_BlocksGem":
+                            mesh.geometry.name = "geometry_BlocksGem";
 
-                            case "brush_BlocksGem":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["BlocksGem"]);
+                            mesh.material.name = "material_BlocksGem";
                             break;
 
+                        case "brush_BlocksGlass":
+                            mesh.geometry.name = "geometry_BlocksGlass";
 
-                            case "brush_BlocksGlass":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["BlocksGlass"]);
+                            mesh.material.name = "material_BlocksGlass";
                             break;
 
+                        case "brush_Bubbles":
+                            mesh.geometry.name = "geometry_Bubbles";
 
-                            case "brush_Bubbles":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Bubbles"]);
+                            mesh.material.name = "material_Bubbles";
                             break;
 
+                        case "brush_CelVinyl":
+                            mesh.geometry.name = "geometry_CelVinyl";
 
-                            case "brush_CelVinyl":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["CelVinyl"]);
+                            mesh.material.name = "material_CelVinyl";
                             break;
 
+                        case "brush_ChromaticWave":
+                            mesh.geometry.name = "geometry_DiamondHull";
 
-                            case "brush_ChromaticWave":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["ChromaticWave"]);
+                            mesh.material.name = "material_ChromaticWave";
                             break;
 
+                        case "brush_CoarseBristles":
+                            mesh.geometry.name = "geometry_CoarseBristles";
 
-                            case "brush_CoarseBristles":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["CoarseBristles"]);
+                            mesh.material.name = "material_CoarseBristles";
                             break;
 
+                        case "brush_Comet":
+                            mesh.geometry.name = "geometry_Comet";
 
-                            case "brush_Comet":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Comet"]);
+                            mesh.material.name = "material_Comet";
                             break;
-
 
                         case "brush_DiamondHull":
                             mesh.geometry.name = "geometry_DiamondHull";
@@ -118,69 +174,181 @@ export class Loader {
                             this.updateableMeshes.push(mesh);
                             break;
 
-                            case "brush_Disco":
+                        case "brush_Disco":
+                            mesh.geometry.name = "geometry_Disco";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Disco"]);
+                            mesh.material.name = "material_Disco";
                             break;
 
+                        case "brush_DotMarker":
+                            mesh.geometry.name = "geometry_DotMarker";
 
-                            case "brush_DotMarker":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DotMarker"]);
+                            mesh.material.name = "material_DotMarker";
                             break;
 
+                        case "brush_Dots":
+                            mesh.geometry.name = "geometry_Dots";
 
-                            case "brush_Dots":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Dots"]);
+                            mesh.material.name = "material_Dots";
                             break;
 
+                        case "brush_DoubleTaperedFlat":
+                            mesh.geometry.name = "geometry_DoubleTaperedFlat";
 
-                            case "brush_DoubleTaperedFlat":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DoubleTaperedFlat"]);
+                            mesh.material.name = "material_DoubleTaperedFlat";
                             break;
 
+                        case "brush_DoubleTaperedMarker":
+                            mesh.geometry.name = "geometry_DoubleTaperedMarker";
 
-                            case "brush_DoubleTaperedMarker":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DoubleTaperedMarker"]);
+                            mesh.material.name = "material_DoubleTaperedMarker";
                             break;
 
+                        case "brush_DuctTape":
+                            mesh.geometry.name = "geometry_DuctTape";
 
-                            case "brush_DuctTape":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DuctTape"]);
+                            mesh.material.name = "material_DuctTape";
                             break;
 
+                        case "brush_Electricity":
+                            mesh.geometry.name = "geometry_Electricity";
 
-                            case "brush_Electricity":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Electricity"]);
+                            mesh.material.name = "material_Electricity";
                             break;
 
+                        case "brush_Embers":
+                            mesh.geometry.name = "geometry_Embers";
 
-                            case "brush_Embers":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Embers"]);
+                            mesh.material.name = "material_Embers";
                             break;
 
+                        case "brush_EnvironmentDiffuse":
+                            mesh.geometry.name = "geometry_EnvironmentDiffuse";
 
-                            case "brush_EnvironmentDiffuse":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["EnvironmentDiffuse"]);
+                            mesh.material.name = "material_EnvironmentDiffuse";
                             break;
 
+                        case "brush_EnvironmentDiffuseLightMap":
+                            mesh.geometry.name = "geometry_EnvironmentDiffuseLightMap";
 
-                            case "brush_EnvironmentDiffuseLightMap":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["EnvironmentDiffuseLightMap"]);
+                            mesh.material.name = "material_EnvironmentDiffuseLightMap";
                             break;
 
+                        case "brush_Fire":
+                            mesh.geometry.name = "geometry_Fire";
 
-                            case "brush_Fire":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Fire"]);
+                            mesh.material.name = "material_Fire";
                             break;
 
+                        case "brush_Flat":
+                            mesh.geometry.name = "geometry_Flat";
 
-                            case "brush_Flat":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Flat"]);
+                            mesh.material.name = "material_Flat";
                             break;
 
+                        case "brush_FlatDeprecated":
+                            mesh.geometry.name = "geometry_FlatDeprecated";
 
-                            case "brush_FlatDeprecated":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["FlatDeprecated"]);
+                            mesh.material.name = "material_FlatDeprecated";
                             break;
 
+                        case "brush_Highlighter":
+                            mesh.geometry.name = "geometry_Highlighter";
 
-                            case "brush_Highlighter":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Highlighter"]);
+                            mesh.material.name = "material_Highlighter";
                             break;
 
+                        case "brush_Hypercolor":
+                            mesh.geometry.name = "geometry_Hypercolor";
 
-                            case "brush_Hypercolor":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Hypercolor"]);
+                            mesh.material.name = "material_Hypercolor";
                             break;
 
+                        case "brush_HyperGrid":
+                            mesh.geometry.name = "geometry_HyperGrid";
 
-                            case "brush_HyperGrid":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["HyperGrid"]);
+                            mesh.material.name = "material_HyperGrid";
                             break;
-
 
                         case "brush_Icing":
                             mesh.geometry.name = "geometry_Icing";
@@ -194,13 +362,27 @@ export class Loader {
                             mesh.material.name = "material_Icing";
                             break;
 
-                            case "brush_Ink":
+                        case "brush_Ink":
+                            mesh.geometry.name = "geometry_Ink";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Ink"]);
+                            mesh.material.name = "material_Ink";
                             break;
 
+                        case "brush_Leaves":
+                            mesh.geometry.name = "geometry_Leaves";
 
-                            case "brush_Leaves":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Leaves"]);
+                            mesh.material.name = "material_Leaves";
                             break;
-
 
                         case "brush_Light":
                             mesh.geometry.name = "geometry_Light";
@@ -213,17 +395,38 @@ export class Loader {
                             mesh.material.name = "material_Light";
                             break;
 
-                            case "brush_LightWire":
+                        case "brush_LightWire":
+                            mesh.geometry.name = "geometry_DiamondHull";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DiamondHull"]);
+                            mesh.material.name = "material_DiamondHull";
                             break;
 
+                        case "brush_Lofted":
+                            mesh.geometry.name = "geometry_Lofted";
 
-                            case "brush_Lofted":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Lofted"]);
+                            mesh.material.name = "material_Lofted";
                             break;
 
+                        case "brush_Marker":
+                            mesh.geometry.name = "geometry_Marker";
 
-                            case "brush_Marker":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Marker"]);
+                            mesh.material.name = "material_Marker";
                             break;
-
 
                         case "brush_MatteHull":
                             mesh.geometry.name = "geometry_MatteHull";
@@ -259,25 +462,60 @@ export class Loader {
                             mesh.material.name = "material_OilPaint";
                             break;
 
-                            case "brush_Paper":
+                        case "brush_Paper":
+                            mesh.geometry.name = "geometry_Paper";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Paper"]);
+                            mesh.material.name = "material_Paper";
                             break;
 
+                        case "brush_PbrTemplate":
+                            mesh.geometry.name = "geometry_PbrTemplate";
 
-                            case "brush_PbrTemplate":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["PbrTemplate"]);
+                            mesh.material.name = "material_PbrTemplate";
                             break;
 
+                        case "brush_PbrTransparentTemplate":
+                            mesh.geometry.name = "geometry_PbrTransparentTemplate";
 
-                            case "brush_PbrTransparentTemplate":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["PbrTransparentTemplate"]);
+                            mesh.material.name = "material_PbrTransparentTemplate";
                             break;
 
+                        case "brush_Petal":
+                            mesh.geometry.name = "geometry_Petal";
 
-                            case "brush_Petal":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Petal"]);
+                            mesh.material.name = "material_Petal";
                             break;
 
+                        case "brush_Plasma":
+                            mesh.geometry.name = "geometry_Plasma";
 
-                            case "brush_Plasma":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Plasma"]);
+                            mesh.material.name = "material_Plasma";
                             break;
-
 
                         case "brush_Rainbow":
                             mesh.geometry.name = "geometry_Rainbow";
@@ -292,9 +530,16 @@ export class Loader {
                             this.updateableMeshes.push(mesh);
                             break;
 
-                            case "brush_ShinyHull":
-                            break;
+                        case "brush_ShinyHull":
+                            mesh.geometry.name = "geometry_ShinyHull";
 
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["ShinyHull"]);
+                            mesh.material.name = "material_ShinyHull";
+                            break;
 
                         case "brush_Smoke":
                             mesh.geometry.name = "geometry_Smoke";
@@ -308,9 +553,16 @@ export class Loader {
                             mesh.material.name = "material_Smoke";
                             break;
 
-                            case "brush_Snow":
-                            break;
+                        case "brush_Snow":
+                            mesh.geometry.name = "geometry_Snow";
 
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Snow"]);
+                            mesh.material.name = "material_Snow";
+                            break;
 
                         case "brush_SoftHighlighter":
                             mesh.geometry.name = "geometry_SoftHighlighter";
@@ -323,9 +575,16 @@ export class Loader {
                             mesh.material.name = "material_SoftHighlighter";
                             break;
 
-                            case "brush_Spikes":
-                            break;
+                        case "brush_Spikes":
+                            mesh.geometry.name = "geometry_Spikes";
 
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Spikes"]);
+                            mesh.material.name = "material_Spikes";
+                            break;
 
                         case "brush_Splatter":
                             mesh.geometry.name = "geometry_Splatter";
@@ -338,33 +597,82 @@ export class Loader {
                             mesh.material.name = "material_Splatter";
                             break;
 
-                            case "brush_Stars":
+                        case "brush_Stars":
+                            mesh.geometry.name = "geometry_Stars";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Stars"]);
+                            mesh.material.name = "material_Stars";
                             break;
 
+                        case "brush_Streamers":
+                            mesh.geometry.name = "geometry_Streamers";
 
-                            case "brush_Streamers":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Streamers"]);
+                            mesh.material.name = "material_Streamers";
                             break;
 
+                        case "brush_Taffy":
+                            mesh.geometry.name = "geometry_DiamondHull";
 
-                            case "brush_Taffy":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DiamondHull"]);
+                            mesh.material.name = "material_DiamondHull";
                             break;
 
+                        case "brush_TaperedFlat":
+                            mesh.geometry.name = "geometry_TaperedFlat";
 
-                            case "brush_TaperedFlat":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["TaperedFlat"]);
+                            mesh.material.name = "material_TaperedFlat";
                             break;
 
+                        case "brush_TaperedMarker":
+                            mesh.geometry.name = "geometry_TaperedMarker";
 
-                            case "brush_TaperedMarker":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["TaperedMarker"]);
+                            mesh.material.name = "material_TaperedMarker";
                             break;
 
+                        case "brush_TaperedMarker_Flat":
+                            mesh.geometry.name = "geometry_Flat";
 
-                            case "brush_TaperedMarker_Flat":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Flat"]);
+                            mesh.material.name = "material_Flat";
                             break;
 
+                        case "brush_ThickPaint":
+                            mesh.geometry.name = "geometry_ThickPaint";
 
-                            case "brush_ThickPaint":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["ThickPaint"]);
+                            mesh.material.name = "material_ThickPaint";
                             break;
-
 
                         case "brush_Toon":
                             mesh.geometry.name = "geometry_Toon";
@@ -386,21 +694,49 @@ export class Loader {
                             mesh.material.name = "material_UnlitHull";
                             break;
 
-                            case "brush_VelvetInk":
+                        case "brush_VelvetInk":
+                            mesh.geometry.name = "geometry_VelvetInk";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["VelvetInk"]);
+                            mesh.material.name = "material_VelvetInk";
                             break;
 
+                        case "brush_Waveform":
+                            mesh.geometry.name = "geometry_Waveform";
 
-                            case "brush_Waveform":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Waveform"]);
+                            mesh.material.name = "material_Waveform";
                             break;
 
+                        case "brush_WetPaint":
+                            mesh.geometry.name = "geometry_WetPaint";
 
-                            case "brush_WetPaint":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["WetPaint"]);
+                            mesh.material.name = "material_WetPaint";
                             break;
 
+                        case "brush_WigglyGraphite":
+                            mesh.geometry.name = "geometry_WigglyGraphite";
 
-                            case "brush_WigglyGraphite":
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.material = new RawShaderMaterial(TiltBrushShaders["WigglyGraphite"]);
+                            mesh.material.name = "material_WigglyGraphite";
                             break;
-
 
                         case "brush_Wire":
                             mesh.geometry.name = "geometry_Wire";
