@@ -112,11 +112,7 @@ export class Viewer {
         this.setupNavigation(cameraControls);
 
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xFFE5B4);
-
-        const light = new THREE.DirectionalLight();
-        light.intensity = 2.0;
-        scene.add(light);
+        //scene.background = new THREE.Color(0xFFE5B4);
 
         // const loader = new GLTFLoader();
         // loader.load('res/testmodels/myreality.glb', (gltf) => {
@@ -124,7 +120,9 @@ export class Viewer {
         //     scene.add(root);
         // })
 
-        this.icosa_viewer = new Loader(scene, cameraControls);
+        this.icosa_viewer = new Loader(scene, flatCamera);
+
+        var that = this;
 
         function animate() {
             renderer.setAnimationLoop(render);
@@ -148,6 +146,8 @@ export class Viewer {
             }
             
             if(updated) {
+                that.icosa_viewer?.update(elapsed);
+
                 if(renderer.xr.isPresenting) {
                     renderer.render(scene, xrCamera);
                 } else {
@@ -161,5 +161,9 @@ export class Viewer {
 
     public load(url : string) {
         this.icosa_viewer?.loadPoly(url);
+    }
+
+    public loadGLTF(url : string) {
+        this.icosa_viewer?.load(url);
     }
 }

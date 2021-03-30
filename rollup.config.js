@@ -1,6 +1,7 @@
 import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import glslify from 'rollup-plugin-glslify';
 
 const license = `/*!
  * Icosa Viewer
@@ -13,6 +14,7 @@ const license = `/*!
 	'three': 'THREE',
 	'three/examples/jsm/webxr/VRButton': 'VRButton',
 	'three/examples/jsm/loaders/TiltLoader': 'TiltLoader',
+	'three/examples/jsm/loaders/GLTFLoader': 'GLTFLoader',
 	'camera-controls': 'CameraControls',
 	'hold-event': 'holdEvent'
 }
@@ -40,6 +42,7 @@ export default {
 	plugins: [
         peerDepsExternal(),
 		typescript( { typescript: require( 'typescript' ) } ),
+		glslify(),
         postcss( { plugins: [] } )
 	]
 };
