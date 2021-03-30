@@ -120,7 +120,7 @@ export class Viewer {
         //     scene.add(root);
         // })
 
-        this.icosa_viewer = new Loader(scene, flatCamera);
+        this.icosa_viewer = new Loader(scene, flatCamera, cameraControls);
 
         var that = this;
 
