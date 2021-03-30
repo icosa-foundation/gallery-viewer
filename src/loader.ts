@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4 } from "three";
+import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Convert, JSONPoly } from "./JSONSchema";
@@ -26,17 +26,20 @@ export class Loader {
 
     private sceneCamera : Camera;
 
+    private cameraControls : CameraControls;
+
     private loadedModel? : Object3D;
 
     private loaded : boolean = false;
 
     private updateableMeshes : Mesh[] = [];
 
-    constructor (scene : Scene, sceneCamera : Camera) {
+    constructor (scene : Scene, sceneCamera : Camera, cameraControls : CameraControls) {
         this.tiltLoader = new TiltLoader();
         this.gltfLoader = new GLTFLoader();
         this.scene = scene;
         this.sceneCamera = sceneCamera;
+        this.cameraControls = cameraControls;
         new RawShaderMaterial()
     }
 
@@ -755,6 +758,18 @@ export class Loader {
             });
             this.scene.add(this.loadedModel);
 
+            //Setup camera to center model
+            const box = new Box3().setFromObject(this.loadedModel);
+            const boxSize = box.getSize(new Vector3()).length();
+            const boxCenter = box.getCenter(new Vector3());
+
+            this.cameraControls.minDistance = boxSize * 0.01;
+            this.cameraControls.maxDistance = boxSize;
+
+            const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
+            this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+            this.cameraControls.dollyTo(midDistance, true);
+            this.cameraControls.saveState();
 
             //DEBUG LIGHTING
             var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
