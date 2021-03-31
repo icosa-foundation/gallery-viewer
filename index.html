@@ -3,9 +3,44 @@
 <html>
     <head>
         <title>Icosa Viewer</title>
-        <script src="icosa.js"></script>
+        <style>
+            html, body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+            }
+        </style>
+        <script defer src="https://unpkg.com/es-module-shims@0.4.6/dist/es-module-shims.js"></script>
+        <script type="importmap-shim">
+            {
+                "imports": {
+                    "three": "https://unpkg.com/three@0.125.0/build/three.module.js",
+                    "three/examples/jsm/" : "https://unpkg.com/three@0.125.0/examples/jsm/",
+                    "camera-controls" : "https://unpkg.com/camera-controls@1.27.0/dist/camera-controls.module.js",
+                    "hold-event" : "https://unpkg.com/hold-event@0.0.1/dist/hold-event.module.js"
+                }
+            }
+        </script>
     </head>
     <body>
-        <div id="icosa"></div>
+        <script type="module-shim">
+            import { Viewer } from "icosa-viewer.module.js";
+            import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
+
+            const viewer = new Viewer();
+            viewer.loadPolyUrl("https://poly.google.com/view/c_l71DaVU_3");
+
+            var params = {
+                polyUrl: "Paste a Poly link here"
+            };
+
+            var gui = new GUI();
+            gui.add(params, "polyUrl").onFinishChange(function (value) {
+                //Do something with the new value
+                console.log(value);
+                viewer.loadPolyUrl(value);
+            });
+        </script>
+        <div id="icosa-viewer"></div>
     </body>
 </html>
