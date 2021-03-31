@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
+import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { LegacyGLTFLoader } from "./Legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -37,10 +37,19 @@ export class Loader {
 
     private updateableMeshes : Mesh[] = [];
 
-    constructor (scene : Scene, sceneCamera : Camera, cameraControls : CameraControls) {
-        this.tiltLoader = new TiltLoader();
-        this.gltfLoader = new GLTFLoader();
-        this.legacygltf = new LegacyGLTFLoader();
+    constructor (scene : Scene, sceneCamera : Camera, cameraControls : CameraControls) {        
+        const manager = new LoadingManager();
+        manager.onStart = function( ) {
+            document.getElementById('loadscreen')?.classList.remove('fade-out');
+            document.getElementById('loadscreen')?.classList.remove('loaded');
+        };
+        manager.onLoad = function ( ) {        
+            document.getElementById('loadscreen')?.classList.add('fade-out');
+        };
+
+        this.tiltLoader = new TiltLoader(manager);
+        this.gltfLoader = new GLTFLoader(manager);
+        this.legacygltf = new LegacyGLTFLoader(manager);
         this.scene = scene;
         this.sceneCamera = sceneCamera;
         this.cameraControls = cameraControls;

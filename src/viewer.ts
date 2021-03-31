@@ -76,7 +76,21 @@ export class Viewer {
             this.icosa_frame = document.createElement('div');
             this.icosa_frame.id = 'icosa-viewer';
         }
-        
+
+        //loadscreen
+        const loadscreen = document.createElement('div');
+        loadscreen.id = 'loadscreen';
+        const loadanim = document.createElement('div');
+        loadanim.classList.add('loadlogo');
+        loadscreen.appendChild(loadanim);
+        this.icosa_frame.appendChild(loadscreen);
+        loadscreen.addEventListener('transitionend', function() {
+            var opacity = window.getComputedStyle(loadscreen).opacity;
+            if (parseFloat(opacity) < 0.2) {
+                loadscreen.classList.add('loaded');
+            }
+        });
+
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.id = 'c';
         this.icosa_frame.appendChild(canvas);
