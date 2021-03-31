@@ -5310,8 +5310,9 @@ var Viewer = (function () {
         }
         function render() {
             var _a;
-            clock.getDelta();
+            var delta = clock.getDelta();
             var elapsed = clock.getElapsedTime();
+            cameraControls.update(delta);
             var needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
             if (needResize) {
                 renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
