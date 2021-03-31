@@ -5310,25 +5310,20 @@ var Viewer = (function () {
         }
         function render() {
             var _a;
-            var updated = false;
-            var delta = clock.getDelta();
+            clock.getDelta();
             var elapsed = clock.getElapsedTime();
-            updated = cameraControls.update(delta) || renderer.xr.isPresenting;
             var needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
             if (needResize) {
                 renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
                 flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
                 flatCamera.updateProjectionMatrix();
-                updated = true;
             }
-            if (updated) {
-                (_a = that.icosa_viewer) === null || _a === void 0 ? void 0 : _a.update(elapsed);
-                if (renderer.xr.isPresenting) {
-                    renderer.render(scene, xrCamera);
-                }
-                else {
-                    renderer.render(scene, flatCamera);
-                }
+            (_a = that.icosa_viewer) === null || _a === void 0 ? void 0 : _a.update(elapsed);
+            if (renderer.xr.isPresenting) {
+                renderer.render(scene, xrCamera);
+            }
+            else {
+                renderer.render(scene, flatCamera);
             }
         }
         animate();
