@@ -144,29 +144,24 @@ export class Viewer {
 
         function render() {
 
-            var updated = false;
-
             const delta = clock.getDelta();
             const elapsed = clock.getElapsedTime();
 
-            updated = cameraControls.update(delta) || renderer.xr.isPresenting;
+            cameraControls.update(delta);
 
             const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
             if (needResize) {
                 renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
                 flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
                 flatCamera.updateProjectionMatrix();
-                updated = true;
             }
             
-            if(updated) {
-                that.icosa_viewer?.update(elapsed);
+            that.icosa_viewer?.update(elapsed);
 
-                if(renderer.xr.isPresenting) {
-                    renderer.render(scene, xrCamera);
-                } else {
-                    renderer.render(scene, flatCamera);
-                }
+            if(renderer.xr.isPresenting) {
+                renderer.render(scene, xrCamera);
+            } else {
+                renderer.render(scene, flatCamera);
             }
         }
 
