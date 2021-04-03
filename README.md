@@ -13,7 +13,9 @@ The viewer is still a work in progress and subject to change. Please join the [D
 
 ## Examples
 
-- [.tilt file](https://github.com/icosa-gallery/icosa-viewer/blob/main/examples/tilt-viewer.html)
+- [Poly GLTF 1.0 (Legacy)](https://github.com/icosa-gallery/icosa-viewer/blob/main/examples/poly-viewer.html)
+- [GLTF 2.0](https://github.com/icosa-gallery/icosa-viewer/blob/main/examples/gltf-viewer.html)
+- [Raw .tilt file](https://github.com/icosa-gallery/icosa-viewer/blob/main/examples/tilt-viewer.html)
 
 ## Installation
 

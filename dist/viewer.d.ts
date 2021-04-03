@@ -5,5 +5,9 @@ export declare class Viewer {
     constructor(frame?: HTMLElement);
     private setupNavigation;
     initViewer(): void;
-    load(url: string): void;
+    loadGLTF(url: string): void;
+    loadPolyUrl(url: string): void;
+    loadPolyAsset(assetID: string): void;
+    loadPolyTilt(url: string): void;
+    loadPolyGLTF(url: string): void;
 }

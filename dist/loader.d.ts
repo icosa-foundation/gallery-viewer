@@ -1,11 +1,23 @@
 import CameraControls from "camera-controls";
-import { Scene } from "three";
+import { Scene, Camera } from "three";
 export declare class Loader {
     private scene;
     private tiltLoader;
-    constructor(scene: Scene, camercontrols: CameraControls);
-    load(assetID: string): void;
-    loadPoly(assetID: string): void;
-    loadPolyURL(url: string): void;
+    private gltfLoader;
+    private legacygltf;
+    private sceneCamera;
+    private cameraControls;
+    private loadedModel?;
+    private loaded;
+    private updateableMeshes;
+    constructor(scene: Scene, sceneCamera: Camera, cameraControls: CameraControls);
+    update(deltaTime: number): void;
+    private initGltf;
     private initTilt;
+    private initPolyGltf;
+    loadGLTF(url: string): void;
+    loadPolyAsset(assetID: string, format?: string): void;
+    loadPolyUrl(url: string, format?: string): void;
+    loadPolyTilt(url: string): void;
+    loadPolyGltf(url: string): void;
 }
