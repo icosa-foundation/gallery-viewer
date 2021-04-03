@@ -15,10 +15,10 @@
 import CameraControls from "camera-controls";
 import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
-import { LegacyGLTFLoader } from "./Legacy/LegacyGLTFLoader.js";
+import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Convert, JSONPolyFormat } from "./JSONSchema";
-import { TiltBrushShaders } from "./tiltbrush/tiltbrushshaders"; 
+import { TiltBrushShaders } from "./tiltbrush/Tiltbrushshaders"; 
 
 export class Loader {
     private scene : Scene;
@@ -53,7 +53,6 @@ export class Loader {
         this.scene = scene;
         this.sceneCamera = sceneCamera;
         this.cameraControls = cameraControls;
-        new RawShaderMaterial()
     }
 
     public update(deltaTime : number) {
@@ -858,6 +857,7 @@ export class Loader {
                     }
                 }
 
+                //If no format specified, return in preferred order
                 if(types.hasOwnProperty("GLTF")) {
                     that.initPolyGltf(types.GLTF.root.url);
                     return;
