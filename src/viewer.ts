@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as THREE from 'three';
+import { Clock, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import CameraControls from 'camera-controls';
 import './css/style.scss';
 import { Loader }  from './Loader';
@@ -58,22 +57,20 @@ export class Viewer {
         canvas.id = 'c';
         this.icosa_frame.appendChild(canvas);
 
-        const renderer = new THREE.WebGLRenderer({canvas : canvas});
+        const renderer = new WebGLRenderer({canvas : canvas});
         renderer.setPixelRatio(window.devicePixelRatio);
 
         renderer.xr.enabled = true;
         this.icosa_frame.appendChild( VRButton.createButton( renderer ) );
         
-        const clock = new THREE.Clock();
+        const clock = new Clock();
         
         const fov = 75;
         const aspect = 2;  
         const near = 0.1;
         const far = 1000;
-        const flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        const flatCamera = new PerspectiveCamera(fov, aspect, near, far);
         flatCamera.position.set(10, 10, 10);
-        
-        CameraControls.install({THREE: THREE});
 
         const cameraControls = new CameraControls(flatCamera, canvas);
         cameraControls.dampingFactor = 0.1;
@@ -83,13 +80,13 @@ export class Viewer {
 
         flatCamera.updateProjectionMatrix();
 
-        const xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        const xrCamera = new PerspectiveCamera(fov, aspect, near, far);
         xrCamera.updateProjectionMatrix();
 
         setupNavigation(cameraControls);
 
-        const scene = new THREE.Scene();
-        //scene.background = new THREE.Color(0xFFE5B4);
+        const scene = new Scene();
+        //scene.background = new Color(0xFFE5B4);
 
         this.icosa_viewer = new Loader(scene, flatCamera, cameraControls);
 

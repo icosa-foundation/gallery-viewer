@@ -806,14 +806,16 @@ export class Loader {
     private initTilt(url : string) {
         this.tiltLoader.load(url, (tilt) => {
             this.scene.clear();
-            this.scene.add(tilt);
+            this.loadedModel = tilt;
+            this.scene.add(this.loadedModel);
         });
     }
 
     private initPolyGltf(url : string) {
         this.legacygltf.load(url, (gltf) => {
             this.scene.clear();
-            this.scene.add(gltf.scene);
+            this.loadedModel = gltf.scene;
+            this.scene.add(this.loadedModel);
         });
     }
 
