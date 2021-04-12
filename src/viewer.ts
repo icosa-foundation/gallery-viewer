@@ -39,6 +39,15 @@ export class Viewer {
             this.icosa_frame.id = 'icosa-viewer';
         }
 
+        const controlPanel = document.createElement('div');
+        controlPanel.classList.add('control-panel');
+
+        const fullscreenButton = document.createElement('button');
+        fullscreenButton.classList.add('panel-button', 'fullscreen-button');
+        controlPanel.appendChild(fullscreenButton);
+
+        this.icosa_frame.appendChild(controlPanel);
+
         //loadscreen
         const loadscreen = document.createElement('div');
         loadscreen.id = 'loadscreen';
