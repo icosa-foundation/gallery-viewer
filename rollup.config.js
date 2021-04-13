@@ -1,7 +1,8 @@
 import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss'
-import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import glslify from 'rollup-plugin-glslify';
+import url from 'postcss-url';
 
 const license = `/*!
  * Icosa Viewer
@@ -10,18 +11,8 @@ const license = `/*!
  * Released under the Apache 2.0 Licence.
  */`;
 
- const globals =  {
-	'three': 'THREE',
-	'three/examples/jsm/webxr/VRButton': 'VRButton',
-	'three/examples/jsm/loaders/TiltLoader': 'TiltLoader',
-	'three/examples/jsm/loaders/GLTFLoader': 'GLTFLoader',
-	'camera-controls': 'CameraControls',
-	'hold-event': 'holdEvent'
-}
-
 export default {
 	input: 'src/index.ts',
-	external: ['three', 'camera-controls', 'hold-event'],
 	output: [
 		{
 			format: 'umd',
@@ -29,20 +20,22 @@ export default {
 			file: 'dist/icosa-viewer.js',
 			banner: license,
 			indent: '\t',
-			globals: globals
 		},
 		{
 			format: 'es',
 			file: 'dist/icosa-viewer.module.js',
 			banner: license,
 			indent: '\t',
-			globals: globals
 		},
 	],
 	plugins: [
-        peerDepsExternal(),
+		nodeResolve(),
 		typescript( { typescript: require( 'typescript' ) } ),
 		glslify(),
-        postcss( { plugins: [] } )
+        postcss( { 
+			plugins: [
+				url({ url: 'inline' })
+			] 
+		} )
 	]
 };

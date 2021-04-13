@@ -13,16 +13,19 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
+import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
+import { LegacyGLTFLoader } from "./Legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Convert, JSONPoly } from "./JSONSchema";
+import { Convert, JSONPolyFormat } from "./JSONSchema";
 import { TiltBrushShaders } from "./tiltbrush/tiltbrushshaders"; 
 
 export class Loader {
     private scene : Scene;
+
     private tiltLoader : TiltLoader;
     private gltfLoader : GLTFLoader;
+    private legacygltf : LegacyGLTFLoader;
 
     private sceneCamera : Camera;
 
@@ -34,9 +37,19 @@ export class Loader {
 
     private updateableMeshes : Mesh[] = [];
 
-    constructor (scene : Scene, sceneCamera : Camera, cameraControls : CameraControls) {
-        this.tiltLoader = new TiltLoader();
-        this.gltfLoader = new GLTFLoader();
+    constructor (scene : Scene, sceneCamera : Camera, cameraControls : CameraControls) {        
+        const manager = new LoadingManager();
+        manager.onStart = function( ) {
+            document.getElementById('loadscreen')?.classList.remove('fade-out');
+            document.getElementById('loadscreen')?.classList.remove('loaded');
+        };
+        manager.onLoad = function ( ) {        
+            document.getElementById('loadscreen')?.classList.add('fade-out');
+        };
+
+        this.tiltLoader = new TiltLoader(manager);
+        this.gltfLoader = new GLTFLoader(manager);
+        this.legacygltf = new LegacyGLTFLoader(manager);
         this.scene = scene;
         this.sceneCamera = sceneCamera;
         this.cameraControls = cameraControls;
@@ -81,8 +94,8 @@ export class Loader {
         });
     }
 
-    public load(assetID : string) {
-        this.gltfLoader.load(assetID, (gltf) => {
+    private initGltf(url : string) {
+        this.gltfLoader.load(url, (gltf) => {
             this.loadedModel = gltf.scene;
             this.loadedModel.traverse((object : Object3D) => {
                 if(object.type === "Mesh") {
@@ -781,6 +794,7 @@ export class Loader {
                     // }
                 }
             });
+            this.scene.clear();
             this.scene.add(this.loadedModel);
 
             //Setup camera to center model
@@ -815,7 +829,25 @@ export class Loader {
         });
     }
 
-    public loadPoly(assetID : string) {
+    private initTilt(url : string) {
+        this.tiltLoader.load(url, (tilt) => {
+            this.scene.clear();
+            this.scene.add(tilt);
+        });
+    }
+
+    private initPolyGltf(url : string) {
+        this.legacygltf.load(url, (gltf) => {
+            this.scene.clear();
+            this.scene.add(gltf.scene);
+        });
+    }
+
+    public loadGLTF(url : string) {
+        this.initGltf(url);
+    }
+
+    public loadPolyAsset(assetID : string, format? : string) {
         const http = new XMLHttpRequest();
         const url = `https://api.icosa.gallery/poly/assets/${assetID}`;
 
@@ -823,12 +855,43 @@ export class Loader {
         http.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 const polyAsset = Convert.toPoly(this.response);
+
+                //To dict, for format preference sorting
+                let types: { [name: string]: JSONPolyFormat } = {}; 
+
                 polyAsset.formats.forEach(format => {
-                    if(format.formatType === "TILT") {
-                        that.initTilt(format.root.url);
-                        return;
+                    types[format.formatType] = format;
+                });
+
+                //Check if specific format requested, otherwise loop through order of preference
+                if(format) {
+                    switch (format) {
+                        case "GLTF":
+                            if(types.hasOwnProperty("GLTF")) {
+                                that.initPolyGltf(types.GLTF.root.url);
+                                return;
+                            }
+                            break;
+                        case "TILT":
+                            if(types.hasOwnProperty("TILT")) {
+                                that.initTilt(types.TILT.root.url);
+                                return;
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                })
+                }
+
+                if(types.hasOwnProperty("GLTF")) {
+                    that.initPolyGltf(types.GLTF.root.url);
+                    return;
+                }
+
+                if(types.hasOwnProperty("TILT")) {
+                    that.initTilt(types.TILT.root.url);
+                    return;
+                }
             }
         }
 
@@ -836,16 +899,17 @@ export class Loader {
         http.send();
     }
 
-    public loadPolyURL(url : string) {
+    public loadPolyUrl(url : string, format? : string) {
         var splitURL = url.split('/');
         if(splitURL[2] === "poly.google.com")
-            this.loadPoly(splitURL[4]);
+            this.loadPolyAsset(splitURL[4], format);
     }
 
-    private initTilt(url : string) {
-        this.scene.clear();
-        this.tiltLoader.load(url, (tilt) => {
-            this.scene.add(tilt);
-        });
+    public loadPolyTilt(url : string) {
+        this.loadPolyUrl(url, "TILT");
+    }
+
+    public loadPolyGltf(url : string) {
+        this.loadPolyUrl(url, "GLTF");
     }
 }

@@ -76,7 +76,21 @@ export class Viewer {
             this.icosa_frame = document.createElement('div');
             this.icosa_frame.id = 'icosa-viewer';
         }
-        
+
+        //loadscreen
+        const loadscreen = document.createElement('div');
+        loadscreen.id = 'loadscreen';
+        const loadanim = document.createElement('div');
+        loadanim.classList.add('loadlogo');
+        loadscreen.appendChild(loadanim);
+        this.icosa_frame.appendChild(loadscreen);
+        loadscreen.addEventListener('transitionend', function() {
+            var opacity = window.getComputedStyle(loadscreen).opacity;
+            if (parseFloat(opacity) < 0.2) {
+                loadscreen.classList.add('loaded');
+            }
+        });
+
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.id = 'c';
         this.icosa_frame.appendChild(canvas);
@@ -130,40 +144,47 @@ export class Viewer {
 
         function render() {
 
-            var updated = false;
-
             const delta = clock.getDelta();
             const elapsed = clock.getElapsedTime();
 
-            updated = cameraControls.update(delta) || renderer.xr.isPresenting;
+            cameraControls.update(delta);
 
             const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
             if (needResize) {
                 renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
                 flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
                 flatCamera.updateProjectionMatrix();
-                updated = true;
             }
             
-            if(updated) {
-                that.icosa_viewer?.update(elapsed);
+            that.icosa_viewer?.update(elapsed);
 
-                if(renderer.xr.isPresenting) {
-                    renderer.render(scene, xrCamera);
-                } else {
-                    renderer.render(scene, flatCamera);
-                }
+            if(renderer.xr.isPresenting) {
+                renderer.render(scene, xrCamera);
+            } else {
+                renderer.render(scene, flatCamera);
             }
         }
 
         animate();
     }
 
-    public load(url : string) {
-        this.icosa_viewer?.loadPoly(url);
+    public loadGLTF(url : string) {
+        this.icosa_viewer?.loadGLTF(url);
     }
 
-    public loadGLTF(url : string) {
-        this.icosa_viewer?.load(url);
+    public loadPolyUrl(url : string) {
+        this.icosa_viewer?.loadPolyUrl(url);
+    }
+
+    public loadPolyAsset(assetID : string) {
+        this.icosa_viewer?.loadPolyAsset(assetID);
+    }
+
+    public loadPolyTilt(url : string) {
+        this.icosa_viewer?.loadPolyTilt(url);
+    }
+
+    public loadPolyGLTF(url : string) {
+        this.icosa_viewer?.loadPolyGltf(url);
     }
 }
