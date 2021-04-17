@@ -28,6 +28,27 @@ export class Viewer {
         this.initViewer();
     }
 
+    private toggleFullscreen(controlButton: HTMLButtonElement) {
+        if(this.icosa_frame?.requestFullscreen)
+            this.icosa_frame?.requestFullscreen();
+
+        document.onfullscreenchange = ()  => {
+            if (document.fullscreenElement == null) {
+                controlButton.onclick = () => {
+                    if(this.icosa_frame?.requestFullscreen)
+                        this.icosa_frame?.requestFullscreen();
+                };
+                controlButton.classList.remove('fullscreen');
+            } else {
+                controlButton.onclick = () => {
+                    if(document.exitFullscreen)
+                        document.exitFullscreen();
+                };
+                controlButton.classList.add('fullscreen');
+            }
+        }
+    }
+
     public initViewer() {
         // Attempt to find viewer frame if not assigned
         if(!this.icosa_frame)
@@ -44,6 +65,8 @@ export class Viewer {
 
         const fullscreenButton = document.createElement('button');
         fullscreenButton.classList.add('panel-button', 'fullscreen-button');
+        fullscreenButton.onclick = () => { this.toggleFullscreen(fullscreenButton); }
+        
         controlPanel.appendChild(fullscreenButton);
 
         this.icosa_frame.appendChild(controlPanel);
