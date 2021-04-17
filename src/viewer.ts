@@ -88,6 +88,8 @@ export class Viewer {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.id = 'c';
         this.icosa_frame.appendChild(canvas);
+        canvas.onmousedown = () => { canvas.classList.add('grabbed'); }
+        canvas.onmouseup = () => { canvas.classList.remove('grabbed'); }
 
         const renderer = new WebGLRenderer({canvas : canvas});
         renderer.setPixelRatio(window.devicePixelRatio);
