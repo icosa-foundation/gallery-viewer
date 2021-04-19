@@ -51945,7 +51945,7 @@
 
 	var BINARY_EXTENSION_HEADER_LENGTH = 20;
 
-	class GLTFBinaryExtension{
+	class GLTFBinaryExtension {
 	    constructor( data ) {
 
 	        this.name = EXTENSIONS.KHR_BINARY_GLTF;
@@ -51979,7 +51979,7 @@
 	        this.body = data.slice( BINARY_EXTENSION_HEADER_LENGTH + header.contentLength, header.length );
 	    }
 
-	    loadShader = function ( shader, bufferViews ) {
+	    loadShader ( shader, bufferViews ) {
 
 			var bufferView = bufferViews[ shader.extensions[ EXTENSIONS.KHR_BINARY_GLTF ].bufferView ];
 			var array = new Uint8Array( bufferView );
@@ -52368,7 +52368,7 @@
 	        this.params = params;
 	    }
 
-	    create = function () {
+	    create() {
 
 	        var uniforms = UniformsUtils.clone( this.params.uniforms );
 
@@ -52404,7 +52404,7 @@
 	        this.cache = new GLTFRegistry();
 	    }
 
-	    _withDependencies = function ( dependencies ) {
+	    _withDependencies( dependencies ) {
 
 			var _dependencies = {};
 
@@ -52438,7 +52438,7 @@
 
 		};
 
-		parse = function ( callback ) {
+		parse( callback ) {
 
 			var json = this.json;
 
@@ -52487,7 +52487,7 @@
 
 		};
 
-		loadShaders = function () {
+		loadShaders() {
 
 			var json = this.json;
 			var extensions = this.extensions;
@@ -52525,8 +52525,7 @@
 
 		};
 
-		loadBuffers = function () {
-
+		loadBuffers() {
 			var json = this.json;
 			var extensions = this.extensions;
 			var options = this.options;
@@ -52563,7 +52562,7 @@
 
 		};
 
-		loadBufferViews = function () {
+		loadBufferViews() {
 
 			var json = this.json;
 
@@ -52587,7 +52586,7 @@
 
 		};
 
-		loadAccessors = function () {
+		loadAccessors() {
 
 			var json = this.json;
 
@@ -52632,7 +52631,7 @@
 
 		};
 
-		loadTextures = function () {
+		loadTextures() {
 
 			var json = this.json;
 			var options = this.options;
@@ -52723,7 +52722,7 @@
 
 		};
 
-	    loadMaterials = function () {
+	    loadMaterials() {
 
 			var json = this.json;
 
@@ -53151,7 +53150,7 @@
 
 		};
 
-		loadMeshes = function () {
+		loadMeshes() {
 
 			var json = this.json;
 
@@ -53331,7 +53330,7 @@
 
 		};
 
-		loadCameras = function () {
+		loadCameras() {
 
 			var json = this.json;
 
@@ -53368,7 +53367,7 @@
 
 		};
 
-		loadSkins = function () {
+		loadSkins() {
 
 			var json = this.json;
 
@@ -53398,7 +53397,7 @@
 
 		};
 
-		loadAnimations = function () {
+		loadAnimations() {
 
 			var json = this.json;
 
@@ -53468,7 +53467,7 @@
 
 		};
 
-		loadNodes = function () {
+		loadNodes() {
 
 			var json = this.json;
 			var extensions = this.extensions;
@@ -53724,7 +53723,7 @@
 
 		};
 
-		loadScenes = function () {
+		loadScenes() {
 
 			var json = this.json;
 
