@@ -1,6 +1,6 @@
 {
   "name": "icosa-viewer",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
     "dev": "rollup --config --watch",
