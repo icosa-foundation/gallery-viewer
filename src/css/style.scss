@@ -12,6 +12,41 @@
     height: 100%;
     display: block;
     position: static;
+    cursor: grab;
+}
+#c.grabbed {
+    cursor: grabbing;
+}
+
+.control-panel {
+    display: block;
+    opacity: 1;
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    border: 0;
+    z-index: 5;
+    color: white;
+}
+
+.panel-button {
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    display: block;
+    width: 24px;
+    height: 24px;
+    outline: none;
+    overflow: hidden;
+    position: relative;
+}
+
+.fullscreen-button {
+    background: url('../res/img/fullscreen_white_24dp.svg');
+}
+
+.fullscreen-button.fullscreen {
+    background: url('../res/img/fullscreen_exit_white_24dp.svg');
 }
 
 #loadscreen {

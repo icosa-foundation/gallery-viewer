@@ -15,10 +15,10 @@
 import CameraControls from "camera-controls";
 import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
-import { LegacyGLTFLoader } from "./Legacy/LegacyGLTFLoader.js";
+import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Convert, JSONPolyFormat } from "./JSONSchema";
-import { TiltBrushShaders } from "./tiltbrush/tiltbrushshaders"; 
+import { TiltBrushShaders } from "./tiltbrush/Tiltbrushshaders"; 
 
 export class Loader {
     private scene : Scene;
@@ -53,7 +53,6 @@ export class Loader {
         this.scene = scene;
         this.sceneCamera = sceneCamera;
         this.cameraControls = cameraControls;
-        new RawShaderMaterial()
     }
 
     public update(deltaTime : number) {
@@ -772,7 +771,7 @@ export class Loader {
             this.scene.clear();
             this.scene.add(this.loadedModel);
 
-            //Setup camera to center model
+            // Setup camera to center model
             const box = new Box3().setFromObject(this.loadedModel);
             const boxSize = box.getSize(new Vector3()).length();
             const boxCenter = box.getCenter(new Vector3());
@@ -785,7 +784,7 @@ export class Loader {
             this.cameraControls.dollyTo(midDistance, true);
             this.cameraControls.saveState();
 
-            //DEBUG LIGHTING
+            // DEBUG LIGHTING
             var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
             keyLightNode.position.set(-19.021, 34.882, -19.134);
             keyLightNode.scale.set(0, 0, 16.828);
@@ -807,14 +806,16 @@ export class Loader {
     private initTilt(url : string) {
         this.tiltLoader.load(url, (tilt) => {
             this.scene.clear();
-            this.scene.add(tilt);
+            this.loadedModel = tilt;
+            this.scene.add(this.loadedModel);
         });
     }
 
     private initPolyGltf(url : string) {
         this.legacygltf.load(url, (gltf) => {
             this.scene.clear();
-            this.scene.add(gltf.scene);
+            this.loadedModel = gltf.scene;
+            this.scene.add(this.loadedModel);
         });
     }
 
@@ -831,14 +832,14 @@ export class Loader {
             if (this.readyState == 4 && this.status == 200) {
                 const polyAsset = Convert.toPoly(this.response);
 
-                //To dict, for format preference sorting
+                // To dict, for format preference sorting
                 let types: { [name: string]: JSONPolyFormat } = {}; 
 
                 polyAsset.formats.forEach(format => {
                     types[format.formatType] = format;
                 });
 
-                //Check if specific format requested, otherwise loop through order of preference
+                // Check if specific format requested, otherwise loop through order of preference
                 if(format) {
                     switch (format) {
                         case "GLTF":
@@ -858,11 +859,14 @@ export class Loader {
                     }
                 }
 
+                // If no format specified, return in preferred order
                 if(types.hasOwnProperty("GLTF")) {
                     that.initPolyGltf(types.GLTF.root.url);
                     return;
                 }
-
+                
+                // At the moment tilt files should always be least priority as the renderer
+                // still just uses control points.
                 if(types.hasOwnProperty("TILT")) {
                     that.initTilt(types.TILT.root.url);
                     return;
