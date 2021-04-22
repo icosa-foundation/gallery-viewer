@@ -1,6 +1,6 @@
 {
   "name": "icosa-viewer",
-  "version": "0.2.0",
+  "version": "0.2.3",
   "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
     "dev": "rollup --config --watch",
@@ -41,7 +41,7 @@
   "files": [
     "dist/icosa-viewer.js",
     "dist/icosa-viewer.min.js",
-    "dsit/icosa-viewer.module.js",
+    "dist/icosa-viewer.module.js",
     "examples",
     "LICENSE",
     "package.json",
