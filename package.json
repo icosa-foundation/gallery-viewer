@@ -36,7 +36,7 @@
   "dependencies": {
     "camera-controls": "git+https://github.com/mikeskydev/camera-controls.git#no-install",
     "hold-event": "0.0.1",
-    "three": "^0.125.0"
+    "three": "^0.128.0"
   },
   "files": [
     "dist/icosa-viewer.js",
