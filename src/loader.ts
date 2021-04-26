@@ -13,10 +13,11 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
+import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, Color, Camera, Vector4, Box3, MeshPhysicalMaterial } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { Convert, JSONPolyFormat } from "./JSONSchema";
 import { TiltBrushShaders } from "./tiltbrush/Tiltbrushshaders"; 
 import { TiltShaderLoader } from "./tiltbrush/TiltShaderLoader.js";
@@ -29,6 +30,7 @@ export class Loader {
     private legacygltf : LegacyGLTFLoader;
 
     private sceneCamera : Camera;
+    private sceneColor : Color = new Color();
 
     private cameraControls : CameraControls;
 
@@ -50,6 +52,11 @@ export class Loader {
 
         this.tiltLoader = new TiltLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
+
+        var dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+        this.gltfLoader.setDRACOLoader(dracoLoader);
+
         this.legacygltf = new LegacyGLTFLoader(manager);
         this.scene = scene;
         this.sceneCamera = sceneCamera;
@@ -89,40 +96,37 @@ export class Loader {
                     var mesh = object as Mesh;
                     var material = mesh.material as Material;
                     switch(material.name) {
-
                         case "brush_BlocksBasic":
                             mesh.geometry.name = "geometry_BlocksBasic";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["BlocksBasic"], function( shader ) {
                                 mesh.material = shader;
                                 mesh.material.name = "material_BlocksBasic";
                             });
                             break;
-
                         case "brush_BlocksGem":
                             mesh.geometry.name = "geometry_BlocksGem";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["BlocksGem"], function( shader ) {
                                 mesh.material = shader;
                                 mesh.material.name = "material_BlocksGem";
                             });
                             break;
-
                         case "brush_BlocksGlass":
                             mesh.geometry.name = "geometry_BlocksGlass";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["BlocksGlass"], function( shader ) {
                                 mesh.material = shader;
                                 mesh.material.name = "material_BlocksGlass";
@@ -892,54 +896,65 @@ export class Loader {
                     }
                 }
             });
-            this.scene.clear();
-            this.scene.add(this.loadedModel);
 
-            // Setup camera to center model
-            const box = new Box3().setFromObject(this.loadedModel);
-            const boxSize = box.getSize(new Vector3()).length();
-            const boxCenter = box.getCenter(new Vector3());
-
-            this.cameraControls.minDistance = boxSize * 0.01;
-            this.cameraControls.maxDistance = boxSize;
-
-            const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
-            this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-            this.cameraControls.dollyTo(midDistance, true);
-            this.cameraControls.saveState();
-
-            // DEBUG LIGHTING
-            var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
-            keyLightNode.position.set(-19.021, 34.882, -19.134);
-            keyLightNode.scale.set(0, 0, 16.828);
-            this.scene.add(keyLightNode);
-
-            var headLightNode = new DirectionalLight(0xFFEEDD, 0.250);
-            headLightNode.position.set(-16.661, 8.330, 8.330);
-            headLightNode.scale.set(1, 1, 1);
-            this.scene.add(headLightNode);
-
-            var __hemi__ = new HemisphereLight(0xEFEFFF, 0xB2B2B2, 0);
-            __hemi__.position.set(0, 1, 0);
-            this.scene.add(__hemi__);
-
-            this.loaded = true;
+            this.finishSetup(this.loadedModel);
         });
+    }
+
+    private finishSetup(model: Object3D) {
+        this.scene.clear();
+        this.scene.background = this.sceneColor;
+        this.scene.add(model);
+
+        // Setup camera to center model
+        const box = new Box3().setFromObject(model);
+        const boxSize = box.getSize(new Vector3()).length();
+        const boxCenter = box.getCenter(new Vector3());
+
+        this.cameraControls.minDistance = boxSize * 0.01;
+        this.cameraControls.maxDistance = boxSize;
+
+        const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
+        this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+        this.cameraControls.dollyTo(midDistance, true);
+        this.cameraControls.saveState();
+
+        // DEBUG LIGHTING
+        var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
+        keyLightNode.position.set(-19.021, 34.882, -19.134);
+        keyLightNode.scale.set(0, 0, 16.828);
+        this.scene.add(keyLightNode);
+
+        var headLightNode = new DirectionalLight(0xFFEEDD, 0.250);
+        headLightNode.position.set(-16.661, 8.330, 8.330);
+        headLightNode.scale.set(1, 1, 1);
+        this.scene.add(headLightNode);
+
+        var __hemi__ = new HemisphereLight(0xEFEFFF, 0xB2B2B2, 0.6);
+        __hemi__.position.set(0, 1, 0);
+        this.scene.add(__hemi__);
+
+        this.loaded = true;
     }
 
     private initTilt(url : string) {
         this.tiltLoader.load(url, (tilt) => {
-            this.scene.clear();
             this.loadedModel = tilt;
-            this.scene.add(this.loadedModel);
+            this.finishSetup(this.loadedModel);
         });
     }
 
     private initPolyGltf(url : string) {
         this.legacygltf.load(url, (gltf) => {
-            this.scene.clear();
             this.loadedModel = gltf.scene;
-            this.scene.add(this.loadedModel);
+            this.finishSetup(this.loadedModel);
+        });
+    }
+
+    private initPolyGltf2(url : string) {
+        this.gltfLoader.load(url, (gltf) => {
+            this.loadedModel = gltf.scene;
+            this.finishSetup(this.loadedModel);
         });
     }
 
@@ -959,6 +974,12 @@ export class Loader {
                 // To dict, for format preference sorting
                 let types: { [name: string]: JSONPolyFormat } = {}; 
 
+                if(polyAsset.presentationParams.backgroundColor) {
+                    console.log(`Setting background color: ${polyAsset.presentationParams.backgroundColor}`);
+                    that.sceneColor = new Color(polyAsset.presentationParams.backgroundColor);
+                }
+
+
                 polyAsset.formats.forEach(format => {
                     types[format.formatType] = format;
                 });
@@ -966,6 +987,12 @@ export class Loader {
                 // Check if specific format requested, otherwise loop through order of preference
                 if(format) {
                     switch (format) {
+                        case "GLTF2":
+                            if(types.hasOwnProperty("GLTF2")) {
+                                that.initPolyGltf2(types.GLTF2.root.url);
+                                return;
+                            }
+                            break;
                         case "GLTF":
                             if(types.hasOwnProperty("GLTF")) {
                                 that.initPolyGltf(types.GLTF.root.url);
@@ -984,6 +1011,11 @@ export class Loader {
                 }
 
                 // If no format specified, return in preferred order
+                if(types.hasOwnProperty("GLTF2")) {
+                    that.initPolyGltf2(types.GLTF2.root.url);
+                    return;
+                }
+
                 if(types.hasOwnProperty("GLTF")) {
                     that.initPolyGltf(types.GLTF.root.url);
                     return;

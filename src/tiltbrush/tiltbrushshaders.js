@@ -1,6 +1,6 @@
 import { RepeatWrapping, TextureLoader, Vector3, Vector4 } from 'three';
 
-const BASE_URL = "https://www.tiltbrush.com/shaders/brushes/";
+const BASE_URL = "https://storage.googleapis.com/static.icosa.gallery/brushes/";
 
 const TiltBrushShaders = {
     "BlocksBasic" : {
@@ -15,26 +15,10 @@ const TiltBrushShaders = {
 			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
 			u_fogDensity: { value: 0 },
 			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
 			u_Cutoff: { value: 0.2 }
 		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
+		vertexShader: BASE_URL + "BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e/BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e-v10.0-vertex.glsl",
+		fragmentShader: BASE_URL + "BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e/BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e-v10.0-fragment.glsl",
 		side: 0,
 		transparent: false,
 		depthFunc: 2,
@@ -55,26 +39,10 @@ const TiltBrushShaders = {
 			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
 			u_fogDensity: { value: 0 },
 			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
 			u_Cutoff: { value: 0.2 }
 		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
+		vertexShader: BASE_URL + "BlocksGem-232998f8-d357-47a2-993a-53415df9be10/BlocksGem-232998f8-d357-47a2-993a-53415df9be10-v10.0-vertex.glsl",
+		fragmentShader: BASE_URL + "BlocksGem-232998f8-d357-47a2-993a-53415df9be10/BlocksGem-232998f8-d357-47a2-993a-53415df9be10-v10.0-fragment.glsl",
 		side: 0,
 		transparent: false,
 		depthFunc: 2,
@@ -95,32 +63,16 @@ const TiltBrushShaders = {
 			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
 			u_fogDensity: { value: 0 },
 			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
 			u_Cutoff: { value: 0.2 }
 		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
+		vertexShader: BASE_URL + "BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7/BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7-v10.0-vertex.glsl",
+		fragmentShader: BASE_URL + "BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7/BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7-v10.0-fragment.glsl",
+		side: 2,
+		transparent: true,
 		depthFunc: 2,
-		depthWrite: true,
+		depthWrite: false,
 		depthTest: true,
-		blending: 0,
+		blending: 2,
 		extensions: { derivatives: true }
     },
     "Bubbles" : {

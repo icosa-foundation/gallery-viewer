@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Clock, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+import { Clock, PerspectiveCamera, Scene, WebGLRenderer, Color } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
 import './css/style.scss';
@@ -120,7 +120,6 @@ export class Viewer {
         setupNavigation(cameraControls);
 
         const scene = new Scene();
-        //scene.background = new Color(0xFFE5B4);
 
         this.icosa_viewer = new Loader(scene, flatCamera, cameraControls);
 
