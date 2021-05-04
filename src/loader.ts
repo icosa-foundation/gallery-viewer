@@ -18,7 +18,7 @@ import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { Convert, JSONPolyFormat } from "./JSONSchema";
+import { Convert, JSONIcosaFormat, JSONPolyFormat } from "./JSONSchema";
 import { TiltBrushShaders } from "./tiltbrush/Tiltbrushshaders"; 
 import { TiltShaderLoader } from "./tiltbrush/TiltShaderLoader.js";
 
@@ -90,7 +90,12 @@ export class Loader {
 
     private initGltf(url : string) {
         this.gltfLoader.load(url, (gltf) => {
+            console.log(gltf);
+
+
             this.loadedModel = gltf.scene;
+            var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.matrixWorld;
+            var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.matrixWorld;
             this.loadedModel.traverse((object : Object3D) => {
                 if(object.type === "Mesh") {
                     var mesh = object as Mesh;
@@ -206,6 +211,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_DiamondHull";
                             });
@@ -960,6 +968,78 @@ export class Loader {
 
     public loadGLTF(url : string) {
         this.initGltf(url);
+    }
+
+    public loadIcosaAsset(userID : string, assetID : string, format? : string) {
+        const http = new XMLHttpRequest();
+        const url = `https://api.icosa.gallery/assets/${userID}/${assetID}`;
+        const that = this;
+        
+        http.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                const icosaAsset = Convert.toIcosa(this.response);
+                
+                let types: { [name: string]: JSONIcosaFormat } = {};
+
+                icosaAsset.formats.forEach(newformat => {
+                    types[newformat.format] = newformat;
+                });
+                console.log(types);
+
+                if(format) {
+                    switch(format) {
+                        case "GLTF2":
+                            if(types.hasOwnProperty("GLTF2")) {
+                                that.initPolyGltf2(types.GLTF2.url);
+                                return;
+                            }
+                            break;
+                        case "GLTF":
+                            if(types.hasOwnProperty("GLTF")) {
+                                that.initPolyGltf(types.GLTF.url);
+                                return;
+                            }
+                            break;
+                        case "TILT":
+                            if(types.hasOwnProperty("TILT")) {
+                                that.initTilt(types.TILT.url);
+                                return;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                // If no format specified, return in preferred order
+                if(types.hasOwnProperty("GLTF2")) {
+                    that.initPolyGltf2(types.GLTF2.url);
+                    return;
+                }
+
+                if(types.hasOwnProperty("GLTF")) {
+                    that.initPolyGltf(types.GLTF.url);
+                    return;
+                }
+                
+                // At the moment tilt files should always be least priority as the renderer
+                // still just uses control points.
+                if(types.hasOwnProperty("TILT")) {
+                    that.initTilt(types.TILT.url);
+                    return;
+                }
+            }
+        }
+
+        http.open("GET", url, true);
+        http.send();
+    }
+
+    public loadIcosaUrl(url : string, format?: string) {
+        var splitURL = url.split('/');
+        console.log(splitURL);
+        if(splitURL[2] === "icosa.gallery")
+            this.loadIcosaAsset(splitURL[4], splitURL[5], format);
     }
 
     public loadPolyAsset(assetID : string, format? : string) {

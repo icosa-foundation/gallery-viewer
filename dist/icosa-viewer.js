@@ -42106,6 +42106,12 @@
 	var Convert = (function () {
 	    function Convert() {
 	    }
+	    Convert.toIcosa = function (json) {
+	        return JSON.parse(json);
+	    };
+	    Convert.icosaToJson = function (value) {
+	        return JSON.stringify(value);
+	    };
 	    Convert.toPoly = function (json) {
 	        return JSON.parse(json);
 	    };
@@ -44418,7 +44424,11 @@
 	    Loader.prototype.initGltf = function (url) {
 	        var _this = this;
 	        this.gltfLoader.load(url, function (gltf) {
+	            var _a, _b;
+	            console.log(gltf);
 	            _this.loadedModel = gltf.scene;
+	            var light0transform = (_a = _this.loadedModel.getObjectByName("node_SceneLight_0_i1")) === null || _a === void 0 ? void 0 : _a.matrixWorld;
+	            var light1transform = (_b = _this.loadedModel.getObjectByName("node_SceneLight_1_i2")) === null || _b === void 0 ? void 0 : _b.matrixWorld;
 	            _this.loadedModel.traverse(function (object) {
 	                if (object.type === "Mesh") {
 	                    var mesh = object;
@@ -44516,6 +44526,9 @@
 	                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 	                            new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function (shader) {
+	                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+	                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+	                                shader.uniformsNeedUpdate = true;
 	                                mesh.material = shader;
 	                                mesh.material.name = "material_DiamondHull";
 	                            });
@@ -45150,6 +45163,63 @@
 	    Loader.prototype.loadGLTF = function (url) {
 	        this.initGltf(url);
 	    };
+	    Loader.prototype.loadIcosaAsset = function (userID, assetID, format) {
+	        var http = new XMLHttpRequest();
+	        var url = "https://api.icosa.gallery/assets/" + userID + "/" + assetID;
+	        var that = this;
+	        http.onreadystatechange = function () {
+	            if (this.readyState == 4 && this.status == 200) {
+	                var icosaAsset = Convert.toIcosa(this.response);
+	                var types_1 = {};
+	                icosaAsset.formats.forEach(function (newformat) {
+	                    types_1[newformat.format] = newformat;
+	                });
+	                console.log(types_1);
+	                if (format) {
+	                    switch (format) {
+	                        case "GLTF2":
+	                            if (types_1.hasOwnProperty("GLTF2")) {
+	                                that.initPolyGltf2(types_1.GLTF2.url);
+	                                return;
+	                            }
+	                            break;
+	                        case "GLTF":
+	                            if (types_1.hasOwnProperty("GLTF")) {
+	                                that.initPolyGltf(types_1.GLTF.url);
+	                                return;
+	                            }
+	                            break;
+	                        case "TILT":
+	                            if (types_1.hasOwnProperty("TILT")) {
+	                                that.initTilt(types_1.TILT.url);
+	                                return;
+	                            }
+	                            break;
+	                    }
+	                }
+	                if (types_1.hasOwnProperty("GLTF2")) {
+	                    that.initPolyGltf2(types_1.GLTF2.url);
+	                    return;
+	                }
+	                if (types_1.hasOwnProperty("GLTF")) {
+	                    that.initPolyGltf(types_1.GLTF.url);
+	                    return;
+	                }
+	                if (types_1.hasOwnProperty("TILT")) {
+	                    that.initTilt(types_1.TILT.url);
+	                    return;
+	                }
+	            }
+	        };
+	        http.open("GET", url, true);
+	        http.send();
+	    };
+	    Loader.prototype.loadIcosaUrl = function (url, format) {
+	        var splitURL = url.split('/');
+	        console.log(splitURL);
+	        if (splitURL[2] === "icosa.gallery")
+	            this.loadIcosaAsset(splitURL[4], splitURL[5], format);
+	    };
 	    Loader.prototype.loadPolyAsset = function (assetID, format) {
 	        var http = new XMLHttpRequest();
 	        var url = "https://api.icosa.gallery/poly/assets/" + assetID;
@@ -45157,46 +45227,46 @@
 	        http.onreadystatechange = function () {
 	            if (this.readyState == 4 && this.status == 200) {
 	                var polyAsset = Convert.toPoly(this.response);
-	                var types_1 = {};
+	                var types_2 = {};
 	                if (polyAsset.presentationParams.backgroundColor) {
 	                    console.log("Setting background color: " + polyAsset.presentationParams.backgroundColor);
 	                    that.sceneColor = new Color(polyAsset.presentationParams.backgroundColor);
 	                }
 	                polyAsset.formats.forEach(function (format) {
-	                    types_1[format.formatType] = format;
+	                    types_2[format.formatType] = format;
 	                });
 	                if (format) {
 	                    switch (format) {
 	                        case "GLTF2":
-	                            if (types_1.hasOwnProperty("GLTF2")) {
-	                                that.initPolyGltf2(types_1.GLTF2.root.url);
+	                            if (types_2.hasOwnProperty("GLTF2")) {
+	                                that.initPolyGltf2(types_2.GLTF2.root.url);
 	                                return;
 	                            }
 	                            break;
 	                        case "GLTF":
-	                            if (types_1.hasOwnProperty("GLTF")) {
-	                                that.initPolyGltf(types_1.GLTF.root.url);
+	                            if (types_2.hasOwnProperty("GLTF")) {
+	                                that.initPolyGltf(types_2.GLTF.root.url);
 	                                return;
 	                            }
 	                            break;
 	                        case "TILT":
-	                            if (types_1.hasOwnProperty("TILT")) {
-	                                that.initTilt(types_1.TILT.root.url);
+	                            if (types_2.hasOwnProperty("TILT")) {
+	                                that.initTilt(types_2.TILT.root.url);
 	                                return;
 	                            }
 	                            break;
 	                    }
 	                }
-	                if (types_1.hasOwnProperty("GLTF2")) {
-	                    that.initPolyGltf2(types_1.GLTF2.root.url);
+	                if (types_2.hasOwnProperty("GLTF2")) {
+	                    that.initPolyGltf2(types_2.GLTF2.root.url);
 	                    return;
 	                }
-	                if (types_1.hasOwnProperty("GLTF")) {
-	                    that.initPolyGltf(types_1.GLTF.root.url);
+	                if (types_2.hasOwnProperty("GLTF")) {
+	                    that.initPolyGltf(types_2.GLTF.root.url);
 	                    return;
 	                }
-	                if (types_1.hasOwnProperty("TILT")) {
-	                    that.initTilt(types_1.TILT.root.url);
+	                if (types_2.hasOwnProperty("TILT")) {
+	                    that.initTilt(types_2.TILT.root.url);
 	                    return;
 	                }
 	            }
@@ -45567,6 +45637,16 @@
 	    Viewer.prototype.loadGLTF = function (url) {
 	        var _a;
 	        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadGLTF(url);
+	    };
+	    Viewer.prototype.loadIcosaUrl = function (url) {
+	        var _a;
+	        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadIcosaUrl(url);
+	    };
+	    Viewer.prototype.loadIcosaAsset = function (userurl, asseturl) {
+	        var _a;
+	        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadIcosaAsset(userurl, asseturl);
+	    };
+	    Viewer.prototype.loadIcosaAssetId = function (id) {
 	    };
 	    Viewer.prototype.loadPolyUrl = function (url) {
 	        var _a;

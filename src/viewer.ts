@@ -159,6 +159,18 @@ export class Viewer {
         this.icosa_viewer?.loadGLTF(url);
     }
 
+    public loadIcosaUrl(url : string) {
+        this.icosa_viewer?.loadIcosaUrl(url);
+    }
+
+    public loadIcosaAsset(userurl : string, asseturl : string) {
+        this.icosa_viewer?.loadIcosaAsset(userurl, asseturl);
+    }
+
+    public loadIcosaAssetId(id : string) {
+
+    }
+
     public loadPolyUrl(url : string) {
         this.icosa_viewer?.loadPolyUrl(url);
     }
