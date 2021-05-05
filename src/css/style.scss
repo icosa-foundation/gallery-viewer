@@ -33,12 +33,13 @@
     border: 0;
     padding: 0;
     cursor: pointer;
-    display: block;
+    display: inline-block;
     width: 24px;
     height: 24px;
     outline: none;
     overflow: hidden;
     position: relative;
+    margin: 0 6px;
 }
 
 .fullscreen-button {
@@ -47,6 +48,10 @@
 
 .fullscreen-button.fullscreen {
     background: url('../res/img/fullscreen_exit_white_24dp.svg');
+}
+
+.vr-button {
+    background: url('../res/img/google-cardboard.svg')
 }
 
 #loadscreen {

@@ -66,7 +66,11 @@ export class Viewer {
         const fullscreenButton = document.createElement('button');
         fullscreenButton.classList.add('panel-button', 'fullscreen-button');
         fullscreenButton.onclick = () => { this.toggleFullscreen(fullscreenButton); }
+
+        const vrButton = document.createElement('button');
+        vrButton.classList.add('panel-button', 'vr-button');
         
+        controlPanel.appendChild(vrButton);
         controlPanel.appendChild(fullscreenButton);
 
         this.icosa_frame.appendChild(controlPanel);
