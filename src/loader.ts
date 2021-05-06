@@ -30,7 +30,7 @@ export class Loader {
     private legacygltf : LegacyGLTFLoader;
 
     private sceneCamera : Camera;
-    private sceneColor : Color = new Color();
+    private sceneColor : Color = new Color("#000000");
 
     private cameraControls : CameraControls;
 
@@ -78,10 +78,23 @@ export class Loader {
                     (material as RawShaderMaterial).uniforms!["cameraPosition"].value = this.sceneCamera.position;
                     (material as RawShaderMaterial).uniforms!["u_time"].value = time;
                     break;
+                case "material_ChromaticWave":
+                case "material_Comet":
+                case "material_Disco":
+                case "material_Electricity":
+                case "material_Embers":
+                case "material_Fire":
+                case "material_Hypercolor":
+                case "material_HyperGrid":
+                case "material_LightWire":
                 case "material_NeonPulse":
-                    (material as RawShaderMaterial).uniforms!["u_time"].value = time;
-                    break;
+                case "material_Plasma":
                 case "material_Rainbow":
+                case "material_Snow":
+                case "material_Stars":
+                case "material_Streamers":
+                case "material_Waveform":
+                case "material_WigglyGraphite":
                     (material as RawShaderMaterial).uniforms!["u_time"].value = time;
                     break;
             }
@@ -90,9 +103,6 @@ export class Loader {
 
     private initGltf(url : string) {
         this.gltfLoader.load(url, (gltf) => {
-            console.log(gltf);
-
-
             this.loadedModel = gltf.scene;
             var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.matrixWorld;
             var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.matrixWorld;
@@ -165,7 +175,7 @@ export class Loader {
                             break;
 
                         case "brush_ChromaticWave":
-                            mesh.geometry.name = "geometry_DiamondHull";
+                            mesh.geometry.name = "geometry_ChromaticWave";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
@@ -175,6 +185,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_ChromaticWave";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_CoarseBristles":
@@ -201,6 +212,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Comet";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_DiamondHull":
@@ -231,6 +243,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Disco";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_DotMarker":
@@ -309,6 +322,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Electricity";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Embers":
@@ -322,6 +336,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Embers";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_EnvironmentDiffuse":
@@ -361,6 +376,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Fire";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Flat":
@@ -387,6 +403,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_FlatDeprecated";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Highlighter":
@@ -413,6 +430,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Hypercolor";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_HyperGrid":
@@ -426,6 +444,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_HyperGrid";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Icing":
@@ -483,7 +502,7 @@ export class Loader {
                             break;
 
                         case "brush_LightWire":
-                            mesh.geometry.name = "geometry_DiamondHull";
+                            mesh.geometry.name = "geometry_LightWire";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
@@ -493,6 +512,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_DiamondHull";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Lofted":
@@ -624,6 +644,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Plasma";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Rainbow":
@@ -679,6 +700,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Snow";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_SoftHighlighter":
@@ -731,6 +753,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Stars";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Streamers":
@@ -744,10 +767,11 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Streamers";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Taffy":
-                            mesh.geometry.name = "geometry_DiamondHull";
+                            mesh.geometry.name = "geometry_Taffy";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
@@ -757,6 +781,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_DiamondHull";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_TaperedFlat":
@@ -859,6 +884,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Waveform";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_WetPaint":
@@ -885,6 +911,7 @@ export class Loader {
                                 mesh.material = shader;
                                 mesh.material.name = "material_WigglyGraphite";
                             });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Wire":
@@ -902,6 +929,14 @@ export class Loader {
                         default:
                             mesh.material = new MeshStandardMaterial( { visible: false } );
                     }
+                    // if (material.name!=="brush_TaperedMarker")
+                    // {
+                    //     mesh.material = new MeshStandardMaterial( { visible: false } );
+                    // }
+                    // else
+                    // {
+                    //     console.log(Object.keys(mesh.geometry.attributes));
+                    // }
                 }
             });
 
@@ -984,7 +1019,6 @@ export class Loader {
                 icosaAsset.formats.forEach(newformat => {
                     types[newformat.format] = newformat;
                 });
-                console.log(types);
 
                 if(format) {
                     switch(format) {
@@ -1037,7 +1071,6 @@ export class Loader {
 
     public loadIcosaUrl(url : string, format?: string) {
         var splitURL = url.split('/');
-        console.log(splitURL);
         if(splitURL[2] === "icosa.gallery")
             this.loadIcosaAsset(splitURL[4], splitURL[5], format);
     }
@@ -1055,10 +1088,8 @@ export class Loader {
                 let types: { [name: string]: JSONPolyFormat } = {}; 
 
                 if(polyAsset.presentationParams.backgroundColor) {
-                    console.log(`Setting background color: ${polyAsset.presentationParams.backgroundColor}`);
                     that.sceneColor = new Color(polyAsset.presentationParams.backgroundColor);
                 }
-
 
                 polyAsset.formats.forEach(format => {
                     types[format.formatType] = format;
