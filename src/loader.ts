@@ -103,9 +103,6 @@ export class Loader {
 
     private initGltf(url : string) {
         this.gltfLoader.load(url, (gltf) => {
-            console.log(gltf);
-
-
             this.loadedModel = gltf.scene;
             var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.matrixWorld;
             var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.matrixWorld;
@@ -1022,7 +1019,6 @@ export class Loader {
                 icosaAsset.formats.forEach(newformat => {
                     types[newformat.format] = newformat;
                 });
-                console.log(types);
 
                 if(format) {
                     switch(format) {
@@ -1075,7 +1071,6 @@ export class Loader {
 
     public loadIcosaUrl(url : string, format?: string) {
         var splitURL = url.split('/');
-        console.log(splitURL);
         if(splitURL[2] === "icosa.gallery")
             this.loadIcosaAsset(splitURL[4], splitURL[5], format);
     }
@@ -1093,10 +1088,8 @@ export class Loader {
                 let types: { [name: string]: JSONPolyFormat } = {}; 
 
                 if(polyAsset.presentationParams.backgroundColor) {
-                    console.log(`Setting background color: ${polyAsset.presentationParams.backgroundColor}`);
                     that.sceneColor = new Color(polyAsset.presentationParams.backgroundColor);
                 }
-
 
                 polyAsset.formats.forEach(format => {
                     types[format.formatType] = format;
