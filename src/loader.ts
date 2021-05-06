@@ -101,7 +101,7 @@ export class Loader {
         });
     }
 
-    private initGltf(url : string) {
+    private initGltf2(url : string) {
         this.gltfLoader.load(url, (gltf) => {
             this.loadedModel = gltf.scene;
             var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.matrixWorld;
@@ -1002,7 +1002,7 @@ export class Loader {
     }
 
     public loadGLTF(url : string) {
-        this.initGltf(url);
+        this.initGltf2(url);
     }
 
     public loadIcosaAsset(userID : string, assetID : string, format? : string) {
@@ -1047,7 +1047,7 @@ export class Loader {
 
                 // If no format specified, return in preferred order
                 if(types.hasOwnProperty("GLTF2")) {
-                    that.initPolyGltf2(types.GLTF2.url);
+                    that.initGltf2(types.GLTF2.url);
                     return;
                 }
 
