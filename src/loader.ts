@@ -30,7 +30,7 @@ export class Loader {
     private legacygltf : LegacyGLTFLoader;
 
     private sceneCamera : Camera;
-    private sceneColor : Color = new Color();
+    private sceneColor : Color = new Color("#000000");
 
     private cameraControls : CameraControls;
 
