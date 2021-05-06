@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as THREE from 'three';
+import { Clock, PerspectiveCamera, Scene, WebGLRenderer, Color } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
-import * as holdEvent from 'hold-event';
 import './css/style.scss';
-import { Loader }  from './loader';
+import { Loader }  from './Loader';
+import { setupNavigation } from './helpers/Navigation'
 
 export class Viewer {
     private icosa_frame? : HTMLElement | null;
@@ -28,42 +28,25 @@ export class Viewer {
         this.initViewer();
     }
 
-    private setupNavigation(cameraControls : CameraControls) {
-        const KEYCODE = {
-            W: 87,
-            A: 65,
-            S: 83,
-            D: 68,
-            Q: 81,
-            E: 69,
-            ARROW_LEFT : 37,
-            ARROW_UP   : 38,
-            ARROW_RIGHT: 39,
-            ARROW_DOWN : 40,
-        };
-        
-        const wKey = new holdEvent.KeyboardKeyHold( KEYCODE.W, 1);
-        const aKey = new holdEvent.KeyboardKeyHold( KEYCODE.A, 1);
-        const sKey = new holdEvent.KeyboardKeyHold( KEYCODE.S, 1);
-        const dKey = new holdEvent.KeyboardKeyHold( KEYCODE.D, 1);
-        const qKey = new holdEvent.KeyboardKeyHold( KEYCODE.Q, 1);
-        const eKey = new holdEvent.KeyboardKeyHold( KEYCODE.E, 1);
-        aKey.addEventListener( 'holding', function( event ) { cameraControls.truck(- 0.01 * event?.deltaTime, 0, true ) } );
-        dKey.addEventListener( 'holding', function( event ) { cameraControls.truck(  0.01 * event?.deltaTime, 0, true ) } );
-        wKey.addEventListener( 'holding', function( event ) { cameraControls.forward(   0.01 * event?.deltaTime, true ) } );
-        sKey.addEventListener( 'holding', function( event ) { cameraControls.forward( - 0.01 * event?.deltaTime, true ) } );
-        qKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,  0.01 * event?.deltaTime, true ) } );
-        eKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,- 0.01 * event?.deltaTime, true ) } );
+    private toggleFullscreen(controlButton: HTMLButtonElement) {
+        if(this.icosa_frame?.requestFullscreen)
+            this.icosa_frame?.requestFullscreen();
 
-        
-        const leftKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_LEFT,  1);
-        const rightKey = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_RIGHT, 1);
-        const upKey    = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_UP,    1);
-        const downKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_DOWN,  1);
-        leftKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate(   0.1 * THREE.MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
-        rightKey.addEventListener( 'holding', function( event ) { cameraControls.rotate( - 0.1 * THREE.MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
-        upKey.addEventListener   ( 'holding', function( event ) { cameraControls.rotate( 0, - 0.05 * THREE.MathUtils.DEG2RAD * event?.deltaTime, true ) } );
-        downKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate( 0,   0.05 * THREE.MathUtils.DEG2RAD * event?.deltaTime, true ) } );
+        document.onfullscreenchange = ()  => {
+            if (document.fullscreenElement == null) {
+                controlButton.onclick = () => {
+                    if(this.icosa_frame?.requestFullscreen)
+                        this.icosa_frame?.requestFullscreen();
+                };
+                controlButton.classList.remove('fullscreen');
+            } else {
+                controlButton.onclick = () => {
+                    if(document.exitFullscreen)
+                        document.exitFullscreen();
+                };
+                controlButton.classList.add('fullscreen');
+            }
+        }
     }
 
     public initViewer() {
@@ -76,6 +59,17 @@ export class Viewer {
             this.icosa_frame = document.createElement('div');
             this.icosa_frame.id = 'icosa-viewer';
         }
+
+        const controlPanel = document.createElement('div');
+        controlPanel.classList.add('control-panel');
+
+        const fullscreenButton = document.createElement('button');
+        fullscreenButton.classList.add('panel-button', 'fullscreen-button');
+        fullscreenButton.onclick = () => { this.toggleFullscreen(fullscreenButton); }
+        
+        controlPanel.appendChild(fullscreenButton);
+
+        this.icosa_frame.appendChild(controlPanel);
 
         //loadscreen
         const loadscreen = document.createElement('div');
@@ -94,22 +88,22 @@ export class Viewer {
         const canvas = document.createElement('canvas') as HTMLCanvasElement;
         canvas.id = 'c';
         this.icosa_frame.appendChild(canvas);
+        canvas.onmousedown = () => { canvas.classList.add('grabbed'); }
+        canvas.onmouseup = () => { canvas.classList.remove('grabbed'); }
 
-        const renderer = new THREE.WebGLRenderer({canvas : canvas});
+        const renderer = new WebGLRenderer({canvas : canvas});
         renderer.setPixelRatio(window.devicePixelRatio);
 
         renderer.xr.enabled = true;
         this.icosa_frame.appendChild( VRButton.createButton( renderer ) );
-
-        CameraControls.install({THREE: THREE});
-
-        const clock = new THREE.Clock();
-
+        
+        const clock = new Clock();
+        
         const fov = 75;
         const aspect = 2;  
         const near = 0.1;
         const far = 1000;
-        const flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        const flatCamera = new PerspectiveCamera(fov, aspect, near, far);
         flatCamera.position.set(10, 10, 10);
 
         const cameraControls = new CameraControls(flatCamera, canvas);
@@ -120,19 +114,12 @@ export class Viewer {
 
         flatCamera.updateProjectionMatrix();
 
-        const xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        const xrCamera = new PerspectiveCamera(fov, aspect, near, far);
         xrCamera.updateProjectionMatrix();
 
-        this.setupNavigation(cameraControls);
+        setupNavigation(cameraControls);
 
-        const scene = new THREE.Scene();
-        //scene.background = new THREE.Color(0xFFE5B4);
-
-        // const loader = new GLTFLoader();
-        // loader.load('res/testmodels/myreality.glb', (gltf) => {
-        //     const root = gltf.scene;
-        //     scene.add(root);
-        // })
+        const scene = new Scene();
 
         this.icosa_viewer = new Loader(scene, flatCamera, cameraControls);
 
@@ -170,6 +157,18 @@ export class Viewer {
 
     public loadGLTF(url : string) {
         this.icosa_viewer?.loadGLTF(url);
+    }
+
+    public loadIcosaUrl(url : string) {
+        this.icosa_viewer?.loadIcosaUrl(url);
+    }
+
+    public loadIcosaAsset(userurl : string, asseturl : string) {
+        this.icosa_viewer?.loadIcosaAsset(userurl, asseturl);
+    }
+
+    public loadIcosaAssetId(id : string) {
+
     }
 
     public loadPolyUrl(url : string) {

@@ -13,6 +13,14 @@
 // limitations under the License.
 
 export class Convert {
+    public static toIcosa(json: string): JSONIcosa {
+        return JSON.parse(json);
+    }
+
+    public static icosaToJson(value: JSONIcosa) : string {
+        return JSON.stringify(value);
+    }
+
     public static toPoly(json: string): JSONPoly {
         return JSON.parse(json);
     }
@@ -20,6 +28,31 @@ export class Convert {
     public static polyToJson(value: JSONPoly): string {
         return JSON.stringify(value);
     }
+}
+
+export interface JSONIcosa {
+    id: string;
+    url: string;
+    name: string;
+    owner: string;
+    description?: string;
+    formats: JSONIcosaFormat[];
+    visibility: string;
+    ownername: string;
+    ownerurl: string;
+}
+
+export interface JSONIcosaFormat {
+    id: string;
+    url: string;
+    format: string;
+    subfiles?: JSONIcosaSubFormat[]; 
+}
+
+export interface JSONIcosaSubFormat {
+    id: string;
+    url: string;
+    format: string;
 }
 
 export interface JSONPoly {

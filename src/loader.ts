@@ -13,12 +13,14 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, IUniform, Camera, Vector4, Box3 } from "three";
+import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, Color, Camera, Vector4, Box3, MeshPhysicalMaterial } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
-import { LegacyGLTFLoader } from "./Legacy/LegacyGLTFLoader.js";
+import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Convert, JSONPolyFormat } from "./JSONSchema";
-import { TiltBrushShaders } from "./tiltbrush/tiltbrushshaders"; 
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { Convert, JSONIcosaFormat, JSONPolyFormat } from "./JSONSchema";
+import { TiltBrushShaders } from "./tiltbrush/Tiltbrushshaders"; 
+import { TiltShaderLoader } from "./tiltbrush/TiltShaderLoader.js";
 
 export class Loader {
     private scene : Scene;
@@ -28,6 +30,7 @@ export class Loader {
     private legacygltf : LegacyGLTFLoader;
 
     private sceneCamera : Camera;
+    private sceneColor : Color = new Color();
 
     private cameraControls : CameraControls;
 
@@ -49,11 +52,15 @@ export class Loader {
 
         this.tiltLoader = new TiltLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
+
+        var dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+        this.gltfLoader.setDRACOLoader(dracoLoader);
+
         this.legacygltf = new LegacyGLTFLoader(manager);
         this.scene = scene;
         this.sceneCamera = sceneCamera;
         this.cameraControls = cameraControls;
-        new RawShaderMaterial()
     }
 
     public update(deltaTime : number) {
@@ -96,44 +103,52 @@ export class Loader {
 
     private initGltf(url : string) {
         this.gltfLoader.load(url, (gltf) => {
+            console.log(gltf);
+
+
             this.loadedModel = gltf.scene;
+            var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.matrixWorld;
+            var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.matrixWorld;
             this.loadedModel.traverse((object : Object3D) => {
                 if(object.type === "Mesh") {
                     var mesh = object as Mesh;
                     var material = mesh.material as Material;
                     switch(material.name) {
-
                         case "brush_BlocksBasic":
                             mesh.geometry.name = "geometry_BlocksBasic";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["BlocksBasic"]);
-                            mesh.material.name = "material_BlocksBasic";
+                            //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            new TiltShaderLoader().load(TiltBrushShaders["BlocksBasic"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_BlocksBasic";
+                            });
                             break;
-
                         case "brush_BlocksGem":
                             mesh.geometry.name = "geometry_BlocksGem";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["BlocksGem"]);
-                            mesh.material.name = "material_BlocksGem";
+                            //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            new TiltShaderLoader().load(TiltBrushShaders["BlocksGem"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_BlocksGem";
+                            });
                             break;
-
                         case "brush_BlocksGlass":
                             mesh.geometry.name = "geometry_BlocksGlass";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["BlocksGlass"]);
-                            mesh.material.name = "material_BlocksGlass";
+                            //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            new TiltShaderLoader().load(TiltBrushShaders["BlocksGlass"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_BlocksGlass";
+                            });
                             break;
 
                         case "brush_Bubbles":
@@ -143,8 +158,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Bubbles"]);
-                            mesh.material.name = "material_Bubbles";
+                            new TiltShaderLoader().load(TiltBrushShaders["Bubbles"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Bubbles";
+                            });
                             break;
 
                         case "brush_CelVinyl":
@@ -154,8 +171,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["CelVinyl"]);
-                            mesh.material.name = "material_CelVinyl";
+                            new TiltShaderLoader().load(TiltBrushShaders["CelVinyl"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_CelVinyl";
+                            });
                             break;
 
                         case "brush_ChromaticWave":
@@ -165,8 +184,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["ChromaticWave"]);
-                            mesh.material.name = "material_ChromaticWave";
+                            new TiltShaderLoader().load(TiltBrushShaders["ChromaticWave"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_ChromaticWave";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -177,8 +198,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["CoarseBristles"]);
-                            mesh.material.name = "material_CoarseBristles";
+                            new TiltShaderLoader().load(TiltBrushShaders["CoarseBristles"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_CoarseBristles";
+                            });
                             break;
 
                         case "brush_Comet":
@@ -188,8 +211,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Comet"]);
-                            mesh.material.name = "material_Comet";
+                            new TiltShaderLoader().load(TiltBrushShaders["Comet"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Comet";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -200,8 +225,13 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DiamondHull"]);
-                            mesh.material.name = "material_DiamondHull";
+                            new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_DiamondHull";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -212,8 +242,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Disco"]);
-                            mesh.material.name = "material_Disco";
+                            new TiltShaderLoader().load(TiltBrushShaders["Disco"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Disco";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -224,8 +256,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DotMarker"]);
-                            mesh.material.name = "material_DotMarker";
+                            new TiltShaderLoader().load(TiltBrushShaders["DotMarker"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_DotMarker";
+                            });
                             break;
 
                         case "brush_Dots":
@@ -235,8 +269,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Dots"]);
-                            mesh.material.name = "material_Dots";
+                            new TiltShaderLoader().load(TiltBrushShaders["Dots"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Dots";
+                            });
                             break;
 
                         case "brush_DoubleTaperedFlat":
@@ -246,8 +282,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DoubleTaperedFlat"]);
-                            mesh.material.name = "material_DoubleTaperedFlat";
+                            new TiltShaderLoader().load(TiltBrushShaders["DoubleTaperedFlat"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_DoubleTaperedFlat";
+                            });
                             break;
 
                         case "brush_DoubleTaperedMarker":
@@ -257,8 +295,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DoubleTaperedMarker"]);
-                            mesh.material.name = "material_DoubleTaperedMarker";
+                            new TiltShaderLoader().load(TiltBrushShaders["DoubleTaperedMarker"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_DoubleTaperedMarker";
+                            });
                             break;
 
                         case "brush_DuctTape":
@@ -268,8 +308,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["DuctTape"]);
-                            mesh.material.name = "material_DuctTape";
+                            new TiltShaderLoader().load(TiltBrushShaders["DuctTape"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_DuctTape";
+                            });
                             break;
 
                         case "brush_Electricity":
@@ -279,8 +321,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Electricity"]);
-                            mesh.material.name = "material_Electricity";
+                            new TiltShaderLoader().load(TiltBrushShaders["Electricity"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Electricity";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -291,8 +335,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Embers"]);
-                            mesh.material.name = "material_Embers";
+                            new TiltShaderLoader().load(TiltBrushShaders["Embers"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Embers";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -303,8 +349,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["EnvironmentDiffuse"]);
-                            mesh.material.name = "material_EnvironmentDiffuse";
+                            new TiltShaderLoader().load(TiltBrushShaders["EnvironmentDiffuse"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_EnvironmentDiffuse";
+                            });
                             break;
 
                         case "brush_EnvironmentDiffuseLightMap":
@@ -314,8 +362,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["EnvironmentDiffuseLightMap"]);
-                            mesh.material.name = "material_EnvironmentDiffuseLightMap";
+                            new TiltShaderLoader().load(TiltBrushShaders["EnvironmentDiffuseLightMap"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_EnvironmentDiffuseLightMap";
+                            });
                             break;
 
                         case "brush_Fire":
@@ -325,8 +375,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Fire"]);
-                            mesh.material.name = "material_Fire";
+                            new TiltShaderLoader().load(TiltBrushShaders["Fire"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Fire";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -337,8 +389,24 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Flat"]);
-                            mesh.material.name = "material_Flat";
+                            new TiltShaderLoader().load(TiltBrushShaders["Flat"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Flat";
+                            });
+                            break;
+
+                        case "brush_FlatDeprecated":
+                            mesh.geometry.name = "geometry_FlatDeprecated";
+
+                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            new TiltShaderLoader().load(TiltBrushShaders["FlatDeprecated"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_FlatDeprecated";
+                            });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Highlighter":
@@ -348,8 +416,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Highlighter"]);
-                            mesh.material.name = "material_Highlighter";
+                            new TiltShaderLoader().load(TiltBrushShaders["Highlighter"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Highlighter";
+                            });
                             break;
 
                         case "brush_Hypercolor":
@@ -359,8 +429,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Hypercolor"]);
-                            mesh.material.name = "material_Hypercolor";
+                            new TiltShaderLoader().load(TiltBrushShaders["Hypercolor"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Hypercolor";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -371,8 +443,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["HyperGrid"]);
-                            mesh.material.name = "material_HyperGrid";
+                            new TiltShaderLoader().load(TiltBrushShaders["HyperGrid"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_HyperGrid";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -384,8 +458,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Icing"]);
-                            mesh.material.name = "material_Icing";
+                            new TiltShaderLoader().load(TiltBrushShaders["Icing"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Icing";
+                            });
                             break;
 
                         case "brush_Ink":
@@ -395,8 +471,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Ink"]);
-                            mesh.material.name = "material_Ink";
+                            new TiltShaderLoader().load(TiltBrushShaders["Ink"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Ink";
+                            });
                             break;
 
                         case "brush_Leaves":
@@ -406,8 +484,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Leaves"]);
-                            mesh.material.name = "material_Leaves";
+                            new TiltShaderLoader().load(TiltBrushShaders["Leaves"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Leaves";
+                            });
                             break;
 
                         case "brush_Light":
@@ -417,8 +497,11 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Light"]);
-                            mesh.material.name = "material_Light";
+
+                            new TiltShaderLoader().load(TiltBrushShaders["Light"], function( shader ) {
+                                mesh.material = shader;
+                                    mesh.material.name = "material_Light";
+                            });
                             break;
 
                         case "brush_LightWire":
@@ -428,8 +511,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["LightWire"]);
-                            mesh.material.name = "material_LightWire";
+                            new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_DiamondHull";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -440,8 +525,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Lofted"]);
-                            mesh.material.name = "material_Lofted";
+                            new TiltShaderLoader().load(TiltBrushShaders["Lofted"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Lofted";
+                            });
                             break;
 
                         case "brush_Marker":
@@ -451,8 +538,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Marker"]);
-                            mesh.material.name = "material_Marker";
+                            new TiltShaderLoader().load(TiltBrushShaders["Marker"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Marker";
+                            });
                             break;
 
                         case "brush_MatteHull":
@@ -461,8 +550,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["MatteHull"]);
-                            mesh.material.name = "material_MatteHull";
+                            new TiltShaderLoader().load(TiltBrushShaders["MatteHull"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_MatteHull";
+                            });
                             break;
 
                         case "brush_NeonPulse":
@@ -472,8 +563,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["NeonPulse"]);
-                            mesh.material.name = "material_NeonPulse";
+                            new TiltShaderLoader().load(TiltBrushShaders["NeonPulse"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_NeonPulse";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -485,8 +578,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["OilPaint"]);
-                            mesh.material.name = "material_OilPaint";
+                            new TiltShaderLoader().load(TiltBrushShaders["OilPaint"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_OilPaint";
+                            });
                             break;
 
                         case "brush_Paper":
@@ -496,8 +591,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Paper"]);
-                            mesh.material.name = "material_Paper";
+                            new TiltShaderLoader().load(TiltBrushShaders["Paper"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Paper";
+                            });
                             break;
 
                         case "brush_PbrTemplate":
@@ -507,8 +604,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["PbrTemplate"]);
-                            mesh.material.name = "material_PbrTemplate";
+                            new TiltShaderLoader().load(TiltBrushShaders["PbrTemplate"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_PbrTemplate";
+                            });
                             break;
 
                         case "brush_PbrTransparentTemplate":
@@ -518,8 +617,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["PbrTransparentTemplate"]);
-                            mesh.material.name = "material_PbrTransparentTemplate";
+                            new TiltShaderLoader().load(TiltBrushShaders["PbrTransparentTemplate"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_PbrTransparentTemplate";
+                            });
                             break;
 
                         case "brush_Petal":
@@ -529,8 +630,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Petal"]);
-                            mesh.material.name = "material_Petal";
+                            new TiltShaderLoader().load(TiltBrushShaders["Petal"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Petal";
+                            });
                             break;
 
                         case "brush_Plasma":
@@ -540,8 +643,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Plasma"]);
-                            mesh.material.name = "material_Plasma";
+                            new TiltShaderLoader().load(TiltBrushShaders["Plasma"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Plasma";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -553,8 +658,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Rainbow"]);
-                            mesh.material.name = "material_Rainbow";
+                            new TiltShaderLoader().load(TiltBrushShaders["Rainbow"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Rainbow";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -565,8 +672,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["ShinyHull"]);
-                            mesh.material.name = "material_ShinyHull";
+                            new TiltShaderLoader().load(TiltBrushShaders["ShinyHull"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_ShinyHull";
+                            });
                             break;
 
                         case "brush_Smoke":
@@ -577,8 +686,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Smoke"]);
-                            mesh.material.name = "material_Smoke";
+                            new TiltShaderLoader().load(TiltBrushShaders["Smoke"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Smoke";
+                            });
                             break;
 
                         case "brush_Snow":
@@ -588,8 +699,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Snow"]);
-                            mesh.material.name = "material_Snow";
+                            new TiltShaderLoader().load(TiltBrushShaders["Snow"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Snow";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -600,8 +713,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["SoftHighlighter"]);
-                            mesh.material.name = "material_SoftHighlighter";
+                            new TiltShaderLoader().load(TiltBrushShaders["SoftHighlighter"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_SoftHighlighter";
+                            });
                             break;
 
                         case "brush_Spikes":
@@ -611,8 +726,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Spikes"]);
-                            mesh.material.name = "material_Spikes";
+                            new TiltShaderLoader().load(TiltBrushShaders["Spikes"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Spikes";
+                            });
                             break;
 
                         case "brush_Splatter":
@@ -622,8 +739,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Splatter"]);
-                            mesh.material.name = "material_Splatter";
+                            new TiltShaderLoader().load(TiltBrushShaders["Splatter"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Splatter";
+                            });
                             break;
 
                         case "brush_Stars":
@@ -633,8 +752,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Stars"]);
-                            mesh.material.name = "material_Stars";
+                            new TiltShaderLoader().load(TiltBrushShaders["Stars"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Stars";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -645,8 +766,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Streamers"]);
-                            mesh.material.name = "material_Streamers";
+                            new TiltShaderLoader().load(TiltBrushShaders["Streamers"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Streamers";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -657,8 +780,11 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Taffy"]);
-                            mesh.material.name = "material_Taffy";
+                            new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_DiamondHull";
+                            });
+                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_TaperedFlat":
@@ -668,8 +794,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["TaperedFlat"]);
-                            mesh.material.name = "material_TaperedFlat";
+                            new TiltShaderLoader().load(TiltBrushShaders["TaperedFlat"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_TaperedFlat";
+                            });
                             break;
 
                         case "brush_TaperedMarker":
@@ -679,8 +807,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["TaperedMarker"]);
-                            mesh.material.name = "material_TaperedMarker";
+                            new TiltShaderLoader().load(TiltBrushShaders["TaperedMarker"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_TaperedMarker";
+                            });
                             break;
 
                         case "brush_TaperedMarker_Flat":
@@ -690,8 +820,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Flat"]);
-                            mesh.material.name = "material_Flat";
+                            new TiltShaderLoader().load(TiltBrushShaders["Flat"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Flat";
+                            });
                             break;
 
                         case "brush_ThickPaint":
@@ -701,8 +833,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["ThickPaint"]);
-                            mesh.material.name = "material_ThickPaint";
+                            new TiltShaderLoader().load(TiltBrushShaders["ThickPaint"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_ThickPaint";
+                            });
                             break;
 
                         case "brush_Toon":
@@ -711,8 +845,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Toon"]);
-                            mesh.material.name = "material_Toon";
+                            new TiltShaderLoader().load(TiltBrushShaders["Toon"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Toon";
+                            });
                             break;
 
                         case "brush_UnlitHull":
@@ -721,8 +857,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["UnlitHull"]);
-                            mesh.material.name = "material_UnlitHull";
+                            new TiltShaderLoader().load(TiltBrushShaders["UnlitHull"], function(shader) {
+                                mesh.material = shader;
+                                    mesh.material.name = "material_UnlitHull";
+                            });
                             break;
 
                         case "brush_VelvetInk":
@@ -732,8 +870,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["VelvetInk"]);
-                            mesh.material.name = "material_VelvetInk";
+                            new TiltShaderLoader().load(TiltBrushShaders["VelvetInk"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_VelvetInk";
+                            });
                             break;
 
                         case "brush_Waveform":
@@ -743,8 +883,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Waveform"]);
-                            mesh.material.name = "material_Waveform";
+                            new TiltShaderLoader().load(TiltBrushShaders["Waveform"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Waveform";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -755,8 +897,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["WetPaint"]);
-                            mesh.material.name = "material_WetPaint";
+                            new TiltShaderLoader().load(TiltBrushShaders["WetPaint"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_WetPaint";
+                            });
                             break;
 
                         case "brush_WigglyGraphite":
@@ -766,8 +910,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["WigglyGraphite"]);
-                            mesh.material.name = "material_WigglyGraphite";
+                            new TiltShaderLoader().load(TiltBrushShaders["WigglyGraphite"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_WigglyGraphite";
+                            });
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -777,8 +923,10 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.material = new RawShaderMaterial(TiltBrushShaders["Wire"]);
-                            mesh.material.name = "material_Wire";
+                            new TiltShaderLoader().load(TiltBrushShaders["Wire"], function( shader ) {
+                                mesh.material = shader;
+                                mesh.material.name = "material_Wire";
+                            });
                             break;
 
                         default:
@@ -794,57 +942,142 @@ export class Loader {
                     // }
                 }
             });
-            this.scene.clear();
-            this.scene.add(this.loadedModel);
 
-            //Setup camera to center model
-            const box = new Box3().setFromObject(this.loadedModel);
-            const boxSize = box.getSize(new Vector3()).length();
-            const boxCenter = box.getCenter(new Vector3());
-
-            this.cameraControls.minDistance = boxSize * 0.01;
-            this.cameraControls.maxDistance = boxSize;
-
-            const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
-            this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-            this.cameraControls.dollyTo(midDistance, true);
-            this.cameraControls.saveState();
-
-            //DEBUG LIGHTING
-            var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
-            keyLightNode.position.set(-19.021, 34.882, -19.134);
-            keyLightNode.scale.set(0, 0, 16.828);
-            this.scene.add(keyLightNode);
-
-            var headLightNode = new DirectionalLight(0xFFEEDD, 0.250);
-            headLightNode.position.set(-16.661, 8.330, 8.330);
-            headLightNode.scale.set(1, 1, 1);
-            this.scene.add(headLightNode);
-
-            var __hemi__ = new HemisphereLight(0xEFEFFF, 0xB2B2B2, 0);
-            __hemi__.position.set(0, 1, 0);
-            this.scene.add(__hemi__);
-
-            this.loaded = true;
+            this.finishSetup(this.loadedModel);
         });
+    }
+
+    private finishSetup(model: Object3D) {
+        this.scene.clear();
+        this.scene.background = this.sceneColor;
+        this.scene.add(model);
+
+        // Setup camera to center model
+        const box = new Box3().setFromObject(model);
+        const boxSize = box.getSize(new Vector3()).length();
+        const boxCenter = box.getCenter(new Vector3());
+
+        this.cameraControls.minDistance = boxSize * 0.01;
+        this.cameraControls.maxDistance = boxSize;
+
+        const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
+        this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+        this.cameraControls.dollyTo(midDistance, true);
+        this.cameraControls.saveState();
+
+        // DEBUG LIGHTING
+        var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
+        keyLightNode.position.set(-19.021, 34.882, -19.134);
+        keyLightNode.scale.set(0, 0, 16.828);
+        this.scene.add(keyLightNode);
+
+        var headLightNode = new DirectionalLight(0xFFEEDD, 0.250);
+        headLightNode.position.set(-16.661, 8.330, 8.330);
+        headLightNode.scale.set(1, 1, 1);
+        this.scene.add(headLightNode);
+
+        var __hemi__ = new HemisphereLight(0xEFEFFF, 0xB2B2B2, 0.6);
+        __hemi__.position.set(0, 1, 0);
+        this.scene.add(__hemi__);
+
+        this.loaded = true;
     }
 
     private initTilt(url : string) {
         this.tiltLoader.load(url, (tilt) => {
-            this.scene.clear();
-            this.scene.add(tilt);
+            this.loadedModel = tilt;
+            this.finishSetup(this.loadedModel);
         });
     }
 
     private initPolyGltf(url : string) {
         this.legacygltf.load(url, (gltf) => {
-            this.scene.clear();
-            this.scene.add(gltf.scene);
+            this.loadedModel = gltf.scene;
+            this.finishSetup(this.loadedModel);
+        });
+    }
+
+    private initPolyGltf2(url : string) {
+        this.gltfLoader.load(url, (gltf) => {
+            this.loadedModel = gltf.scene;
+            this.finishSetup(this.loadedModel);
         });
     }
 
     public loadGLTF(url : string) {
         this.initGltf(url);
+    }
+
+    public loadIcosaAsset(userID : string, assetID : string, format? : string) {
+        const http = new XMLHttpRequest();
+        const url = `https://api.icosa.gallery/assets/${userID}/${assetID}`;
+        const that = this;
+        
+        http.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                const icosaAsset = Convert.toIcosa(this.response);
+                
+                let types: { [name: string]: JSONIcosaFormat } = {};
+
+                icosaAsset.formats.forEach(newformat => {
+                    types[newformat.format] = newformat;
+                });
+                console.log(types);
+
+                if(format) {
+                    switch(format) {
+                        case "GLTF2":
+                            if(types.hasOwnProperty("GLTF2")) {
+                                that.initPolyGltf2(types.GLTF2.url);
+                                return;
+                            }
+                            break;
+                        case "GLTF":
+                            if(types.hasOwnProperty("GLTF")) {
+                                that.initPolyGltf(types.GLTF.url);
+                                return;
+                            }
+                            break;
+                        case "TILT":
+                            if(types.hasOwnProperty("TILT")) {
+                                that.initTilt(types.TILT.url);
+                                return;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                // If no format specified, return in preferred order
+                if(types.hasOwnProperty("GLTF2")) {
+                    that.initPolyGltf2(types.GLTF2.url);
+                    return;
+                }
+
+                if(types.hasOwnProperty("GLTF")) {
+                    that.initPolyGltf(types.GLTF.url);
+                    return;
+                }
+                
+                // At the moment tilt files should always be least priority as the renderer
+                // still just uses control points.
+                if(types.hasOwnProperty("TILT")) {
+                    that.initTilt(types.TILT.url);
+                    return;
+                }
+            }
+        }
+
+        http.open("GET", url, true);
+        http.send();
+    }
+
+    public loadIcosaUrl(url : string, format?: string) {
+        var splitURL = url.split('/');
+        console.log(splitURL);
+        if(splitURL[2] === "icosa.gallery")
+            this.loadIcosaAsset(splitURL[4], splitURL[5], format);
     }
 
     public loadPolyAsset(assetID : string, format? : string) {
@@ -856,16 +1089,28 @@ export class Loader {
             if (this.readyState == 4 && this.status == 200) {
                 const polyAsset = Convert.toPoly(this.response);
 
-                //To dict, for format preference sorting
+                // To dict, for format preference sorting
                 let types: { [name: string]: JSONPolyFormat } = {}; 
+
+                if(polyAsset.presentationParams.backgroundColor) {
+                    console.log(`Setting background color: ${polyAsset.presentationParams.backgroundColor}`);
+                    that.sceneColor = new Color(polyAsset.presentationParams.backgroundColor);
+                }
+
 
                 polyAsset.formats.forEach(format => {
                     types[format.formatType] = format;
                 });
 
-                //Check if specific format requested, otherwise loop through order of preference
+                // Check if specific format requested, otherwise loop through order of preference
                 if(format) {
                     switch (format) {
+                        case "GLTF2":
+                            if(types.hasOwnProperty("GLTF2")) {
+                                that.initPolyGltf2(types.GLTF2.root.url);
+                                return;
+                            }
+                            break;
                         case "GLTF":
                             if(types.hasOwnProperty("GLTF")) {
                                 that.initPolyGltf(types.GLTF.root.url);
@@ -883,11 +1128,19 @@ export class Loader {
                     }
                 }
 
+                // If no format specified, return in preferred order
+                if(types.hasOwnProperty("GLTF2")) {
+                    that.initPolyGltf2(types.GLTF2.root.url);
+                    return;
+                }
+
                 if(types.hasOwnProperty("GLTF")) {
                     that.initPolyGltf(types.GLTF.root.url);
                     return;
                 }
-
+                
+                // At the moment tilt files should always be least priority as the renderer
+                // still just uses control points.
                 if(types.hasOwnProperty("TILT")) {
                     that.initTilt(types.TILT.root.url);
                     return;
