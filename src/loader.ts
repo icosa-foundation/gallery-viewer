@@ -85,7 +85,6 @@ export class Loader {
                 case "material_Embers":
                 case "material_Fire":
                 case "material_Hypercolor":
-                case "material_HyperGrid":
                 case "material_LightWire":
                 case "material_NeonPulse":
                 case "material_Plasma":
@@ -152,7 +151,7 @@ export class Loader {
                             mesh.geometry.name = "geometry_Bubbles";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Bubbles"], function( shader ) {
@@ -263,7 +262,7 @@ export class Loader {
                             mesh.geometry.name = "geometry_Dots";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Dots"], function( shader ) {
@@ -329,7 +328,7 @@ export class Loader {
                             mesh.geometry.name = "geometry_Embers";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("position")); //in theory this should be "_tb_unity_normal" but I can't see anything with that.
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Embers"], function( shader ) {
@@ -373,6 +372,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Fire"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Fire";
                             });
@@ -440,11 +442,11 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
                             new TiltShaderLoader().load(TiltBrushShaders["HyperGrid"], function( shader ) {
                                 mesh.material = shader;
                                 mesh.material.name = "material_HyperGrid";
                             });
-                            this.updateableMeshes.push(mesh);
                             break;
 
                         case "brush_Icing":
@@ -508,9 +510,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function( shader ) {
+                            new TiltShaderLoader().load(TiltBrushShaders["LightWire"], function( shader ) {
                                 mesh.material = shader;
-                                mesh.material.name = "material_DiamondHull";
+                                mesh.material.name = "material_LightWire";
                             });
                             this.updateableMeshes.push(mesh);
                             break;
@@ -576,6 +578,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
                             new TiltShaderLoader().load(TiltBrushShaders["OilPaint"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_OilPaint";
                             });
@@ -691,9 +696,9 @@ export class Loader {
 
                         case "brush_Snow":
                             mesh.geometry.name = "geometry_Snow";
-
+                            
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("position")); //in theory this should be "_tb_unity_normal" but I can't see anything with that.
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Snow"], function( shader ) {
@@ -701,6 +706,9 @@ export class Loader {
                                 mesh.material.name = "material_Snow";
                             });
                             this.updateableMeshes.push(mesh);
+
+                            console.log(material.name);
+                            console.log(mesh.geometry.attributes);
                             break;
 
                         case "brush_SoftHighlighter":
@@ -746,9 +754,10 @@ export class Loader {
                             mesh.geometry.name = "geometry_Stars";
 
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("position")); //in theory this should be "_tb_unity_normal" but I can't see anything with that.
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
+                            mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
                             new TiltShaderLoader().load(TiltBrushShaders["Stars"], function( shader ) {
                                 mesh.material = shader;
                                 mesh.material.name = "material_Stars";
