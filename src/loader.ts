@@ -103,8 +103,8 @@ export class Loader {
     private initGltf2(url : string) {
         this.gltfLoader.load(url, (gltf) => {
             this.loadedModel = gltf.scene;
-            var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.matrixWorld;
-            var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.matrixWorld;
+            var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.modelViewMatrix;
+            var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.modelViewMatrix;
             this.loadedModel.traverse((object : Object3D) => {
                 if(object.type === "Mesh") {
                     var mesh = object as Mesh;
@@ -118,6 +118,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["BlocksBasic"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_BlocksBasic";
                             });
@@ -130,6 +133,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["BlocksGem"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_BlocksGem";
                             });
@@ -142,6 +148,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["BlocksGlass"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_BlocksGlass";
                             });
@@ -155,6 +164,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Bubbles"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Bubbles";
                             });
@@ -168,6 +180,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["CelVinyl"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_CelVinyl";
                             });
@@ -181,6 +196,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["ChromaticWave"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_ChromaticWave";
                             });
@@ -195,6 +213,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["CoarseBristles"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_CoarseBristles";
                             });
@@ -208,6 +229,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Comet"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Comet";
                             });
@@ -225,6 +249,9 @@ export class Loader {
                                 shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
                                 shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
                                 shader.uniformsNeedUpdate = true;
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_DiamondHull";
                             });
@@ -239,6 +266,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Disco"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Disco";
                             });
@@ -253,6 +283,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["DotMarker"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_DotMarker";
                             });
@@ -266,6 +299,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Dots"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Dots";
                             });
@@ -279,6 +315,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["DoubleTaperedFlat"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_DoubleTaperedFlat";
                             });
@@ -292,6 +331,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["DoubleTaperedMarker"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_DoubleTaperedMarker";
                             });
@@ -305,6 +347,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["DuctTape"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_DuctTape";
                             });
@@ -347,6 +392,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["EnvironmentDiffuse"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_EnvironmentDiffuse";
                             });
@@ -360,6 +408,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["EnvironmentDiffuseLightMap"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_EnvironmentDiffuseLightMap";
                             });
@@ -373,6 +424,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Fire"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
                                 shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
                                 shader.uniformsNeedUpdate = true;
@@ -390,6 +444,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Flat"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Flat";
                             });
@@ -403,6 +460,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["FlatDeprecated"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_FlatDeprecated";
                             });
@@ -417,6 +477,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Highlighter"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Highlighter";
                             });
@@ -430,6 +493,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Hypercolor"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Hypercolor";
                             });
@@ -445,6 +511,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
                             new TiltShaderLoader().load(TiltBrushShaders["HyperGrid"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_HyperGrid";
                             });
@@ -459,6 +528,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
                             new TiltShaderLoader().load(TiltBrushShaders["Icing"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Icing";
                             });
@@ -472,6 +544,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Ink"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Ink";
                             });
@@ -485,6 +560,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Leaves"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Leaves";
                             });
@@ -499,6 +577,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
                             new TiltShaderLoader().load(TiltBrushShaders["Light"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                     mesh.material.name = "material_Light";
                             });
@@ -512,6 +593,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["LightWire"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_LightWire";
                             });
@@ -526,6 +610,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Lofted"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Lofted";
                             });
@@ -539,6 +626,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Marker"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Marker";
                             });
@@ -551,6 +641,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             new TiltShaderLoader().load(TiltBrushShaders["MatteHull"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_MatteHull";
                             });
@@ -564,6 +657,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["NeonPulse"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_NeonPulse";
                             });
@@ -582,6 +678,9 @@ export class Loader {
                                 shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
                                 shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
                                 shader.uniformsNeedUpdate = true;
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_OilPaint";
                             });
@@ -595,6 +694,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Paper"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Paper";
                             });
@@ -608,6 +710,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["PbrTemplate"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_PbrTemplate";
                             });
@@ -621,6 +726,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["PbrTransparentTemplate"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_PbrTransparentTemplate";
                             });
@@ -634,6 +742,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Petal"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Petal";
                             });
@@ -647,6 +758,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Plasma"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Plasma";
                             });
@@ -662,6 +776,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
                             new TiltShaderLoader().load(TiltBrushShaders["Rainbow"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Rainbow";
                             });
@@ -676,6 +793,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["ShinyHull"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_ShinyHull";
                             });
@@ -690,6 +810,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
                             new TiltShaderLoader().load(TiltBrushShaders["Smoke"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Smoke";
                             });
@@ -707,9 +830,6 @@ export class Loader {
                                 mesh.material.name = "material_Snow";
                             });
                             this.updateableMeshes.push(mesh);
-
-                            console.log(material.name);
-                            console.log(mesh.geometry.attributes);
                             break;
 
                         case "brush_SoftHighlighter":
@@ -720,6 +840,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["SoftHighlighter"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_SoftHighlighter";
                             });
@@ -733,6 +856,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Spikes"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Spikes";
                             });
@@ -746,6 +872,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Splatter"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Splatter";
                             });
@@ -760,6 +889,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
                             new TiltShaderLoader().load(TiltBrushShaders["Stars"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Stars";
                             });
@@ -774,6 +906,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Streamers"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Streamers";
                             });
@@ -788,6 +923,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_DiamondHull";
                             });
@@ -802,6 +940,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["TaperedFlat"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_TaperedFlat";
                             });
@@ -815,6 +956,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["TaperedMarker"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_TaperedMarker";
                             });
@@ -828,6 +972,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Flat"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Flat";
                             });
@@ -841,6 +988,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["ThickPaint"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_ThickPaint";
                             });
@@ -853,6 +1003,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             new TiltShaderLoader().load(TiltBrushShaders["Toon"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Toon";
                             });
@@ -866,7 +1019,7 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             new TiltShaderLoader().load(TiltBrushShaders["UnlitHull"], function(shader) {
                                 mesh.material = shader;
-                                    mesh.material.name = "material_UnlitHull";
+                                mesh.material.name = "material_UnlitHull";
                             });
                             break;
 
@@ -878,6 +1031,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["VelvetInk"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_VelvetInk";
                             });
@@ -891,6 +1047,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Waveform"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_Waveform";
                             });
@@ -905,6 +1064,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["WetPaint"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_WetPaint";
                             });
@@ -918,6 +1080,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["WigglyGraphite"], function( shader ) {
+                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_WigglyGraphite";
                             });
