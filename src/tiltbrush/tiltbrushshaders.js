@@ -89,7 +89,7 @@ const TiltBrushShaders = {
 		vertexShader: BASE_URL + "Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c/Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c-v10.0-vertex.glsl",
 		fragmentShader: BASE_URL + "Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c/Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c-v10.0-fragment.glsl",
 		side: 2,
-		transparent: false,
+		transparent: true,
 		depthFunc: 2,
 		depthWrite: true,
 		depthTest: true,
@@ -425,26 +425,18 @@ const TiltBrushShaders = {
     },
     "Electricity" : {
     	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
 			u_time: { value: new Vector4() },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_Cutoff: { value: 0.2 }
+			u_DisplacementIntensity: { value: 2 },
+			u_EmissionGain: { value: 0.2 }
 		},
 		vertexShader: BASE_URL + "Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51/Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51-v10.0-vertex.glsl",
 		fragmentShader: BASE_URL + "Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51/Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51-v10.0-fragment.glsl",
 		side: 2,
-		transparent: false,
+		transparent: true,
 		depthFunc: 2,
-		depthWrite: true,
+		depthWrite: false,
 		depthTest: true,
-		blending: 0,
+		blending: 2,
 		extensions: { derivatives: true }
     },
     "Embers" : {
@@ -1576,11 +1568,11 @@ const TiltBrushShaders = {
 		vertexShader: BASE_URL + "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-vertex.glsl",
 		fragmentShader: BASE_URL + "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-fragment.glsl",
 		side: 2,
-		transparent: false,
+		transparent: true,
 		depthFunc: 2,
-		depthWrite: true,
+		depthWrite: false,
 		depthTest: true,
-		blending: 0,
+		blending: 2,
 		extensions: { derivatives: true }
     },
     "Waveform" : {
