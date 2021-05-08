@@ -91,10 +91,9 @@ const TiltBrushShaders = {
 		side: 2,
 		transparent: true,
 		depthFunc: 2,
-		depthWrite: true,
+		depthWrite: false,
 		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
+		blending: 2
     },
     "CelVinyl" : {
     	uniforms: {
@@ -443,7 +442,7 @@ const TiltBrushShaders = {
     	uniforms: {
 			u_time: { value: new Vector4() },
 			u_ScrollRate: { value: 0.6 },
-			u_ScrollDistance: { value: new Vector3(0.2, 0.6, 0) },
+			u_ScrollDistance: { value: new Vector3(-0.2, 0.6, 0) },
 			u_ScrollJitterIntensity: { value: 0.03 },
 			u_ScrollJitterFrequency: { value: 5 },
 			u_TintColor: { value: new Vector4(1, 1, 1, 1) },
