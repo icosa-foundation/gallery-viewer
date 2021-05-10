@@ -29,8 +29,7 @@ out vec4 v_color;
 out vec3 v_normal;  // Camera-space normal.
 out vec3 v_position;  // Camera-space position.
 out vec2 v_texcoord0;
-out vec3 v_light_dir_0;  // Camera-space light direction, main light.
-out vec3 v_light_dir_1;  // Camera-space light direction, other light.
+out vec4 v_texcoord1;
 
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
@@ -38,8 +37,13 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat3 normalMatrix;
 
-uniform mat4 u_SceneLight_0_matrix;
-uniform mat4 u_SceneLight_1_matrix;
+uniform vec4 u_time;
+uniform float u_ScrollRate;
+uniform vec3 u_ScrollDistance;
+uniform float u_ScrollJitterIntensity;
+uniform float u_ScrollJitterFrequency;
+
+vec4 _Time;
 
 // Copyright 2020 The Tilt Brush Authors
 //
@@ -115,11 +119,25 @@ vec4 GetParticlePositionLS() {
 void main() {
   vec4 pos = GetParticlePositionLS();
 
-  gl_Position = projectionMatrix * modelViewMatrix * pos;
+  _Time = u_time;
   v_normal = normalMatrix * a_normal;
-  v_position = (modelViewMatrix * pos).xyz;
-  v_light_dir_0 = u_SceneLight_0_matrix[2].xyz;
-  v_light_dir_1 = u_SceneLight_1_matrix[2].xyz;
   v_color = a_color;
   v_texcoord0 = a_texcoord0.xy;
+  v_texcoord1 = a_texcoord1;
+
+  float scrollAmount = _Time.y;
+  float t = mod(scrollAmount * u_ScrollRate + a_color.a, 1.0);
+
+  vec4 dispVec = (t - .5) * vec4(u_ScrollDistance.x, u_ScrollDistance.y, u_ScrollDistance.z, 0.0);
+
+  dispVec.x += sin(t * u_ScrollJitterFrequency + _Time.y) * u_ScrollJitterIntensity;
+  dispVec.z += cos(t * u_ScrollJitterFrequency * .5 + _Time.y) * u_ScrollJitterIntensity;
+
+  vec3 worldPos = (modelMatrix * pos).xyz;
+  worldPos.xyz += dispVec.xyz;
+
+  v_color.a = pow(1.0 - abs(2.0*(t - .5)), 3.0);
+
+  gl_Position = projectionMatrix * viewMatrix * vec4(worldPos.x, worldPos.y, worldPos.z,1.0);
+  v_position = (modelViewMatrix * pos).xyz;
 }

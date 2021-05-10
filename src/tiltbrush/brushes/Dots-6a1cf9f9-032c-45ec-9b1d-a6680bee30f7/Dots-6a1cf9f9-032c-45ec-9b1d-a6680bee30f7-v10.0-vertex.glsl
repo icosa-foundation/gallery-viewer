@@ -14,11 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Default shader for GlTF web preview.
-//
-// This shader is used as a fall-back when a brush-specific shader is
-// unavailable.
-
 in vec4 a_position;
 in vec3 a_normal;
 in vec4 a_color;
@@ -118,8 +113,8 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * pos;
   v_normal = normalMatrix * a_normal;
   v_position = (modelViewMatrix * pos).xyz;
-  v_light_dir_0 = u_SceneLight_0_matrix[2].xyz;
-  v_light_dir_1 = u_SceneLight_1_matrix[2].xyz;
+  v_light_dir_0 = mat3(u_SceneLight_0_matrix) * vec3(0, 0, 1);
+  v_light_dir_1 = mat3(u_SceneLight_1_matrix) * vec3(0, 0, 1);
   v_color = a_color;
   v_texcoord0 = a_texcoord0.xy;
 }

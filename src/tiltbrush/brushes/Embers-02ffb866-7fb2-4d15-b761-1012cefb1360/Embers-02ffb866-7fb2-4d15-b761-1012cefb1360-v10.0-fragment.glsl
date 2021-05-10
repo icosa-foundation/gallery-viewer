@@ -25,6 +25,8 @@ uniform vec4 u_TintColor;
 uniform float u_EmissionGain;
 
 void main() {
-  vec4 color = v_color * u_TintColor * texture(u_MainTex, v_texcoord0);
-  fragColor = vec4(color.rgb * color.a, 1.0);
+  // This should be in the vertex shader
+
+  vec4 color = 2.0 * v_color * u_TintColor * texture(u_MainTex, v_texcoord0);
+  fragColor = color;
 }

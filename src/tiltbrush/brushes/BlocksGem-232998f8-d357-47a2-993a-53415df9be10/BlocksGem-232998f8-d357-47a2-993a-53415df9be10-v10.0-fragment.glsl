@@ -13,10 +13,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// Brush-specific shader for GlTF web preview, based on General generator
-// with parameters lit=1, a=0.5.
-
 precision mediump float;
 
 out vec4 fragColor;
@@ -24,142 +20,20 @@ out vec4 fragColor;
 uniform vec4 u_ambient_light_color;
 uniform vec4 u_SceneLight_0_color;
 uniform vec4 u_SceneLight_1_color;
-
-uniform vec3 u_SpecColor;
 uniform float u_Shininess;
-uniform float u_Cutoff;
-uniform sampler2D u_MainTex;
+uniform float u_RimIntensity;
+uniform float u_RimPower;
+uniform vec4 u_Color;
+uniform float u_Frequency;
+uniform float u_Jitter;
 
 in vec4 v_color;
 in vec3 v_normal;
 in vec3 v_position;
+in vec3 v_local_position;
 in vec3 v_light_dir_0;
 in vec3 v_light_dir_1;
 in vec2 v_texcoord0;
-
-float dispAmount = .0015;
-
-// Copyright 2020 The Tilt Brush Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Fogging support
-uniform vec3 u_fogColor;
-uniform float u_fogDensity;
-in float f_fog_coord;
-
-// This fog function emulates the exponential fog used in Tilt Brush
-//
-// Details:
-//   * For exponential fog, Unity defines u_density = density / ln(2) on the CPU, sp that they can
-//        convert the base from e to 2 and use exp2 rather than exp. We might as well do the same.
-//   * The fog on Plya does not precisely match that in Unity, though it's very close.  Two known
-//        reasons for this are
-//          1) Clipping plans on Poly are different than in Tilt Brush.  Poly is .1:2000, Tilt
-//             Brush is .5:10000.
-//          2) Poly applies post processing (vignettes, etc...) that can subtly change the look
-//             of the fog.
-//   * Finally, Tilt Brush uses "decimeters" for legacy reasons.
-//        In order to convert Density values from TB to Poly, we multiply by 10.0 in order to
-//        convert decimeters to meters.
-//
-
-vec3 ApplyFog(vec3 color) {
-  // Per the top comment, we must modify the density value by Unity's ln(2) modification as well as
-  // a decimeter conversion
-  float density = (u_fogDensity / .693147) * 10.;
-
-  // This exponential fog function is copied directly from unity (see UnityCG.inc).
-  float fogFactor = f_fog_coord * density;
-  fogFactor = exp2(-fogFactor);
-  fogFactor = clamp( fogFactor, 0.0, 1.0 );
-  return mix(u_fogColor, color.xyz, fogFactor);
-}
-// Copyright 2020 The Tilt Brush Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Requires a global constant "float dispAmount"
-// TODO: turn it into a parameter!
-
-// ---------------------------------------------------------------------------------------------- //
-// Tangent-less normal maps (derivative maps)
-// ---------------------------------------------------------------------------------------------- //
-uniform sampler2D u_BumpMap;
-uniform vec4 u_BumpMap_TexelSize;
-
-// HACK: Workaround for GPUs which struggle with vec3/vec2 derivatives.
-vec3 xxx_dFdx3(vec3 v) {
-  return vec3(dFdx(v.x), dFdx(v.y), dFdx(v.z));
-}
-vec3 xxx_dFdy3(vec3 v) {
-  return vec3(dFdy(v.x), dFdy(v.y), dFdy(v.z));
-}
-vec2 xxx_dFdx2(vec2 v) {
-  return vec2(dFdx(v.x), dFdx(v.y));
-}
-vec2 xxx_dFdy2(vec2 v) {
-  return vec2(dFdy(v.x), dFdy(v.y));
-}
-// </HACK>
-
-vec3 PerturbNormal(vec3 position, vec3 normal, vec2 uv)
-{
-  // Bump Mapping Unparametrized Surfaces on the GPU
-  // by Morten S. Mikkelsen
-  // https://goo.gl/O3JiVq
-
-  highp vec3 vSigmaS = xxx_dFdx3(position);
-  highp vec3 vSigmaT = xxx_dFdy3(position);
-  highp vec3 vN = normal;
-  highp vec3 vR1 = cross(vSigmaT, vN);
-  highp vec3 vR2 = cross(vN, vSigmaS);
-  float fDet = dot(vSigmaS, vR1);
-
-  vec2 texDx = xxx_dFdx2(uv);
-  vec2 texDy = xxx_dFdy2(uv);
-
-  float resolution = max(u_BumpMap_TexelSize.z, u_BumpMap_TexelSize.w);
-  highp float d = min(1., (0.5 / resolution) / max(length(texDx), length(texDy)));
-
-  vec2 STll = uv;
-  vec2 STlr = uv + d * texDx;
-  vec2 STul = uv + d * texDy;
-
-  highp float Hll = texture(u_BumpMap, STll).x;
-  highp float Hlr = texture(u_BumpMap, STlr).x;
-  highp float Hul = texture(u_BumpMap, STul).x;
-
-  Hll = mix(Hll, 1. - Hll, float(!gl_FrontFacing)) * dispAmount;
-  Hlr = mix(Hlr, 1. - Hlr, float(!gl_FrontFacing)) * dispAmount;
-  Hul = mix(Hul, 1. - Hul, float(!gl_FrontFacing)) * dispAmount;
-
-  highp float dBs = (Hlr - Hll) / d;
-  highp float dBt = (Hul - Hll) / d;
-
-  highp vec3 vSurfGrad = sign(fDet) * (dBs * vR1 + dBt * vR2);
-  return normalize(abs(fDet) * vN - vSurfGrad);
-}
 
 // Copyright 2020 The Tilt Brush Authors
 //
@@ -340,38 +214,121 @@ vec3 LambertShader(
   float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
   return diffuseColor * lightColor * NdotL;
 }
+//
+// Voronoi implementation taken from
+// https://github.com/Scrawk/GPU-Voronoi-Noise
+// (MIT License)
+//
 
-vec3 computeLighting(vec3 normal) {
-   
-  // Always use front-facing normal for double-sided surfaces.
-  normal.z *= mix(-1.0, 1.0, float(gl_FrontFacing));
+//1/7
+#define K 0.142857142857
+//3/7
+#define Ko 0.428571428571
+
+#define OCTAVES 1
+
+vec3 fmod(vec3 x, float y) { return x - y * floor(x/y); }
+vec2 fmod(vec2 x, float y) { return x - y * floor(x/y); }
+
+// Permutation polynomial: (34x^2 + x) mod 289
+vec3 Permutation(vec3 x)
+{
+    return mod((34.0 * x + 1.0) * x, 289.0);
+}
+
+vec2 inoise(vec3 P, float jitter)
+{
+    vec3 Pi = mod(floor(P), 289.0);
+    vec3 Pf = fract(P);
+    vec3 oi = vec3(-1.0, 0.0, 1.0);
+    vec3 of = vec3(-0.5, 0.5, 1.5);
+    vec3 px = Permutation(Pi.x + oi);
+    vec3 py = Permutation(Pi.y + oi);
+    
+    vec3 p, ox, oy, oz, dx, dy, dz;
+    vec2 F = vec2(1e6,1e6);
+    
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            p = Permutation(px[i] + py[j] + Pi.z + oi); // pij1, pij2, pij3
+            
+            ox = fract(p*K) - Ko;
+            oy = mod(floor(p*K),7.0)*K - Ko;
+            p = Permutation(p);
+            
+            oz = fract(p*K) - Ko;
+            
+            dx = Pf.x - of[i] + jitter*ox;
+            dy = Pf.y - of[j] + jitter*oy;
+            dz = Pf.z - of + jitter*oz;
+            
+            vec3 d = dx * dx + dy * dy + dz * dz; // dij1, dij2 and dij3, squared
+            
+            //Find lowest and second lowest distances
+            for(int n = 0; n < 3; n++) {
+                if(d[n] < F[0]) {
+                    F[1] = F[0];
+                    F[0] = d[n];
+                } else if(d[n] < F[1]) {
+                    F[1] = d[n];
+                }
+            }
+        }
+    }
+    return F;
+}
+
+// fractal sum, range -1.0 - 1.0
+vec2 fBm_F0(vec3 p, int octaves)
+{
+    //u_Frequency needs a bit of a boost for the gltf to look right
+    float freq = u_Frequency * 4.;
+    float amp = 0.5;
+    vec2 F = inoise(p * freq, u_Jitter) * amp;
+    return F;
+}
+
+
+// Specular only lighting
+vec3 computeGemReflection() {
+  vec3 normal = normalize(v_normal);
   
+  // Get Voronoi
+  vec2 F = fBm_F0(v_local_position, OCTAVES);
+  float gem = (F.y - F.x);
+
+  // Perturb normal with voronoi cells
+  float perturbIntensity = 50.; //was 10. in unity.  Presumably glsl vs. hlsl is the source of the discrepancy.
+  normal.y += dFdy(gem) * perturbIntensity;
+  normal.x += dFdx(gem) * perturbIntensity;
+  normal = normalize(normal);
+
   vec3 lightDir0 = normalize(v_light_dir_0);
   vec3 lightDir1 = normalize(v_light_dir_1);
   vec3 eyeDir = -normalize(v_position);
+  vec3 diffuseColor = vec3(0.,0.,0.);
+
+  // Artifical diffraction highlights to simulate what I see in blocks. Tuned to taste.
+  vec3 refl = eyeDir - 2. * dot(eyeDir, normal) * normal + gem;
+  vec3 colorRamp = vec3(1.,.3,0)*sin(refl.x * 30.) + vec3(0.,1.,.5)*cos(refl.y * 37.77) + vec3(0.,0.,1.)*sin(refl.z*43.33);
+
+  // was colorRamp * .1 in unity, but boosting since
+  // we don't have an environment map on Poly
+  vec3 specularColor = u_Color.rgb + colorRamp * .5;
+  float smoothness =  u_Shininess;
 
   vec3 lightOut0 = SurfaceShaderSpecularGloss(normal, lightDir0, eyeDir, u_SceneLight_0_color.rgb,
-      v_color.rgb, u_SpecColor, u_Shininess);
-  vec3 lightOut1 = ShShaderWithSpec(normal, lightDir1, u_SceneLight_1_color.rgb, v_color.rgb, u_SpecColor);
-  vec3 ambientOut = v_color.rgb * u_ambient_light_color.rgb;
+      diffuseColor, specularColor, smoothness);
 
-  return (lightOut0 + lightOut1 + ambientOut);
+  // Calculate rim lighting
+  float viewAngle = clamp(dot(eyeDir, normal),0.,1.);
+  float rim =  pow(1. - viewAngle, u_RimPower);
+  vec3 rimColor = vec3(rim,rim,rim) * u_RimIntensity;
+
+  return (lightOut0 + rimColor);
 }
 
 void main() {
-  float brush_mask = texture(u_MainTex, v_texcoord0).w;
-  brush_mask *= v_color.w;
-
-  // WARNING: PerturbNormal uses derivatives and must not be called conditionally.
-  vec3 normal = PerturbNormal(v_position.xyz, normalize(v_normal), v_texcoord0);
-
-  // Unfortunately, the compiler keeps optimizing the call to PerturbNormal into the branch below, 
-  // causing issues on some hardware/drivers. So we compute lighting just to discard it later.
-  fragColor.rgb = ApplyFog(computeLighting(normal));
-  fragColor.a = 1.0;
-
-  // This must come last to ensure PerturbNormal is called uniformly for all invocations.
-  if (brush_mask <= u_Cutoff) {
-	  discard;
-  }
+    fragColor.rgb = computeGemReflection();
+    fragColor.a = 1.0;
 }

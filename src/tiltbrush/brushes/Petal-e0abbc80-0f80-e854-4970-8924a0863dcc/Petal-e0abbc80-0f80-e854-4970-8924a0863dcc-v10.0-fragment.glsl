@@ -28,7 +28,6 @@ uniform vec4 u_SceneLight_1_color;
 uniform vec3 u_SpecColor;
 uniform float u_Shininess;
 uniform float u_Cutoff;
-uniform sampler2D u_MainTex;
 
 in vec4 v_color;
 in vec3 v_normal;
@@ -37,7 +36,7 @@ in vec3 v_light_dir_0;
 in vec3 v_light_dir_1;
 in vec2 v_texcoord0;
 
-float dispAmount = .0015;
+float dispAmount = .0025;
 
 // Copyright 2020 The Tilt Brush Authors
 //
@@ -160,7 +159,6 @@ vec3 PerturbNormal(vec3 position, vec3 normal, vec2 uv)
   highp vec3 vSurfGrad = sign(fDet) * (dBs * vR1 + dBt * vR2);
   return normalize(abs(fDet) * vN - vSurfGrad);
 }
-
 // Copyright 2020 The Tilt Brush Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -342,10 +340,10 @@ vec3 LambertShader(
 }
 
 vec3 computeLighting(vec3 normal) {
-   
-  // Always use front-facing normal for double-sided surfaces.
-  normal.z *= mix(-1.0, 1.0, float(gl_FrontFacing));
-  
+  if (!gl_FrontFacing) {
+    // Always use front-facing normal for double-sided surfaces.
+    normal *= -1.0;
+  }
   vec3 lightDir0 = normalize(v_light_dir_0);
   vec3 lightDir1 = normalize(v_light_dir_1);
   vec3 eyeDir = -normalize(v_position);
@@ -359,19 +357,11 @@ vec3 computeLighting(vec3 normal) {
 }
 
 void main() {
-  float brush_mask = texture(u_MainTex, v_texcoord0).w;
-  brush_mask *= v_color.w;
-
-  // WARNING: PerturbNormal uses derivatives and must not be called conditionally.
-  vec3 normal = PerturbNormal(v_position.xyz, normalize(v_normal), v_texcoord0);
-
-  // Unfortunately, the compiler keeps optimizing the call to PerturbNormal into the branch below, 
-  // causing issues on some hardware/drivers. So we compute lighting just to discard it later.
-  fragColor.rgb = ApplyFog(computeLighting(normal));
+  // Fade from center outward (dark to light)
+  vec4 darker_color = v_color * 0.6;
+  vec4 finalColor = mix(v_color, darker_color, 1.0 - v_texcoord0.x);
+  float fAO = gl_FrontFacing ? 1.0 : 0.5 * v_texcoord0.x;
+  vec3 color = computeLighting(v_normal) * fAO;
+  fragColor.rgb = ApplyFog(color);
   fragColor.a = 1.0;
-
-  // This must come last to ensure PerturbNormal is called uniformly for all invocations.
-  if (brush_mask <= u_Cutoff) {
-	  discard;
-  }
 }

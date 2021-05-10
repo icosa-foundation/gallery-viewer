@@ -23,8 +23,13 @@ in vec2 v_texcoord0;
 uniform sampler2D u_MainTex;
 uniform vec4 u_TintColor;
 uniform float u_EmissionGain;
+uniform float u_BaseGain;
 
 void main() {
-  vec4 color = v_color * u_TintColor * texture(u_MainTex, v_texcoord0);
-  fragColor = vec4(color.rgb * color.a, 1.0);
+  vec4 tex = texture(u_MainTex, v_texcoord0);
+  vec4 c = v_color * u_TintColor * u_BaseGain * tex;
+  c.rgb += c.rgb * c.a * u_EmissionGain;
+
+  fragColor.rgb = c.rgb;
+  fragColor.a = 1.0;
 }

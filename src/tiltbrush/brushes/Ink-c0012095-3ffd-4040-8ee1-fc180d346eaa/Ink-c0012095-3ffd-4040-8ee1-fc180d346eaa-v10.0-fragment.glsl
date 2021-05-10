@@ -37,7 +37,7 @@ in vec3 v_light_dir_0;
 in vec3 v_light_dir_1;
 in vec2 v_texcoord0;
 
-float dispAmount = .0015;
+float dispAmount = .0025;
 
 // Copyright 2020 The Tilt Brush Authors
 //
@@ -160,7 +160,6 @@ vec3 PerturbNormal(vec3 position, vec3 normal, vec2 uv)
   highp vec3 vSurfGrad = sign(fDet) * (dBs * vR1 + dBt * vR2);
   return normalize(abs(fDet) * vN - vSurfGrad);
 }
-
 // Copyright 2020 The Tilt Brush Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -342,10 +341,10 @@ vec3 LambertShader(
 }
 
 vec3 computeLighting(vec3 normal) {
-   
-  // Always use front-facing normal for double-sided surfaces.
-  normal.z *= mix(-1.0, 1.0, float(gl_FrontFacing));
-  
+  if (!gl_FrontFacing) {
+    // Always use front-facing normal for double-sided surfaces.
+    normal *= -1.0;
+  }
   vec3 lightDir0 = normalize(v_light_dir_0);
   vec3 lightDir1 = normalize(v_light_dir_1);
   vec3 eyeDir = -normalize(v_position);

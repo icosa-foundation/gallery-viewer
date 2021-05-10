@@ -14,17 +14,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Brush-specific shader for GlTF web preview, based on Unlit.glsl
+// generator with parameters: a=1.0.
+
 precision mediump float;
 
 out vec4 fragColor;
 
 in vec4 v_color;
 in vec2 v_texcoord0;
-uniform sampler2D u_MainTex;
+
 uniform vec4 u_TintColor;
-uniform float u_EmissionGain;
+
+uniform sampler2D u_MainTex;
 
 void main() {
-  vec4 color = v_color * u_TintColor * texture(u_MainTex, v_texcoord0);
-  fragColor = vec4(color.rgb * color.a, 1.0);
+  fragColor = v_color * u_TintColor * texture(u_MainTex, v_texcoord0).w;
 }

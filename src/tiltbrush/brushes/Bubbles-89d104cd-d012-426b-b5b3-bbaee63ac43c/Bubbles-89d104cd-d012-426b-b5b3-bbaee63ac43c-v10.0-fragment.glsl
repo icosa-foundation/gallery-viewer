@@ -21,10 +21,14 @@ out vec4 fragColor;
 in vec4 v_color;
 in vec2 v_texcoord0;
 uniform sampler2D u_MainTex;
-uniform vec4 u_TintColor;
-uniform float u_EmissionGain;
 
 void main() {
-  vec4 color = v_color * u_TintColor * texture(u_MainTex, v_texcoord0);
-  fragColor = vec4(color.rgb * color.a, 1.0);
+  vec4 tex = texture(u_MainTex, v_texcoord0);
+  vec3 basecolor = v_color.rgb * tex.rgb;
+  				
+  // Alpha channel of the texture is not affected by color.  It is the fake "highlight" bubble effect.
+  vec3 highlightcolor = tex.aaa;
+
+  fragColor.rgb = basecolor + highlightcolor;
+  fragColor.a = 1.0;
 }

@@ -29,8 +29,6 @@ out vec4 v_color;
 out vec3 v_normal;  // Camera-space normal.
 out vec3 v_position;  // Camera-space position.
 out vec2 v_texcoord0;
-out vec3 v_light_dir_0;  // Camera-space light direction, main light.
-out vec3 v_light_dir_1;  // Camera-space light direction, other light.
 
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
@@ -38,8 +36,8 @@ uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat3 normalMatrix;
 
-uniform mat4 u_SceneLight_0_matrix;
-uniform mat4 u_SceneLight_1_matrix;
+uniform vec4 u_time;
+uniform float u_SparkleRate;
 
 // Copyright 2020 The Tilt Brush Authors
 //
@@ -118,8 +116,13 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * pos;
   v_normal = normalMatrix * a_normal;
   v_position = (modelViewMatrix * pos).xyz;
-  v_light_dir_0 = u_SceneLight_0_matrix[2].xyz;
-  v_light_dir_1 = u_SceneLight_1_matrix[2].xyz;
-  v_color = a_color;
   v_texcoord0 = a_texcoord0.xy;
+
+
+  float PI = 3.14159265359;
+  float phase = a_color.a * (2.0 * PI);
+  float brightness = 800.0 * pow(abs(sin(u_time.y * u_SparkleRate + phase)), 20.0);
+  v_color.rgb = a_color.rgb * brightness;
+  v_color.a = 1.0;
+
 }
