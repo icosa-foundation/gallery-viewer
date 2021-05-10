@@ -1,11 +1,11 @@
-import { Loader, LoadingManager, RawShaderMaterial, ShaderMaterialParameters } from 'three';
+import { Loader, LoadingManager, RawShaderMaterial } from 'three';
 
 export class TiltShaderLoader extends Loader {
 
 	constructor( manager?: LoadingManager );
 
 	load(
-		shaderData: ShaderMaterialParameters,
+		shaderData: string,
 		onLoad: (response: RawShaderMaterial) => void,
 		onProgress?: ( event: ProgressEvent ) => void, 
 		onError?: ( event: ErrorEvent ) => void 
