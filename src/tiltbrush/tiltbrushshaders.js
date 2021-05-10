@@ -533,8 +533,13 @@ const TiltBrushShaders = {
 		depthFunc: 2,
 		depthWrite: false,
 		depthTest: true,
-		blending: 2,
-		extensions: { derivatives: true }
+		blending: 5,
+		blendDstAlpha: 201,
+		blendDst: 201,
+		blendEquationAlpha: 100,
+		blendEquation: 100,
+		blendSrcAlpha: 201,
+		blendSrc: 201
     },
     "Flat" : {
     	uniforms: {

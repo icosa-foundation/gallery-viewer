@@ -250,9 +250,6 @@ export class Loader {
                                 shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
                                 shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
                                 shader.uniformsNeedUpdate = true;
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
                                 mesh.material = shader;
                                 mesh.material.name = "material_DiamondHull";
                             });
@@ -427,9 +424,6 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             new TiltShaderLoader().load(TiltBrushShaders["Fire"], function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
                                 shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
                                 shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
                                 shader.uniformsNeedUpdate = true;
@@ -678,9 +672,6 @@ export class Loader {
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
                             new TiltShaderLoader().load(TiltBrushShaders["OilPaint"], function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
                                 shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
                                 shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
                                 shader.uniformsNeedUpdate = true;
