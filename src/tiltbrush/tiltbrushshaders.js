@@ -417,7 +417,7 @@ const TiltBrushShaders = {
 		side: 2,
 		transparent: false,
 		depthFunc: 2,
-		depthWrite: false,
+		depthWrite: true,
 		depthTest: true,
 		blending: 0,
 		extensions: { derivatives: true }
@@ -590,9 +590,9 @@ const TiltBrushShaders = {
 		side: 2,
 		transparent: false,
 		depthFunc: 2,
-		depthWrite: true,
+		depthWrite: false,
 		depthTest: true,
-		blending: 0,
+		blending: 2,
 		extensions: { derivatives: true }
     },
     "Hypercolor" : {
@@ -1147,8 +1147,8 @@ const TiltBrushShaders = {
 			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
 			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
 			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
+			u_SpecColor: { value: new Vector3(0.1985, 0.1985, 0.1985) },
+			u_Shininess: { value: 0.7430 },
 			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
 			u_fogDensity: { value: 0 },
 			u_Cutoff: { value: 0.2 }
