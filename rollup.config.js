@@ -1,7 +1,6 @@
 import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss'
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import glslify from 'rollup-plugin-glslify';
 import url from 'postcss-url';
 
 const license = `/*!
@@ -31,7 +30,6 @@ export default {
 	plugins: [
 		nodeResolve(),
 		typescript( { typescript: require( 'typescript' ) } ),
-		glslify(),
         postcss( { 
 			plugins: [
 				url({ url: 'inline' })
