@@ -12,12 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Clock, PerspectiveCamera, Scene, WebGLRenderer, Color } from 'three';
+import { Clock, PerspectiveCamera, Scene, WebGLRenderer, Color, sRGBEncoding, ReinhardToneMapping, Vector2 } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
 import './css/style.scss';
 import { Loader }  from './Loader';
-import { setupNavigation } from './helpers/Navigation'
+import { setupNavigation } from './helpers/Navigation';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
 
 export class Viewer {
     private icosa_frame? : HTMLElement | null;
@@ -121,6 +124,14 @@ export class Viewer {
 
         const scene = new Scene();
 
+        const renderScene = new RenderPass(scene, flatCamera);
+
+        const bloomPass = new UnrealBloomPass(new Vector2(0, 0), 1.5, 0.4, 0.85);
+
+        const composer = new EffectComposer(renderer);
+        composer.addPass(renderScene);
+        composer.addPass(bloomPass);
+
         this.icosa_viewer = new Loader(scene, flatCamera, cameraControls);
 
         var that = this;
@@ -139,6 +150,7 @@ export class Viewer {
             const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
             if (needResize) {
                 renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+                composer.setSize(canvas.clientWidth, canvas.clientHeight);
                 flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
                 flatCamera.updateProjectionMatrix();
             }
@@ -148,7 +160,7 @@ export class Viewer {
             if(renderer.xr.isPresenting) {
                 renderer.render(scene, xrCamera);
             } else {
-                renderer.render(scene, flatCamera);
+                composer.render();
             }
         }
 
