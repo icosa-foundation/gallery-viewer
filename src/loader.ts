@@ -107,10 +107,11 @@ export class Loader {
             this.loadedModel = gltf.scene;
             var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.modelViewMatrix;
             var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.modelViewMatrix;
-            this.loadedModel.traverse((object : Object3D) => {
+            this.loadedModel.traverse(async (object : Object3D) => {
                 if(object.type === "Mesh") {
                     var mesh = object as Mesh;
                     var material = mesh.material as Material;
+                    var shader : RawShaderMaterial;
                     switch(material.name) {
                         case "brush_BlocksBasic":
                             mesh.geometry.name = "geometry_BlocksBasic";
@@ -119,13 +120,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("BlocksBasic", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_BlocksBasic";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("BlocksBasic");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_BlocksBasic";
                             break;
                         case "brush_BlocksGem":
                             mesh.geometry.name = "geometry_BlocksGem";
@@ -134,13 +134,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("BlocksGem", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_BlocksGem";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("BlocksGem");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_BlocksGem";
                             break;
                         case "brush_BlocksGlass":
                             mesh.geometry.name = "geometry_BlocksGlass";
@@ -149,13 +148,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("BlocksGlass", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_BlocksGlass";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("BlocksGlass");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_BlocksGlass";
                             break;
 
                         case "brush_Bubbles":
@@ -166,13 +164,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            this.tiltShaderLoader.load("Bubbles", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Bubbles";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Bubbles");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Bubbles";
                             break;
 
                         case "brush_CelVinyl":
@@ -182,13 +179,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("CelVinyl", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_CelVinyl";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("CelVinyl");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_CelVinyl";
                             break;
 
                         case "brush_ChromaticWave":
@@ -198,13 +194,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("ChromaticWave", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_ChromaticWave";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("ChromaticWave");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_ChromaticWave";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -215,13 +210,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("CoarseBristles", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_CoarseBristles";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("CoarseBristles");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_CoarseBristles";
                             break;
 
                         case "brush_Comet":
@@ -231,13 +225,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Comet", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Comet";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Comet");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Comet";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -248,13 +241,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("DiamondHull", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_DiamondHull";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("DiamondHull");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_DiamondHull";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -265,13 +257,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Disco", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Disco";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Disco");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Disco";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -282,13 +273,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("DotMarker", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_DotMarker";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("DotMarker");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_DotMarker";
                             break;
 
                         case "brush_Dots":
@@ -299,13 +289,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            this.tiltShaderLoader.load("Dots", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Dots";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Dots");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Dots";
                             break;
 
                         case "brush_DoubleTaperedFlat":
@@ -315,13 +304,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("DoubleTaperedFlat", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_DoubleTaperedFlat";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("DoubleTaperedFlat");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_DoubleTaperedFlat";
                             break;
 
                         case "brush_DoubleTaperedMarker":
@@ -331,13 +319,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("DoubleTaperedMarker", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_DoubleTaperedMarker";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("DoubleTaperedMarker");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_DoubleTaperedMarker";
                             break;
 
                         case "brush_DuctTape":
@@ -347,13 +334,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("DuctTape", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_DuctTape";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("DuctTape");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_DuctTape";
                             break;
 
                         case "brush_Electricity":
@@ -364,10 +350,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            this.tiltShaderLoader.load("Electricity", function( shader ) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Electricity";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Electricity");
+                            mesh.material = shader;
+                            mesh.material.name = "material_Electricity";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -379,10 +364,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            this.tiltShaderLoader.load("Embers", function( shader ) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Embers";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Embers");
+                            mesh.material = shader;
+                            mesh.material.name = "material_Embers";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -393,13 +377,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("EnvironmentDiffuse", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_EnvironmentDiffuse";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("EnvironmentDiffuse");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_EnvironmentDiffuse";
                             break;
 
                         case "brush_EnvironmentDiffuseLightMap":
@@ -409,13 +392,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("EnvironmentDiffuseLightMap", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_EnvironmentDiffuseLightMap";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("EnvironmentDiffuseLightMap");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_EnvironmentDiffuseLightMap";
                             break;
 
                         case "brush_Fire":
@@ -425,13 +407,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Fire", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Fire";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Fire");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Fire";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -442,13 +423,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Flat", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Flat";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Flat");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Flat";
                             break;
 
                         case "brush_FlatDeprecated":
@@ -458,13 +438,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("FlatDeprecated", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_FlatDeprecated";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("FlatDeprecated");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_FlatDeprecated";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -475,13 +454,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Highlighter", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Highlighter";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Highlighter");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Highlighter";
                             break;
 
                         case "brush_Hypercolor":
@@ -491,13 +469,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Hypercolor", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Hypercolor";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Hypercolor");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Hypercolor";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -509,13 +486,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            this.tiltShaderLoader.load("HyperGrid", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_HyperGrid";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("HyperGrid");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_HyperGrid";
                             break;
 
                         case "brush_Icing":
@@ -526,13 +502,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
 
-                            this.tiltShaderLoader.load("Icing", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Icing";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Icing");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Icing";
                             break;
 
                         case "brush_Ink":
@@ -542,13 +517,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Ink", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Ink";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Ink");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Ink";
                             break;
 
                         case "brush_Leaves":
@@ -558,13 +532,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Leaves", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Leaves";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Leaves");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Leaves";
                             break;
 
                         case "brush_Light":
@@ -574,14 +547,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-
-                            this.tiltShaderLoader.load("Light", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                    mesh.material.name = "material_Light";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Light");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Light";
                             break;
 
                         case "brush_LightWire":
@@ -591,13 +562,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("LightWire", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_LightWire";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("LightWire");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_LightWire";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -608,13 +578,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Lofted", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Lofted";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Lofted");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Lofted";
                             break;
 
                         case "brush_Marker":
@@ -624,13 +593,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Marker", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Marker";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Marker");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Marker";
                             break;
 
                         case "brush_MatteHull":
@@ -639,13 +607,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            this.tiltShaderLoader.load("MatteHull", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_MatteHull";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("MatteHull");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_MatteHull";
                             break;
 
                         case "brush_NeonPulse":
@@ -655,13 +622,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("NeonPulse", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_NeonPulse";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("NeonPulse");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_NeonPulse";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -672,14 +638,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-
-                            this.tiltShaderLoader.load("OilPaint", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_OilPaint";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("OilPaint");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_OilPaint";
                             break;
 
                         case "brush_Paper":
@@ -689,13 +653,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Paper", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Paper";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Paper");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Paper";
                             break;
 
                         case "brush_PbrTemplate":
@@ -705,13 +668,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("PbrTemplate", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_PbrTemplate";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("PbrTemplate");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_PbrTemplate";
                             break;
 
                         case "brush_PbrTransparentTemplate":
@@ -721,13 +683,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("PbrTransparentTemplate", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_PbrTransparentTemplate";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("PbrTransparentTemplate");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_PbrTransparentTemplate";
                             break;
 
                         case "brush_Petal":
@@ -737,13 +698,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Petal", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Petal";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Petal");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Petal";
                             break;
 
                         case "brush_Plasma":
@@ -753,13 +713,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Plasma", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Plasma";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Plasma");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Plasma";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -770,14 +729,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-
-                            this.tiltShaderLoader.load("Rainbow", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Rainbow";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Rainbow");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Rainbow";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -788,13 +745,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("ShinyHull", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_ShinyHull";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("ShinyHull");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_ShinyHull";
                             break;
 
                         case "brush_Smoke":
@@ -804,13 +760,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            this.tiltShaderLoader.load("Smoke", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Smoke";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Smoke");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Smoke";
                             break;
 
                         case "brush_Snow":
@@ -821,10 +776,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            this.tiltShaderLoader.load("Snow", function( shader ) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Snow";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Snow");
+                            mesh.material = shader;
+                            mesh.material.name = "material_Snow";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -835,13 +789,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("SoftHighlighter", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_SoftHighlighter";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("SoftHighlighter");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_SoftHighlighter";
                             break;
 
                         case "brush_Spikes":
@@ -851,13 +804,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Spikes", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Spikes";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Spikes");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Spikes";
                             break;
 
                         case "brush_Splatter":
@@ -867,13 +819,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Splatter", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Splatter";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Splatter");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Splatter";
                             break;
 
                         case "brush_Stars":
@@ -884,13 +835,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
                             mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            this.tiltShaderLoader.load("Stars", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Stars";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Stars");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Stars";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -901,13 +851,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Streamers", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Streamers";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Streamers");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Streamers";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -918,13 +867,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("DiamondHull", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_DiamondHull";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("DiamondHull");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_DiamondHull";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -935,13 +883,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("TaperedFlat", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_TaperedFlat";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("TaperedFlat");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_TaperedFlat";
                             break;
 
                         case "brush_TaperedMarker":
@@ -951,13 +898,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("TaperedMarker", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_TaperedMarker";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("TaperedMarker");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_TaperedMarker";
                             break;
 
                         case "brush_TaperedMarker_Flat":
@@ -967,13 +913,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Flat", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Flat";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Flat");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Flat";
                             break;
 
                         case "brush_ThickPaint":
@@ -983,13 +928,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("ThickPaint", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_ThickPaint";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("ThickPaint");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_ThickPaint";
                             break;
 
                         case "brush_Toon":
@@ -998,13 +942,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            this.tiltShaderLoader.load("Toon", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Toon";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Toon");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Toon";
                             break;
 
                         case "brush_UnlitHull":
@@ -1013,10 +956,9 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            this.tiltShaderLoader.load("UnlitHull", function(shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_UnlitHull";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("UnlitHull");
+                            mesh.material = shader;
+                            mesh.material.name = "material_UnlitHull";
                             break;
 
                         case "brush_VelvetInk":
@@ -1026,13 +968,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("VelvetInk", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_VelvetInk";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("VelvetInk");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_VelvetInk";
                             break;
 
                         case "brush_Waveform":
@@ -1042,13 +983,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("Waveform", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_Waveform";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Waveform");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_Waveform";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -1059,13 +999,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("WetPaint", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_WetPaint";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("WetPaint");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_WetPaint";
                             break;
 
                         case "brush_WigglyGraphite":
@@ -1075,13 +1014,12 @@ export class Loader {
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                             mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            this.tiltShaderLoader.load("WigglyGraphite", function( shader ) {
-                                shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
-                                shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
-                                shader.uniformsNeedUpdate = true;
-                                mesh.material = shader;
-                                mesh.material.name = "material_WigglyGraphite";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("WigglyGraphite");
+                            shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
+                            shader.uniforms["u_SceneLight_1_matrix"]!.value = light1transform;
+                            shader.uniformsNeedUpdate = true;
+                            mesh.material = shader;
+                            mesh.material.name = "material_WigglyGraphite";
                             this.updateableMeshes.push(mesh);
                             break;
 
@@ -1091,23 +1029,14 @@ export class Loader {
                             mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
                             mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                             mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            this.tiltShaderLoader.load("Wire", function( shader ) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Wire";
-                            });
+                            shader = await this.tiltShaderLoader.loadAsync("Wire");
+                            mesh.material = shader;
+                            mesh.material.name = "material_Wire";
                             break;
 
                         default:
                             mesh.material = new MeshStandardMaterial( { visible: false } );
                     }
-                    // if (material.name!=="brush_TaperedMarker")
-                    // {
-                    //     mesh.material = new MeshStandardMaterial( { visible: false } );
-                    // }
-                    // else
-                    // {
-                    //     console.log(Object.keys(mesh.geometry.attributes));
-                    // }
                 }
             });
 
