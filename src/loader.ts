@@ -1166,6 +1166,12 @@ export class Loader {
         }
 
         http.open("GET", url, true);
+
+        const loggedInUser = JSON.parse(localStorage.getItem("user") as string);
+        if(loggedInUser) {
+            http.setRequestHeader("Authorization", loggedInUser.token_type as string + " " + loggedInUser.token as string);
+        }
+
         http.send();
     }
 
@@ -1242,6 +1248,12 @@ export class Loader {
         }
 
         http.open("GET", url, true);
+
+        const loggedInUser = JSON.parse(localStorage.getItem("user") as string);
+        if(loggedInUser) {
+            http.setRequestHeader("Authorization", loggedInUser.token_type as string + " " + loggedInUser.token as string);
+        }
+        
         http.send();
     }
 
