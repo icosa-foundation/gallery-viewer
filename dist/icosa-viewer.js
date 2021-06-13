@@ -44770,6 +44770,11 @@
 	            }
 	        };
 	        http.open("GET", url, true);
+	        var loggedInUser = JSON.parse(localStorage.getItem("user"));
+	        if (loggedInUser) {
+	            console.log(loggedInUser.token);
+	            http.setRequestHeader("Authorization", loggedInUser.token_type + " " + loggedInUser.token);
+	        }
 	        http.send();
 	    };
 	    Loader.prototype.loadIcosaUrl = function (url, format) {
@@ -44828,6 +44833,11 @@
 	            }
 	        };
 	        http.open("GET", url, true);
+	        var loggedInUser = JSON.parse(localStorage.getItem("user"));
+	        if (loggedInUser) {
+	            console.log(loggedInUser.token);
+	            http.setRequestHeader("Authorization", loggedInUser.token_type + " " + loggedInUser.token);
+	        }
 	        http.send();
 	    };
 	    Loader.prototype.loadPolyUrl = function (url, format) {
