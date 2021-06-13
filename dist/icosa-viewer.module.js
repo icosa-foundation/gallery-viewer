@@ -44764,6 +44764,10 @@ var Loader = (function () {
             }
         };
         http.open("GET", url, true);
+        var loggedInUser = JSON.parse(localStorage.getItem("user"));
+        if (loggedInUser) {
+            http.setRequestHeader("Authorization", loggedInUser.token_type + " " + loggedInUser.token);
+        }
         http.send();
     };
     Loader.prototype.loadIcosaUrl = function (url, format) {
@@ -44822,6 +44826,10 @@ var Loader = (function () {
             }
         };
         http.open("GET", url, true);
+        var loggedInUser = JSON.parse(localStorage.getItem("user"));
+        if (loggedInUser) {
+            http.setRequestHeader("Authorization", loggedInUser.token_type + " " + loggedInUser.token);
+        }
         http.send();
     };
     Loader.prototype.loadPolyUrl = function (url, format) {
