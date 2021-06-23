@@ -22,6 +22,7 @@ import { setupNavigation } from './helpers/Navigation'
 export class Viewer {
     private icosa_frame? : HTMLElement | null;
     private icosa_viewer? : Loader;
+    private renderer? : WebGLRenderer;
 
     constructor(frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -91,11 +92,11 @@ export class Viewer {
         canvas.onmousedown = () => { canvas.classList.add('grabbed'); }
         canvas.onmouseup = () => { canvas.classList.remove('grabbed'); }
 
-        const renderer = new WebGLRenderer({canvas : canvas});
-        renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer = new WebGLRenderer({canvas : canvas, preserveDrawingBuffer : true});
+        this.renderer.setPixelRatio(window.devicePixelRatio);
 
-        renderer.xr.enabled = true;
-        this.icosa_frame.appendChild( VRButton.createButton( renderer ) );
+        this.renderer.xr.enabled = true;
+        this.icosa_frame.appendChild( VRButton.createButton( this.renderer ) );
         
         const clock = new Clock();
         
@@ -126,7 +127,7 @@ export class Viewer {
         var that = this;
 
         function animate() {
-            renderer.setAnimationLoop(render);
+            that.renderer!.setAnimationLoop(render);
         }
 
         function render() {
@@ -138,17 +139,17 @@ export class Viewer {
 
             const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
             if (needResize) {
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+                that.renderer!.setSize(canvas.clientWidth, canvas.clientHeight, false);
                 flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
                 flatCamera.updateProjectionMatrix();
             }
             
             that.icosa_viewer?.update(elapsed);
 
-            if(renderer.xr.isPresenting) {
-                renderer.render(scene, xrCamera);
+            if(that.renderer!.xr.isPresenting) {
+                that.renderer!.render(scene, xrCamera);
             } else {
-                renderer.render(scene, flatCamera);
+                that.renderer!.render(scene, flatCamera);
             }
         }
 
@@ -185,5 +186,10 @@ export class Viewer {
 
     public loadPolyGLTF(url : string) {
         this.icosa_viewer?.loadPolyGltf(url);
+    }
+
+    public getScreencap() {
+        const screendata = this.renderer?.domElement.toDataURL("image/png");
+        return screendata;
     }
 }

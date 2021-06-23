@@ -45153,10 +45153,10 @@
 	        this.icosa_frame.appendChild(canvas);
 	        canvas.onmousedown = function () { canvas.classList.add('grabbed'); };
 	        canvas.onmouseup = function () { canvas.classList.remove('grabbed'); };
-	        var renderer = new WebGLRenderer({ canvas: canvas });
-	        renderer.setPixelRatio(window.devicePixelRatio);
-	        renderer.xr.enabled = true;
-	        this.icosa_frame.appendChild(VRButton.createButton(renderer));
+	        this.renderer = new WebGLRenderer({ canvas: canvas, preserveDrawingBuffer: true });
+	        this.renderer.setPixelRatio(window.devicePixelRatio);
+	        this.renderer.xr.enabled = true;
+	        this.icosa_frame.appendChild(VRButton.createButton(this.renderer));
 	        var clock = new Clock();
 	        var fov = 75;
 	        var aspect = 2;
@@ -45177,7 +45177,7 @@
 	        this.icosa_viewer = new Loader(scene, flatCamera, cameraControls);
 	        var that = this;
 	        function animate() {
-	            renderer.setAnimationLoop(render);
+	            that.renderer.setAnimationLoop(render);
 	        }
 	        function render() {
 	            var _a;
@@ -45186,16 +45186,16 @@
 	            cameraControls.update(delta);
 	            var needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
 	            if (needResize) {
-	                renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+	                that.renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
 	                flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
 	                flatCamera.updateProjectionMatrix();
 	            }
 	            (_a = that.icosa_viewer) === null || _a === void 0 ? void 0 : _a.update(elapsed);
-	            if (renderer.xr.isPresenting) {
-	                renderer.render(scene, xrCamera);
+	            if (that.renderer.xr.isPresenting) {
+	                that.renderer.render(scene, xrCamera);
 	            }
 	            else {
-	                renderer.render(scene, flatCamera);
+	                that.renderer.render(scene, flatCamera);
 	            }
 	        }
 	        animate();
@@ -45229,6 +45229,11 @@
 	    Viewer.prototype.loadPolyGLTF = function (url) {
 	        var _a;
 	        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadPolyGltf(url);
+	    };
+	    Viewer.prototype.getScreencap = function () {
+	        var _a;
+	        var screendata = (_a = this.renderer) === null || _a === void 0 ? void 0 : _a.domElement.toDataURL("image/png");
+	        return screendata;
 	    };
 	    return Viewer;
 	}());
