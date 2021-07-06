@@ -155,35 +155,58 @@ export class Viewer {
         animate();
     }
 
-    public loadGLTF(url : string) {
-        this.icosa_viewer?.loadGLTF(url);
+    // Load GLTF/GLB ver 2.x *Brush file
+    public loadBrushGltf(url: string) {
+        this.icosa_viewer?.loadBrushGltf2(url);
     }
 
-    public loadIcosaUrl(url : string) {
-        this.icosa_viewer?.loadIcosaUrl(url);
+    // Load GLTF/GLB ver 1.0 *Brush file
+    // Legacy for original exported assets, and files that were recovered from Poly
+    public loadBrushGltf1(url: string) {
+        this.icosa_viewer?.loadBrushGltf1(url);
     }
 
-    public loadIcosaAsset(userurl : string, asseturl : string) {
-        this.icosa_viewer?.loadIcosaAsset(userurl, asseturl);
-    }
-
-    public loadIcosaAssetId(id : string) {
+    // Load generic GLTF/GLB ver 2.x
+    // This should be the entry point for a Blocks export
+    public loadGltf(url: string) {
 
     }
 
-    public loadPolyUrl(url : string) {
-        this.icosa_viewer?.loadPolyUrl(url);
+    public loadObj(url: string) {
+
     }
 
-    public loadPolyAsset(assetID : string) {
-        this.icosa_viewer?.loadPolyAsset(assetID);
-    }
 
-    public loadPolyTilt(url : string) {
-        this.icosa_viewer?.loadPolyTilt(url);
-    }
+    // public loadGLTF(url : string) {
+    //     this.icosa_viewer?.loadGLTF(url);
+    // }
+    
+    // public loadPolyAsset(assetID : string) {
+    //     this.icosa_viewer?.loadPolyAsset(assetID);
+    // }
+    
+    // public loadBrushGltf1(url : string) {
+    //     this.icosa_viewer?.loadPolyTilt(url);
+    // }
 
-    public loadPolyGLTF(url : string) {
-        this.icosa_viewer?.loadPolyGltf(url);
-    }
+
+    // Helper functions for platforms
+
+    // Icosa
+    // public loadIcosaUrl(url : string) {
+    //     this.icosa_viewer?.loadIcosaUrl(url);
+    // }
+
+    // public loadIcosaAsset(userurl : string, asseturl : string) {
+    //     this.icosa_viewer?.loadIcosaAsset(userurl, asseturl);
+    // }
+
+    // // Poly
+    // public loadPolyGLTF(url : string) {
+    //     this.icosa_viewer?.loadPolyGltf(url);
+    // }    
+    
+    // public loadPolyUrl(url : string) {
+    //     this.icosa_viewer?.loadPolyUrl(url);
+    // }
 }

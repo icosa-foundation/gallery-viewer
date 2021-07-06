@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, Color, Camera, Vector4, Box3, MeshPhysicalMaterial } from "three";
+import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, Color, Camera, Vector4, Box3, MeshPhysicalMaterial, AmbientLight } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -102,9 +102,59 @@ export class Loader {
         });
     }
 
-    private initGltf2(url : string) {
+    private finishSetup() {
+        if(!this.loadedModel)
+            return;
+
+        this.scene.clear();
+        this.scene.background = this.sceneColor;
+        this.scene.add(this.loadedModel);
+
+        // Setup camera to center model
+        const box = new Box3().setFromObject(this.loadedModel);
+        const boxSize = box.getSize(new Vector3()).length();
+        const boxCenter = box.getCenter(new Vector3());
+
+        this.cameraControls.minDistance = boxSize * 0.01;
+        this.cameraControls.maxDistance = boxSize;
+
+        const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
+        this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+        this.cameraControls.dollyTo(midDistance, true);
+        this.cameraControls.saveState();
+
+        var ambientLight = new AmbientLight();
+        this.scene.add(ambientLight);
+
+        this.loaded = true;
+    }
+
+    private initTilt(url : string) {
+        this.tiltLoader.load(url, (tilt) => {
+            this.loadedModel = tilt;
+            this.finishSetup();
+        });
+    }
+
+    public loadBrushGltf2(url : string) {
         this.gltfLoader.load(url, (gltf) => {
             this.loadedModel = gltf.scene;
+            this.replaceBrushMaterials();
+            this.finishSetup();
+        });
+    }
+
+    public loadBrushGltf1(url : string) {
+        this.legacygltf.load(url, (gltf) => {
+            console.log(gltf);
+            this.loadedModel = gltf.scene;
+            this.replaceBrushMaterials();
+            this.finishSetup();
+        });
+    }
+
+    private replaceBrushMaterials() {
+        if(this.loadedModel) {
             var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.modelViewMatrix;
             var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.modelViewMatrix;
             this.loadedModel.traverse(async (object : Object3D) => {
@@ -1033,241 +1083,176 @@ export class Loader {
                             mesh.material = shader;
                             mesh.material.name = "material_Wire";
                             break;
-
-                        default:
-                            mesh.material = new MeshStandardMaterial( { visible: false } );
                     }
                 }
             });
-
-            this.finishSetup(this.loadedModel);
-        });
-    }
-
-    private finishSetup(model: Object3D) {
-        this.scene.clear();
-        this.scene.background = this.sceneColor;
-        this.scene.add(model);
-
-        // Setup camera to center model
-        const box = new Box3().setFromObject(model);
-        const boxSize = box.getSize(new Vector3()).length();
-        const boxCenter = box.getCenter(new Vector3());
-
-        this.cameraControls.minDistance = boxSize * 0.01;
-        this.cameraControls.maxDistance = boxSize;
-
-        const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
-        this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-        this.cameraControls.dollyTo(midDistance, true);
-        this.cameraControls.saveState();
-
-        // DEBUG LIGHTING
-        var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
-        keyLightNode.position.set(-19.021, 34.882, -19.134);
-        keyLightNode.scale.set(0, 0, 16.828);
-        this.scene.add(keyLightNode);
-
-        var headLightNode = new DirectionalLight(0xFFEEDD, 0.250);
-        headLightNode.position.set(-16.661, 8.330, 8.330);
-        headLightNode.scale.set(1, 1, 1);
-        this.scene.add(headLightNode);
-
-        var __hemi__ = new HemisphereLight(0xEFEFFF, 0xB2B2B2, 0.6);
-        __hemi__.position.set(0, 1, 0);
-        this.scene.add(__hemi__);
-
-        this.loaded = true;
-    }
-
-    private initTilt(url : string) {
-        this.tiltLoader.load(url, (tilt) => {
-            this.loadedModel = tilt;
-            this.finishSetup(this.loadedModel);
-        });
-    }
-
-    private initPolyGltf(url : string) {
-        this.legacygltf.load(url, (gltf) => {
-            this.loadedModel = gltf.scene;
-            this.finishSetup(this.loadedModel);
-        });
-    }
-
-    private initPolyGltf2(url : string) {
-        this.gltfLoader.load(url, (gltf) => {
-            this.loadedModel = gltf.scene;
-            this.finishSetup(this.loadedModel);
-        });
-    }
-
-    public loadGLTF(url : string) {
-        this.initGltf2(url);
-    }
-
-    public loadIcosaAsset(userID : string, assetID : string, format? : string) {
-        const http = new XMLHttpRequest();
-        const url = `https://api.icosa.gallery/assets/${userID}/${assetID}`;
-        const that = this;
-        
-        http.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                const icosaAsset = Convert.toIcosa(this.response);
-                
-                let types: { [name: string]: JSONIcosaFormat } = {};
-
-                icosaAsset.formats.forEach(newformat => {
-                    types[newformat.format] = newformat;
-                });
-
-                if(format) {
-                    switch(format) {
-                        case "GLTF2":
-                            if(types.hasOwnProperty("GLTF2")) {
-                                that.initPolyGltf2(types.GLTF2.url);
-                                return;
-                            }
-                            break;
-                        case "GLTF":
-                            if(types.hasOwnProperty("GLTF")) {
-                                that.initPolyGltf(types.GLTF.url);
-                                return;
-                            }
-                            break;
-                        case "TILT":
-                            if(types.hasOwnProperty("TILT")) {
-                                that.initTilt(types.TILT.url);
-                                return;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                // If no format specified, return in preferred order
-                if(types.hasOwnProperty("GLTF2")) {
-                    that.initGltf2(types.GLTF2.url);
-                    return;
-                }
-
-                if(types.hasOwnProperty("GLTF")) {
-                    that.initPolyGltf(types.GLTF.url);
-                    return;
-                }
-                
-                // At the moment tilt files should always be least priority as the renderer
-                // still just uses control points.
-                if(types.hasOwnProperty("TILT")) {
-                    that.initTilt(types.TILT.url);
-                    return;
-                }
-            }
-        }
-
-        http.open("GET", url, true);
-
-        const loggedInUser = JSON.parse(localStorage.getItem("user") as string);
-        if(loggedInUser) {
-            http.setRequestHeader("Authorization", loggedInUser.token_type as string + " " + loggedInUser.token as string);
-        }
-
-        http.send();
-    }
-
-    public loadIcosaUrl(url : string, format?: string) {
-        var splitURL = url.split('/');
-        if(splitURL[2] === "icosa.gallery")
-            this.loadIcosaAsset(splitURL[4], splitURL[5], format);
-    }
-
-    public loadPolyAsset(assetID : string, format? : string) {
-        const http = new XMLHttpRequest();
-        const url = `https://api.icosa.gallery/poly/assets/${assetID}`;
-
-        const that = this;
-        http.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                const polyAsset = Convert.toPoly(this.response);
-
-                // To dict, for format preference sorting
-                let types: { [name: string]: JSONPolyFormat } = {}; 
-
-                if(polyAsset.presentationParams.backgroundColor) {
-                    that.sceneColor = new Color(polyAsset.presentationParams.backgroundColor);
-                }
-
-                polyAsset.formats.forEach(format => {
-                    types[format.formatType] = format;
-                });
-
-                // Check if specific format requested, otherwise loop through order of preference
-                if(format) {
-                    switch (format) {
-                        case "GLTF2":
-                            if(types.hasOwnProperty("GLTF2")) {
-                                that.initPolyGltf2(types.GLTF2.root.url);
-                                return;
-                            }
-                            break;
-                        case "GLTF":
-                            if(types.hasOwnProperty("GLTF")) {
-                                that.initPolyGltf(types.GLTF.root.url);
-                                return;
-                            }
-                            break;
-                        case "TILT":
-                            if(types.hasOwnProperty("TILT")) {
-                                that.initTilt(types.TILT.root.url);
-                                return;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                // If no format specified, return in preferred order
-                if(types.hasOwnProperty("GLTF2")) {
-                    that.initPolyGltf2(types.GLTF2.root.url);
-                    return;
-                }
-
-                if(types.hasOwnProperty("GLTF")) {
-                    that.initPolyGltf(types.GLTF.root.url);
-                    return;
-                }
-                
-                // At the moment tilt files should always be least priority as the renderer
-                // still just uses control points.
-                if(types.hasOwnProperty("TILT")) {
-                    that.initTilt(types.TILT.root.url);
-                    return;
-                }
-            }
-        }
-
-        http.open("GET", url, true);
-
-        const loggedInUser = JSON.parse(localStorage.getItem("user") as string);
-        if(loggedInUser) {
-            http.setRequestHeader("Authorization", loggedInUser.token_type as string + " " + loggedInUser.token as string);
         }
         
-        http.send();
     }
 
-    public loadPolyUrl(url : string, format? : string) {
-        var splitURL = url.split('/');
-        if(splitURL[2] === "poly.google.com")
-            this.loadPolyAsset(splitURL[4], format);
-    }
+    // public loadIcosaAsset(userID : string, assetID : string, format? : string) {
+    //     const http = new XMLHttpRequest();
+    //     const url = `https://api.icosa.gallery/assets/${userID}/${assetID}`;
+    //     const that = this;
+        
+    //     http.onreadystatechange = function() {
+    //         if (this.readyState == 4 && this.status == 200) {
+    //             const icosaAsset = Convert.toIcosa(this.response);
+                
+    //             let types: { [name: string]: JSONIcosaFormat } = {};
 
-    public loadPolyTilt(url : string) {
-        this.loadPolyUrl(url, "TILT");
-    }
+    //             icosaAsset.formats.forEach(newformat => {
+    //                 types[newformat.format] = newformat;
+    //             });
 
-    public loadPolyGltf(url : string) {
-        this.loadPolyUrl(url, "GLTF");
-    }
+    //             if(format) {
+    //                 switch(format) {
+    //                     case "GLTF2":
+    //                         if(types.hasOwnProperty("GLTF2")) {
+    //                             that.initPolyGltf2(types.GLTF2.url);
+    //                             return;
+    //                         }
+    //                         break;
+    //                     case "GLTF":
+    //                         if(types.hasOwnProperty("GLTF")) {
+    //                             that.initPolyGltf(types.GLTF.url);
+    //                             return;
+    //                         }
+    //                         break;
+    //                     case "TILT":
+    //                         if(types.hasOwnProperty("TILT")) {
+    //                             that.initTilt(types.TILT.url);
+    //                             return;
+    //                         }
+    //                         break;
+    //                     default:
+    //                         break;
+    //                 }
+    //             }
+
+    //             // If no format specified, return in preferred order
+    //             if(types.hasOwnProperty("GLTF2")) {
+    //                 that.initPolyGltf2(types.GLTF2.url);
+    //                 return;
+    //             }
+
+    //             if(types.hasOwnProperty("GLTF")) {
+    //                 that.initPolyGltf(types.GLTF.url);
+    //                 return;
+    //             }
+                
+    //             // At the moment tilt files should always be least priority as the renderer
+    //             // still just uses control points.
+    //             if(types.hasOwnProperty("TILT")) {
+    //                 that.initTilt(types.TILT.url);
+    //                 return;
+    //             }
+    //         }
+    //     }
+
+    //     http.open("GET", url, true);
+
+    //     const loggedInUser = JSON.parse(localStorage.getItem("user") as string);
+    //     if(loggedInUser) {
+    //         http.setRequestHeader("Authorization", loggedInUser.token_type as string + " " + loggedInUser.token as string);
+    //     }
+
+    //     http.send();
+    // }
+
+    // public loadIcosaUrl(url : string, format?: string) {
+    //     var splitURL = url.split('/');
+    //     if(splitURL[2] === "icosa.gallery")
+    //         this.loadIcosaAsset(splitURL[4], splitURL[5], format);
+    // }
+
+    // public loadPolyAsset(assetID : string, format? : string) {
+    //     const http = new XMLHttpRequest();
+    //     const url = `https://api.icosa.gallery/poly/assets/${assetID}`;
+
+    //     const that = this;
+    //     http.onreadystatechange = function() {
+    //         if (this.readyState == 4 && this.status == 200) {
+    //             const polyAsset = Convert.toPoly(this.response);
+
+    //             // To dict, for format preference sorting
+    //             let types: { [name: string]: JSONPolyFormat } = {}; 
+
+    //             if(polyAsset.presentationParams.backgroundColor) {
+    //                 that.sceneColor = new Color(polyAsset.presentationParams.backgroundColor);
+    //             }
+
+    //             polyAsset.formats.forEach(format => {
+    //                 types[format.formatType] = format;
+    //             });
+
+    //             // Check if specific format requested, otherwise loop through order of preference
+    //             if(format) {
+    //                 switch (format) {
+    //                     case "GLTF2":
+    //                         if(types.hasOwnProperty("GLTF2")) {
+    //                             that.initPolyGltf2(types.GLTF2.root.url);
+    //                             return;
+    //                         }
+    //                         break;
+    //                     case "GLTF":
+    //                         if(types.hasOwnProperty("GLTF")) {
+    //                             that.initPolyGltf(types.GLTF.root.url);
+    //                             return;
+    //                         }
+    //                         break;
+    //                     case "TILT":
+    //                         if(types.hasOwnProperty("TILT")) {
+    //                             that.initTilt(types.TILT.root.url);
+    //                             return;
+    //                         }
+    //                         break;
+    //                     default:
+    //                         break;
+    //                 }
+    //             }
+
+    //             // If no format specified, return in preferred order
+    //             if(types.hasOwnProperty("GLTF2")) {
+    //                 that.initPolyGltf2(types.GLTF2.root.url);
+    //                 return;
+    //             }
+
+    //             if(types.hasOwnProperty("GLTF")) {
+    //                 that.initPolyGltf(types.GLTF.root.url);
+    //                 return;
+    //             }
+                
+    //             // At the moment tilt files should always be least priority as the renderer
+    //             // still just uses control points.
+    //             if(types.hasOwnProperty("TILT")) {
+    //                 that.initTilt(types.TILT.root.url);
+    //                 return;
+    //             }
+    //         }
+    //     }
+
+    //     http.open("GET", url, true);
+
+    //     const loggedInUser = JSON.parse(localStorage.getItem("user") as string);
+    //     if(loggedInUser) {
+    //         http.setRequestHeader("Authorization", loggedInUser.token_type as string + " " + loggedInUser.token as string);
+    //     }
+        
+    //     http.send();
+    // }
+
+    // public loadPolyUrl(url : string, format? : string) {
+    //     var splitURL = url.split('/');
+    //     if(splitURL[2] === "poly.google.com")
+    //         this.loadPolyAsset(splitURL[4], format);
+    // }
+
+    // public loadPolyTilt(url : string) {
+    //     this.loadPolyUrl(url, "TILT");
+    // }
+
+    // public loadPolyGltf(url : string) {
+    //     this.loadPolyUrl(url, "GLTF");
+    // }
 }
