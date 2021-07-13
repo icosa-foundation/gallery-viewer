@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, Color, Camera, Vector4, Box3, MeshPhysicalMaterial, AmbientLight } from "three";
+import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, Color, Camera, Vector4, Box3, MeshPhysicalMaterial, AmbientLight, CompressedPixelFormat } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -173,7 +173,8 @@ export class Loader {
                 } else {
                     targetFilter = "brush_" + mesh.name.split('_')[1];
                 }
-
+                console.log(targetFilter);
+                try {
                 switch(targetFilter) {
                     case "brush_BlocksBasic":
                         mesh.geometry.name = "geometry_BlocksBasic";
@@ -1096,7 +1097,14 @@ export class Loader {
                         mesh.material.name = "material_Wire";
                         break;
                 }
+                
+            } catch (ex) {
+               console.log({
+                   error: ex,
+                   brush: targetFilter
+                });
             }
+        }
         });
     }
 
