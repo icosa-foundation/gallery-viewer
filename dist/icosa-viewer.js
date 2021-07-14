@@ -43811,7 +43811,7 @@
 	                    case 10:
 	                        mesh.geometry.name = "geometry_CelVinyl";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("CelVinyl")];
@@ -43826,7 +43826,7 @@
 	                    case 12:
 	                        mesh.geometry.name = "geometry_ChromaticWave";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("ChromaticWave")];
@@ -43842,7 +43842,7 @@
 	                    case 14:
 	                        mesh.geometry.name = "geometry_CoarseBristles";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("CoarseBristles")];
@@ -43857,7 +43857,7 @@
 	                    case 16:
 	                        mesh.geometry.name = "geometry_Comet";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Comet")];
@@ -43873,7 +43873,7 @@
 	                    case 18:
 	                        mesh.geometry.name = "geometry_DiamondHull";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DiamondHull")];
@@ -43889,7 +43889,7 @@
 	                    case 20:
 	                        mesh.geometry.name = "geometry_Disco";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Disco")];
@@ -43905,7 +43905,7 @@
 	                    case 22:
 	                        mesh.geometry.name = "geometry_DotMarker";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DotMarker")];
@@ -43936,7 +43936,7 @@
 	                    case 26:
 	                        mesh.geometry.name = "geometry_DoubleTaperedFlat";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DoubleTaperedFlat")];
@@ -43951,7 +43951,7 @@
 	                    case 28:
 	                        mesh.geometry.name = "geometry_DoubleTaperedMarker";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DoubleTaperedMarker")];
@@ -43966,7 +43966,7 @@
 	                    case 30:
 	                        mesh.geometry.name = "geometry_DuctTape";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DuctTape")];
@@ -43981,7 +43981,7 @@
 	                    case 32:
 	                        mesh.geometry.name = "geometry_Electricity";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
@@ -44009,7 +44009,7 @@
 	                    case 36:
 	                        mesh.geometry.name = "geometry_EnvironmentDiffuse";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("EnvironmentDiffuse")];
@@ -44024,7 +44024,7 @@
 	                    case 38:
 	                        mesh.geometry.name = "geometry_EnvironmentDiffuseLightMap";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("EnvironmentDiffuseLightMap")];
@@ -44039,7 +44039,7 @@
 	                    case 40:
 	                        mesh.geometry.name = "geometry_Fire";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Fire")];
@@ -44055,7 +44055,7 @@
 	                    case 42:
 	                        mesh.geometry.name = "geometry_Flat";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Flat")];
@@ -44070,7 +44070,7 @@
 	                    case 44:
 	                        mesh.geometry.name = "geometry_FlatDeprecated";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("FlatDeprecated")];
@@ -44086,7 +44086,7 @@
 	                    case 46:
 	                        mesh.geometry.name = "geometry_Highlighter";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Highlighter")];
@@ -44101,7 +44101,7 @@
 	                    case 48:
 	                        mesh.geometry.name = "geometry_Hypercolor";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Hypercolor")];
@@ -44117,7 +44117,7 @@
 	                    case 50:
 	                        mesh.geometry.name = "geometry_HyperGrid";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
@@ -44133,7 +44133,7 @@
 	                    case 52:
 	                        mesh.geometry.name = "geometry_Icing";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Icing")];
@@ -44148,7 +44148,7 @@
 	                    case 54:
 	                        mesh.geometry.name = "geometry_Ink";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Ink")];
@@ -44163,7 +44163,7 @@
 	                    case 56:
 	                        mesh.geometry.name = "geometry_Leaves";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Leaves")];
@@ -44178,7 +44178,7 @@
 	                    case 58:
 	                        mesh.geometry.name = "geometry_Light";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Light")];
@@ -44193,7 +44193,7 @@
 	                    case 60:
 	                        mesh.geometry.name = "geometry_LightWire";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("LightWire")];
@@ -44209,7 +44209,7 @@
 	                    case 62:
 	                        mesh.geometry.name = "geometry_Lofted";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Lofted")];
@@ -44224,7 +44224,7 @@
 	                    case 64:
 	                        mesh.geometry.name = "geometry_Marker";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Marker")];
@@ -44239,7 +44239,7 @@
 	                    case 66:
 	                        mesh.geometry.name = "geometry_MatteHull";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("MatteHull")];
 	                    case 67:
@@ -44253,7 +44253,7 @@
 	                    case 68:
 	                        mesh.geometry.name = "geometry_NeonPulse";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("NeonPulse")];
@@ -44269,7 +44269,7 @@
 	                    case 70:
 	                        mesh.geometry.name = "geometry_OilPaint";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("OilPaint")];
@@ -44284,7 +44284,7 @@
 	                    case 72:
 	                        mesh.geometry.name = "geometry_Paper";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Paper")];
@@ -44299,7 +44299,7 @@
 	                    case 74:
 	                        mesh.geometry.name = "geometry_PbrTemplate";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("PbrTemplate")];
@@ -44314,7 +44314,7 @@
 	                    case 76:
 	                        mesh.geometry.name = "geometry_PbrTransparentTemplate";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("PbrTransparentTemplate")];
@@ -44329,7 +44329,7 @@
 	                    case 78:
 	                        mesh.geometry.name = "geometry_Petal";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Petal")];
@@ -44344,7 +44344,7 @@
 	                    case 80:
 	                        mesh.geometry.name = "geometry_Plasma";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Plasma")];
@@ -44360,7 +44360,7 @@
 	                    case 82:
 	                        mesh.geometry.name = "geometry_Rainbow";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Rainbow")];
@@ -44376,7 +44376,7 @@
 	                    case 84:
 	                        mesh.geometry.name = "geometry_ShinyHull";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("ShinyHull")];
@@ -44421,7 +44421,7 @@
 	                    case 90:
 	                        mesh.geometry.name = "geometry_SoftHighlighter";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("SoftHighlighter")];
@@ -44436,7 +44436,7 @@
 	                    case 92:
 	                        mesh.geometry.name = "geometry_Spikes";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Spikes")];
@@ -44451,7 +44451,7 @@
 	                    case 94:
 	                        mesh.geometry.name = "geometry_Splatter";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Splatter")];
@@ -44483,7 +44483,7 @@
 	                    case 98:
 	                        mesh.geometry.name = "geometry_Streamers";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Streamers")];
@@ -44499,7 +44499,7 @@
 	                    case 100:
 	                        mesh.geometry.name = "geometry_Taffy";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DiamondHull")];
@@ -44515,7 +44515,7 @@
 	                    case 102:
 	                        mesh.geometry.name = "geometry_TaperedFlat";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("TaperedFlat")];
@@ -44530,7 +44530,7 @@
 	                    case 104:
 	                        mesh.geometry.name = "geometry_TaperedMarker";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("TaperedMarker")];
@@ -44545,7 +44545,7 @@
 	                    case 106:
 	                        mesh.geometry.name = "geometry_Flat";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Flat")];
@@ -44560,7 +44560,7 @@
 	                    case 108:
 	                        mesh.geometry.name = "geometry_ThickPaint";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("ThickPaint")];
@@ -44575,7 +44575,7 @@
 	                    case 110:
 	                        mesh.geometry.name = "geometry_Toon";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Toon")];
 	                    case 111:
@@ -44589,7 +44589,7 @@
 	                    case 112:
 	                        mesh.geometry.name = "geometry_UnlitHull";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("UnlitHull")];
 	                    case 113:
@@ -44600,7 +44600,7 @@
 	                    case 114:
 	                        mesh.geometry.name = "geometry_VelvetInk";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("VelvetInk")];
@@ -44615,7 +44615,7 @@
 	                    case 116:
 	                        mesh.geometry.name = "geometry_Waveform";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Waveform")];
@@ -44631,7 +44631,7 @@
 	                    case 118:
 	                        mesh.geometry.name = "geometry_WetPaint";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("WetPaint")];
@@ -44646,7 +44646,7 @@
 	                    case 120:
 	                        mesh.geometry.name = "geometry_WigglyGraphite";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("WigglyGraphite")];
@@ -44662,7 +44662,7 @@
 	                    case 122:
 	                        mesh.geometry.name = "geometry_Wire";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Wire")];
 	                    case 123:

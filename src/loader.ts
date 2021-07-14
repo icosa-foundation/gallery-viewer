@@ -239,7 +239,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_CelVinyl";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("CelVinyl");
@@ -254,7 +254,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_ChromaticWave";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("ChromaticWave");
@@ -270,7 +270,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_CoarseBristles";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("CoarseBristles");
@@ -285,7 +285,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Comet";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Comet");
@@ -301,7 +301,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_DiamondHull";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("DiamondHull");
@@ -317,7 +317,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Disco";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Disco");
@@ -333,7 +333,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_DotMarker";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("DotMarker");
@@ -364,7 +364,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_DoubleTaperedFlat";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("DoubleTaperedFlat");
@@ -379,7 +379,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_DoubleTaperedMarker";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("DoubleTaperedMarker");
@@ -394,7 +394,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_DuctTape";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("DuctTape");
@@ -409,7 +409,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Electricity";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" :"_tb_unity_texcoord_1"));
@@ -437,7 +437,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_EnvironmentDiffuse";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("EnvironmentDiffuse");
@@ -452,7 +452,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_EnvironmentDiffuseLightMap";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("EnvironmentDiffuseLightMap");
@@ -467,7 +467,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Fire";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Fire");
@@ -483,7 +483,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Flat";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Flat");
@@ -498,7 +498,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_FlatDeprecated";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("FlatDeprecated");
@@ -514,7 +514,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Highlighter";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Highlighter");
@@ -529,7 +529,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Hypercolor";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Hypercolor");
@@ -545,7 +545,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_HyperGrid";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" :"_tb_unity_texcoord_1"));
@@ -561,7 +561,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Icing";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 
@@ -577,7 +577,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Ink";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Ink");
@@ -592,7 +592,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Leaves";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Leaves");
@@ -607,7 +607,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Light";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Light");
@@ -622,7 +622,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_LightWire";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("LightWire");
@@ -638,7 +638,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Lofted";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Lofted");
@@ -653,7 +653,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Marker";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Marker");
@@ -668,7 +668,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_MatteHull";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         shader = await this.tiltShaderLoader.loadAsync("MatteHull");
                         shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
@@ -682,7 +682,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_NeonPulse";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("NeonPulse");
@@ -698,7 +698,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_OilPaint";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("OilPaint");
@@ -713,7 +713,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Paper";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Paper");
@@ -728,7 +728,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_PbrTemplate";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("PbrTemplate");
@@ -743,7 +743,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_PbrTransparentTemplate";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("PbrTransparentTemplate");
@@ -758,7 +758,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Petal";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Petal");
@@ -773,7 +773,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Plasma";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Plasma");
@@ -789,7 +789,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Rainbow";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Rainbow");
@@ -805,7 +805,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_ShinyHull";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("ShinyHull");
@@ -849,7 +849,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_SoftHighlighter";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("SoftHighlighter");
@@ -864,7 +864,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Spikes";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Spikes");
@@ -879,7 +879,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Splatter";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Splatter");
@@ -911,7 +911,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Streamers";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Streamers");
@@ -927,7 +927,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Taffy";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("DiamondHull");
@@ -943,7 +943,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_TaperedFlat";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("TaperedFlat");
@@ -958,7 +958,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_TaperedMarker";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("TaperedMarker");
@@ -973,7 +973,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Flat";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Flat");
@@ -988,7 +988,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_ThickPaint";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("ThickPaint");
@@ -1003,7 +1003,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Toon";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         shader = await this.tiltShaderLoader.loadAsync("Toon");
                         shader.uniforms["u_SceneLight_0_matrix"]!.value = light0transform;
@@ -1017,7 +1017,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_UnlitHull";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         shader = await this.tiltShaderLoader.loadAsync("UnlitHull");
                         mesh.material = shader;
@@ -1028,7 +1028,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_VelvetInk";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("VelvetInk");
@@ -1043,7 +1043,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Waveform";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("Waveform");
@@ -1059,7 +1059,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_WetPaint";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("WetPaint");
@@ -1074,7 +1074,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_WigglyGraphite";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
                         shader = await this.tiltShaderLoader.loadAsync("WigglyGraphite");
@@ -1090,7 +1090,7 @@ export class Loader {
                         mesh.geometry.name = "geometry_Wire";
 
                         mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
                         mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
                         shader = await this.tiltShaderLoader.loadAsync("Wire");
                         mesh.material = shader;
