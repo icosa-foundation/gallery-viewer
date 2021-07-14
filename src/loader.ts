@@ -135,24 +135,22 @@ export class Loader {
         });
     }
 
-    public loadBrushGltf2(url : string) {
-        this.gltfLoader.load(url, (gltf) => {
-            this.loadedModel = gltf.scene;
-            this.replaceBrushMaterials();
-            this.finishSetup();
-        });
+    public async loadBrushGltf2(url : string) {
+        const gltf = await this.gltfLoader.loadAsync(url);
+        this.loadedModel = gltf.scene;
+        await this.replaceBrushMaterials();
+        this.finishSetup();
     }
 
-    public loadBrushGltf1(url : string) {
-        this.legacygltf.load(url, (gltf) => {
-            this.loadedModel = gltf.scene;
-            this.isGltfLegacy = true;
-            this.replaceBrushMaterials();
-            this.finishSetup();
-        });
+    public async loadBrushGltf1(url : string) {
+        const gltf = await this.legacygltf.loadAsync(url);
+        this.loadedModel = gltf.scene;
+        this.isGltfLegacy = true;
+        await this.replaceBrushMaterials();
+        this.finishSetup();
     }
 
-    private replaceBrushMaterials() {
+    private async replaceBrushMaterials() {
         if(!this.loadedModel) 
             return;
         var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.modelViewMatrix;

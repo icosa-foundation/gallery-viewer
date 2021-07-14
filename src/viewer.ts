@@ -156,14 +156,14 @@ export class Viewer {
     }
 
     // Load GLTF/GLB ver 2.x *Brush file
-    public loadBrushGltf(url: string) {
-        this.icosa_viewer?.loadBrushGltf2(url);
+    public async loadBrushGltf(url: string) {
+        await this.icosa_viewer?.loadBrushGltf2(url);
     }
 
     // Load GLTF/GLB ver 1.0 *Brush file
     // Legacy for original exported assets, and files that were recovered from Poly
-    public loadBrushGltf1(url: string) {
-        this.icosa_viewer?.loadBrushGltf1(url);
+    public async loadBrushGltf1(url: string) {
+        await this.icosa_viewer?.loadBrushGltf1(url);
     }
 
     // Load generic GLTF/GLB ver 2.x
