@@ -25,7 +25,7 @@ export class TiltShaderLoader extends Loader {
         const scope = this;
         
 		const loader = new FileLoader( this.manager );
-		loader.setPath( this.path );
+		loader.setPath( TILTBRUSH_SHADER_PATH );
 		loader.setResponseType( 'text' );
 		loader.setWithCredentials( this.withCredentials );
 

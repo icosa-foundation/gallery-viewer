@@ -18,7 +18,6 @@ import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { Convert, JSONIcosaFormat, JSONPolyFormat } from "./JSONSchema";
 import { TiltShaderLoader } from "./tiltbrush/TiltShaderLoader.js";
 
 export class Loader {
@@ -54,7 +53,6 @@ export class Loader {
         this.tiltLoader = new TiltLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
         this.tiltShaderLoader = new TiltShaderLoader(manager);
-        this.tiltShaderLoader.setPath("https://storage.googleapis.com/static.icosa.gallery/brushes/");
 
         var dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
@@ -173,8 +171,7 @@ export class Loader {
                 } else {
                     targetFilter = "brush_" + mesh.name.split('_')[1];
                 }
-                console.log(targetFilter);
-                try {
+
                 switch(targetFilter) {
                     case "brush_BlocksBasic":
                         mesh.geometry.name = "geometry_BlocksBasic";
@@ -1097,14 +1094,7 @@ export class Loader {
                         mesh.material.name = "material_Wire";
                         break;
                 }
-                
-            } catch (ex) {
-               console.log({
-                   error: ex,
-                   brush: targetFilter
-                });
             }
-        }
         });
     }
 

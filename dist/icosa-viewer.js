@@ -42140,7 +42140,7 @@
 	        const scope = this;
 	        
 			const loader = new FileLoader( this.manager );
-			loader.setPath( this.path );
+			loader.setPath( TILTBRUSH_SHADER_PATH );
 			loader.setResponseType( 'text' );
 			loader.setWithCredentials( this.withCredentials );
 
@@ -43574,7 +43574,6 @@
 	        this.tiltLoader = new TiltLoader(manager);
 	        this.gltfLoader = new GLTFLoader(manager);
 	        this.tiltShaderLoader = new TiltShaderLoader(manager);
-	        this.tiltShaderLoader.setPath("https://storage.googleapis.com/static.icosa.gallery/brushes/");
 	        var dracoLoader = new DRACOLoader();
 	        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 	        this.gltfLoader.setDRACOLoader(dracoLoader);
@@ -43667,11 +43666,11 @@
 	        var light0transform = (_a = this.loadedModel.getObjectByName("node_SceneLight_0_i1")) === null || _a === void 0 ? void 0 : _a.modelViewMatrix;
 	        var light1transform = (_b = this.loadedModel.getObjectByName("node_SceneLight_1_i2")) === null || _b === void 0 ? void 0 : _b.modelViewMatrix;
 	        this.loadedModel.traverse(function (object) { return __awaiter(_this, void 0, void 0, function () {
-	            var targetFilter, mesh, material, shader, _a, ex_1;
+	            var targetFilter, mesh, material, shader, _a;
 	            return __generator(this, function (_b) {
 	                switch (_b.label) {
 	                    case 0:
-	                        if (!(object.type === "Mesh")) return [3, 126];
+	                        if (!(object.type === "Mesh")) return [3, 123];
 	                        targetFilter = "";
 	                        mesh = object;
 	                        material = mesh.material;
@@ -43681,118 +43680,114 @@
 	                        else {
 	                            targetFilter = "brush_" + mesh.name.split('_')[1];
 	                        }
-	                        console.log(targetFilter);
-	                        _b.label = 1;
-	                    case 1:
-	                        _b.trys.push([1, 125, , 126]);
 	                        _a = targetFilter;
 	                        switch (_a) {
-	                            case "brush_BlocksBasic": return [3, 2];
-	                            case "brush_BlocksGem": return [3, 4];
-	                            case "brush_BlocksGlass": return [3, 6];
-	                            case "brush_Bubbles": return [3, 8];
-	                            case "brush_CelVinyl": return [3, 10];
-	                            case "brush_ChromaticWave": return [3, 12];
-	                            case "brush_CoarseBristles": return [3, 14];
-	                            case "brush_Comet": return [3, 16];
-	                            case "brush_DiamondHull": return [3, 18];
-	                            case "brush_Disco": return [3, 20];
-	                            case "brush_DotMarker": return [3, 22];
-	                            case "brush_Dots": return [3, 24];
-	                            case "brush_DoubleTaperedFlat": return [3, 26];
-	                            case "brush_DoubleTaperedMarker": return [3, 28];
-	                            case "brush_DuctTape": return [3, 30];
-	                            case "brush_Electricity": return [3, 32];
-	                            case "brush_Embers": return [3, 34];
-	                            case "brush_EnvironmentDiffuse": return [3, 36];
-	                            case "brush_EnvironmentDiffuseLightMap": return [3, 38];
-	                            case "brush_Fire": return [3, 40];
-	                            case "brush_Flat": return [3, 42];
-	                            case "brush_FlatDeprecated": return [3, 44];
-	                            case "brush_Highlighter": return [3, 46];
-	                            case "brush_Hypercolor": return [3, 48];
-	                            case "brush_HyperGrid": return [3, 50];
-	                            case "brush_Icing": return [3, 52];
-	                            case "brush_Ink": return [3, 54];
-	                            case "brush_Leaves": return [3, 56];
-	                            case "brush_Light": return [3, 58];
-	                            case "brush_LightWire": return [3, 60];
-	                            case "brush_Lofted": return [3, 62];
-	                            case "brush_Marker": return [3, 64];
-	                            case "brush_MatteHull": return [3, 66];
-	                            case "brush_NeonPulse": return [3, 68];
-	                            case "brush_OilPaint": return [3, 70];
-	                            case "brush_Paper": return [3, 72];
-	                            case "brush_PbrTemplate": return [3, 74];
-	                            case "brush_PbrTransparentTemplate": return [3, 76];
-	                            case "brush_Petal": return [3, 78];
-	                            case "brush_Plasma": return [3, 80];
-	                            case "brush_Rainbow": return [3, 82];
-	                            case "brush_ShinyHull": return [3, 84];
-	                            case "brush_Smoke": return [3, 86];
-	                            case "brush_Snow": return [3, 88];
-	                            case "brush_SoftHighlighter": return [3, 90];
-	                            case "brush_Spikes": return [3, 92];
-	                            case "brush_Splatter": return [3, 94];
-	                            case "brush_Stars": return [3, 96];
-	                            case "brush_Streamers": return [3, 98];
-	                            case "brush_Taffy": return [3, 100];
-	                            case "brush_TaperedFlat": return [3, 102];
-	                            case "brush_TaperedMarker": return [3, 104];
-	                            case "brush_TaperedMarker_Flat": return [3, 106];
-	                            case "brush_ThickPaint": return [3, 108];
-	                            case "brush_Toon": return [3, 110];
-	                            case "brush_UnlitHull": return [3, 112];
-	                            case "brush_VelvetInk": return [3, 114];
-	                            case "brush_Waveform": return [3, 116];
-	                            case "brush_WetPaint": return [3, 118];
-	                            case "brush_WigglyGraphite": return [3, 120];
-	                            case "brush_Wire": return [3, 122];
+	                            case "brush_BlocksBasic": return [3, 1];
+	                            case "brush_BlocksGem": return [3, 3];
+	                            case "brush_BlocksGlass": return [3, 5];
+	                            case "brush_Bubbles": return [3, 7];
+	                            case "brush_CelVinyl": return [3, 9];
+	                            case "brush_ChromaticWave": return [3, 11];
+	                            case "brush_CoarseBristles": return [3, 13];
+	                            case "brush_Comet": return [3, 15];
+	                            case "brush_DiamondHull": return [3, 17];
+	                            case "brush_Disco": return [3, 19];
+	                            case "brush_DotMarker": return [3, 21];
+	                            case "brush_Dots": return [3, 23];
+	                            case "brush_DoubleTaperedFlat": return [3, 25];
+	                            case "brush_DoubleTaperedMarker": return [3, 27];
+	                            case "brush_DuctTape": return [3, 29];
+	                            case "brush_Electricity": return [3, 31];
+	                            case "brush_Embers": return [3, 33];
+	                            case "brush_EnvironmentDiffuse": return [3, 35];
+	                            case "brush_EnvironmentDiffuseLightMap": return [3, 37];
+	                            case "brush_Fire": return [3, 39];
+	                            case "brush_Flat": return [3, 41];
+	                            case "brush_FlatDeprecated": return [3, 43];
+	                            case "brush_Highlighter": return [3, 45];
+	                            case "brush_Hypercolor": return [3, 47];
+	                            case "brush_HyperGrid": return [3, 49];
+	                            case "brush_Icing": return [3, 51];
+	                            case "brush_Ink": return [3, 53];
+	                            case "brush_Leaves": return [3, 55];
+	                            case "brush_Light": return [3, 57];
+	                            case "brush_LightWire": return [3, 59];
+	                            case "brush_Lofted": return [3, 61];
+	                            case "brush_Marker": return [3, 63];
+	                            case "brush_MatteHull": return [3, 65];
+	                            case "brush_NeonPulse": return [3, 67];
+	                            case "brush_OilPaint": return [3, 69];
+	                            case "brush_Paper": return [3, 71];
+	                            case "brush_PbrTemplate": return [3, 73];
+	                            case "brush_PbrTransparentTemplate": return [3, 75];
+	                            case "brush_Petal": return [3, 77];
+	                            case "brush_Plasma": return [3, 79];
+	                            case "brush_Rainbow": return [3, 81];
+	                            case "brush_ShinyHull": return [3, 83];
+	                            case "brush_Smoke": return [3, 85];
+	                            case "brush_Snow": return [3, 87];
+	                            case "brush_SoftHighlighter": return [3, 89];
+	                            case "brush_Spikes": return [3, 91];
+	                            case "brush_Splatter": return [3, 93];
+	                            case "brush_Stars": return [3, 95];
+	                            case "brush_Streamers": return [3, 97];
+	                            case "brush_Taffy": return [3, 99];
+	                            case "brush_TaperedFlat": return [3, 101];
+	                            case "brush_TaperedMarker": return [3, 103];
+	                            case "brush_TaperedMarker_Flat": return [3, 105];
+	                            case "brush_ThickPaint": return [3, 107];
+	                            case "brush_Toon": return [3, 109];
+	                            case "brush_UnlitHull": return [3, 111];
+	                            case "brush_VelvetInk": return [3, 113];
+	                            case "brush_Waveform": return [3, 115];
+	                            case "brush_WetPaint": return [3, 117];
+	                            case "brush_WigglyGraphite": return [3, 119];
+	                            case "brush_Wire": return [3, 121];
 	                        }
-	                        return [3, 124];
-	                    case 2:
+	                        return [3, 123];
+	                    case 1:
 	                        mesh.geometry.name = "geometry_BlocksBasic";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("BlocksBasic")];
-	                    case 3:
+	                    case 2:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_BlocksBasic";
-	                        return [3, 124];
-	                    case 4:
+	                        return [3, 123];
+	                    case 3:
 	                        mesh.geometry.name = "geometry_BlocksGem";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("BlocksGem")];
-	                    case 5:
+	                    case 4:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_BlocksGem";
-	                        return [3, 124];
-	                    case 6:
+	                        return [3, 123];
+	                    case 5:
 	                        mesh.geometry.name = "geometry_BlocksGlass";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("BlocksGlass")];
-	                    case 7:
+	                    case 6:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_BlocksGlass";
-	                        return [3, 124];
-	                    case 8:
+	                        return [3, 123];
+	                    case 7:
 	                        mesh.geometry.name = "geometry_Bubbles";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
@@ -43800,37 +43795,37 @@
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Bubbles")];
-	                    case 9:
+	                    case 8:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Bubbles";
-	                        return [3, 124];
-	                    case 10:
+	                        return [3, 123];
+	                    case 9:
 	                        mesh.geometry.name = "geometry_CelVinyl";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("CelVinyl")];
-	                    case 11:
+	                    case 10:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_CelVinyl";
-	                        return [3, 124];
-	                    case 12:
+	                        return [3, 123];
+	                    case 11:
 	                        mesh.geometry.name = "geometry_ChromaticWave";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("ChromaticWave")];
-	                    case 13:
+	                    case 12:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -43838,30 +43833,30 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_ChromaticWave";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 14:
+	                        return [3, 123];
+	                    case 13:
 	                        mesh.geometry.name = "geometry_CoarseBristles";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("CoarseBristles")];
-	                    case 15:
+	                    case 14:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_CoarseBristles";
-	                        return [3, 124];
-	                    case 16:
+	                        return [3, 123];
+	                    case 15:
 	                        mesh.geometry.name = "geometry_Comet";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Comet")];
-	                    case 17:
+	                    case 16:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -43869,15 +43864,15 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Comet";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 18:
+	                        return [3, 123];
+	                    case 17:
 	                        mesh.geometry.name = "geometry_DiamondHull";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DiamondHull")];
-	                    case 19:
+	                    case 18:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -43885,15 +43880,15 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_DiamondHull";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 20:
+	                        return [3, 123];
+	                    case 19:
 	                        mesh.geometry.name = "geometry_Disco";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Disco")];
-	                    case 21:
+	                    case 20:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -43901,23 +43896,23 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Disco";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 22:
+	                        return [3, 123];
+	                    case 21:
 	                        mesh.geometry.name = "geometry_DotMarker";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DotMarker")];
-	                    case 23:
+	                    case 22:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_DotMarker";
-	                        return [3, 124];
-	                    case 24:
+	                        return [3, 123];
+	                    case 23:
 	                        mesh.geometry.name = "geometry_Dots";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
@@ -43925,60 +43920,60 @@
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Dots")];
-	                    case 25:
+	                    case 24:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Dots";
-	                        return [3, 124];
-	                    case 26:
+	                        return [3, 123];
+	                    case 25:
 	                        mesh.geometry.name = "geometry_DoubleTaperedFlat";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DoubleTaperedFlat")];
-	                    case 27:
+	                    case 26:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_DoubleTaperedFlat";
-	                        return [3, 124];
-	                    case 28:
+	                        return [3, 123];
+	                    case 27:
 	                        mesh.geometry.name = "geometry_DoubleTaperedMarker";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DoubleTaperedMarker")];
-	                    case 29:
+	                    case 28:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_DoubleTaperedMarker";
-	                        return [3, 124];
-	                    case 30:
+	                        return [3, 123];
+	                    case 29:
 	                        mesh.geometry.name = "geometry_DuctTape";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DuctTape")];
-	                    case 31:
+	                    case 30:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_DuctTape";
-	                        return [3, 124];
-	                    case 32:
+	                        return [3, 123];
+	                    case 31:
 	                        mesh.geometry.name = "geometry_Electricity";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
@@ -43986,13 +43981,13 @@
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Electricity")];
-	                    case 33:
+	                    case 32:
 	                        shader = _b.sent();
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Electricity";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 34:
+	                        return [3, 123];
+	                    case 33:
 	                        mesh.geometry.name = "geometry_Embers";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
@@ -44000,50 +43995,50 @@
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Embers")];
-	                    case 35:
+	                    case 34:
 	                        shader = _b.sent();
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Embers";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 36:
+	                        return [3, 123];
+	                    case 35:
 	                        mesh.geometry.name = "geometry_EnvironmentDiffuse";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("EnvironmentDiffuse")];
-	                    case 37:
+	                    case 36:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_EnvironmentDiffuse";
-	                        return [3, 124];
-	                    case 38:
+	                        return [3, 123];
+	                    case 37:
 	                        mesh.geometry.name = "geometry_EnvironmentDiffuseLightMap";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("EnvironmentDiffuseLightMap")];
-	                    case 39:
+	                    case 38:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_EnvironmentDiffuseLightMap";
-	                        return [3, 124];
-	                    case 40:
+	                        return [3, 123];
+	                    case 39:
 	                        mesh.geometry.name = "geometry_Fire";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Fire")];
-	                    case 41:
+	                    case 40:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44051,30 +44046,30 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Fire";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 42:
+	                        return [3, 123];
+	                    case 41:
 	                        mesh.geometry.name = "geometry_Flat";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Flat")];
-	                    case 43:
+	                    case 42:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Flat";
-	                        return [3, 124];
-	                    case 44:
+	                        return [3, 123];
+	                    case 43:
 	                        mesh.geometry.name = "geometry_FlatDeprecated";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("FlatDeprecated")];
-	                    case 45:
+	                    case 44:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44082,30 +44077,30 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_FlatDeprecated";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 46:
+	                        return [3, 123];
+	                    case 45:
 	                        mesh.geometry.name = "geometry_Highlighter";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Highlighter")];
-	                    case 47:
+	                    case 46:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Highlighter";
-	                        return [3, 124];
-	                    case 48:
+	                        return [3, 123];
+	                    case 47:
 	                        mesh.geometry.name = "geometry_Hypercolor";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Hypercolor")];
-	                    case 49:
+	                    case 48:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44113,8 +44108,8 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Hypercolor";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 50:
+	                        return [3, 123];
+	                    case 49:
 	                        mesh.geometry.name = "geometry_HyperGrid";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
@@ -44122,82 +44117,82 @@
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
 	                        return [4, this.tiltShaderLoader.loadAsync("HyperGrid")];
-	                    case 51:
+	                    case 50:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_HyperGrid";
-	                        return [3, 124];
-	                    case 52:
+	                        return [3, 123];
+	                    case 51:
 	                        mesh.geometry.name = "geometry_Icing";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Icing")];
-	                    case 53:
+	                    case 52:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Icing";
-	                        return [3, 124];
-	                    case 54:
+	                        return [3, 123];
+	                    case 53:
 	                        mesh.geometry.name = "geometry_Ink";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Ink")];
-	                    case 55:
+	                    case 54:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Ink";
-	                        return [3, 124];
-	                    case 56:
+	                        return [3, 123];
+	                    case 55:
 	                        mesh.geometry.name = "geometry_Leaves";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Leaves")];
-	                    case 57:
+	                    case 56:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Leaves";
-	                        return [3, 124];
-	                    case 58:
+	                        return [3, 123];
+	                    case 57:
 	                        mesh.geometry.name = "geometry_Light";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Light")];
-	                    case 59:
+	                    case 58:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Light";
-	                        return [3, 124];
-	                    case 60:
+	                        return [3, 123];
+	                    case 59:
 	                        mesh.geometry.name = "geometry_LightWire";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("LightWire")];
-	                    case 61:
+	                    case 60:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44205,59 +44200,59 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_LightWire";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 62:
+	                        return [3, 123];
+	                    case 61:
 	                        mesh.geometry.name = "geometry_Lofted";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Lofted")];
-	                    case 63:
+	                    case 62:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Lofted";
-	                        return [3, 124];
-	                    case 64:
+	                        return [3, 123];
+	                    case 63:
 	                        mesh.geometry.name = "geometry_Marker";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Marker")];
-	                    case 65:
+	                    case 64:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Marker";
-	                        return [3, 124];
-	                    case 66:
+	                        return [3, 123];
+	                    case 65:
 	                        mesh.geometry.name = "geometry_MatteHull";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("MatteHull")];
-	                    case 67:
+	                    case 66:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_MatteHull";
-	                        return [3, 124];
-	                    case 68:
+	                        return [3, 123];
+	                    case 67:
 	                        mesh.geometry.name = "geometry_NeonPulse";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("NeonPulse")];
-	                    case 69:
+	                    case 68:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44265,90 +44260,90 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_NeonPulse";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 70:
+	                        return [3, 123];
+	                    case 69:
 	                        mesh.geometry.name = "geometry_OilPaint";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("OilPaint")];
-	                    case 71:
+	                    case 70:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_OilPaint";
-	                        return [3, 124];
-	                    case 72:
+	                        return [3, 123];
+	                    case 71:
 	                        mesh.geometry.name = "geometry_Paper";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Paper")];
-	                    case 73:
+	                    case 72:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Paper";
-	                        return [3, 124];
-	                    case 74:
+	                        return [3, 123];
+	                    case 73:
 	                        mesh.geometry.name = "geometry_PbrTemplate";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("PbrTemplate")];
-	                    case 75:
+	                    case 74:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_PbrTemplate";
-	                        return [3, 124];
-	                    case 76:
+	                        return [3, 123];
+	                    case 75:
 	                        mesh.geometry.name = "geometry_PbrTransparentTemplate";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("PbrTransparentTemplate")];
-	                    case 77:
+	                    case 76:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_PbrTransparentTemplate";
-	                        return [3, 124];
-	                    case 78:
+	                        return [3, 123];
+	                    case 77:
 	                        mesh.geometry.name = "geometry_Petal";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Petal")];
-	                    case 79:
+	                    case 78:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Petal";
-	                        return [3, 124];
-	                    case 80:
+	                        return [3, 123];
+	                    case 79:
 	                        mesh.geometry.name = "geometry_Plasma";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Plasma")];
-	                    case 81:
+	                    case 80:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44356,15 +44351,15 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Plasma";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 82:
+	                        return [3, 123];
+	                    case 81:
 	                        mesh.geometry.name = "geometry_Rainbow";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Rainbow")];
-	                    case 83:
+	                    case 82:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44372,23 +44367,23 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Rainbow";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 84:
+	                        return [3, 123];
+	                    case 83:
 	                        mesh.geometry.name = "geometry_ShinyHull";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("ShinyHull")];
-	                    case 85:
+	                    case 84:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_ShinyHull";
-	                        return [3, 124];
-	                    case 86:
+	                        return [3, 123];
+	                    case 85:
 	                        mesh.geometry.name = "geometry_Smoke";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
@@ -44396,15 +44391,15 @@
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Smoke")];
-	                    case 87:
+	                    case 86:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Smoke";
-	                        return [3, 124];
-	                    case 88:
+	                        return [3, 123];
+	                    case 87:
 	                        mesh.geometry.name = "geometry_Snow";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
@@ -44412,58 +44407,58 @@
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Snow")];
-	                    case 89:
+	                    case 88:
 	                        shader = _b.sent();
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Snow";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 90:
+	                        return [3, 123];
+	                    case 89:
 	                        mesh.geometry.name = "geometry_SoftHighlighter";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("SoftHighlighter")];
-	                    case 91:
+	                    case 90:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_SoftHighlighter";
-	                        return [3, 124];
-	                    case 92:
+	                        return [3, 123];
+	                    case 91:
 	                        mesh.geometry.name = "geometry_Spikes";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Spikes")];
-	                    case 93:
+	                    case 92:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Spikes";
-	                        return [3, 124];
-	                    case 94:
+	                        return [3, 123];
+	                    case 93:
 	                        mesh.geometry.name = "geometry_Splatter";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Splatter")];
-	                    case 95:
+	                    case 94:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Splatter";
-	                        return [3, 124];
-	                    case 96:
+	                        return [3, 123];
+	                    case 95:
 	                        mesh.geometry.name = "geometry_Stars";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
@@ -44471,7 +44466,7 @@
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Stars")];
-	                    case 97:
+	                    case 96:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44479,15 +44474,15 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Stars";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 98:
+	                        return [3, 123];
+	                    case 97:
 	                        mesh.geometry.name = "geometry_Streamers";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Streamers")];
-	                    case 99:
+	                    case 98:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44495,15 +44490,15 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Streamers";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 100:
+	                        return [3, 123];
+	                    case 99:
 	                        mesh.geometry.name = "geometry_Taffy";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("DiamondHull")];
-	                    case 101:
+	                    case 100:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44511,115 +44506,115 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_DiamondHull";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 102:
+	                        return [3, 123];
+	                    case 101:
 	                        mesh.geometry.name = "geometry_TaperedFlat";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("TaperedFlat")];
-	                    case 103:
+	                    case 102:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_TaperedFlat";
-	                        return [3, 124];
-	                    case 104:
+	                        return [3, 123];
+	                    case 103:
 	                        mesh.geometry.name = "geometry_TaperedMarker";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("TaperedMarker")];
-	                    case 105:
+	                    case 104:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_TaperedMarker";
-	                        return [3, 124];
-	                    case 106:
+	                        return [3, 123];
+	                    case 105:
 	                        mesh.geometry.name = "geometry_Flat";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Flat")];
-	                    case 107:
+	                    case 106:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Flat";
-	                        return [3, 124];
-	                    case 108:
+	                        return [3, 123];
+	                    case 107:
 	                        mesh.geometry.name = "geometry_ThickPaint";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("ThickPaint")];
-	                    case 109:
+	                    case 108:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_ThickPaint";
-	                        return [3, 124];
-	                    case 110:
+	                        return [3, 123];
+	                    case 109:
 	                        mesh.geometry.name = "geometry_Toon";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Toon")];
-	                    case 111:
+	                    case 110:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Toon";
-	                        return [3, 124];
-	                    case 112:
+	                        return [3, 123];
+	                    case 111:
 	                        mesh.geometry.name = "geometry_UnlitHull";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("UnlitHull")];
-	                    case 113:
+	                    case 112:
 	                        shader = _b.sent();
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_UnlitHull";
-	                        return [3, 124];
-	                    case 114:
+	                        return [3, 123];
+	                    case 113:
 	                        mesh.geometry.name = "geometry_VelvetInk";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("VelvetInk")];
-	                    case 115:
+	                    case 114:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_VelvetInk";
-	                        return [3, 124];
-	                    case 116:
+	                        return [3, 123];
+	                    case 115:
 	                        mesh.geometry.name = "geometry_Waveform";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Waveform")];
-	                    case 117:
+	                    case 116:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44627,30 +44622,30 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Waveform";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 118:
+	                        return [3, 123];
+	                    case 117:
 	                        mesh.geometry.name = "geometry_WetPaint";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("WetPaint")];
-	                    case 119:
+	                    case 118:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
 	                        shader.uniformsNeedUpdate = true;
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_WetPaint";
-	                        return [3, 124];
-	                    case 120:
+	                        return [3, 123];
+	                    case 119:
 	                        mesh.geometry.name = "geometry_WigglyGraphite";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
 	                        return [4, this.tiltShaderLoader.loadAsync("WigglyGraphite")];
-	                    case 121:
+	                    case 120:
 	                        shader = _b.sent();
 	                        shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
 	                        shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
@@ -44658,27 +44653,19 @@
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_WigglyGraphite";
 	                        this.updateableMeshes.push(mesh);
-	                        return [3, 124];
-	                    case 122:
+	                        return [3, 123];
+	                    case 121:
 	                        mesh.geometry.name = "geometry_Wire";
 	                        mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
 	                        mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
 	                        mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
 	                        return [4, this.tiltShaderLoader.loadAsync("Wire")];
-	                    case 123:
+	                    case 122:
 	                        shader = _b.sent();
 	                        mesh.material = shader;
 	                        mesh.material.name = "material_Wire";
-	                        return [3, 124];
-	                    case 124: return [3, 126];
-	                    case 125:
-	                        ex_1 = _b.sent();
-	                        console.log({
-	                            error: ex_1,
-	                            brush: targetFilter
-	                        });
-	                        return [3, 126];
-	                    case 126: return [2];
+	                        return [3, 123];
+	                    case 123: return [2];
 	                }
 	            });
 	        }); });
