@@ -1,0 +1,24 @@
+<!doctype html>
+<meta charset="utf-8">
+<html>
+    <head>
+        <title>.gltf/.glb Viewer | Icosa Viewer</title>
+        <style>
+            html, body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="module">
+            import { Viewer } from "../dist/icosa-viewer.module.js";
+
+            var viewer = new Viewer();
+            await viewer.loadBrushGltf("formats/gltf2/all_brushes.glb");
+
+        </script>
+        <div id="icosa-viewer"></div>
+    </body>
+</html>
