@@ -43633,11 +43633,19 @@
 	        this.scene.add(ambientLight);
 	        this.loaded = true;
 	    };
-	    Loader.prototype.initTilt = function (url) {
-	        var _this = this;
-	        this.tiltLoader.load(url, function (tilt) {
-	            _this.loadedModel = tilt;
-	            _this.finishSetup();
+	    Loader.prototype.loadTilt = function (url) {
+	        return __awaiter(this, void 0, void 0, function () {
+	            var tilt;
+	            return __generator(this, function (_a) {
+	                switch (_a.label) {
+	                    case 0: return [4, this.tiltLoader.loadAsync(url)];
+	                    case 1:
+	                        tilt = _a.sent();
+	                        this.loadedModel = tilt;
+	                        this.finishSetup();
+	                        return [2];
+	                }
+	            });
 	        });
 	    };
 	    Loader.prototype.loadBrushGltf2 = function (url) {
@@ -45070,6 +45078,19 @@
 	            });
 	        });
 	    };
+	    Viewer.prototype.loadTilt = function (url) {
+	        var _a;
+	        return __awaiter(this, void 0, void 0, function () {
+	            return __generator(this, function (_b) {
+	                switch (_b.label) {
+	                    case 0: return [4, ((_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadTilt(url))];
+	                    case 1:
+	                        _b.sent();
+	                        return [2];
+	                }
+	            });
+	        });
+	    };
 	    Viewer.prototype.loadGltf = function (url) {
 	    };
 	    Viewer.prototype.loadObj = function (url) {
@@ -45096,7 +45117,6 @@
 	}());
 
 	exports.Convert = Convert;
-	exports.Loader = Loader;
 	exports.Viewer = Viewer;
 
 	Object.defineProperty(exports, '__esModule', { value: true });

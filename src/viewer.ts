@@ -166,6 +166,10 @@ export class Viewer {
         await this.icosa_viewer?.loadBrushGltf1(url);
     }
 
+    public async loadTilt(url: string) {
+        await this.icosa_viewer?.loadTilt(url);
+    }
+
     // Load generic GLTF/GLB ver 2.x
     // This should be the entry point for a Blocks export
     public loadGltf(url: string) {

@@ -129,11 +129,10 @@ export class Loader {
         this.loaded = true;
     }
 
-    private initTilt(url : string) {
-        this.tiltLoader.load(url, (tilt) => {
-            this.loadedModel = tilt;
-            this.finishSetup();
-        });
+    public async loadTilt(url : string) {
+        const tilt = await this.tiltLoader.loadAsync(url);
+        this.loadedModel = tilt;
+        this.finishSetup();
     }
 
     public async loadBrushGltf2(url : string) {
