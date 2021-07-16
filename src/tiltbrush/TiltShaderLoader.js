@@ -14,8 +14,6 @@
 
 import { Loader, FileLoader, RawShaderMaterial, RepeatWrapping, TextureLoader, Vector3, Vector4 } from "three";
 
-const TILTBRUSH_SHADER_PATH = "https://storage.googleapis.com/static.icosa.gallery/brushes/"
-
 export class TiltShaderLoader extends Loader {
     constructor( manager ) {
         super( manager );
@@ -25,12 +23,12 @@ export class TiltShaderLoader extends Loader {
         const scope = this;
         
 		const loader = new FileLoader( this.manager );
-		loader.setPath( TILTBRUSH_SHADER_PATH );
+		loader.setPath( this.path );
 		loader.setResponseType( 'text' );
 		loader.setWithCredentials( this.withCredentials );
 
         const textureLoader = new TextureLoader(this.manager);
-        textureLoader.setPath(TILTBRUSH_SHADER_PATH);
+        textureLoader.setPath(this.path);
         textureLoader.setWithCredentials( this.withCredentials );
 
         const materialParams = tiltBrushMaterialParams[brushName];

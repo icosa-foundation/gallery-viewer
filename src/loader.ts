@@ -53,6 +53,7 @@ export class Loader {
         this.tiltLoader = new TiltLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
         this.tiltShaderLoader = new TiltShaderLoader(manager);
+        this.tiltShaderLoader.setPath("https://storage.googleapis.com/static.icosa.gallery/brushes/");
 
         var dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');

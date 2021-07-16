@@ -42129,8 +42129,6 @@
 
 	// Copyright 2021 Icosa Gallery
 
-	const TILTBRUSH_SHADER_PATH = "https://storage.googleapis.com/static.icosa.gallery/brushes/";
-
 	class TiltShaderLoader extends Loader$1 {
 	    constructor( manager ) {
 	        super( manager );
@@ -42140,12 +42138,12 @@
 	        const scope = this;
 	        
 			const loader = new FileLoader( this.manager );
-			loader.setPath( TILTBRUSH_SHADER_PATH );
+			loader.setPath( this.path );
 			loader.setResponseType( 'text' );
 			loader.setWithCredentials( this.withCredentials );
 
 	        const textureLoader = new TextureLoader(this.manager);
-	        textureLoader.setPath(TILTBRUSH_SHADER_PATH);
+	        textureLoader.setPath(this.path);
 	        textureLoader.setWithCredentials( this.withCredentials );
 
 	        const materialParams = tiltBrushMaterialParams[brushName];
@@ -43574,6 +43572,7 @@
 	        this.tiltLoader = new TiltLoader(manager);
 	        this.gltfLoader = new GLTFLoader(manager);
 	        this.tiltShaderLoader = new TiltShaderLoader(manager);
+	        this.tiltShaderLoader.setPath("https://storage.googleapis.com/static.icosa.gallery/brushes/");
 	        var dracoLoader = new DRACOLoader();
 	        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
 	        this.gltfLoader.setDRACOLoader(dracoLoader);
