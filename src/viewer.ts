@@ -175,38 +175,4 @@ export class Viewer {
     public loadObj(url: string) {
 
     }
-
-
-    // public loadGLTF(url : string) {
-    //     this.icosa_viewer?.loadGLTF(url);
-    // }
-    
-    // public loadPolyAsset(assetID : string) {
-    //     this.icosa_viewer?.loadPolyAsset(assetID);
-    // }
-    
-    // public loadBrushGltf1(url : string) {
-    //     this.icosa_viewer?.loadPolyTilt(url);
-    // }
-
-
-    // Helper functions for platforms
-
-    // Icosa
-    // public loadIcosaUrl(url : string) {
-    //     this.icosa_viewer?.loadIcosaUrl(url);
-    // }
-
-    // public loadIcosaAsset(userurl : string, asseturl : string) {
-    //     this.icosa_viewer?.loadIcosaAsset(userurl, asseturl);
-    // }
-
-    // // Poly
-    // public loadPolyGLTF(url : string) {
-    //     this.icosa_viewer?.loadPolyGltf(url);
-    // }    
-    
-    // public loadPolyUrl(url : string) {
-    //     this.icosa_viewer?.loadPolyUrl(url);
-    // }
 }
