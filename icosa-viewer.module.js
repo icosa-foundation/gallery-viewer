@@ -4,6 +4,59 @@
  * Copyright (c) 2021 Icosa Gallery
  * Released under the Apache 2.0 Licence.
  */
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
 /**
  * @license
  * Copyright 2010-2021 Three.js Authors
@@ -29893,35 +29946,6 @@ class Light extends Object3D {
 
 Light.prototype.isLight = true;
 
-class HemisphereLight extends Light {
-
-	constructor( skyColor, groundColor, intensity ) {
-
-		super( skyColor, intensity );
-
-		this.type = 'HemisphereLight';
-
-		this.position.copy( Object3D.DefaultUp );
-		this.updateMatrix();
-
-		this.groundColor = new Color( groundColor );
-
-	}
-
-	copy( source ) {
-
-		Light.prototype.copy.call( this, source );
-
-		this.groundColor.copy( source.groundColor );
-
-		return this;
-
-	}
-
-}
-
-HemisphereLight.prototype.isHemisphereLight = true;
-
 const _projScreenMatrix$1 = /*@__PURE__*/ new Matrix4();
 const _lightPositionWorld$1 = /*@__PURE__*/ new Vector3();
 const _lookTarget$1 = /*@__PURE__*/ new Vector3();
@@ -42097,2276 +42121,1437 @@ function DRACOWorker() {
 
 }
 
-var Convert = (function () {
-    function Convert() {
-    }
-    Convert.toPoly = function (json) {
-        return JSON.parse(json);
-    };
-    Convert.polyToJson = function (value) {
-        return JSON.stringify(value);
-    };
-    return Convert;
-}());
-
-const BASE_URL = "https://storage.googleapis.com/static.icosa.gallery/brushes/";
-
-const TiltBrushShaders = {
-    "BlocksBasic" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e/BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e/BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "BlocksGem" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "BlocksGem-232998f8-d357-47a2-993a-53415df9be10/BlocksGem-232998f8-d357-47a2-993a-53415df9be10-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "BlocksGem-232998f8-d357-47a2-993a-53415df9be10/BlocksGem-232998f8-d357-47a2-993a-53415df9be10-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "BlocksGlass" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7/BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7/BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7-v10.0-fragment.glsl",
-		side: 2,
-		transparent: true,
-		depthFunc: 2,
-		depthWrite: false,
-		depthTest: true,
-		blending: 2,
-		extensions: { derivatives: true }
-    },
-    "Bubbles" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "CelVinyl" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "ChromaticWave" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "CoarseBristles" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Comet" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"DiamondHull" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_time: { value: new Vector4() },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			cameraPosition: { value: new Vector3() },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-MainTex.png',
-			function (texture) {
-				texture.name = "DiamondHull_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-		},
-		vertexShader: BASE_URL + "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-fragment.glsl",
-		side: 2,
-		transparent: true,
-		depthFunc: 2,
-		depthWrite: false,
-		depthTest: true,
-		blending: 5,
-		blendDstAlpha: 201,
-		blendDst: 201,
-		blendEquationAlpha: 100,
-		blendEquation: 100,
-		blendSrcAlpha: 201,
-		blendSrc: 201,
-    },
-    "Disco" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "DotMarker" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Dots" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "DoubleTaperedFlat" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-	},
-    "DoubleTaperedMarker" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "DuctTape" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Electricity" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Embers" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "EnvironmentDiffuse" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "EnvironmentDiffuseLightMap" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Fire" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Flat" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "FlatDeprecated" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Highlighter" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Hypercolor" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "HyperGrid" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"Icing" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Ink" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Leaves" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"Light" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62/Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-MainTex.png',
-			function (texture) {
-				texture.name = "Light_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_EmissionGain: { value: 0.45 },
-		},
-		vertexShader: BASE_URL + "Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62/Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62/Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-fragment.glsl",
-		side: 2,
-		transparent: true,
-		depthFunc: 2,
-		depthWrite: false,
-		depthTest: true,
-		blending: 5,
-		blendDstAlpha: 201,
-		blendDst: 201,
-		blendEquationAlpha: 100,
-		blendEquation: 100,
-		blendSrcAlpha: 201,
-		blendSrc: 201,
-    },
-    "LightWire" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Lofted" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Marker" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"MatteHull" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 }
-		},
-		vertexShader: BASE_URL + "MatteHull-79348357-432d-4746-8e29-0e25c112e3aa/MatteHull-79348357-432d-4746-8e29-0e25c112e3aa-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "MatteHull-79348357-432d-4746-8e29-0e25c112e3aa/MatteHull-79348357-432d-4746-8e29-0e25c112e3aa-v10.0-fragment.glsl",
-		side: 2,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-    },
-	"NeonPulse" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_time: { value: new Vector4() },
-			u_EmissionGain: { value: 0.45 },
-		},
-		vertexShader: BASE_URL + "NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6/NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6/NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6-v10.0-fragment.glsl",
-		side: 2,
-		transparent: true,
-		depthFunc: 2,
-		depthWrite: false,
-		depthTest: true,
-		blending: 5,
-		blendDstAlpha: 201,
-		blendDst: 201,
-		blendEquationAlpha: 100,
-		blendEquation: 100,
-		blendSrcAlpha: 201,
-		blendSrc: 201,
-    },
-	"OilPaint": {
-		uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0020, 0.0020, 512, 512) },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-MainTex.png',
-				function (texture) {
-					texture.name = "OilPaint_MainTex";
-					texture.wrapS = RepeatWrapping;
-					texture.wrapT = RepeatWrapping;
-					texture.flipY = false;
-				})
-			},
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-BumpMap.png',
-				function (texture) {
-					texture.name = "OilPaint_BumpMap";
-					texture.wrapS = RepeatWrapping;
-					texture.wrapT = RepeatWrapping;
-					texture.flipY = false;
-				})
-			}
-		},
-		vertexShader: BASE_URL + "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-fragment.glsl",
-		side: 2,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0
-	},
-    "Paper" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "PbrTemplate" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "PbrTransparentTemplate" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Petal" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Plasma" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"Rainbow" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_time: { value: new Vector4() },
-			u_EmissionGain: { value: 0.45 },
-		},
-		vertexShader: BASE_URL + "Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960/Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960/Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960-v10.0-fragment.glsl",
-		side: 2,
-		transparent: true,
-		depthFunc: 2,
-		depthWrite: false,
-		depthTest: true,
-		blending: 5,
-		blendDstAlpha: 201,
-		blendDst: 201,
-		blendEquationAlpha: 100,
-		blendEquation: 100,
-		blendSrcAlpha: 201,
-		blendSrc: 201,
-    },
-    "ShinyHull" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"Smoke": {
-		uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_TintColor: { value: new Vector4(1, 1, 1, 1) },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-MainTex.png',
-				function (texture) {
-					texture.name = "Smoke_MainTex";
-					texture.wrapS = RepeatWrapping;
-					texture.wrapT = RepeatWrapping;
-					texture.flipY = false;
-				})
-			}
-		},
-		vertexShader: BASE_URL + "Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-fragment.glsl",
-		side: 2,
-		transparent: true,
-		depthFunc: 2,
-		depthWrite: false,
-		depthTest: true,
-		blending: 5,
-		blendDstAlpha: 201,
-		blendDst: 201,
-		blendEquationAlpha: 100,
-		blendEquation: 100,
-		blendSrcAlpha: 201,
-		blendSrc: 201,
-	},
-    "Snow" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"SoftHighlighter" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-MainTex.png',
-			function (texture) {
-				texture.name = "SoftHighliter_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 },
-		},
-		vertexShader: BASE_URL + "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-fragment.glsl",
-		side: 2,
-		transparent: true,
-		depthFunc: 2,
-		depthWrite: false,
-		depthTest: true,
-		blending: 5,
-		blendDstAlpha: 201,
-		blendDst: 201,
-		blendEquationAlpha: 100,
-		blendEquation: 100,
-		blendSrcAlpha: 201,
-		blendSrc: 201,
-    },
-    "Spikes" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"Splatter" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-MainTex.png',
-			function (texture) {
-				texture.name = "Splatter_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 },
-		},
-		vertexShader: BASE_URL + "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-fragment.glsl",
-		side: 2,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0
-    },
-    "Stars" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Streamers" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Taffy" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "TaperedFlat" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "TaperedMarker" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "TaperedMarker_Flat" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "ThickPaint" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"Toon" : {
-        uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 }
-		},
-		vertexShader: BASE_URL + "Toon-4391385a-df73-4396-9e33-31e4e4930b27/Toon-4391385a-df73-4396-9e33-31e4e4930b27-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Toon-4391385a-df73-4396-9e33-31e4e4930b27/Toon-4391385a-df73-4396-9e33-31e4e4930b27-v10.0-fragment.glsl",
-		side: 2,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-    },
-	"UnlitHull" : {
-        uniforms: {
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 }
-		},
-		vertexShader: BASE_URL + "UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d-v10.0-fragment.glsl",
-		side: 2,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-    },
-    "VelvetInk" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "Waveform" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "WetPaint" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-    "WigglyGraphite" : {
-    	uniforms: {
-			u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
-			u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-			u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-			u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-			u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-			u_SpecColor: { value: new Vector3(0, 0, 0) },
-			u_Shininess: { value: 0.1500 },
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 },
-			u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
-			u_BumpMap: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_BumpMap";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_MainTex: { value: new TextureLoader().load( BASE_URL + 'Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png',
-			function (texture) {
-				texture.name = "Icing_MainTex";
-				texture.wrapS = RepeatWrapping;
-				texture.wrapT = RepeatWrapping;
-				texture.flipY = false;
-			    })
-		    },
-			u_Cutoff: { value: 0.2 }
-		},
-		vertexShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
-		side: 0,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-		extensions: { derivatives: true }
-    },
-	"Wire" : {
-        uniforms: {
-			u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-			u_fogDensity: { value: 0 }
-		},
-		vertexShader: BASE_URL + "Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4391385a-cf83-4396-9e33-31e4e4930b27-v10.0-vertex.glsl",
-		fragmentShader: BASE_URL + "Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4391385a-cf83-4396-9e33-31e4e4930b27-v10.0-fragment.glsl",
-		side: 2,
-		transparent: false,
-		depthFunc: 2,
-		depthWrite: true,
-		depthTest: true,
-		blending: 0,
-    },
-};
+// Copyright 2021 Icosa Gallery
 
 class TiltShaderLoader extends Loader$1 {
     constructor( manager ) {
         super( manager );
     }
-
-    load(materialParams, onLoad, onProgress, onError ) {
+    
+    async load(brushName, onLoad, onProgress, onError ) {
         const scope = this;
-
+        
 		const loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
 		loader.setResponseType( 'text' );
 		loader.setWithCredentials( this.withCredentials );
-        
-        //Load vert
-        loader.load(materialParams.vertexShader, function ( vertexShader ) {
-            loader.load(materialParams.fragmentShader, function ( fragmentShader ) {
-                try {
-                    onLoad( scope.parse( materialParams, vertexShader, fragmentShader ) );
-                } catch ( e ) {
-                    if ( onError ) {
-                        onError( e );
-                    } else {
-                        console.error( e );
-                    }
-    
-                    scope.manager.itemError( materialParams );
-                }
-            });
-        }, onProgress, onError );
+
+        const textureLoader = new TextureLoader(this.manager);
+        textureLoader.setPath(this.path);
+        textureLoader.setWithCredentials( this.withCredentials );
+
+        const materialParams = tiltBrushMaterialParams[brushName];
+
+        materialParams.vertexShader = await loader.loadAsync(materialParams.vertexShader);
+        materialParams.fragmentShader = await loader.loadAsync(materialParams.fragmentShader);
+
+        if (materialParams.uniforms.u_MainTex) {
+            const mainTex = await textureLoader.loadAsync(materialParams.uniforms.u_MainTex.value);
+            mainTex.name = `${brushName}_MainTex`;
+            mainTex.wrapS = RepeatWrapping;
+            mainTex.wrapT = RepeatWrapping;
+            mainTex.flipY = false;
+            materialParams.uniforms.u_MainTex.value = mainTex;
+        }
+
+        if (materialParams.uniforms.u_BumpMap) {
+            const bumpMap = await textureLoader.loadAsync(materialParams.uniforms.u_BumpMap.value);
+            bumpMap.name = `${brushName}_BumpMap`;
+            bumpMap.wrapS = RepeatWrapping;
+            bumpMap.wrapT = RepeatWrapping;
+            bumpMap.flipY = false;
+            materialParams.uniforms.u_BumpMap.value = bumpMap;
+        }
+
+        if (materialParams.uniforms.u_AlphaMask) {
+            const alphaMask = await textureLoader.loadAsync(materialParams.uniforms.u_AlphaMask.value);
+            alphaMask.name = `${brushName}_AlphaMask`;
+            alphaMask.wrapS = RepeatWrapping;
+            alphaMask.wrapT = RepeatWrapping;
+            alphaMask.flipY = false;
+            materialParams.uniforms.u_AlphaMask.value = alphaMask;
+        }
+
+        onLoad( scope.parse( materialParams ) );
     }
 
-    parse( materialParams, vert, frag ) {
-        materialParams.vertexShader = vert;
-        materialParams.fragmentShader = frag;
-        return new RawShaderMaterial(materialParams);
+    parse( materialParams ) {
+        return new RawShaderMaterial( materialParams );
     }
 }
 
+const tiltBrushMaterialParams = {
+    "BlocksBasic" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e/BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e-v10.0-vertex.glsl",
+        fragmentShader: "BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e/BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "BlocksGem" : {
+        uniforms: {
+            u_SceneLight_0_matrix: {value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1]},
+            u_SceneLight_1_matrix: {value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1]},
+            u_ambient_light_color: {value: new Vector4(0.3922, 0.3922, 0.3922, 1)},
+            u_SceneLight_0_color: {value: new Vector4(0.7780, 0.8157, 0.9914, 1)},
+            u_SceneLight_1_color: {value: new Vector4(0.4282, 0.4212, 0.3459, 1)},
+            u_SpecColor: {value: new Vector3(0, 0, 0)},
+            u_Shininess: {value: 0.1500},
+            u_fogColor: {value: new Vector3(0.0196, 0.0196, 0.0196)},
+            u_fogDensity: {value: 0},
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "BlocksGem-232998f8-d357-47a2-993a-53415df9be10/BlocksGem-232998f8-d357-47a2-993a-53415df9be10-v10.0-vertex.glsl",
+        fragmentShader: "BlocksGem-232998f8-d357-47a2-993a-53415df9be10/BlocksGem-232998f8-d357-47a2-993a-53415df9be10-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "BlocksGlass" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7/BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7-v10.0-vertex.glsl",
+        fragmentShader: "BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7/BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2,
+        extensions: { derivatives: true }
+    },
+    "Bubbles" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_MainTex: { value: "Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c/Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c-v10.0-MainTex.png" },
+        },
+        vertexShader: "Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c/Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c-v10.0-vertex.glsl",
+        fragmentShader: "Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c/Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2
+    },
+    "CelVinyl" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c/CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c/CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c-v10.0-vertex.glsl",
+        fragmentShader: "CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c/CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "ChromaticWave" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_time: { value: new Vector4() },
+            u_EmissionGain: { value: 0.45 },
+        },
+        vertexShader: "ChromaticWave-0f0ff7b2-a677-45eb-a7d6-0cd7206f4816/ChromaticWave-0f0ff7b2-a677-45eb-a7d6-0cd7206f4816-v10.0-vertex.glsl",
+        fragmentShader: "ChromaticWave-0f0ff7b2-a677-45eb-a7d6-0cd7206f4816/ChromaticWave-0f0ff7b2-a677-45eb-a7d6-0cd7206f4816-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 100,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201,
+    },
+    "CoarseBristles" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-vertex.glsl",
+        fragmentShader: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Comet" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_time: { value: new Vector4() },
+            u_Speed: { value: 1 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81/Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-MainTex.png" },
+            u_AlphaMask: { value: "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81/Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-AlphaMask.png" },
+            u_AlphaMask_TexelSize: { value: new Vector4(0.0156, 1, 64, 1)},
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81/Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-vertex.glsl",
+        fragmentShader: "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81/Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2,
+        extensions: { derivatives: true }
+    },
+    "DiamondHull" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_time: { value: new Vector4() },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            cameraPosition: { value: new Vector3() },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-MainTex.png" },
+        },
+        vertexShader: "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-vertex.glsl",
+        fragmentShader: "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 100,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201,
+    },
+    "Disco" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_time: { value: new Vector4() },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_Shininess: { value: 0.6500 },
+            u_SpecColor: { value: new Vector3(0.5147, 0.5147, 0.5147) },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 }
+        },
+        vertexShader: "Disco-4391aaaa-df73-4396-9e33-31e4e4930b27/Disco-4391aaaa-df73-4396-9e33-31e4e4930b27-v10.0-vertex.glsl",
+        fragmentShader: "Disco-4391aaaa-df73-4396-9e33-31e4e4930b27/Disco-4391aaaa-df73-4396-9e33-31e4e4930b27-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0
+    },
+    "DotMarker" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260/DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260/DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260-v10.0-vertex.glsl",
+        fragmentShader: "DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260/DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Dots" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_TintColor: { value: new Vector4(1, 1, 1, 1) },
+            u_EmissionGain: { value: 300 },
+            u_BaseGain: { value: 0.4 },
+            u_MainTex: { value: "Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7/Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7-v10.0-MainTex.png" }
+        },
+        vertexShader: "Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7/Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7-v10.0-vertex.glsl",
+        fragmentShader: "Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7/Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2
+    },
+    "DoubleTaperedFlat" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "DoubleTaperedFlat-0d3889f3-3ede-470c-8af4-f44813306126/DoubleTaperedFlat-0d3889f3-3ede-470c-8af4-f44813306126-v10.0-vertex.glsl",
+        fragmentShader: "DoubleTaperedFlat-0d3889f3-3ede-470c-8af4-f44813306126/DoubleTaperedFlat-0d3889f3-3ede-470c-8af4-f44813306126-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "DoubleTaperedMarker" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "DoubleTaperedMarker-0d3889f3-3ede-470c-8af4-de4813306126/DoubleTaperedMarker-0d3889f3-3ede-470c-8af4-de4813306126-v10.0-vertex.glsl",
+        fragmentShader: "DoubleTaperedMarker-0d3889f3-3ede-470c-8af4-de4813306126/DoubleTaperedMarker-0d3889f3-3ede-470c-8af4-de4813306126-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "DuctTape" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+            u_BumpMap: { value: "DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1/DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1-v10.0-BumpMap.png" },
+            u_MainTex: { value: "DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1/DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "DuctTape-d0262945-853c-4481-9cbd-88586bed93cb/DuctTape-d0262945-853c-4481-9cbd-88586bed93cb-v10.0-vertex.glsl",
+        fragmentShader: "DuctTape-d0262945-853c-4481-9cbd-88586bed93cb/DuctTape-d0262945-853c-4481-9cbd-88586bed93cb-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Electricity" : {
+        uniforms: {
+            u_time: { value: new Vector4() },
+            u_DisplacementIntensity: { value: 2 },
+            u_EmissionGain: { value: 0.2 }
+        },
+        vertexShader: "Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51/Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51-v10.0-vertex.glsl",
+        fragmentShader: "Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51/Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2,
+        extensions: { derivatives: true }
+    },
+    "Embers" : {
+        uniforms: {
+            u_time: { value: new Vector4() },
+            u_ScrollRate: { value: 0.6 },
+            u_ScrollDistance: { value: new Vector3(-0.2, 0.6, 0) },
+            u_ScrollJitterIntensity: { value: 0.03 },
+            u_ScrollJitterFrequency: { value: 5 },
+            u_TintColor: { value: new Vector4(1, 1, 1, 1) },
+            u_MainTex: { value: "Embers-02ffb866-7fb2-4d15-b761-1012cefb1360/Embers-02ffb866-7fb2-4d15-b761-1012cefb1360-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Embers-02ffb866-7fb2-4d15-b761-1012cefb1360/Embers-02ffb866-7fb2-4d15-b761-1012cefb1360-v10.0-vertex.glsl",
+        fragmentShader: "Embers-02ffb866-7fb2-4d15-b761-1012cefb1360/Embers-02ffb866-7fb2-4d15-b761-1012cefb1360-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2
+    },
+    "EnvironmentDiffuse" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "EnvironmentDiffuse-0ad58bbd-42bc-484e-ad9a-b61036ff4ce7/EnvironmentDiffuse-0ad58bbd-42bc-484e-ad9a-b61036ff4ce7-v1.0-vertex.glsl",
+        fragmentShader: "EnvironmentDiffuse-0ad58bbd-42bc-484e-ad9a-b61036ff4ce7/EnvironmentDiffuse-0ad58bbd-42bc-484e-ad9a-b61036ff4ce7-v1.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "EnvironmentDiffuseLightMap" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "EnvironmentDiffuseLightMap-d01d9d6c-9a61-4aba-8146-5891fafb013b/EnvironmentDiffuseLightMap-d01d9d6c-9a61-4aba-8146-5891fafb013b-v1.0-vertex.glsl",
+        fragmentShader: "EnvironmentDiffuseLightMap-d01d9d6c-9a61-4aba-8146-5891fafb013b/EnvironmentDiffuseLightMap-d01d9d6c-9a61-4aba-8146-5891fafb013b-v1.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Fire" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_time: { value: new Vector4() },
+            u_EmissionGain: { value: 0.5 },
+            u_MainTex: { value: "Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e/Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e-v10.0-MainTex.png" }
+        },
+        vertexShader: "Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e/Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e-v10.0-vertex.glsl",
+        fragmentShader: "Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e/Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 100,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201
+    },
+    "Flat" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Flat-2d35bcf0-e4d8-452c-97b1-3311be063130/Flat-2d35bcf0-e4d8-452c-97b1-3311be063130-v10.0-vertex.glsl",
+        fragmentShader: "Flat-2d35bcf0-e4d8-452c-97b1-3311be063130/Flat-2d35bcf0-e4d8-452c-97b1-3311be063130-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 100,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201,
+    },
+    "Highlighter" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3/Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3/Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-vertex.glsl",
+        fragmentShader: "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3/Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2,
+        extensions: { derivatives: true }
+    },
+    "Hypercolor" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_time: { value: new Vector4() },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+            u_BumpMap: { value: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-BumpMap.png" },
+            u_MainTex: { value: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-vertex.glsl",
+        fragmentShader: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "HyperGrid" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_TintColor: { value: new Vector4(1, 1, 1, 1) },
+            u_MainTex: { value: "HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9/HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9-v10.0-MainTex.png" }
+        },
+        vertexShader: "HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9/HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9-v10.0-vertex.glsl",
+        fragmentShader: "HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9/HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2,
+        extensions: { derivatives: true }
+    },
+    "Icing" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+            u_BumpMap: { value: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png" },
+            u_MainTex: { value: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
+        fragmentShader: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Ink" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+            u_BumpMap: { value: "Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa/Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa-v10.0-BumpMap.png" },
+            u_MainTex: { value: "Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa/Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Ink-f5c336cf-5108-4b40-ade9-c687504385ab/Ink-f5c336cf-5108-4b40-ade9-c687504385ab-v10.0-vertex.glsl",
+        fragmentShader: "Ink-f5c336cf-5108-4b40-ade9-c687504385ab/Ink-f5c336cf-5108-4b40-ade9-c687504385ab-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Leaves" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+            u_BumpMap: { value: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-BumpMap.png" },
+            u_MainTex: { value: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-vertex.glsl",
+        fragmentShader: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Light" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_MainTex: { value: "Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62/Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-MainTex.png" },
+            u_EmissionGain: { value: 0.45 },
+        },
+        vertexShader: "Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62/Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-vertex.glsl",
+        fragmentShader: "Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62/Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 100,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201,
+    },
+    "LightWire" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_time: { value: new Vector4() },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27/LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27/LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27-v10.0-vertex.glsl",
+        fragmentShader: "LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27/LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0
+    },
+    "Lofted" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Lofted-d381e0f5-3def-4a0d-8853-31e9200bcbda/Lofted-d381e0f5-3def-4a0d-8853-31e9200bcbda-v10.0-vertex.glsl",
+        fragmentShader: "Lofted-d381e0f5-3def-4a0d-8853-31e9200bcbda/Lofted-d381e0f5-3def-4a0d-8853-31e9200bcbda-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Marker" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "Marker-429ed64a-4e97-4466-84d3-145a861ef684/Marker-429ed64a-4e97-4466-84d3-145a861ef684-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Marker-429ed64a-4e97-4466-84d3-145a861ef684/Marker-429ed64a-4e97-4466-84d3-145a861ef684-v10.0-vertex.glsl",
+        fragmentShader: "Marker-429ed64a-4e97-4466-84d3-145a861ef684/Marker-429ed64a-4e97-4466-84d3-145a861ef684-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "MatteHull" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 }
+        },
+        vertexShader: "MatteHull-79348357-432d-4746-8e29-0e25c112e3aa/MatteHull-79348357-432d-4746-8e29-0e25c112e3aa-v10.0-vertex.glsl",
+        fragmentShader: "MatteHull-79348357-432d-4746-8e29-0e25c112e3aa/MatteHull-79348357-432d-4746-8e29-0e25c112e3aa-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+    },
+    "NeonPulse" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_time: { value: new Vector4() },
+            u_EmissionGain: { value: 0.45 },
+        },
+        vertexShader: "NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6/NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6-v10.0-vertex.glsl",
+        fragmentShader: "NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6/NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 100,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201,
+    },
+    "OilPaint": {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_Cutoff: { value: 0 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0020, 0.0020, 512, 512) },
+            u_MainTex: { value: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-MainTex.png" },
+            u_BumpMap: { value: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-BumpMap.png" }
+        },
+        vertexShader: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-vertex.glsl",
+        fragmentShader: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0
+    },
+    "Paper" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+            u_BumpMap: { value: "Paper-759f1ebd-20cd-4720-8d41-234e0da63716/Paper-759f1ebd-20cd-4720-8d41-234e0da63716-v10.0-BumpMap.png" },
+            u_MainTex: { value: "Paper-759f1ebd-20cd-4720-8d41-234e0da63716/Paper-759f1ebd-20cd-4720-8d41-234e0da63716-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5/Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5-v10.0-vertex.glsl",
+        fragmentShader: "Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5/Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "PbrTemplate" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "PbrTemplate-f86a096c-2f4f-4f9d-ae19-81b99f2944e0/PbrTemplate-f86a096c-2f4f-4f9d-ae19-81b99f2944e0-v1.0-vertex.glsl",
+        fragmentShader: "PbrTemplate-f86a096c-2f4f-4f9d-ae19-81b99f2944e0/PbrTemplate-f86a096c-2f4f-4f9d-ae19-81b99f2944e0-v1.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "PbrTransparentTemplate" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "PbrTransparentTemplate-19826f62-42ac-4a9e-8b77-4231fbd0cfbf/PbrTransparentTemplate-19826f62-42ac-4a9e-8b77-4231fbd0cfbf-v1.0-vertex.glsl",
+        fragmentShader: "PbrTransparentTemplate-19826f62-42ac-4a9e-8b77-4231fbd0cfbf/PbrTransparentTemplate-19826f62-42ac-4a9e-8b77-4231fbd0cfbf-v1.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Petal" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Petal-e0abbc80-0f80-e854-4970-8924a0863dcc/Petal-e0abbc80-0f80-e854-4970-8924a0863dcc-v10.0-vertex.glsl",
+        fragmentShader: "Petal-e0abbc80-0f80-e854-4970-8924a0863dcc/Petal-e0abbc80-0f80-e854-4970-8924a0863dcc-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Plasma" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_time: { value: new Vector4() },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336/Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336/Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336-v10.0-vertex.glsl",
+        fragmentShader: "Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336/Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Rainbow" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_time: { value: new Vector4() },
+            u_EmissionGain: { value: 0.45 },
+        },
+        vertexShader: "Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960/Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960-v10.0-vertex.glsl",
+        fragmentShader: "Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960/Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 100,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201,
+    },
+    "ShinyHull" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0.1985, 0.1985, 0.1985) },
+            u_Shininess: { value: 0.7430 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "ShinyHull-faaa4d44-fcfb-4177-96be-753ac0421ba3/ShinyHull-faaa4d44-fcfb-4177-96be-753ac0421ba3-v10.0-vertex.glsl",
+        fragmentShader: "ShinyHull-faaa4d44-fcfb-4177-96be-753ac0421ba3/ShinyHull-faaa4d44-fcfb-4177-96be-753ac0421ba3-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Smoke": {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_TintColor: { value: new Vector4(1, 1, 1, 1) },
+            u_MainTex: { value: "Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-MainTex.png" }
+        },
+        vertexShader: "Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-vertex.glsl",
+        fragmentShader: "Smoke-70d79cca-b159-4f35-990c-f02193947fe8/Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2
+    },
+    "Snow" : {
+        uniforms: {
+            u_time: { value: new Vector4() },
+            u_ScrollRate: { value: 0.2 },
+            u_ScrollDistance: { value: new Vector3(0, -0.3, 0) },
+            u_ScrollJitterIntensity: { value: 0.01 },
+            u_ScrollJitterFrequency: { value: 12 },
+            u_TintColor: { value: new Vector4(1, 1, 1, 1) },
+            u_MainTex: { value: "Snow-d902ed8b-d0d1-476c-a8de-878a79e3a34c/Snow-d902ed8b-d0d1-476c-a8de-878a79e3a34c-v10.0-MainTex.png" },
+        },
+        vertexShader: "Snow-d902ed8b-d0d1-476c-a8de-878a79e3a34c/Snow-d902ed8b-d0d1-476c-a8de-878a79e3a34c-v10.0-vertex.glsl",
+        fragmentShader: "Snow-d902ed8b-d0d1-476c-a8de-878a79e3a34c/Snow-d902ed8b-d0d1-476c-a8de-878a79e3a34c-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2
+    },
+    "SoftHighlighter" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_MainTex: { value: "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 },
+        },
+        vertexShader: "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-vertex.glsl",
+        fragmentShader: "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 100,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201,
+    },
+    "Spikes" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Spikes-cf7f0059-7aeb-53a4-2b67-c83d863a9ffa/Spikes-cf7f0059-7aeb-53a4-2b67-c83d863a9ffa-v10.0-vertex.glsl",
+        fragmentShader: "Spikes-cf7f0059-7aeb-53a4-2b67-c83d863a9ffa/Spikes-cf7f0059-7aeb-53a4-2b67-c83d863a9ffa-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Splatter" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 },
+        },
+        vertexShader: "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-vertex.glsl",
+        fragmentShader: "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0
+    },
+    "Stars" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_time: { value: new Vector4() },
+            u_SparkleRate: { value: 5.3 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711/Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711/Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711-v10.0-vertex.glsl",
+        fragmentShader: "Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711/Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2,
+        extensions: { derivatives: true }
+    },
+    "Streamers" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_EmissionGain: { value: 0.4 },
+            u_time: { value: new Vector4() },
+            u_MainTex: { value: "Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3/Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3-v10.0-MainTex.png" }
+        },
+        vertexShader: "Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3/Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3-v10.0-vertex.glsl",
+        fragmentShader: "Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3/Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2
+    },
+    "Taffy" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414/Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414/Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414-v10.0-vertex.glsl",
+        fragmentShader: "Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414/Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "TaperedFlat" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c/TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c/TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c-v10.0-vertex.glsl",
+        fragmentShader: "TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c/TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "TaperedMarker" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c/TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c/TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c-v10.0-vertex.glsl",
+        fragmentShader: "TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c/TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "TaperedMarker_Flat" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "TaperedMarker_Flat-1a26b8c0-8a07-4f8a-9fac-d2ef36e0cad0/TaperedMarker_Flat-1a26b8c0-8a07-4f8a-9fac-d2ef36e0cad0-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "TaperedMarker_Flat-1a26b8c0-8a07-4f8a-9fac-d2ef36e0cad0/TaperedMarker_Flat-1a26b8c0-8a07-4f8a-9fac-d2ef36e0cad0-v10.0-vertex.glsl",
+        fragmentShader: "TaperedMarker_Flat-1a26b8c0-8a07-4f8a-9fac-d2ef36e0cad0/TaperedMarker_Flat-1a26b8c0-8a07-4f8a-9fac-d2ef36e0cad0-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "ThickPaint" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+            u_BumpMap: { value: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-BumpMap.png" },
+            u_MainTex: { value: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-vertex.glsl",
+        fragmentShader: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Toon" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 }
+        },
+        vertexShader: "Toon-4391385a-df73-4396-9e33-31e4e4930b27/Toon-4391385a-df73-4396-9e33-31e4e4930b27-v10.0-vertex.glsl",
+        fragmentShader: "Toon-4391385a-df73-4396-9e33-31e4e4930b27/Toon-4391385a-df73-4396-9e33-31e4e4930b27-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+    },
+    "UnlitHull" : {
+        uniforms: {
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 }
+        },
+        vertexShader: "UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d-v10.0-vertex.glsl",
+        fragmentShader: "UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d/UnlitHull-a8fea537-da7c-4d4b-817f-24f074725d6d-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+    },
+    "VelvetInk" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-vertex.glsl",
+        fragmentShader: "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2,
+        extensions: { derivatives: true }
+    },
+    "Waveform" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_time: { value: new Vector4() },
+            u_MainTex: { value: "Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab/Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab/Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab-v10.0-vertex.glsl",
+        fragmentShader: "Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab/Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab-v10.0-fragment.glsl",
+        side: 2,
+        transparent: true,
+        depthFunc: 2,
+        depthWrite: false,
+        depthTest: true,
+        blending: 2,
+        extensions: { derivatives: true }
+    },
+    "WetPaint" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
+            u_BumpMap: { value: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-BumpMap.png" },
+            u_MainTex: { value: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-vertex.glsl",
+        fragmentShader: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "WigglyGraphite" : {
+        uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
+            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
+            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.1500 },
+            u_time: { value: new Vector4() },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
+            u_MainTex: { value: "WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763/WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 }
+        },
+        vertexShader: "WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763/WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763-v10.0-vertex.glsl",
+        fragmentShader: "WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763/WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+        extensions: { derivatives: true }
+    },
+    "Wire" : {
+        uniforms: {
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 }
+        },
+        vertexShader: "Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4391385a-cf83-4396-9e33-31e4e4930b27-v10.0-vertex.glsl",
+        fragmentShader: "Wire-4391385a-cf83-4396-9e33-31e4e4930b27/Wire-4391385a-cf83-4396-9e33-31e4e4930b27-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0,
+    },
+};
+
 var Loader = (function () {
     function Loader(scene, sceneCamera, cameraControls) {
-        this.sceneColor = new Color();
+        this.sceneColor = new Color("#000000");
         this.loaded = false;
+        this.isGltfLegacy = false;
         this.updateableMeshes = [];
         var manager = new LoadingManager();
         manager.onStart = function () {
@@ -44380,6 +43565,8 @@ var Loader = (function () {
         };
         this.tiltLoader = new TiltLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
+        this.tiltShaderLoader = new TiltShaderLoader(manager);
+        this.tiltShaderLoader.setPath("https://storage.googleapis.com/static.icosa.gallery/brushes/");
         var dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
         this.gltfLoader.setDRACOLoader(dracoLoader);
@@ -44400,705 +43587,34 @@ var Loader = (function () {
                     material.uniforms["cameraPosition"].value = _this.sceneCamera.position;
                     material.uniforms["u_time"].value = time;
                     break;
+                case "material_ChromaticWave":
+                case "material_Comet":
+                case "material_Disco":
+                case "material_Electricity":
+                case "material_Embers":
+                case "material_Fire":
+                case "material_Hypercolor":
+                case "material_LightWire":
                 case "material_NeonPulse":
-                    material.uniforms["u_time"].value = time;
-                    break;
+                case "material_Plasma":
                 case "material_Rainbow":
+                case "material_Snow":
+                case "material_Stars":
+                case "material_Streamers":
+                case "material_Waveform":
+                case "material_WigglyGraphite":
                     material.uniforms["u_time"].value = time;
                     break;
             }
         });
     };
-    Loader.prototype.initGltf = function (url) {
-        var _this = this;
-        this.gltfLoader.load(url, function (gltf) {
-            _this.loadedModel = gltf.scene;
-            _this.loadedModel.traverse(function (object) {
-                if (object.type === "Mesh") {
-                    var mesh = object;
-                    var material = mesh.material;
-                    switch (material.name) {
-                        case "brush_BlocksBasic":
-                            mesh.geometry.name = "geometry_BlocksBasic";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            new TiltShaderLoader().load(TiltBrushShaders["BlocksBasic"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_BlocksBasic";
-                            });
-                            break;
-                        case "brush_BlocksGem":
-                            mesh.geometry.name = "geometry_BlocksGem";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            new TiltShaderLoader().load(TiltBrushShaders["BlocksGem"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_BlocksGem";
-                            });
-                            break;
-                        case "brush_BlocksGlass":
-                            mesh.geometry.name = "geometry_BlocksGlass";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            new TiltShaderLoader().load(TiltBrushShaders["BlocksGlass"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_BlocksGlass";
-                            });
-                            break;
-                        case "brush_Bubbles":
-                            mesh.geometry.name = "geometry_Bubbles";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Bubbles"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Bubbles";
-                            });
-                            break;
-                        case "brush_CelVinyl":
-                            mesh.geometry.name = "geometry_CelVinyl";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["CelVinyl"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_CelVinyl";
-                            });
-                            break;
-                        case "brush_ChromaticWave":
-                            mesh.geometry.name = "geometry_DiamondHull";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["ChromaticWave"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_ChromaticWave";
-                            });
-                            break;
-                        case "brush_CoarseBristles":
-                            mesh.geometry.name = "geometry_CoarseBristles";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["CoarseBristles"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_CoarseBristles";
-                            });
-                            break;
-                        case "brush_Comet":
-                            mesh.geometry.name = "geometry_Comet";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Comet"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Comet";
-                            });
-                            break;
-                        case "brush_DiamondHull":
-                            mesh.geometry.name = "geometry_DiamondHull";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_DiamondHull";
-                            });
-                            _this.updateableMeshes.push(mesh);
-                            break;
-                        case "brush_Disco":
-                            mesh.geometry.name = "geometry_Disco";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Disco"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Disco";
-                            });
-                            break;
-                        case "brush_DotMarker":
-                            mesh.geometry.name = "geometry_DotMarker";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["DotMarker"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_DotMarker";
-                            });
-                            break;
-                        case "brush_Dots":
-                            mesh.geometry.name = "geometry_Dots";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Dots"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Dots";
-                            });
-                            break;
-                        case "brush_DoubleTaperedFlat":
-                            mesh.geometry.name = "geometry_DoubleTaperedFlat";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["DoubleTaperedFlat"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_DoubleTaperedFlat";
-                            });
-                            break;
-                        case "brush_DoubleTaperedMarker":
-                            mesh.geometry.name = "geometry_DoubleTaperedMarker";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["DoubleTaperedMarker"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_DoubleTaperedMarker";
-                            });
-                            break;
-                        case "brush_DuctTape":
-                            mesh.geometry.name = "geometry_DuctTape";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["DuctTape"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_DuctTape";
-                            });
-                            break;
-                        case "brush_Electricity":
-                            mesh.geometry.name = "geometry_Electricity";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Electricity"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Electricity";
-                            });
-                            break;
-                        case "brush_Embers":
-                            mesh.geometry.name = "geometry_Embers";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Embers"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Embers";
-                            });
-                            break;
-                        case "brush_EnvironmentDiffuse":
-                            mesh.geometry.name = "geometry_EnvironmentDiffuse";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["EnvironmentDiffuse"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_EnvironmentDiffuse";
-                            });
-                            break;
-                        case "brush_EnvironmentDiffuseLightMap":
-                            mesh.geometry.name = "geometry_EnvironmentDiffuseLightMap";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["EnvironmentDiffuseLightMap"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_EnvironmentDiffuseLightMap";
-                            });
-                            break;
-                        case "brush_Fire":
-                            mesh.geometry.name = "geometry_Fire";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Fire"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Fire";
-                            });
-                            break;
-                        case "brush_Flat":
-                            mesh.geometry.name = "geometry_Flat";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Flat"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Flat";
-                            });
-                            break;
-                        case "brush_FlatDeprecated":
-                            mesh.geometry.name = "geometry_FlatDeprecated";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["FlatDeprecated"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_FlatDeprecated";
-                            });
-                            break;
-                        case "brush_Highlighter":
-                            mesh.geometry.name = "geometry_Highlighter";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Highlighter"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Highlighter";
-                            });
-                            break;
-                        case "brush_Hypercolor":
-                            mesh.geometry.name = "geometry_Hypercolor";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Hypercolor"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Hypercolor";
-                            });
-                            break;
-                        case "brush_HyperGrid":
-                            mesh.geometry.name = "geometry_HyperGrid";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["HyperGrid"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_HyperGrid";
-                            });
-                            break;
-                        case "brush_Icing":
-                            mesh.geometry.name = "geometry_Icing";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Icing"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Icing";
-                            });
-                            break;
-                        case "brush_Ink":
-                            mesh.geometry.name = "geometry_Ink";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Ink"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Ink";
-                            });
-                            break;
-                        case "brush_Leaves":
-                            mesh.geometry.name = "geometry_Leaves";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Leaves"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Leaves";
-                            });
-                            break;
-                        case "brush_Light":
-                            mesh.geometry.name = "geometry_Light";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Light"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Light";
-                            });
-                            break;
-                        case "brush_LightWire":
-                            mesh.geometry.name = "geometry_DiamondHull";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_DiamondHull";
-                            });
-                            break;
-                        case "brush_Lofted":
-                            mesh.geometry.name = "geometry_Lofted";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Lofted"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Lofted";
-                            });
-                            break;
-                        case "brush_Marker":
-                            mesh.geometry.name = "geometry_Marker";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Marker"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Marker";
-                            });
-                            break;
-                        case "brush_MatteHull":
-                            mesh.geometry.name = "geometry_MatteHull";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            new TiltShaderLoader().load(TiltBrushShaders["MatteHull"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_MatteHull";
-                            });
-                            break;
-                        case "brush_NeonPulse":
-                            mesh.geometry.name = "geometry_NeonPulse";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["NeonPulse"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_NeonPulse";
-                            });
-                            _this.updateableMeshes.push(mesh);
-                            break;
-                        case "brush_OilPaint":
-                            mesh.geometry.name = "geometry_OilPaint";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["OilPaint"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_OilPaint";
-                            });
-                            break;
-                        case "brush_Paper":
-                            mesh.geometry.name = "geometry_Paper";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Paper"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Paper";
-                            });
-                            break;
-                        case "brush_PbrTemplate":
-                            mesh.geometry.name = "geometry_PbrTemplate";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["PbrTemplate"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_PbrTemplate";
-                            });
-                            break;
-                        case "brush_PbrTransparentTemplate":
-                            mesh.geometry.name = "geometry_PbrTransparentTemplate";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["PbrTransparentTemplate"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_PbrTransparentTemplate";
-                            });
-                            break;
-                        case "brush_Petal":
-                            mesh.geometry.name = "geometry_Petal";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Petal"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Petal";
-                            });
-                            break;
-                        case "brush_Plasma":
-                            mesh.geometry.name = "geometry_Plasma";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Plasma"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Plasma";
-                            });
-                            break;
-                        case "brush_Rainbow":
-                            mesh.geometry.name = "geometry_Rainbow";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Rainbow"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Rainbow";
-                            });
-                            _this.updateableMeshes.push(mesh);
-                            break;
-                        case "brush_ShinyHull":
-                            mesh.geometry.name = "geometry_ShinyHull";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["ShinyHull"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_ShinyHull";
-                            });
-                            break;
-                        case "brush_Smoke":
-                            mesh.geometry.name = "geometry_Smoke";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("_tb_unity_texcoord_1"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Smoke"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Smoke";
-                            });
-                            break;
-                        case "brush_Snow":
-                            mesh.geometry.name = "geometry_Snow";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("_tb_unity_normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Snow"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Snow";
-                            });
-                            break;
-                        case "brush_SoftHighlighter":
-                            mesh.geometry.name = "geometry_SoftHighlighter";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["SoftHighlighter"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_SoftHighlighter";
-                            });
-                            break;
-                        case "brush_Spikes":
-                            mesh.geometry.name = "geometry_Spikes";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Spikes"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Spikes";
-                            });
-                            break;
-                        case "brush_Splatter":
-                            mesh.geometry.name = "geometry_Splatter";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Splatter"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Splatter";
-                            });
-                            break;
-                        case "brush_Stars":
-                            mesh.geometry.name = "geometry_Stars";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Stars"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Stars";
-                            });
-                            break;
-                        case "brush_Streamers":
-                            mesh.geometry.name = "geometry_Streamers";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Streamers"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Streamers";
-                            });
-                            break;
-                        case "brush_Taffy":
-                            mesh.geometry.name = "geometry_DiamondHull";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["DiamondHull"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_DiamondHull";
-                            });
-                            break;
-                        case "brush_TaperedFlat":
-                            mesh.geometry.name = "geometry_TaperedFlat";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["TaperedFlat"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_TaperedFlat";
-                            });
-                            break;
-                        case "brush_TaperedMarker":
-                            mesh.geometry.name = "geometry_TaperedMarker";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["TaperedMarker"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_TaperedMarker";
-                            });
-                            break;
-                        case "brush_TaperedMarker_Flat":
-                            mesh.geometry.name = "geometry_Flat";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Flat"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Flat";
-                            });
-                            break;
-                        case "brush_ThickPaint":
-                            mesh.geometry.name = "geometry_ThickPaint";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["ThickPaint"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_ThickPaint";
-                            });
-                            break;
-                        case "brush_Toon":
-                            mesh.geometry.name = "geometry_Toon";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Toon"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Toon";
-                            });
-                            break;
-                        case "brush_UnlitHull":
-                            mesh.geometry.name = "geometry_UnlitHull";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            new TiltShaderLoader().load(TiltBrushShaders["UnlitHull"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_UnlitHull";
-                            });
-                            break;
-                        case "brush_VelvetInk":
-                            mesh.geometry.name = "geometry_VelvetInk";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["VelvetInk"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_VelvetInk";
-                            });
-                            break;
-                        case "brush_Waveform":
-                            mesh.geometry.name = "geometry_Waveform";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Waveform"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Waveform";
-                            });
-                            break;
-                        case "brush_WetPaint":
-                            mesh.geometry.name = "geometry_WetPaint";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["WetPaint"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_WetPaint";
-                            });
-                            break;
-                        case "brush_WigglyGraphite":
-                            mesh.geometry.name = "geometry_WigglyGraphite";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                            new TiltShaderLoader().load(TiltBrushShaders["WigglyGraphite"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_WigglyGraphite";
-                            });
-                            break;
-                        case "brush_Wire":
-                            mesh.geometry.name = "geometry_Wire";
-                            mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                            mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                            mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                            new TiltShaderLoader().load(TiltBrushShaders["Wire"], function (shader) {
-                                mesh.material = shader;
-                                mesh.material.name = "material_Wire";
-                            });
-                            break;
-                        default:
-                            mesh.material = new MeshStandardMaterial({ visible: false });
-                    }
-                }
-            });
-            _this.finishSetup(_this.loadedModel);
-        });
-    };
-    Loader.prototype.finishSetup = function (model) {
+    Loader.prototype.finishSetup = function () {
+        if (!this.loadedModel)
+            return;
         this.scene.clear();
         this.scene.background = this.sceneColor;
-        this.scene.add(model);
-        var box = new Box3().setFromObject(model);
+        this.scene.add(this.loadedModel);
+        var box = new Box3().setFromObject(this.loadedModel);
         var boxSize = box.getSize(new Vector3()).length();
         var boxCenter = box.getCenter(new Vector3());
         this.cameraControls.minDistance = boxSize * 0.01;
@@ -45107,107 +43623,1079 @@ var Loader = (function () {
         this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
         this.cameraControls.dollyTo(midDistance, true);
         this.cameraControls.saveState();
-        var keyLightNode = new DirectionalLight(0xFFEEDD, 0.325);
-        keyLightNode.position.set(-19.021, 34.882, -19.134);
-        keyLightNode.scale.set(0, 0, 16.828);
-        this.scene.add(keyLightNode);
-        var headLightNode = new DirectionalLight(0xFFEEDD, 0.250);
-        headLightNode.position.set(-16.661, 8.330, 8.330);
-        headLightNode.scale.set(1, 1, 1);
-        this.scene.add(headLightNode);
-        var __hemi__ = new HemisphereLight(0xEFEFFF, 0xB2B2B2, 0.6);
-        __hemi__.position.set(0, 1, 0);
-        this.scene.add(__hemi__);
+        var ambientLight = new AmbientLight();
+        this.scene.add(ambientLight);
         this.loaded = true;
     };
-    Loader.prototype.initTilt = function (url) {
-        var _this = this;
-        this.tiltLoader.load(url, function (tilt) {
-            _this.loadedModel = tilt;
-            _this.finishSetup(_this.loadedModel);
+    Loader.prototype.loadTilt = function (url) {
+        return __awaiter(this, void 0, void 0, function () {
+            var tilt;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.tiltLoader.loadAsync(url)];
+                    case 1:
+                        tilt = _a.sent();
+                        this.loadedModel = tilt;
+                        this.finishSetup();
+                        return [2];
+                }
+            });
         });
     };
-    Loader.prototype.initPolyGltf = function (url) {
-        var _this = this;
-        this.legacygltf.load(url, function (gltf) {
-            _this.loadedModel = gltf.scene;
-            _this.finishSetup(_this.loadedModel);
+    Loader.prototype.loadBrushGltf2 = function (url) {
+        return __awaiter(this, void 0, void 0, function () {
+            var gltf;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.gltfLoader.loadAsync(url)];
+                    case 1:
+                        gltf = _a.sent();
+                        this.loadedModel = gltf.scene;
+                        return [4, this.replaceBrushMaterials()];
+                    case 2:
+                        _a.sent();
+                        this.finishSetup();
+                        return [2];
+                }
+            });
         });
     };
-    Loader.prototype.initPolyGltf2 = function (url) {
-        var _this = this;
-        this.gltfLoader.load(url, function (gltf) {
-            _this.loadedModel = gltf.scene;
-            _this.finishSetup(_this.loadedModel);
+    Loader.prototype.loadBrushGltf1 = function (url) {
+        return __awaiter(this, void 0, void 0, function () {
+            var gltf;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.legacygltf.loadAsync(url)];
+                    case 1:
+                        gltf = _a.sent();
+                        this.loadedModel = gltf.scene;
+                        this.isGltfLegacy = true;
+                        return [4, this.replaceBrushMaterials()];
+                    case 2:
+                        _a.sent();
+                        this.finishSetup();
+                        return [2];
+                }
+            });
         });
     };
-    Loader.prototype.loadGLTF = function (url) {
-        this.initGltf(url);
-    };
-    Loader.prototype.loadPolyAsset = function (assetID, format) {
-        var http = new XMLHttpRequest();
-        var url = "https://api.icosa.gallery/poly/assets/" + assetID;
-        var that = this;
-        http.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var polyAsset = Convert.toPoly(this.response);
-                var types_1 = {};
-                if (polyAsset.presentationParams.backgroundColor) {
-                    console.log("Setting background color: " + polyAsset.presentationParams.backgroundColor);
-                    that.sceneColor = new Color(polyAsset.presentationParams.backgroundColor);
-                }
-                polyAsset.formats.forEach(function (format) {
-                    types_1[format.formatType] = format;
-                });
-                if (format) {
-                    switch (format) {
-                        case "GLTF2":
-                            if (types_1.hasOwnProperty("GLTF2")) {
-                                that.initPolyGltf2(types_1.GLTF2.root.url);
-                                return;
-                            }
-                            break;
-                        case "GLTF":
-                            if (types_1.hasOwnProperty("GLTF")) {
-                                that.initPolyGltf(types_1.GLTF.root.url);
-                                return;
-                            }
-                            break;
-                        case "TILT":
-                            if (types_1.hasOwnProperty("TILT")) {
-                                that.initTilt(types_1.TILT.root.url);
-                                return;
-                            }
-                            break;
-                    }
-                }
-                if (types_1.hasOwnProperty("GLTF2")) {
-                    that.initPolyGltf2(types_1.GLTF2.root.url);
-                    return;
-                }
-                if (types_1.hasOwnProperty("GLTF")) {
-                    that.initPolyGltf(types_1.GLTF.root.url);
-                    return;
-                }
-                if (types_1.hasOwnProperty("TILT")) {
-                    that.initTilt(types_1.TILT.root.url);
-                    return;
-                }
-            }
-        };
-        http.open("GET", url, true);
-        http.send();
-    };
-    Loader.prototype.loadPolyUrl = function (url, format) {
-        var splitURL = url.split('/');
-        if (splitURL[2] === "poly.google.com")
-            this.loadPolyAsset(splitURL[4], format);
-    };
-    Loader.prototype.loadPolyTilt = function (url) {
-        this.loadPolyUrl(url, "TILT");
-    };
-    Loader.prototype.loadPolyGltf = function (url) {
-        this.loadPolyUrl(url, "GLTF");
+    Loader.prototype.replaceBrushMaterials = function () {
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function () {
+            var light0transform, light1transform;
+            var _this = this;
+            return __generator(this, function (_c) {
+                if (!this.loadedModel)
+                    return [2];
+                light0transform = (_a = this.loadedModel.getObjectByName("node_SceneLight_0_i1")) === null || _a === void 0 ? void 0 : _a.modelViewMatrix;
+                light1transform = (_b = this.loadedModel.getObjectByName("node_SceneLight_1_i2")) === null || _b === void 0 ? void 0 : _b.modelViewMatrix;
+                this.loadedModel.traverse(function (object) { return __awaiter(_this, void 0, void 0, function () {
+                    var targetFilter, mesh, material, shader, _a;
+                    return __generator(this, function (_b) {
+                        switch (_b.label) {
+                            case 0:
+                                if (!(object.type === "Mesh")) return [3, 123];
+                                targetFilter = "";
+                                mesh = object;
+                                material = mesh.material;
+                                if (!this.isGltfLegacy) {
+                                    targetFilter = material.name;
+                                }
+                                else {
+                                    targetFilter = "brush_" + mesh.name.split('_')[1];
+                                }
+                                _a = targetFilter;
+                                switch (_a) {
+                                    case "brush_BlocksBasic": return [3, 1];
+                                    case "brush_BlocksGem": return [3, 3];
+                                    case "brush_BlocksGlass": return [3, 5];
+                                    case "brush_Bubbles": return [3, 7];
+                                    case "brush_CelVinyl": return [3, 9];
+                                    case "brush_ChromaticWave": return [3, 11];
+                                    case "brush_CoarseBristles": return [3, 13];
+                                    case "brush_Comet": return [3, 15];
+                                    case "brush_DiamondHull": return [3, 17];
+                                    case "brush_Disco": return [3, 19];
+                                    case "brush_DotMarker": return [3, 21];
+                                    case "brush_Dots": return [3, 23];
+                                    case "brush_DoubleTaperedFlat": return [3, 25];
+                                    case "brush_DoubleTaperedMarker": return [3, 27];
+                                    case "brush_DuctTape": return [3, 29];
+                                    case "brush_Electricity": return [3, 31];
+                                    case "brush_Embers": return [3, 33];
+                                    case "brush_EnvironmentDiffuse": return [3, 35];
+                                    case "brush_EnvironmentDiffuseLightMap": return [3, 37];
+                                    case "brush_Fire": return [3, 39];
+                                    case "brush_Flat": return [3, 41];
+                                    case "brush_FlatDeprecated": return [3, 43];
+                                    case "brush_Highlighter": return [3, 45];
+                                    case "brush_Hypercolor": return [3, 47];
+                                    case "brush_HyperGrid": return [3, 49];
+                                    case "brush_Icing": return [3, 51];
+                                    case "brush_Ink": return [3, 53];
+                                    case "brush_Leaves": return [3, 55];
+                                    case "brush_Light": return [3, 57];
+                                    case "brush_LightWire": return [3, 59];
+                                    case "brush_Lofted": return [3, 61];
+                                    case "brush_Marker": return [3, 63];
+                                    case "brush_MatteHull": return [3, 65];
+                                    case "brush_NeonPulse": return [3, 67];
+                                    case "brush_OilPaint": return [3, 69];
+                                    case "brush_Paper": return [3, 71];
+                                    case "brush_PbrTemplate": return [3, 73];
+                                    case "brush_PbrTransparentTemplate": return [3, 75];
+                                    case "brush_Petal": return [3, 77];
+                                    case "brush_Plasma": return [3, 79];
+                                    case "brush_Rainbow": return [3, 81];
+                                    case "brush_ShinyHull": return [3, 83];
+                                    case "brush_Smoke": return [3, 85];
+                                    case "brush_Snow": return [3, 87];
+                                    case "brush_SoftHighlighter": return [3, 89];
+                                    case "brush_Spikes": return [3, 91];
+                                    case "brush_Splatter": return [3, 93];
+                                    case "brush_Stars": return [3, 95];
+                                    case "brush_Streamers": return [3, 97];
+                                    case "brush_Taffy": return [3, 99];
+                                    case "brush_TaperedFlat": return [3, 101];
+                                    case "brush_TaperedMarker": return [3, 103];
+                                    case "brush_TaperedMarker_Flat": return [3, 105];
+                                    case "brush_ThickPaint": return [3, 107];
+                                    case "brush_Toon": return [3, 109];
+                                    case "brush_UnlitHull": return [3, 111];
+                                    case "brush_VelvetInk": return [3, 113];
+                                    case "brush_Waveform": return [3, 115];
+                                    case "brush_WetPaint": return [3, 117];
+                                    case "brush_WigglyGraphite": return [3, 119];
+                                    case "brush_Wire": return [3, 121];
+                                }
+                                return [3, 123];
+                            case 1:
+                                mesh.geometry.name = "geometry_BlocksBasic";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                return [4, this.tiltShaderLoader.loadAsync("BlocksBasic")];
+                            case 2:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_BlocksBasic";
+                                return [3, 123];
+                            case 3:
+                                mesh.geometry.name = "geometry_BlocksGem";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                return [4, this.tiltShaderLoader.loadAsync("BlocksGem")];
+                            case 4:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_BlocksGem";
+                                return [3, 123];
+                            case 5:
+                                mesh.geometry.name = "geometry_BlocksGlass";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                return [4, this.tiltShaderLoader.loadAsync("BlocksGlass")];
+                            case 6:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_BlocksGlass";
+                                return [3, 123];
+                            case 7:
+                                mesh.geometry.name = "geometry_Bubbles";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
+                                return [4, this.tiltShaderLoader.loadAsync("Bubbles")];
+                            case 8:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Bubbles";
+                                return [3, 123];
+                            case 9:
+                                mesh.geometry.name = "geometry_CelVinyl";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("CelVinyl")];
+                            case 10:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_CelVinyl";
+                                return [3, 123];
+                            case 11:
+                                mesh.geometry.name = "geometry_ChromaticWave";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("ChromaticWave")];
+                            case 12:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_ChromaticWave";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 13:
+                                mesh.geometry.name = "geometry_CoarseBristles";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("CoarseBristles")];
+                            case 14:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_CoarseBristles";
+                                return [3, 123];
+                            case 15:
+                                mesh.geometry.name = "geometry_Comet";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Comet")];
+                            case 16:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Comet";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 17:
+                                mesh.geometry.name = "geometry_DiamondHull";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("DiamondHull")];
+                            case 18:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_DiamondHull";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 19:
+                                mesh.geometry.name = "geometry_Disco";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Disco")];
+                            case 20:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Disco";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 21:
+                                mesh.geometry.name = "geometry_DotMarker";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("DotMarker")];
+                            case 22:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_DotMarker";
+                                return [3, 123];
+                            case 23:
+                                mesh.geometry.name = "geometry_Dots";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
+                                return [4, this.tiltShaderLoader.loadAsync("Dots")];
+                            case 24:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Dots";
+                                return [3, 123];
+                            case 25:
+                                mesh.geometry.name = "geometry_DoubleTaperedFlat";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("DoubleTaperedFlat")];
+                            case 26:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_DoubleTaperedFlat";
+                                return [3, 123];
+                            case 27:
+                                mesh.geometry.name = "geometry_DoubleTaperedMarker";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("DoubleTaperedMarker")];
+                            case 28:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_DoubleTaperedMarker";
+                                return [3, 123];
+                            case 29:
+                                mesh.geometry.name = "geometry_DuctTape";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("DuctTape")];
+                            case 30:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_DuctTape";
+                                return [3, 123];
+                            case 31:
+                                mesh.geometry.name = "geometry_Electricity";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
+                                return [4, this.tiltShaderLoader.loadAsync("Electricity")];
+                            case 32:
+                                shader = _b.sent();
+                                mesh.material = shader;
+                                mesh.material.name = "material_Electricity";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 33:
+                                mesh.geometry.name = "geometry_Embers";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
+                                return [4, this.tiltShaderLoader.loadAsync("Embers")];
+                            case 34:
+                                shader = _b.sent();
+                                mesh.material = shader;
+                                mesh.material.name = "material_Embers";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 35:
+                                mesh.geometry.name = "geometry_EnvironmentDiffuse";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("EnvironmentDiffuse")];
+                            case 36:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_EnvironmentDiffuse";
+                                return [3, 123];
+                            case 37:
+                                mesh.geometry.name = "geometry_EnvironmentDiffuseLightMap";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("EnvironmentDiffuseLightMap")];
+                            case 38:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_EnvironmentDiffuseLightMap";
+                                return [3, 123];
+                            case 39:
+                                mesh.geometry.name = "geometry_Fire";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Fire")];
+                            case 40:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Fire";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 41:
+                                mesh.geometry.name = "geometry_Flat";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Flat")];
+                            case 42:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Flat";
+                                return [3, 123];
+                            case 43:
+                                mesh.geometry.name = "geometry_FlatDeprecated";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("FlatDeprecated")];
+                            case 44:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_FlatDeprecated";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 45:
+                                mesh.geometry.name = "geometry_Highlighter";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Highlighter")];
+                            case 46:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Highlighter";
+                                return [3, 123];
+                            case 47:
+                                mesh.geometry.name = "geometry_Hypercolor";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Hypercolor")];
+                            case 48:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Hypercolor";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 49:
+                                mesh.geometry.name = "geometry_HyperGrid";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
+                                return [4, this.tiltShaderLoader.loadAsync("HyperGrid")];
+                            case 50:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_HyperGrid";
+                                return [3, 123];
+                            case 51:
+                                mesh.geometry.name = "geometry_Icing";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Icing")];
+                            case 52:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Icing";
+                                return [3, 123];
+                            case 53:
+                                mesh.geometry.name = "geometry_Ink";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Ink")];
+                            case 54:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Ink";
+                                return [3, 123];
+                            case 55:
+                                mesh.geometry.name = "geometry_Leaves";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Leaves")];
+                            case 56:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Leaves";
+                                return [3, 123];
+                            case 57:
+                                mesh.geometry.name = "geometry_Light";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Light")];
+                            case 58:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Light";
+                                return [3, 123];
+                            case 59:
+                                mesh.geometry.name = "geometry_LightWire";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("LightWire")];
+                            case 60:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_LightWire";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 61:
+                                mesh.geometry.name = "geometry_Lofted";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Lofted")];
+                            case 62:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Lofted";
+                                return [3, 123];
+                            case 63:
+                                mesh.geometry.name = "geometry_Marker";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Marker")];
+                            case 64:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Marker";
+                                return [3, 123];
+                            case 65:
+                                mesh.geometry.name = "geometry_MatteHull";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                return [4, this.tiltShaderLoader.loadAsync("MatteHull")];
+                            case 66:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_MatteHull";
+                                return [3, 123];
+                            case 67:
+                                mesh.geometry.name = "geometry_NeonPulse";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("NeonPulse")];
+                            case 68:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_NeonPulse";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 69:
+                                mesh.geometry.name = "geometry_OilPaint";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("OilPaint")];
+                            case 70:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_OilPaint";
+                                return [3, 123];
+                            case 71:
+                                mesh.geometry.name = "geometry_Paper";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Paper")];
+                            case 72:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Paper";
+                                return [3, 123];
+                            case 73:
+                                mesh.geometry.name = "geometry_PbrTemplate";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("PbrTemplate")];
+                            case 74:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_PbrTemplate";
+                                return [3, 123];
+                            case 75:
+                                mesh.geometry.name = "geometry_PbrTransparentTemplate";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("PbrTransparentTemplate")];
+                            case 76:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_PbrTransparentTemplate";
+                                return [3, 123];
+                            case 77:
+                                mesh.geometry.name = "geometry_Petal";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Petal")];
+                            case 78:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Petal";
+                                return [3, 123];
+                            case 79:
+                                mesh.geometry.name = "geometry_Plasma";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Plasma")];
+                            case 80:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Plasma";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 81:
+                                mesh.geometry.name = "geometry_Rainbow";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Rainbow")];
+                            case 82:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Rainbow";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 83:
+                                mesh.geometry.name = "geometry_ShinyHull";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("ShinyHull")];
+                            case 84:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_ShinyHull";
+                                return [3, 123];
+                            case 85:
+                                mesh.geometry.name = "geometry_Smoke";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
+                                return [4, this.tiltShaderLoader.loadAsync("Smoke")];
+                            case 86:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Smoke";
+                                return [3, 123];
+                            case 87:
+                                mesh.geometry.name = "geometry_Snow";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
+                                return [4, this.tiltShaderLoader.loadAsync("Snow")];
+                            case 88:
+                                shader = _b.sent();
+                                mesh.material = shader;
+                                mesh.material.name = "material_Snow";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 89:
+                                mesh.geometry.name = "geometry_SoftHighlighter";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("SoftHighlighter")];
+                            case 90:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_SoftHighlighter";
+                                return [3, 123];
+                            case 91:
+                                mesh.geometry.name = "geometry_Spikes";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Spikes")];
+                            case 92:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Spikes";
+                                return [3, 123];
+                            case 93:
+                                mesh.geometry.name = "geometry_Splatter";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Splatter")];
+                            case 94:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Splatter";
+                                return [3, 123];
+                            case 95:
+                                mesh.geometry.name = "geometry_Stars";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute(this.isGltfLegacy ? "normal" : "_tb_unity_normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv2" : "_tb_unity_texcoord_1"));
+                                return [4, this.tiltShaderLoader.loadAsync("Stars")];
+                            case 96:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Stars";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 97:
+                                mesh.geometry.name = "geometry_Streamers";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Streamers")];
+                            case 98:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Streamers";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 99:
+                                mesh.geometry.name = "geometry_Taffy";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("DiamondHull")];
+                            case 100:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_DiamondHull";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 101:
+                                mesh.geometry.name = "geometry_TaperedFlat";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("TaperedFlat")];
+                            case 102:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_TaperedFlat";
+                                return [3, 123];
+                            case 103:
+                                mesh.geometry.name = "geometry_TaperedMarker";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("TaperedMarker")];
+                            case 104:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_TaperedMarker";
+                                return [3, 123];
+                            case 105:
+                                mesh.geometry.name = "geometry_Flat";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Flat")];
+                            case 106:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Flat";
+                                return [3, 123];
+                            case 107:
+                                mesh.geometry.name = "geometry_ThickPaint";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("ThickPaint")];
+                            case 108:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_ThickPaint";
+                                return [3, 123];
+                            case 109:
+                                mesh.geometry.name = "geometry_Toon";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                return [4, this.tiltShaderLoader.loadAsync("Toon")];
+                            case 110:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Toon";
+                                return [3, 123];
+                            case 111:
+                                mesh.geometry.name = "geometry_UnlitHull";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                return [4, this.tiltShaderLoader.loadAsync("UnlitHull")];
+                            case 112:
+                                shader = _b.sent();
+                                mesh.material = shader;
+                                mesh.material.name = "material_UnlitHull";
+                                return [3, 123];
+                            case 113:
+                                mesh.geometry.name = "geometry_VelvetInk";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("VelvetInk")];
+                            case 114:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_VelvetInk";
+                                return [3, 123];
+                            case 115:
+                                mesh.geometry.name = "geometry_Waveform";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("Waveform")];
+                            case 116:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_Waveform";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 117:
+                                mesh.geometry.name = "geometry_WetPaint";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("WetPaint")];
+                            case 118:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_WetPaint";
+                                return [3, 123];
+                            case 119:
+                                mesh.geometry.name = "geometry_WigglyGraphite";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute(this.isGltfLegacy ? "uv" : "_tb_unity_texcoord_0"));
+                                return [4, this.tiltShaderLoader.loadAsync("WigglyGraphite")];
+                            case 120:
+                                shader = _b.sent();
+                                shader.uniforms["u_SceneLight_0_matrix"].value = light0transform;
+                                shader.uniforms["u_SceneLight_1_matrix"].value = light1transform;
+                                shader.uniformsNeedUpdate = true;
+                                mesh.material = shader;
+                                mesh.material.name = "material_WigglyGraphite";
+                                this.updateableMeshes.push(mesh);
+                                return [3, 123];
+                            case 121:
+                                mesh.geometry.name = "geometry_Wire";
+                                mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
+                                mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
+                                mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
+                                return [4, this.tiltShaderLoader.loadAsync("Wire")];
+                            case 122:
+                                shader = _b.sent();
+                                mesh.material = shader;
+                                mesh.material.name = "material_Wire";
+                                return [3, 123];
+                            case 123: return [2];
+                        }
+                    });
+                }); });
+                return [2];
+            });
+        });
     };
     return Loader;
 }());
@@ -45558,27 +45046,68 @@ var Viewer = (function () {
         }
         animate();
     };
-    Viewer.prototype.loadGLTF = function (url) {
+    Viewer.prototype.loadBrushGltf = function (url) {
         var _a;
-        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadGLTF(url);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4, ((_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadBrushGltf2(url))];
+                    case 1:
+                        _b.sent();
+                        return [2];
+                }
+            });
+        });
     };
-    Viewer.prototype.loadPolyUrl = function (url) {
+    Viewer.prototype.loadBrushGltf1 = function (url) {
         var _a;
-        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadPolyUrl(url);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4, ((_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadBrushGltf1(url))];
+                    case 1:
+                        _b.sent();
+                        return [2];
+                }
+            });
+        });
     };
-    Viewer.prototype.loadPolyAsset = function (assetID) {
+    Viewer.prototype.loadTilt = function (url) {
         var _a;
-        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadPolyAsset(assetID);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4, ((_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadTilt(url))];
+                    case 1:
+                        _b.sent();
+                        return [2];
+                }
+            });
+        });
     };
-    Viewer.prototype.loadPolyTilt = function (url) {
-        var _a;
-        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadPolyTilt(url);
+    Viewer.prototype.loadGltf = function (url) {
     };
-    Viewer.prototype.loadPolyGLTF = function (url) {
-        var _a;
-        (_a = this.icosa_viewer) === null || _a === void 0 ? void 0 : _a.loadPolyGltf(url);
+    Viewer.prototype.loadObj = function (url) {
     };
     return Viewer;
 }());
 
-export { Convert, Loader, Viewer };
+var Convert = (function () {
+    function Convert() {
+    }
+    Convert.toIcosa = function (json) {
+        return JSON.parse(json);
+    };
+    Convert.icosaToJson = function (value) {
+        return JSON.stringify(value);
+    };
+    Convert.toPoly = function (json) {
+        return JSON.parse(json);
+    };
+    Convert.polyToJson = function (value) {
+        return JSON.stringify(value);
+    };
+    return Convert;
+}());
+
+export { Convert, Viewer };
