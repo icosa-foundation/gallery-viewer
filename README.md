@@ -7,15 +7,16 @@
 
 3D viewer component for [Icosa Gallery](https://icosa.gallery).
 
-This project aims to provide a simple way to view raw .tilt files and the various converted variants hosted on Icosa Gallery, with legacy support for [Poly](https://poly.google.com) models.
+This project aims to provide a simple way to view raw .tilt files and the various converted variants hosted on Icosa Gallery, with legacy support for [Google Poly](https://poly.google.com) models.
 
 The viewer is still a work in progress and subject to change. Please join the [Discord](https://discord.gg/W7NCEYnEfy) to discuss the project!
 
 ## Examples
 
-- [Poly GLTF 1.0 (Legacy)](https://github.com/icosa-gallery/icosa-viewer/blob/main/examples/poly-viewer.html)
-- [GLTF 2.0](https://github.com/icosa-gallery/icosa-viewer/blob/main/examples/gltf-viewer.html)
-- [Raw .tilt file](https://github.com/icosa-gallery/icosa-viewer/blob/main/examples/tilt-viewer.html)
+- [Interactive GLB loader](https://icosa-gallery.github.io/icosa-viewer/index.html)
+- [GLTF 2.0](https://icosa-gallery.github.io/icosa-viewer/gltf-viewer.html)
+- [GLTF 1.0 (Legacy)](https://icosa-gallery.github.io/icosa-viewer/gltf1-viewer.html)
+- [Raw .tilt file](https://icosa-gallery.github.io/icosa-viewer/tilt-viewer.html)
 
 ## Installation
 

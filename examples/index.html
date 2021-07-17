@@ -9,27 +9,56 @@
                 width: 100%;
                 margin: 0;
             }
+
+            #dropmessage {
+                position: absolute;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #009962;
+                width: 100%;
+                padding-top: 2em;
+                text-align: center;
+            }
+
+            .hover {
+                color:#009962;
+            }
         </style>
     </head>
     <body>
+        <div id="icosa-viewer">
+            <div id="dropmessage">Drag glTF 2.0 Tilt Brush/Open Brush file here</div>
+        </div>
         <script type="module">
             import { Viewer } from "../dist/icosa-viewer.module.js";
-            import { GUI } from "https://unpkg.com/three@0.125.0/examples/jsm/libs/dat.gui.module.js";
 
             const viewer = new Viewer();
-            viewer.loadPolyUrl("https://poly.google.com/view/c_l71DaVU_3");
+            viewer.loadBrushGltf("formats/gltf2/all_brushes.glb");
+
+            const viewerdiv = document.getElementById("icosa-viewer");
+
+            viewerdiv.ondragover = function (ev) {
+                ev.preventDefault()
+                ev.dataTransfer.dropEffect = "copy";
+                return false;
+            };
+
+            viewerdiv.ondrop = function (ev) {
+                ev.preventDefault();
+
+                var reader = new FileReader();
+                reader.onload = function(e2) {
+                    viewer.loadBrushGltf(e2.target.result);
+                }
+
+                reader.readAsDataURL(ev.dataTransfer.files[0]);
+
+                return false;
+            }
+
 
             var params = {
                 polyUrl: "Paste a Poly link here"
             };
-
-            var gui = new GUI();
-            gui.add(params, "polyUrl").onFinishChange(function (value) {
-                //Do something with the new value
-                console.log(value);
-                viewer.loadPolyUrl(value);
-            });
         </script>
-        <div id="icosa-viewer"></div>
     </body>
 </html>
