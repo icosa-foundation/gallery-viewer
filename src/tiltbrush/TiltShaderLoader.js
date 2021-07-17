@@ -21,6 +21,13 @@ export class TiltShaderLoader extends Loader {
     
     async load(brushName, onLoad, onProgress, onError ) {
         const scope = this;
+
+        const isAlreadyLoaded = loadedMaterials[brushName];
+        
+        if (isAlreadyLoaded !== undefined) {
+            onLoad( scope.parse( isAlreadyLoaded ) );
+            return;
+        }
         
 		const loader = new FileLoader( this.manager );
 		loader.setPath( this.path );
@@ -63,6 +70,8 @@ export class TiltShaderLoader extends Loader {
             materialParams.uniforms.u_AlphaMask.value = alphaMask;
         }
 
+        loadedMaterials[brushName] = materialParams;
+
         onLoad( scope.parse( materialParams ) );
     }
 
@@ -70,6 +79,8 @@ export class TiltShaderLoader extends Loader {
         return new RawShaderMaterial( materialParams );
     }
 }
+
+const loadedMaterials = {}
 
 const tiltBrushMaterialParams = {
     "BlocksBasic" : {
