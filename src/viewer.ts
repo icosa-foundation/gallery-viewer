@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Clock, PerspectiveCamera, Scene, WebGLRenderer, Color } from 'three';
+import { Clock, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
 import './css/style.scss';

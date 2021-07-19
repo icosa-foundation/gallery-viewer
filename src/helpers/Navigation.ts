@@ -28,7 +28,8 @@ export function setupNavigation(cameraControls : CameraControls) {
     sKey.addEventListener( 'holding', function( event ) { cameraControls.forward( - 0.01 * event?.deltaTime, true ) } );
     qKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,  0.01 * event?.deltaTime, true ) } );
     eKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,- 0.01 * event?.deltaTime, true ) } );
-
+    // Leaving this here because I hope I can use it later somehow.
+    // cameraControls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
     
     const leftKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_LEFT,  1);
     const rightKey = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_RIGHT, 1);

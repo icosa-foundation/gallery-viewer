@@ -568,7 +568,7 @@ var MathUtils = /*#__PURE__*/Object.freeze({
 	setQuaternionFromProperEuler: setQuaternionFromProperEuler
 });
 
-class Vector2 {
+class Vector2$1 {
 
 	constructor( x = 0, y = 0 ) {
 
@@ -1042,7 +1042,7 @@ class Vector2 {
 
 }
 
-Vector2.prototype.isVector2 = true;
+Vector2$1.prototype.isVector2 = true;
 
 class Matrix3 {
 
@@ -1476,9 +1476,9 @@ class Texture extends EventDispatcher$2 {
 		this.internalFormat = null;
 		this.type = type;
 
-		this.offset = new Vector2( 0, 0 );
-		this.repeat = new Vector2( 1, 1 );
-		this.center = new Vector2( 0, 0 );
+		this.offset = new Vector2$1( 0, 0 );
+		this.repeat = new Vector2$1( 1, 1 );
+		this.center = new Vector2$1( 0, 0 );
 		this.rotation = 0;
 
 		this.matrixAutoUpdate = true;
@@ -9095,7 +9095,7 @@ class MeshBasicMaterial extends Material {
 MeshBasicMaterial.prototype.isMeshBasicMaterial = true;
 
 const _vector$9 = new /*@__PURE__*/ Vector3();
-const _vector2 = new /*@__PURE__*/ Vector2();
+const _vector2 = new /*@__PURE__*/ Vector2$1();
 
 class BufferAttribute {
 
@@ -9212,7 +9212,7 @@ class BufferAttribute {
 			if ( vector === undefined ) {
 
 				console.warn( 'THREE.BufferAttribute.copyVector2sArray(): vector is undefined', i );
-				vector = new Vector2();
+				vector = new Vector2$1();
 
 			}
 
@@ -10042,9 +10042,9 @@ class BufferGeometry extends EventDispatcher$2 {
 			vB = new Vector3(),
 			vC = new Vector3(),
 
-			uvA = new Vector2(),
-			uvB = new Vector2(),
-			uvC = new Vector2(),
+			uvA = new Vector2$1(),
+			uvB = new Vector2$1(),
+			uvC = new Vector2$1(),
 
 			sdir = new Vector3(),
 			tdir = new Vector3();
@@ -10684,9 +10684,9 @@ const _morphA = /*@__PURE__*/ new Vector3();
 const _morphB = /*@__PURE__*/ new Vector3();
 const _morphC = /*@__PURE__*/ new Vector3();
 
-const _uvA$1 = /*@__PURE__*/ new Vector2();
-const _uvB$1 = /*@__PURE__*/ new Vector2();
-const _uvC$1 = /*@__PURE__*/ new Vector2();
+const _uvA$1 = /*@__PURE__*/ new Vector2$1();
+const _uvB$1 = /*@__PURE__*/ new Vector2$1();
+const _uvC$1 = /*@__PURE__*/ new Vector2$1();
 
 const _intersectionPoint = /*@__PURE__*/ new Vector3();
 const _intersectionPointWorld = /*@__PURE__*/ new Vector3();
@@ -11043,7 +11043,7 @@ function checkBufferGeometryIntersection( object, material, raycaster, ray, posi
 			_uvB$1.fromBufferAttribute( uv, b );
 			_uvC$1.fromBufferAttribute( uv, c );
 
-			intersection.uv = Triangle.getUV( _intersectionPoint, _vA$1, _vB$1, _vC$1, _uvA$1, _uvB$1, _uvC$1, new Vector2() );
+			intersection.uv = Triangle.getUV( _intersectionPoint, _vA$1, _vB$1, _vC$1, _uvA$1, _uvB$1, _uvC$1, new Vector2$1() );
 
 		}
 
@@ -11053,7 +11053,7 @@ function checkBufferGeometryIntersection( object, material, raycaster, ray, posi
 			_uvB$1.fromBufferAttribute( uv2, b );
 			_uvC$1.fromBufferAttribute( uv2, c );
 
-			intersection.uv2 = Triangle.getUV( _intersectionPoint, _vA$1, _vB$1, _vC$1, _uvA$1, _uvB$1, _uvC$1, new Vector2() );
+			intersection.uv2 = Triangle.getUV( _intersectionPoint, _vA$1, _vB$1, _vC$1, _uvA$1, _uvB$1, _uvC$1, new Vector2$1() );
 
 		}
 
@@ -13040,7 +13040,7 @@ const UniformsLib = {
 	normalmap: {
 
 		normalMap: { value: null },
-		normalScale: { value: new Vector2( 1, 1 ) }
+		normalScale: { value: new Vector2$1( 1, 1 ) }
 
 	},
 
@@ -13174,7 +13174,7 @@ const UniformsLib = {
 
 		diffuse: { value: new Color( 0xeeeeee ) },
 		opacity: { value: 1.0 },
-		center: { value: new Vector2( 0.5, 0.5 ) },
+		center: { value: new Vector2$1( 0.5, 0.5 ) },
 		rotation: { value: 0.0 },
 		map: { value: null },
 		alphaMap: { value: null },
@@ -13472,7 +13472,7 @@ ShaderLib.physical = {
 			clearcoatMap: { value: null },
 			clearcoatRoughness: { value: 0 },
 			clearcoatRoughnessMap: { value: null },
-			clearcoatNormalScale: { value: new Vector2( 1, 1 ) },
+			clearcoatNormalScale: { value: new Vector2$1( 1, 1 ) },
 			clearcoatNormalMap: { value: null },
 			sheen: { value: new Color( 0x000000 ) },
 			transmission: { value: 0 },
@@ -18008,7 +18008,7 @@ function ShadowUniformsCache() {
 						shadowBias: 0,
 						shadowNormalBias: 0,
 						shadowRadius: 1,
-						shadowMapSize: new Vector2()
+						shadowMapSize: new Vector2$1()
 					};
 					break;
 
@@ -18017,7 +18017,7 @@ function ShadowUniformsCache() {
 						shadowBias: 0,
 						shadowNormalBias: 0,
 						shadowRadius: 1,
-						shadowMapSize: new Vector2()
+						shadowMapSize: new Vector2$1()
 					};
 					break;
 
@@ -18026,7 +18026,7 @@ function ShadowUniformsCache() {
 						shadowBias: 0,
 						shadowNormalBias: 0,
 						shadowRadius: 1,
-						shadowMapSize: new Vector2(),
+						shadowMapSize: new Vector2$1(),
 						shadowCameraNear: 1,
 						shadowCameraFar: 1000
 					};
@@ -18713,8 +18713,8 @@ function WebGLShadowMap( _renderer, _objects, _capabilities ) {
 
 	let _frustum = new Frustum();
 
-	const _shadowMapSize = new Vector2(),
-		_viewportSize = new Vector2(),
+	const _shadowMapSize = new Vector2$1(),
+		_viewportSize = new Vector2$1(),
 
 		_viewport = new Vector4(),
 
@@ -18736,7 +18736,7 @@ function WebGLShadowMap( _renderer, _objects, _capabilities ) {
 
 		uniforms: {
 			shadow_pass: { value: null },
-			resolution: { value: new Vector2() },
+			resolution: { value: new Vector2$1() },
 			radius: { value: 4.0 }
 		},
 
@@ -23532,7 +23532,7 @@ function WebGLRenderer( parameters ) {
 
 			console.warn( 'WebGLRenderer: .getsize() now requires a Vector2 as an argument' );
 
-			target = new Vector2();
+			target = new Vector2$1();
 
 		}
 
@@ -23572,7 +23572,7 @@ function WebGLRenderer( parameters ) {
 
 			console.warn( 'WebGLRenderer: .getdrawingBufferSize() now requires a Vector2 as an argument' );
 
-			target = new Vector2();
+			target = new Vector2$1();
 
 		}
 
@@ -26880,7 +26880,7 @@ class MeshStandardMaterial extends Material {
 
 		this.normalMap = null;
 		this.normalMapType = TangentSpaceNormalMap;
-		this.normalScale = new Vector2( 1, 1 );
+		this.normalScale = new Vector2$1( 1, 1 );
 
 		this.displacementMap = null;
 		this.displacementScale = 1;
@@ -27017,7 +27017,7 @@ class MeshPhysicalMaterial extends MeshStandardMaterial {
 		this.clearcoatMap = null;
 		this.clearcoatRoughness = 0.0;
 		this.clearcoatRoughnessMap = null;
-		this.clearcoatNormalScale = new Vector2( 1, 1 );
+		this.clearcoatNormalScale = new Vector2$1( 1, 1 );
 		this.clearcoatNormalMap = null;
 
 		this.reflectivity = 0.5; // maps to F0 = 0.04
@@ -27164,7 +27164,7 @@ class MeshPhongMaterial extends Material {
 
 		this.normalMap = null;
 		this.normalMapType = TangentSpaceNormalMap;
-		this.normalScale = new Vector2( 1, 1 );
+		this.normalScale = new Vector2$1( 1, 1 );
 
 		this.displacementMap = null;
 		this.displacementScale = 1;
@@ -29960,7 +29960,7 @@ class LightShadow {
 		this.normalBias = 0;
 		this.radius = 1;
 
-		this.mapSize = new Vector2( 512, 512 );
+		this.mapSize = new Vector2$1( 512, 512 );
 
 		this.map = null;
 		this.mapPass = null;
@@ -29970,7 +29970,7 @@ class LightShadow {
 		this.needsUpdate = false;
 
 		this._frustum = new Frustum();
-		this._frameExtents = new Vector2( 1, 1 );
+		this._frameExtents = new Vector2$1( 1, 1 );
 
 		this._viewportCount = 1;
 
@@ -30206,7 +30206,7 @@ class PointLightShadow extends LightShadow {
 
 		super( new PerspectiveCamera( 90, 1, 0.5, 500 ) );
 
-		this._frameExtents = new Vector2( 4, 2 );
+		this._frameExtents = new Vector2$1( 4, 2 );
 
 		this._viewportCount = 6;
 
@@ -31998,21 +31998,21 @@ Triangle.normal = function ( a, b, c, target ) {
 
 //
 
-Vector2.prototype.fromAttribute = function ( attribute, index, offset ) {
+Vector2$1.prototype.fromAttribute = function ( attribute, index, offset ) {
 
 	console.warn( 'THREE.Vector2: .fromAttribute() has been renamed to .fromBufferAttribute().' );
 	return this.fromBufferAttribute( attribute, index, offset );
 
 };
 
-Vector2.prototype.distanceToManhattan = function ( v ) {
+Vector2$1.prototype.distanceToManhattan = function ( v ) {
 
 	console.warn( 'THREE.Vector2: .distanceToManhattan() has been renamed to .manhattanDistanceTo().' );
 	return this.manhattanDistanceTo( v );
 
 };
 
-Vector2.prototype.lengthManhattan = function () {
+Vector2$1.prototype.lengthManhattan = function () {
 
 	console.warn( 'THREE.Vector2: .lengthManhattan() has been renamed to .manhattanLength().' );
 	return this.manhattanLength();
@@ -33452,7 +33452,7 @@ var TOUCH_DOLLY_FACTOR = 1 / 8;
 var _ORIGIN = Object.freeze(new Vector3(0, 0, 0));
 var _AXIS_Y = Object.freeze(new Vector3(0, 1, 0));
 var _AXIS_Z = Object.freeze(new Vector3(0, 0, 1));
-var _v2 = new Vector2();
+var _v2 = new Vector2$1();
 var _v3A = new Vector3();
 var _v3B = new Vector3();
 var _v3C = new Vector3();
@@ -33526,7 +33526,7 @@ var CameraControls = (function (_super) {
         _this._zoom0 = _this._zoom;
         _this._focalOffset0 = _this._focalOffset.clone();
         _this._dollyControlAmount = 0;
-        _this._dollyControlCoord = new Vector2();
+        _this._dollyControlCoord = new Vector2$1();
         _this.mouseButtons = {
             left: ACTION.ROTATE,
             middle: ACTION.DOLLY,
@@ -33543,9 +33543,9 @@ var CameraControls = (function (_super) {
             three: ACTION.TOUCH_TRUCK,
         };
         if (_this._domElement) {
-            var dragStartPosition_1 = new Vector2();
-            var lastDragPosition_1 = new Vector2();
-            var dollyStart_1 = new Vector2();
+            var dragStartPosition_1 = new Vector2$1();
+            var lastDragPosition_1 = new Vector2$1();
+            var dollyStart_1 = new Vector2$1();
             var elementRect_1 = new Vector4();
             var truckInternal_1 = function (deltaX, deltaY, dragToOffset) {
                 if (_this._camera.isPerspectiveCamera) {
@@ -35823,7 +35823,7 @@ var WEBGL_TYPE = {
     //35674: Matrix2,
     35675: Matrix3,
     35676: Matrix4,
-    35664: Vector2,
+    35664: Vector2$1,
     35665: Vector3,
     35666: Vector4,
     35678: Texture
@@ -38215,7 +38215,7 @@ class GLTFMaterialsClearcoatExtension {
 				const scale = extension.clearcoatNormalTexture.scale;
 
 				// https://github.com/mrdoob/three.js/issues/11438#issuecomment-507003995
-				materialParams.clearcoatNormalScale = new Vector2( scale, - scale );
+				materialParams.clearcoatNormalScale = new Vector2$1( scale, - scale );
 
 			}
 
@@ -40444,7 +40444,7 @@ class GLTFParser {
 			pending.push( parser.assignTexture( materialParams, 'normalMap', materialDef.normalTexture ) );
 
 			// https://github.com/mrdoob/three.js/issues/11438#issuecomment-507003995
-			materialParams.normalScale = new Vector2( 1, - 1 );
+			materialParams.normalScale = new Vector2$1( 1, - 1 );
 
 			if ( materialDef.normalTexture.scale !== undefined ) {
 
@@ -42158,6 +42158,12 @@ class TiltShaderLoader extends Loader$1 {
             mainTex.wrapS = RepeatWrapping;
             mainTex.wrapT = RepeatWrapping;
             mainTex.flipY = false;
+            // Don't think we need this right now, but most sensible way to tap in to texture tiling.
+            switch(brushName) {
+                case "Plasma":
+                    mainTex.repeat = new Vector2(0.5, 1.0);
+                    break;
+            }
             materialParams.uniforms.u_MainTex.value = mainTex;
         }
 
@@ -42199,11 +42205,10 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_Shininess: { value: 0.2 },
+            u_SpecColor: { value: new Vector3(0.1960784, 0.1960784, 0.1960784) },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
-            u_Cutoff: { value: 0.2 }
+            u_fogDensity: { value: 0 }
         },
         vertexShader: "BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e/BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e-v10.0-vertex.glsl",
         fragmentShader: "BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e/BlocksBasic-0e87b49c-6546-3a34-3a44-8a556d7d6c3e-v10.0-fragment.glsl",
@@ -42212,8 +42217,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "BlocksGem" : {
         uniforms: {
@@ -42222,11 +42226,14 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: {value: new Vector4(0.3922, 0.3922, 0.3922, 1)},
             u_SceneLight_0_color: {value: new Vector4(0.7780, 0.8157, 0.9914, 1)},
             u_SceneLight_1_color: {value: new Vector4(0.4282, 0.4212, 0.3459, 1)},
-            u_SpecColor: {value: new Vector3(0, 0, 0)},
-            u_Shininess: {value: 0.1500},
+            u_Color: { value: new Vector4(1, 1, 1, 1) },
+            u_Shininess: { value: 0.9 },
+            u_RimIntensity: { value: 0.5 },
+            u_RimPower: { value: 2 },
+            u_Frequency: { value: 2 },
+            u_Jitter: { value: 1 },
             u_fogColor: {value: new Vector3(0.0196, 0.0196, 0.0196)},
-            u_fogDensity: {value: 0},
-            u_Cutoff: { value: 0.2 }
+            u_fogDensity: {value: 0 }
         },
         vertexShader: "BlocksGem-232998f8-d357-47a2-993a-53415df9be10/BlocksGem-232998f8-d357-47a2-993a-53415df9be10-v10.0-vertex.glsl",
         fragmentShader: "BlocksGem-232998f8-d357-47a2-993a-53415df9be10/BlocksGem-232998f8-d357-47a2-993a-53415df9be10-v10.0-fragment.glsl",
@@ -42235,8 +42242,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "BlocksGlass" : {
         uniforms: {
@@ -42245,11 +42251,12 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_Color: { value: new Vector4(1, 1, 1, 1) },
+            u_Shininess: { value: 0.8 },
+            u_RimIntensity: { value: 0.7 },
+            u_RimPower: { value: 4 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
-            u_Cutoff: { value: 0.2 }
+            u_fogDensity: { value: 0 }
         },
         vertexShader: "BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7/BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7-v10.0-vertex.glsl",
         fragmentShader: "BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7/BlocksGlass-3d813d82-5839-4450-8ddc-8e889ecd96c7-v10.0-fragment.glsl",
@@ -42258,8 +42265,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2,
-        extensions: { derivatives: true }
+        blending: 2
     },
     "Bubbles" : {
         uniforms: {
@@ -42280,15 +42286,10 @@ const tiltBrushMaterialParams = {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_Cutoff: { value: 0.554 },
+            u_MainTex: { value: "CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c/CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_MainTex: { value: "CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c/CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c/CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c-v10.0-vertex.glsl",
         fragmentShader: "CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c/CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c-v10.0-fragment.glsl",
@@ -42297,8 +42298,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "ChromaticWave" : {
         uniforms: {
@@ -42322,7 +42322,7 @@ const tiltBrushMaterialParams = {
         blendEquationAlpha: 100,
         blendEquation: 100,
         blendSrcAlpha: 201,
-        blendSrc: 201,
+        blendSrc: 201
     },
     "CoarseBristles" : {
         uniforms: {
@@ -42331,12 +42331,10 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_MainTex: { value: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.25 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_MainTex: { value: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-vertex.glsl",
         fragmentShader: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-fragment.glsl",
@@ -42345,26 +42343,20 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Comet" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_time: { value: new Vector4() },
-            u_Speed: { value: 1 },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
             u_MainTex: { value: "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81/Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-MainTex.png" },
             u_AlphaMask: { value: "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81/Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-AlphaMask.png" },
             u_AlphaMask_TexelSize: { value: new Vector4(0.0156, 1, 64, 1)},
-            u_Cutoff: { value: 0.2 }
+            u_time: { value: new Vector4() },
+            u_Speed: { value: 1 },
+            u_EmissionGain: { value: 0.5 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
         },
         vertexShader: "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81/Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-vertex.glsl",
         fragmentShader: "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81/Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-fragment.glsl",
@@ -42373,21 +42365,20 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2,
-        extensions: { derivatives: true }
+        blending: 2
     },
     "DiamondHull" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_time: { value: new Vector4() },
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
+            u_MainTex: { value: "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-MainTex.png" },
+            u_time: { value: new Vector4() },
             cameraPosition: { value: new Vector3() },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_MainTex: { value: "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-MainTex.png" },
         },
         vertexShader: "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-vertex.glsl",
         fragmentShader: "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901/DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-fragment.glsl",
@@ -42412,8 +42403,8 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_Shininess: { value: 0.6500 },
-            u_SpecColor: { value: new Vector3(0.5147, 0.5147, 0.5147) },
+            u_Shininess: { value: 0.65 },
+            u_SpecColor: { value: new Vector3(0.5147059, 0.5147059, 0.5147059) },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 }
         },
@@ -42430,15 +42421,9 @@ const tiltBrushMaterialParams = {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
             u_MainTex: { value: "DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260/DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 }
         },
         vertexShader: "DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260/DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260-v10.0-vertex.glsl",
         fragmentShader: "DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260/DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260-v10.0-fragment.glsl",
@@ -42448,16 +42433,16 @@ const tiltBrushMaterialParams = {
         depthWrite: true,
         depthTest: true,
         blending: 0,
-        extensions: { derivatives: true }
+        
     },
     "Dots" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_MainTex: { value: "Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7/Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7-v10.0-MainTex.png" },
             u_TintColor: { value: new Vector4(1, 1, 1, 1) },
             u_EmissionGain: { value: 300 },
-            u_BaseGain: { value: 0.4 },
-            u_MainTex: { value: "Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7/Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7-v10.0-MainTex.png" }
+            u_BaseGain: { value: 0.4 }
         },
         vertexShader: "Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7/Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7-v10.0-vertex.glsl",
         fragmentShader: "Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7/Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7-v10.0-fragment.glsl",
@@ -42475,11 +42460,10 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
             u_Shininess: { value: 0.1500 },
+            u_SpecColor: { value: new Vector3(0, 0, 0) },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "DoubleTaperedFlat-0d3889f3-3ede-470c-8af4-f44813306126/DoubleTaperedFlat-0d3889f3-3ede-470c-8af4-f44813306126-v10.0-vertex.glsl",
         fragmentShader: "DoubleTaperedFlat-0d3889f3-3ede-470c-8af4-f44813306126/DoubleTaperedFlat-0d3889f3-3ede-470c-8af4-f44813306126-v10.0-fragment.glsl",
@@ -42488,21 +42472,14 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "DoubleTaperedMarker" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "DoubleTaperedMarker-0d3889f3-3ede-470c-8af4-de4813306126/DoubleTaperedMarker-0d3889f3-3ede-470c-8af4-de4813306126-v10.0-vertex.glsl",
         fragmentShader: "DoubleTaperedMarker-0d3889f3-3ede-470c-8af4-de4813306126/DoubleTaperedMarker-0d3889f3-3ede-470c-8af4-de4813306126-v10.0-fragment.glsl",
@@ -42511,8 +42488,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "DuctTape" : {
         uniforms: {
@@ -42521,14 +42497,14 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_SpecColor: { value: new Vector3(0.5372549, 0.5372549, 0.5372549) },
+            u_Shininess: { value: 0.414 },
+            u_MainTex: { value: "DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1/DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.2 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
             u_BumpMap: { value: "DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1/DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1-v10.0-BumpMap.png" },
-            u_MainTex: { value: "DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1/DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
         },
         vertexShader: "DuctTape-d0262945-853c-4481-9cbd-88586bed93cb/DuctTape-d0262945-853c-4481-9cbd-88586bed93cb-v10.0-vertex.glsl",
         fragmentShader: "DuctTape-d0262945-853c-4481-9cbd-88586bed93cb/DuctTape-d0262945-853c-4481-9cbd-88586bed93cb-v10.0-fragment.glsl",
@@ -42537,13 +42513,12 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Electricity" : {
         uniforms: {
             u_time: { value: new Vector4() },
-            u_DisplacementIntensity: { value: 2 },
+            u_DisplacementIntensity: { value: 2.0 },
             u_EmissionGain: { value: 0.2 }
         },
         vertexShader: "Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51/Electricity-f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51-v10.0-vertex.glsl",
@@ -42553,8 +42528,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2,
-        extensions: { derivatives: true }
+        blending: 2
     },
     "Embers" : {
         uniforms: {
@@ -42596,8 +42570,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "EnvironmentDiffuseLightMap" : {
         uniforms: {
@@ -42619,16 +42592,15 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Fire" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_MainTex: { value: "Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e/Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e-v10.0-MainTex.png" },
             u_time: { value: new Vector4() },
-            u_EmissionGain: { value: 0.5 },
-            u_MainTex: { value: "Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e/Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e-v10.0-MainTex.png" }
+            u_EmissionGain: { value: 0.5 }
         },
         vertexShader: "Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e/Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e-v10.0-vertex.glsl",
         fragmentShader: "Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e/Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e-v10.0-fragment.glsl",
@@ -42652,8 +42624,6 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
             u_Cutoff: { value: 0.2 }
@@ -42677,15 +42647,8 @@ const tiltBrushMaterialParams = {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
             u_MainTex: { value: "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3/Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_Cutoff: { value: 0.12 }
         },
         vertexShader: "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3/Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-vertex.glsl",
         fragmentShader: "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3/Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-fragment.glsl",
@@ -42694,8 +42657,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2,
-        extensions: { derivatives: true }
+        blending: 2
     },
     "Hypercolor" : {
         uniforms: {
@@ -42704,15 +42666,15 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_Shininess: { value: 0.5 },
+            u_SpecColor: { value: new Vector3(0.2745098, 0.2745098, 0.2745098) },
+            u_MainTex: { value: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-MainTex.png" },
             u_time: { value: new Vector4() },
+            u_Cutoff: { value: 0.5 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
             u_BumpMap: { value: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-BumpMap.png" },
-            u_MainTex: { value: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
         },
         vertexShader: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-vertex.glsl",
         fragmentShader: "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c/Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-fragment.glsl",
@@ -42721,8 +42683,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "HyperGrid" : {
         uniforms: {
@@ -42738,8 +42699,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2,
-        extensions: { derivatives: true }
+        blending: 2
     },
     "Icing" : {
         uniforms: {
@@ -42748,14 +42708,14 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_SpecColor: { value: new Vector3(0.2352941, 0.2352941, 0.2352941) },
             u_Shininess: { value: 0.1500 },
+            u_Cutoff: { value: 0.5 },
+            u_MainTex: { value: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
             u_BumpMap: { value: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png" },
-            u_MainTex: { value: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png" },
-            u_Cutoff: { value: 0.2 }
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
         },
         vertexShader: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-vertex.glsl",
         fragmentShader: "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37/Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-fragment.glsl",
@@ -42764,8 +42724,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Ink" : {
         uniforms: {
@@ -42774,14 +42733,14 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_SpecColor: { value: new Vector3(0.2352941, 0.2352941, 0.2352941) },
+            u_Shininess: { value: 0.4 },
+            u_Cutoff: { value: 0.5 },
+            u_MainTex: { value: "Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa/Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
             u_BumpMap: { value: "Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa/Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa-v10.0-BumpMap.png" },
-            u_MainTex: { value: "Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa/Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
         },
         vertexShader: "Ink-f5c336cf-5108-4b40-ade9-c687504385ab/Ink-f5c336cf-5108-4b40-ade9-c687504385ab-v10.0-vertex.glsl",
         fragmentShader: "Ink-f5c336cf-5108-4b40-ade9-c687504385ab/Ink-f5c336cf-5108-4b40-ade9-c687504385ab-v10.0-fragment.glsl",
@@ -42790,8 +42749,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Leaves" : {
         uniforms: {
@@ -42801,13 +42759,13 @@ const tiltBrushMaterialParams = {
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
             u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_Shininess: { value: 0.395 },
+            u_Cutoff: { value: 0.5 },
+            u_MainTex: { value: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
             u_BumpMap: { value: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-BumpMap.png" },
-            u_MainTex: { value: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
         },
         vertexShader: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-vertex.glsl",
         fragmentShader: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-fragment.glsl",
@@ -42816,8 +42774,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Light" : {
         uniforms: {
@@ -42848,12 +42805,11 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
+            u_Shininess: { value: 0.81 },
+            u_SpecColor: { value: new Vector3(0.3455882, 0.3455882, 0.3455882) },
             u_time: { value: new Vector4() },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
-            u_MainTex: { value: "LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27/LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_fogDensity: { value: 0 }
         },
         vertexShader: "LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27/LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27-v10.0-vertex.glsl",
         fragmentShader: "LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27/LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27-v10.0-fragment.glsl",
@@ -42871,11 +42827,8 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
-            u_Cutoff: { value: 0.2 }
+            u_fogDensity: { value: 0 }
         },
         vertexShader: "Lofted-d381e0f5-3def-4a0d-8853-31e9200bcbda/Lofted-d381e0f5-3def-4a0d-8853-31e9200bcbda-v10.0-vertex.glsl",
         fragmentShader: "Lofted-d381e0f5-3def-4a0d-8853-31e9200bcbda/Lofted-d381e0f5-3def-4a0d-8853-31e9200bcbda-v10.0-fragment.glsl",
@@ -42884,22 +42837,16 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Marker" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_MainTex: { value: "Marker-429ed64a-4e97-4466-84d3-145a861ef684/Marker-429ed64a-4e97-4466-84d3-145a861ef684-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.067 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_MainTex: { value: "Marker-429ed64a-4e97-4466-84d3-145a861ef684/Marker-429ed64a-4e97-4466-84d3-145a861ef684-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "Marker-429ed64a-4e97-4466-84d3-145a861ef684/Marker-429ed64a-4e97-4466-84d3-145a861ef684-v10.0-vertex.glsl",
         fragmentShader: "Marker-429ed64a-4e97-4466-84d3-145a861ef684/Marker-429ed64a-4e97-4466-84d3-145a861ef684-v10.0-fragment.glsl",
@@ -42909,7 +42856,7 @@ const tiltBrushMaterialParams = {
         depthWrite: true,
         depthTest: true,
         blending: 0,
-        extensions: { derivatives: true }
+        
     },
     "MatteHull" : {
         uniforms: {
@@ -42937,7 +42884,7 @@ const tiltBrushMaterialParams = {
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
             u_time: { value: new Vector4() },
-            u_EmissionGain: { value: 0.45 },
+            u_EmissionGain: { value: 0.5 },
         },
         vertexShader: "NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6/NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6-v10.0-vertex.glsl",
         fragmentShader: "NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6/NeonPulse-b2ffef01-eaaa-4ab5-aa64-95a2c4f5dbc6-v10.0-fragment.glsl",
@@ -42961,14 +42908,14 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_Cutoff: { value: 0 },
+            u_SpecColor: { value: new Vector3(0.2352941, 0.2352941, 0.2352941) },
+            u_Shininess: { value: 0.4 },
+            u_Cutoff: { value: 0.5 },
+            u_MainTex: { value: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
+            u_BumpMap: { value: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-BumpMap.png" },
             u_BumpMap_TexelSize: { value: new Vector4(0.0020, 0.0020, 512, 512) },
-            u_MainTex: { value: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-MainTex.png" },
-            u_BumpMap: { value: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-BumpMap.png" }
         },
         vertexShader: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-vertex.glsl",
         fragmentShader: "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699/OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-fragment.glsl",
@@ -42987,13 +42934,13 @@ const tiltBrushMaterialParams = {
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
             u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_Shininess: { value: 0.145 },
+            u_Cutoff: { value: 0.16 },
+            u_MainTex: { value: "Paper-759f1ebd-20cd-4720-8d41-234e0da63716/Paper-759f1ebd-20cd-4720-8d41-234e0da63716-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
             u_BumpMap: { value: "Paper-759f1ebd-20cd-4720-8d41-234e0da63716/Paper-759f1ebd-20cd-4720-8d41-234e0da63716-v10.0-BumpMap.png" },
-            u_MainTex: { value: "Paper-759f1ebd-20cd-4720-8d41-234e0da63716/Paper-759f1ebd-20cd-4720-8d41-234e0da63716-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
         },
         vertexShader: "Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5/Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5-v10.0-vertex.glsl",
         fragmentShader: "Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5/Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5-v10.0-fragment.glsl",
@@ -43002,8 +42949,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "PbrTemplate" : {
         uniforms: {
@@ -43025,8 +42971,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "PbrTransparentTemplate" : {
         uniforms: {
@@ -43048,8 +42993,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Petal" : {
         uniforms: {
@@ -43059,10 +43003,9 @@ const tiltBrushMaterialParams = {
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
             u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_Shininess: { value: 0.01 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "Petal-e0abbc80-0f80-e854-4970-8924a0863dcc/Petal-e0abbc80-0f80-e854-4970-8924a0863dcc-v10.0-vertex.glsl",
         fragmentShader: "Petal-e0abbc80-0f80-e854-4970-8924a0863dcc/Petal-e0abbc80-0f80-e854-4970-8924a0863dcc-v10.0-fragment.glsl",
@@ -43071,23 +43014,15 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
+    // How did an experimental brush end up here?
     "Plasma" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_time: { value: new Vector4() },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
             u_MainTex: { value: "Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336/Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_time: { value: new Vector4() }
         },
         vertexShader: "Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336/Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336-v10.0-vertex.glsl",
         fragmentShader: "Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336/Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336-v10.0-fragment.glsl",
@@ -43096,17 +43031,14 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Rainbow" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
             u_time: { value: new Vector4() },
-            u_EmissionGain: { value: 0.45 },
+            u_EmissionGain: { value: 0.65 }
         },
         vertexShader: "Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960/Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960-v10.0-vertex.glsl",
         fragmentShader: "Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960/Rainbow-ad1ad437-76e2-450d-a23a-e17f8310b960-v10.0-fragment.glsl",
@@ -43130,11 +43062,11 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0.1985, 0.1985, 0.1985) },
+            u_SpecColor: { value: new Vector3(0.1985294, 0.1985294, 0.1985294) },
             u_Shininess: { value: 0.7430 },
+            u_Cutoff: { value: 0.5 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "ShinyHull-faaa4d44-fcfb-4177-96be-753ac0421ba3/ShinyHull-faaa4d44-fcfb-4177-96be-753ac0421ba3-v10.0-vertex.glsl",
         fragmentShader: "ShinyHull-faaa4d44-fcfb-4177-96be-753ac0421ba3/ShinyHull-faaa4d44-fcfb-4177-96be-753ac0421ba3-v10.0-fragment.glsl",
@@ -43143,8 +43075,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Smoke": {
         uniforms: {
@@ -43186,7 +43117,6 @@ const tiltBrushMaterialParams = {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
             u_MainTex: { value: "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 },
         },
         vertexShader: "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-vertex.glsl",
         fragmentShader: "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b/SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-fragment.glsl",
@@ -43210,11 +43140,8 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "Spikes-cf7f0059-7aeb-53a4-2b67-c83d863a9ffa/Spikes-cf7f0059-7aeb-53a4-2b67-c83d863a9ffa-v10.0-vertex.glsl",
         fragmentShader: "Spikes-cf7f0059-7aeb-53a4-2b67-c83d863a9ffa/Spikes-cf7f0059-7aeb-53a4-2b67-c83d863a9ffa-v10.0-fragment.glsl",
@@ -43223,8 +43150,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Splatter" : {
         uniforms: {
@@ -43233,10 +43159,10 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
             u_MainTex: { value: "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-MainTex.png" },
             u_Cutoff: { value: 0.2 },
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 },
         },
         vertexShader: "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-vertex.glsl",
         fragmentShader: "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e/Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-fragment.glsl",
@@ -43251,17 +43177,9 @@ const tiltBrushMaterialParams = {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
             u_time: { value: new Vector4() },
             u_SparkleRate: { value: 5.3 },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
             u_MainTex: { value: "Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711/Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711/Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711-v10.0-vertex.glsl",
         fragmentShader: "Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711/Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711-v10.0-fragment.glsl",
@@ -43270,16 +43188,15 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2,
-        extensions: { derivatives: true }
+        blending: 2
     },
     "Streamers" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_MainTex: { value: "Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3/Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3-v10.0-MainTex.png" },
             u_EmissionGain: { value: 0.4 },
             u_time: { value: new Vector4() },
-            u_MainTex: { value: "Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3/Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3-v10.0-MainTex.png" }
         },
         vertexShader: "Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3/Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3-v10.0-vertex.glsl",
         fragmentShader: "Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3/Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3-v10.0-fragment.glsl",
@@ -43294,15 +43211,9 @@ const tiltBrushMaterialParams = {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
             u_MainTex: { value: "Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414/Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 }
         },
         vertexShader: "Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414/Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414-v10.0-vertex.glsl",
         fragmentShader: "Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414/Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414-v10.0-fragment.glsl",
@@ -43311,8 +43222,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "TaperedFlat" : {
         uniforms: {
@@ -43321,12 +43231,10 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_MainTex: { value: "TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c/TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c-v10.0-MainTex.png" },
+            u_Cutoff: { value: 0.067 },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_MainTex: { value: "TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c/TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c/TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c-v10.0-vertex.glsl",
         fragmentShader: "TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c/TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c-v10.0-fragment.glsl",
@@ -43335,22 +43243,15 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "TaperedMarker" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
             u_MainTex: { value: "TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c/TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
+            u_fogDensity: { value: 0 }
         },
         vertexShader: "TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c/TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c-v10.0-vertex.glsl",
         fragmentShader: "TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c/TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c-v10.0-fragment.glsl",
@@ -43359,8 +43260,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "TaperedMarker_Flat" : {
         uniforms: {
@@ -43383,8 +43283,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "ThickPaint" : {
         uniforms: {
@@ -43393,14 +43292,14 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_SpecColor: { value: new Vector3(0.2352941, 0.2352941, 0.2352941) },
+            u_Shininess: { value: 0.4 },
+            u_Cutoff: { value: 0.5 },
+            u_MainTex: { value: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
             u_BumpMap: { value: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-BumpMap.png" },
-            u_MainTex: { value: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
         },
         vertexShader: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-vertex.glsl",
         fragmentShader: "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f/ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-fragment.glsl",
@@ -43409,8 +43308,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Toon" : {
         uniforms: {
@@ -43430,6 +43328,8 @@ const tiltBrushMaterialParams = {
     },
     "UnlitHull" : {
         uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 }
         },
@@ -43446,15 +43346,9 @@ const tiltBrushMaterialParams = {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_MainTex: { value: "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_MainTex: { value: "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-vertex.glsl",
         fragmentShader: "VelvetInk-d229d335-c334-495a-a801-660ac8a87360/VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-fragment.glsl",
@@ -43463,23 +43357,15 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2,
-        extensions: { derivatives: true }
+        blending: 2
     },
     "Waveform" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
-            u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
-            u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
-            u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
-            u_fogDensity: { value: 0 },
+            u_EmissionGain: { value: 0.5178571 },
             u_time: { value: new Vector4() },
             u_MainTex: { value: "Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab/Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab/Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab-v10.0-vertex.glsl",
         fragmentShader: "Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab/Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab-v10.0-fragment.glsl",
@@ -43488,8 +43374,7 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2,
-        extensions: { derivatives: true }
+        blending: 2
     },
     "WetPaint" : {
         uniforms: {
@@ -43498,14 +43383,14 @@ const tiltBrushMaterialParams = {
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
+            u_SpecColor: { value: new Vector3(0.1397059, 0.1397059, 0.1397059) },
+            u_Shininess: { value: 0.85 },
+            u_Cutoff: { value: 0.3 },
+            u_MainTex: { value: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
             u_BumpMap: { value: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-BumpMap.png" },
-            u_MainTex: { value: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
+            u_BumpMap_TexelSize: { value: new Vector4(0.0010, 0.0078, 1024, 128) },
         },
         vertexShader: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-vertex.glsl",
         fragmentShader: "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3/WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-fragment.glsl",
@@ -43514,23 +43399,20 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "WigglyGraphite" : {
         uniforms: {
             u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
             u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
+            u_time: { value: new Vector4() },
             u_ambient_light_color: { value: new Vector4(0.3922, 0.3922, 0.3922, 1) },
             u_SceneLight_0_color: { value: new Vector4(0.7780, 0.8157, 0.9914, 1) },
             u_SceneLight_1_color: { value: new Vector4(0.4282, 0.4212, 0.3459, 1) },
-            u_SpecColor: { value: new Vector3(0, 0, 0) },
-            u_Shininess: { value: 0.1500 },
-            u_time: { value: new Vector4() },
+            u_Cutoff: { value: 0.5 },
+            u_MainTex: { value: "WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763/WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763-v10.0-MainTex.png" },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 },
-            u_MainTex: { value: "WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763/WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763-v10.0-MainTex.png" },
-            u_Cutoff: { value: 0.2 }
         },
         vertexShader: "WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763/WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763-v10.0-vertex.glsl",
         fragmentShader: "WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763/WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763-v10.0-fragment.glsl",
@@ -43539,11 +43421,12 @@ const tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0,
-        extensions: { derivatives: true }
+        blending: 0
     },
     "Wire" : {
         uniforms: {
+            u_SceneLight_0_matrix: { value: [0.2931, 0.5524, -0.7803, 0, -0.8769, 0.4805, 0.0107, 0, 0.3809, 0.6811, 0.6253, 0, -4.9937, 8.1874, -46.2828, 1] },
+            u_SceneLight_1_matrix: { value: [0.1816, -0.1369, -0.9738, 0, -0.7915, -0.6080, -0.0621, 0, -0.5835, 0.7821, -0.2188, 0, -5.6205, 8.2530, -46.8315, 1] },
             u_fogColor: { value: new Vector3(0.0196, 0.0196, 0.0196) },
             u_fogDensity: { value: 0 }
         },
