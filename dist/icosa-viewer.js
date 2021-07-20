@@ -42659,7 +42659,7 @@
 	        vertexShader: "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3/Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-vertex.glsl",
 	        fragmentShader: "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3/Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-fragment.glsl",
 	        side: 2,
-	        transparent: false,
+	        transparent: true,
 	        depthFunc: 2,
 	        depthWrite: false,
 	        depthTest: true,
