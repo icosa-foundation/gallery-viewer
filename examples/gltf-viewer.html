@@ -16,7 +16,7 @@
             import { Viewer } from "../dist/icosa-viewer.module.js";
 
             var viewer = new Viewer();
-            viewer.loadGLTF("test.glb");
+            await viewer.loadBrushGltf("formats/gltf2/all_brushes.glb");
 
         </script>
         <div id="icosa-viewer"></div>

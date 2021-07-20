@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Clock, PerspectiveCamera, Scene, WebGLRenderer, Color } from 'three';
+import { Clock, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
 import './css/style.scss';
@@ -155,35 +155,28 @@ export class Viewer {
         animate();
     }
 
-    public loadGLTF(url : string) {
-        this.icosa_viewer?.loadGLTF(url);
+    // Load GLTF/GLB ver 2.x *Brush file
+    public async loadBrushGltf(url: string) {
+        await this.icosa_viewer?.loadBrushGltf2(url);
     }
 
-    public loadIcosaUrl(url : string) {
-        this.icosa_viewer?.loadIcosaUrl(url);
+    // Load GLTF/GLB ver 1.0 *Brush file
+    // Legacy for original exported assets, and files that were recovered from Poly
+    public async loadBrushGltf1(url: string) {
+        await this.icosa_viewer?.loadBrushGltf1(url);
     }
 
-    public loadIcosaAsset(userurl : string, asseturl : string) {
-        this.icosa_viewer?.loadIcosaAsset(userurl, asseturl);
+    public async loadTilt(url: string) {
+        await this.icosa_viewer?.loadTilt(url);
     }
 
-    public loadIcosaAssetId(id : string) {
+    // Load generic GLTF/GLB ver 2.x
+    // This should be the entry point for a Blocks export
+    public loadGltf(url: string) {
 
     }
 
-    public loadPolyUrl(url : string) {
-        this.icosa_viewer?.loadPolyUrl(url);
-    }
+    public loadObj(url: string) {
 
-    public loadPolyAsset(assetID : string) {
-        this.icosa_viewer?.loadPolyAsset(assetID);
-    }
-
-    public loadPolyTilt(url : string) {
-        this.icosa_viewer?.loadPolyTilt(url);
-    }
-
-    public loadPolyGLTF(url : string) {
-        this.icosa_viewer?.loadPolyGltf(url);
     }
 }

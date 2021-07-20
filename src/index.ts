@@ -13,5 +13,4 @@
 // limitations under the License.
 
 export * from './Viewer';
-export * from './Loader'
-export * from './JSONSchema'
+export * from './JSONSchema';

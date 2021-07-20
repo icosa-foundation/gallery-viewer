@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>Icosa Viewer | Icosa Viewer</title>
+        <title>.gltf/.glb Viewer | Icosa Viewer</title>
         <style>
             html, body {
                 height: 100%;
@@ -16,7 +16,8 @@
             import { Viewer } from "../dist/icosa-viewer.module.js";
 
             var viewer = new Viewer();
-            viewer.loadIcosaAsset("icosagallery", "kvVuKTFPTxM");
+            await viewer.loadBrushGltf1("formats/gltf1/all_brushes.gltf");
+
         </script>
         <div id="icosa-viewer"></div>
     </body>
