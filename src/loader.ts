@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import CameraControls from "camera-controls";
-import { LoadingManager, Material, Mesh, MeshStandardMaterial, RawShaderMaterial, Scene, Object3D, DirectionalLight, HemisphereLight, Vector3, Color, Camera, Vector4, Box3, MeshPhysicalMaterial, AmbientLight, CompressedPixelFormat } from "three";
+import { LoadingManager, Material, Mesh, RawShaderMaterial, Scene, Object3D, Vector3, Color, Camera, Vector4, Box3, AmbientLight, Matrix4 } from "three";
 import { TiltLoader } from "three/examples/jsm/loaders/TiltLoader";
 import { LegacyGLTFLoader } from "./legacy/LegacyGLTFLoader.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
@@ -65,12 +65,12 @@ export class Loader {
         this.cameraControls = cameraControls;
     }
 
-    public update(deltaTime : number) {
+    public update(elapsedTime : number) {
         if(!this.loaded)
             return;
 
         // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
-        var time = new Vector4(deltaTime/20, deltaTime, deltaTime*2, deltaTime*3);
+        var time = new Vector4(elapsedTime/20, elapsedTime, elapsedTime*2, elapsedTime*3);
 
         // Update uniforms of meshes that need it.
         this.updateableMeshes.forEach((mesh) => {
@@ -153,8 +153,25 @@ export class Loader {
     private async replaceBrushMaterials() {
         if(!this.loadedModel) 
             return;
-        var light0transform = this.loadedModel.getObjectByName("node_SceneLight_0_i1")?.modelViewMatrix;
-        var light1transform = this.loadedModel.getObjectByName("node_SceneLight_1_i2")?.modelViewMatrix;
+
+        // Attempt to set and fetch light settings.
+        let light0transform : any = new Matrix4().identity;
+        let light1transform : any = new Matrix4().identity;
+        
+        light0transform = this.loadedModel.getObjectByName("node_SceneLight_0")?.matrix;
+        light1transform = this.loadedModel.getObjectByName("node_SceneLight_1")?.matrix;
+
+        if(!light0transform || !light1transform) {
+            this.loadedModel.traverse((object : Object3D) => {
+                if(object.name.startsWith("node_SceneLight_0")) {
+                    light0transform = object.modelViewMatrix;
+                }
+                else if (object.name.startsWith("node_SceneLight_1")) {
+                    light1transform = object.modelViewMatrix;
+                }
+            });
+        }
+
         this.loadedModel.traverse(async (object : Object3D) => {
             if(object.type === "Mesh") {
                 var targetFilter : string = "";

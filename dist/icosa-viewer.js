@@ -43475,11 +43475,11 @@
 	        this.sceneCamera = sceneCamera;
 	        this.cameraControls = cameraControls;
 	    }
-	    Loader.prototype.update = function (deltaTime) {
+	    Loader.prototype.update = function (elapsedTime) {
 	        var _this = this;
 	        if (!this.loaded)
 	            return;
-	        var time = new Vector4(deltaTime / 20, deltaTime, deltaTime * 2, deltaTime * 3);
+	        var time = new Vector4(elapsedTime / 20, elapsedTime, elapsedTime * 2, elapsedTime * 3);
 	        this.updateableMeshes.forEach(function (mesh) {
 	            var material = mesh.material;
 	            switch (material.name) {
@@ -43587,8 +43587,21 @@
 	            return __generator(this, function (_c) {
 	                if (!this.loadedModel)
 	                    return [2];
-	                light0transform = (_a = this.loadedModel.getObjectByName("node_SceneLight_0_i1")) === null || _a === void 0 ? void 0 : _a.modelViewMatrix;
-	                light1transform = (_b = this.loadedModel.getObjectByName("node_SceneLight_1_i2")) === null || _b === void 0 ? void 0 : _b.modelViewMatrix;
+	                light0transform = new Matrix4().identity;
+	                light1transform = new Matrix4().identity;
+	                light0transform = (_a = this.loadedModel.getObjectByName("node_SceneLight_0")) === null || _a === void 0 ? void 0 : _a.matrix;
+	                light1transform = (_b = this.loadedModel.getObjectByName("node_SceneLight_1")) === null || _b === void 0 ? void 0 : _b.matrix;
+	                if (!light0transform || !light1transform) {
+	                    this.loadedModel.traverse(function (object) {
+	                        if (object.name.startsWith("node_SceneLight_0")) {
+	                            light0transform = object.modelViewMatrix;
+	                        }
+	                        else if (object.name.startsWith("node_SceneLight_1")) {
+	                            light1transform = object.modelViewMatrix;
+	                        }
+	                    });
+	                }
+	                console.log(this.loadedModel);
 	                this.loadedModel.traverse(function (object) { return __awaiter(_this, void 0, void 0, function () {
 	                    var targetFilter, mesh, material, shader, _a;
 	                    return __generator(this, function (_b) {
@@ -44901,6 +44914,7 @@
 	        canvas.onmouseup = function () { canvas.classList.remove('grabbed'); };
 	        var renderer = new WebGLRenderer({ canvas: canvas });
 	        renderer.setPixelRatio(window.devicePixelRatio);
+	        renderer.outputEncoding = sRGBEncoding;
 	        renderer.xr.enabled = true;
 	        this.icosa_frame.appendChild(VRButton.createButton(renderer));
 	        var clock = new Clock();

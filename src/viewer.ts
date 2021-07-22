@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Clock, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+import { Clock, PerspectiveCamera, Scene, sRGBEncoding, WebGLRenderer } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
 import './css/style.scss';
@@ -93,6 +93,7 @@ export class Viewer {
 
         const renderer = new WebGLRenderer({canvas : canvas});
         renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.outputEncoding = sRGBEncoding;
 
         renderer.xr.enabled = true;
         this.icosa_frame.appendChild( VRButton.createButton( renderer ) );
