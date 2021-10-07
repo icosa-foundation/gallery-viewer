@@ -18,6 +18,7 @@ import CameraControls from 'camera-controls';
 import './css/style.scss';
 import { Loader }  from './Loader';
 import { setupNavigation } from './helpers/Navigation'
+import { TiltLoader, updateBrushes } from 'three-tiltloader';
 
 export class Viewer {
     private icosa_frame? : HTMLElement | null;
@@ -156,25 +157,22 @@ export class Viewer {
         animate();
     }
 
-    // Load GLTF/GLB ver 2.x *Brush file
-    public async loadBrushGltf(url: string) {
-        await this.icosa_viewer?.loadBrushGltf2(url);
-    }
-
-    // Load GLTF/GLB ver 1.0 *Brush file
-    // Legacy for original exported assets, and files that were recovered from Poly
-    public async loadBrushGltf1(url: string) {
-        await this.icosa_viewer?.loadBrushGltf1(url);
-    }
-
     public async loadTilt(url: string) {
-        await this.icosa_viewer?.loadTilt(url);
+        await this.icosa_viewer?.loadTiltGltf(url);
+    }
+
+    public async loadGltf1(url: string) {
+        await this.icosa_viewer?.loadTiltGltf1(url);
+    }
+
+    public async loadTiltRaw(url: string) {
+        await this.icosa_viewer?.loadTiltRaw(url);
     }
 
     // Load generic GLTF/GLB ver 2.x
     // This should be the entry point for a Blocks export
-    public loadGltf(url: string) {
-
+    public async loadGltf(url: string) {
+        await this.icosa_viewer?.loadGltf(url);
     }
 
     public loadObj(url: string) {
