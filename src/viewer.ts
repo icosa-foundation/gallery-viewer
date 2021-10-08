@@ -148,26 +148,25 @@ export class Viewer {
 
             const delta = clock.getDelta();
             const elapsed = clock.getElapsedTime();
-
-            that.cameraControls.update(delta);
-
-            const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
-            if (needResize) {
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-                that.flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
-                that.flatCamera.updateProjectionMatrix();
-            }
             
-            if(!that.loaded)
-                return;
-        
-                updateBrushes(that.updateableMeshes, elapsed, that.sceneCamera.position);
-
             if(renderer.xr.isPresenting) {
-                renderer.render(that.scene, that.xrCamera);
+                that.sceneCamera = that.xrCamera;
             } else {
-                renderer.render(that.scene, that.flatCamera);
+                that.sceneCamera = that.flatCamera;
+
+                const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
+                if (needResize) {
+                    renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+                    that.flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
+                    that.flatCamera.updateProjectionMatrix();
+                }
+
+                that.cameraControls.update(delta);
             }
+
+            updateBrushes(that.updateableMeshes, elapsed, that.sceneCamera.position);
+
+            renderer.render(that.scene, that.sceneCamera);
         }
 
         animate();
