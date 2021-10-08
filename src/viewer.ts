@@ -193,7 +193,7 @@ export class Viewer {
         }
     }
 
-    private finishSetup() {
+    private initializeScene() {
         if(!this.loadedModel)
             return;
 
@@ -228,21 +228,21 @@ export class Viewer {
         const tiltData = await this.tiltLoader.loadGltf1(url);
         this.updateableMeshes = tiltData.updateableMeshes;
         this.loadedModel = tiltData.scene;
-        this.finishSetup();
+        this.initializeScene();
     }
 
     public async loadTiltGltf(url : string) {
         const tiltData = await this.tiltLoader.loadAsync(url);
         this.updateableMeshes = tiltData.updateableMeshes;
         this.loadedModel = tiltData.scene;
-        this.finishSetup();
+        this.initializeScene();
     }
 
     public async loadTiltRaw(url: string) {
         const tiltData = await this.tiltLoader.loadTilt(url);
         this.updateableMeshes = tiltData.updateableMeshes;
         this.loadedModel = tiltData.scene;
-        this.finishSetup();
+        this.initializeScene();
     }
 
     // Load generic GLTF/GLB ver 2.x
@@ -250,7 +250,7 @@ export class Viewer {
     public async loadGltf(url: string) {
         const gltf = await this.tiltLoader.loadAsync(url);
         this.loadedModel = gltf.scene;
-        this.finishSetup();
+        this.initializeScene();
     }
 
     public loadObj(url: string) {
