@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AmbientLight, Box3, Camera, Clock, Color, LoadingManager, Mesh, Object3D, PerspectiveCamera, Scene, sRGBEncoding, Vector3, WebGLRenderer } from 'three';
+import { AmbientLight, Box3, Clock, Color, LoadingManager, Mesh, Object3D, PerspectiveCamera, Scene, sRGBEncoding, Vector3, WebGLRenderer } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
 import './css/style.scss';
 import { setupNavigation } from './helpers/Navigation';
+import { subsetOfTHREE } from 'helpers/CameraControlsSetup';
 import { TiltLoader, updateBrushes } from 'three-tiltloader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
@@ -98,6 +99,7 @@ export class Viewer {
         const flatCamera = new PerspectiveCamera(fov, aspect, near, far);
         flatCamera.position.set(10, 10, 10);
 
+        CameraControls.install({ THREE: subsetOfTHREE });
         this.cameraControls = new CameraControls(flatCamera, canvas);
         this.cameraControls.dampingFactor = 0.1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;

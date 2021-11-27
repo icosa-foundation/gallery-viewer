@@ -33,7 +33,7 @@
     "typescript": "^4.1.3"
   },
   "dependencies": {
-    "camera-controls": "git+https://github.com/mikeskydev/camera-controls.git#no-install",
+    "camera-controls": "^1.33.1",
     "hold-event": "0.0.1",
     "three": "^0.128.0",
     "three-tiltloader": "^0.2.2"
