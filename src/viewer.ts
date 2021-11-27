@@ -29,17 +29,12 @@ export class Viewer {
     private tiltLoader: TiltLoader;
     private gltfLoader: GLTFLoader;
 
-    private flatCamera: PerspectiveCamera;
-    private xrCamera: PerspectiveCamera;
-
     private sceneCamera: PerspectiveCamera;
     private sceneColor: Color = new Color("#000000");
 
     private cameraControls: CameraControls;
 
     private loadedModel?: Object3D;
-
-    private loaded: boolean = false;
 
     private updateableMeshes: Mesh[] = [];
 
@@ -75,7 +70,7 @@ export class Viewer {
         loadscreen.appendChild(loadanim);
         this.icosa_frame.appendChild(loadscreen);
         loadscreen.addEventListener('transitionend', function() {
-            var opacity = window.getComputedStyle(loadscreen).opacity;
+            const opacity = window.getComputedStyle(loadscreen).opacity;
             if (parseFloat(opacity) < 0.2) {
                 loadscreen.classList.add('loaded');
             }
@@ -100,27 +95,27 @@ export class Viewer {
         const aspect = 2;  
         const near = 0.1;
         const far = 1000;
-        this.flatCamera = new PerspectiveCamera(fov, aspect, near, far);
-        this.flatCamera.position.set(10, 10, 10);
+        const flatCamera = new PerspectiveCamera(fov, aspect, near, far);
+        flatCamera.position.set(10, 10, 10);
 
-        this.cameraControls = new CameraControls(this.flatCamera, canvas);
+        this.cameraControls = new CameraControls(flatCamera, canvas);
         this.cameraControls.dampingFactor = 0.1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
         this.cameraControls.setTarget(0, 0, 0);
         this.cameraControls.dollyTo(3, true);
 
-        this.flatCamera.updateProjectionMatrix();
+        flatCamera.updateProjectionMatrix();
 
-        this.sceneCamera = this.flatCamera;
+        this.sceneCamera = flatCamera;
 
-        this.xrCamera = new PerspectiveCamera(fov, aspect, near, far);
-        this.xrCamera.updateProjectionMatrix();
+        const xrCamera = new PerspectiveCamera(fov, aspect, near, far);
+        xrCamera.updateProjectionMatrix();
 
         setupNavigation(this.cameraControls);
 
         this.scene = new Scene();
 
-        var that = this;
+        const viewer = this;
 
         const manager = new LoadingManager();
         manager.onStart = function() {
@@ -136,7 +131,7 @@ export class Viewer {
 
         this.gltfLoader = new GLTFLoader(manager);
 
-        var dracoLoader = new DRACOLoader();
+        const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
         this.gltfLoader.setDRACOLoader(dracoLoader);
 
@@ -150,23 +145,23 @@ export class Viewer {
             const elapsed = clock.getElapsedTime();
             
             if(renderer.xr.isPresenting) {
-                that.sceneCamera = that.xrCamera;
+                viewer.sceneCamera = xrCamera;
             } else {
-                that.sceneCamera = that.flatCamera;
+                viewer.sceneCamera = flatCamera;
 
                 const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
                 if (needResize) {
                     renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-                    that.flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
-                    that.flatCamera.updateProjectionMatrix();
+                    flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
+                    flatCamera.updateProjectionMatrix();
                 }
 
-                that.cameraControls.update(delta);
+                viewer.cameraControls.update(delta);
             }
 
-            updateBrushes(that.updateableMeshes, elapsed, that.sceneCamera.position);
+            updateBrushes(viewer.updateableMeshes, elapsed, viewer.sceneCamera.position);
 
-            renderer.render(that.scene, that.sceneCamera);
+            renderer.render(viewer.scene, viewer.sceneCamera);
         }
 
         animate();
@@ -214,10 +209,8 @@ export class Viewer {
         this.cameraControls.dollyTo(midDistance, true);
         this.cameraControls.saveState();
 
-        var ambientLight = new AmbientLight();
+        const ambientLight = new AmbientLight();
         this.scene.add(ambientLight);
-
-        this.loaded = true;
     }
 
     public async loadTilt(url: string) {
