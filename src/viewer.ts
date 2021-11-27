@@ -12,44 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Clock, PerspectiveCamera, Scene, sRGBEncoding, WebGLRenderer } from 'three';
+import { AmbientLight, Box3, Clock, Color, LoadingManager, Mesh, Object3D, PerspectiveCamera, Scene, sRGBEncoding, Vector3, WebGLRenderer } from 'three';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
 import './css/style.scss';
-import { Loader }  from './Loader';
-import { setupNavigation } from './helpers/Navigation'
+import { setupNavigation } from './helpers/Navigation';
+import { subsetOfTHREE } from 'helpers/CameraControlsSetup';
+import { TiltLoader, updateBrushes } from 'three-tiltloader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 export class Viewer {
     private icosa_frame? : HTMLElement | null;
-    private icosa_viewer? : Loader;
+
+    private scene : Scene;
+
+    private tiltLoader: TiltLoader;
+    private gltfLoader: GLTFLoader;
+
+    private sceneCamera: PerspectiveCamera;
+    private sceneColor: Color = new Color("#000000");
+
+    private cameraControls: CameraControls;
+
+    private loadedModel?: Object3D;
+
+    private updateableMeshes: Mesh[] = [];
 
     constructor(frame?: HTMLElement) {
         this.icosa_frame = frame;
-        this.initViewer();
-    }
 
-    private toggleFullscreen(controlButton: HTMLButtonElement) {
-        if(this.icosa_frame?.requestFullscreen)
-            this.icosa_frame?.requestFullscreen();
-
-        document.onfullscreenchange = ()  => {
-            if (document.fullscreenElement == null) {
-                controlButton.onclick = () => {
-                    if(this.icosa_frame?.requestFullscreen)
-                        this.icosa_frame?.requestFullscreen();
-                };
-                controlButton.classList.remove('fullscreen');
-            } else {
-                controlButton.onclick = () => {
-                    if(document.exitFullscreen)
-                        document.exitFullscreen();
-                };
-                controlButton.classList.add('fullscreen');
-            }
-        }
-    }
-
-    public initViewer() {
         // Attempt to find viewer frame if not assigned
         if(!this.icosa_frame)
             this.icosa_frame = document.getElementById('icosa-viewer');
@@ -79,7 +71,7 @@ export class Viewer {
         loadscreen.appendChild(loadanim);
         this.icosa_frame.appendChild(loadscreen);
         loadscreen.addEventListener('transitionend', function() {
-            var opacity = window.getComputedStyle(loadscreen).opacity;
+            const opacity = window.getComputedStyle(loadscreen).opacity;
             if (parseFloat(opacity) < 0.2) {
                 loadscreen.classList.add('loaded');
             }
@@ -107,24 +99,43 @@ export class Viewer {
         const flatCamera = new PerspectiveCamera(fov, aspect, near, far);
         flatCamera.position.set(10, 10, 10);
 
-        const cameraControls = new CameraControls(flatCamera, canvas);
-        cameraControls.dampingFactor = 0.1;
-        cameraControls.polarRotateSpeed = cameraControls.azimuthRotateSpeed = 0.5;
-        cameraControls.setTarget(0, 0, 0);
-        cameraControls.dollyTo(3, true);
+        CameraControls.install({ THREE: subsetOfTHREE });
+        this.cameraControls = new CameraControls(flatCamera, canvas);
+        this.cameraControls.dampingFactor = 0.1;
+        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+        this.cameraControls.setTarget(0, 0, 0);
+        this.cameraControls.dollyTo(3, true);
 
         flatCamera.updateProjectionMatrix();
+
+        this.sceneCamera = flatCamera;
 
         const xrCamera = new PerspectiveCamera(fov, aspect, near, far);
         xrCamera.updateProjectionMatrix();
 
-        setupNavigation(cameraControls);
+        setupNavigation(this.cameraControls);
 
-        const scene = new Scene();
+        this.scene = new Scene();
 
-        this.icosa_viewer = new Loader(scene, flatCamera, cameraControls);
+        const viewer = this;
 
-        var that = this;
+        const manager = new LoadingManager();
+        manager.onStart = function() {
+            document.getElementById('loadscreen')?.classList.remove('fade-out');
+            document.getElementById('loadscreen')?.classList.remove('loaded');
+        };
+        manager.onLoad = function () {        
+            document.getElementById('loadscreen')?.classList.add('fade-out');
+        };
+
+        this.tiltLoader = new TiltLoader(manager);
+        this.tiltLoader.setBrushDirectory("https://storage.googleapis.com/static.icosa.gallery/brushes/");
+
+        this.gltfLoader = new GLTFLoader(manager);
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+        this.gltfLoader.setDRACOLoader(dracoLoader);
 
         function animate() {
             renderer.setAnimationLoop(render);
@@ -134,47 +145,107 @@ export class Viewer {
 
             const delta = clock.getDelta();
             const elapsed = clock.getElapsedTime();
-
-            cameraControls.update(delta);
-
-            const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
-            if (needResize) {
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-                flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
-                flatCamera.updateProjectionMatrix();
-            }
             
-            that.icosa_viewer?.update(elapsed);
-
             if(renderer.xr.isPresenting) {
-                renderer.render(scene, xrCamera);
+                viewer.sceneCamera = xrCamera;
             } else {
-                renderer.render(scene, flatCamera);
+                viewer.sceneCamera = flatCamera;
+
+                const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
+                if (needResize) {
+                    renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+                    flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
+                    flatCamera.updateProjectionMatrix();
+                }
+
+                viewer.cameraControls.update(delta);
             }
+
+            updateBrushes(viewer.updateableMeshes, elapsed, viewer.sceneCamera.position);
+
+            renderer.render(viewer.scene, viewer.sceneCamera);
         }
 
         animate();
     }
 
-    // Load GLTF/GLB ver 2.x *Brush file
-    public async loadBrushGltf(url: string) {
-        await this.icosa_viewer?.loadBrushGltf2(url);
+    private toggleFullscreen(controlButton: HTMLButtonElement) {
+        if(this.icosa_frame?.requestFullscreen)
+            this.icosa_frame?.requestFullscreen();
+
+        document.onfullscreenchange = ()  => {
+            if (document.fullscreenElement == null) {
+                controlButton.onclick = () => {
+                    if(this.icosa_frame?.requestFullscreen)
+                        this.icosa_frame?.requestFullscreen();
+                };
+                controlButton.classList.remove('fullscreen');
+            } else {
+                controlButton.onclick = () => {
+                    if(document.exitFullscreen)
+                        document.exitFullscreen();
+                };
+                controlButton.classList.add('fullscreen');
+            }
+        }
     }
 
-    // Load GLTF/GLB ver 1.0 *Brush file
-    // Legacy for original exported assets, and files that were recovered from Poly
-    public async loadBrushGltf1(url: string) {
-        await this.icosa_viewer?.loadBrushGltf1(url);
+    private initializeScene() {
+        if(!this.loadedModel)
+            return;
+
+        this.scene.clear();
+        this.scene.background = this.sceneColor;
+        this.scene.add(this.loadedModel);
+
+        // Setup camera to center model
+        const box = new Box3().setFromObject(this.loadedModel);
+        const boxSize = box.getSize(new Vector3()).length();
+        const boxCenter = box.getCenter(new Vector3());
+
+        this.cameraControls.minDistance = boxSize * 0.01;
+        this.cameraControls.maxDistance = boxSize;
+
+        const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
+        this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+        this.cameraControls.dollyTo(midDistance, true);
+        this.cameraControls.saveState();
+
+        const ambientLight = new AmbientLight();
+        this.scene.add(ambientLight);
     }
 
     public async loadTilt(url: string) {
-        await this.icosa_viewer?.loadTilt(url);
+        await this.loadTiltGltf(url);
+    }
+
+    public async loadGltf1(url : string) {
+        const tiltData = await this.tiltLoader.loadGltf1(url);
+        this.updateableMeshes = tiltData.updateableMeshes;
+        this.loadedModel = tiltData.scene;
+        this.initializeScene();
+    }
+
+    public async loadTiltGltf(url : string) {
+        const tiltData = await this.tiltLoader.loadAsync(url);
+        this.updateableMeshes = tiltData.updateableMeshes;
+        this.loadedModel = tiltData.scene;
+        this.initializeScene();
+    }
+
+    public async loadTiltRaw(url: string) {
+        const tiltData = await this.tiltLoader.loadTilt(url);
+        this.updateableMeshes = tiltData.updateableMeshes;
+        this.loadedModel = tiltData.scene;
+        this.initializeScene();
     }
 
     // Load generic GLTF/GLB ver 2.x
     // This should be the entry point for a Blocks export
-    public loadGltf(url: string) {
-
+    public async loadGltf(url: string) {
+        const gltf = await this.tiltLoader.loadAsync(url);
+        this.loadedModel = gltf.scene;
+        this.initializeScene();
     }
 
     public loadObj(url: string) {

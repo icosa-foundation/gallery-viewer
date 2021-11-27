@@ -2,13 +2,14 @@
   "compilerOptions": {
     "baseUrl": "src",
     "outDir": "./dist",
-    "target": "es5",
+    "target": "es6",
     "strict": true,
     "removeComments": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

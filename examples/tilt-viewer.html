@@ -16,7 +16,7 @@
             import { Viewer } from "../dist/icosa-viewer.module.js";
 
             var viewer = new Viewer();
-            viewer.loadTilt("formats/tilt/all_brushes.tilt");
+            await viewer.loadTiltRaw("formats/tilt/all_brushes.tilt");
         </script>
         <div id="icosa-viewer"></div>
     </body>
