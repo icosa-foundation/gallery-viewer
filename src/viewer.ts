@@ -18,9 +18,11 @@ import CameraControls from 'camera-controls';
 import './css/style.scss';
 import { setupNavigation } from './helpers/Navigation';
 import { subsetOfTHREE } from 'helpers/CameraControlsSetup';
-import { TiltLoader, updateBrushes } from 'three-tiltloader';
+import { TiltLoader } from 'three-tiltloader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
+
 
 export class Viewer {
     private icosa_frame? : HTMLElement | null;
@@ -36,8 +38,6 @@ export class Viewer {
     private cameraControls: CameraControls;
 
     private loadedModel?: Object3D;
-
-    private updateableMeshes: Mesh[] = [];
 
     constructor(frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -137,6 +137,8 @@ export class Viewer {
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
         this.gltfLoader.setDRACOLoader(dracoLoader);
 
+        this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, '../brushes/', clock));
+
         function animate() {
             renderer.setAnimationLoop(render);
         }
@@ -160,8 +162,6 @@ export class Viewer {
 
                 viewer.cameraControls.update(delta);
             }
-
-            updateBrushes(viewer.updateableMeshes, elapsed, viewer.sceneCamera.position);
 
             renderer.render(viewer.scene, viewer.sceneCamera);
         }
@@ -215,36 +215,21 @@ export class Viewer {
         this.scene.add(ambientLight);
     }
 
-    public async loadTilt(url: string) {
-        await this.loadTiltGltf(url);
+    public async loadGltf(url: string) {
+        const gltf = await this.gltfLoader.loadAsync(url);
+        this.loadedModel = gltf.scene;
+        this.initializeScene();
     }
 
     public async loadGltf1(url : string) {
         const tiltData = await this.tiltLoader.loadGltf1(url);
-        this.updateableMeshes = tiltData.updateableMeshes;
         this.loadedModel = tiltData.scene;
         this.initializeScene();
     }
 
-    public async loadTiltGltf(url : string) {
-        const tiltData = await this.tiltLoader.loadAsync(url);
-        this.updateableMeshes = tiltData.updateableMeshes;
-        this.loadedModel = tiltData.scene;
-        this.initializeScene();
-    }
-
-    public async loadTiltRaw(url: string) {
+    public async loadTilt(url: string) {
         const tiltData = await this.tiltLoader.loadTilt(url);
-        this.updateableMeshes = tiltData.updateableMeshes;
         this.loadedModel = tiltData.scene;
-        this.initializeScene();
-    }
-
-    // Load generic GLTF/GLB ver 2.x
-    // This should be the entry point for a Blocks export
-    public async loadGltf(url: string) {
-        const gltf = await this.tiltLoader.loadAsync(url);
-        this.loadedModel = gltf.scene;
         this.initializeScene();
     }
 

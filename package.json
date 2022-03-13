@@ -36,6 +36,7 @@
     "camera-controls": "^1.33.1",
     "hold-event": "0.0.1",
     "three": "^0.128.0",
+    "three-icosa": "github:icosa-gallery/three-icosa#main",
     "three-tiltloader": "^0.2.2"
   },
   "files": [
