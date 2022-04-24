@@ -16,7 +16,7 @@ import { MathUtils } from 'three'
 import CameraControls from "camera-controls";
 import * as holdEvent from 'hold-event';
 
-export function setupNavigation(cameraControls : CameraControls) {
+export function setupNavigation(cameraControls : CameraControls): void {
     const KEYCODE = {
         W: 87,
         A: 65,

@@ -31,8 +31,8 @@
         <script type="module">
             import { Viewer } from "../dist/icosa-viewer.module.js";
 
-            const viewer = new Viewer();
-            viewer.loadBrushGltf("formats/gltf2/all_brushes.glb");
+            const viewer = new Viewer("https://icosa-gallery.github.io/three-icosa-template/brushes/");
+            viewer.loadGltf("formats/gltf2/all_brushes.glb");
 
             const viewerdiv = document.getElementById("icosa-viewer");
 
@@ -47,7 +47,7 @@
 
                 var reader = new FileReader();
                 reader.onload = function(e2) {
-                    viewer.loadBrushGltf(e2.target.result);
+                    viewer.loadTilt(e2.target.result);
                 }
 
                 reader.readAsDataURL(ev.dataTransfer.files[0]);

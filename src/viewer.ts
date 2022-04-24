@@ -1,4 +1,4 @@
-// Copyright 2021 Icosa Gallery
+// Copyright 2021-2022 Icosa Gallery
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AmbientLight, Box3, Clock, Color, LoadingManager, Mesh, Object3D, PerspectiveCamera, Scene, sRGBEncoding, Vector3, WebGLRenderer } from 'three';
-import { VRButton } from 'three/examples/jsm/webxr/VRButton';
 import CameraControls from 'camera-controls';
+import { AmbientLight, Box3, Clock, Color, LoadingManager, Object3D, PerspectiveCamera, Scene, sRGBEncoding, Vector3, WebGLRenderer } from 'three';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
+import { TiltLoader } from 'three-tiltloader';
+
 import './css/style.scss';
 import { setupNavigation } from './helpers/Navigation';
-import { subsetOfTHREE } from 'helpers/CameraControlsSetup';
-import { TiltLoader } from 'three-tiltloader';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
+import { subsetOfTHREE } from './helpers/CameraControlsSetup';
+import { LegacyGLTFLoader } from './legacy/LegacyGLTFLoader.js';
+import { replaceBrushMaterials } from './legacy/ReplaceLegacyMaterials.js';
 
 
 export class Viewer {
     private icosa_frame? : HTMLElement | null;
-
+    private brushPath: string;
     private scene : Scene;
 
     private tiltLoader: TiltLoader;
+    private gltfLegacyLoader: LegacyGLTFLoader;
     private gltfLoader: GLTFLoader;
 
     private sceneCamera: PerspectiveCamera;
@@ -39,7 +43,7 @@ export class Viewer {
 
     private loadedModel?: Object3D;
 
-    constructor(frame?: HTMLElement) {
+    constructor(brushPath: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
 
         // Attempt to find viewer frame if not assigned
@@ -124,20 +128,25 @@ export class Viewer {
             document.getElementById('loadscreen')?.classList.remove('fade-out');
             document.getElementById('loadscreen')?.classList.remove('loaded');
         };
-        manager.onLoad = function () {        
+
+        manager.onLoad = function () {
             document.getElementById('loadscreen')?.classList.add('fade-out');
         };
 
+        this.brushPath = brushPath;
+
         this.tiltLoader = new TiltLoader(manager);
-        this.tiltLoader.setBrushDirectory("https://storage.googleapis.com/static.icosa.gallery/brushes/");
+        this.tiltLoader.setBrushPath(this.brushPath);
+
+        this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
+        //this.gltfLegacyLoader.setPath(brushPath);
 
         this.gltfLoader = new GLTFLoader(manager);
+        this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, this.brushPath));
 
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
         this.gltfLoader.setDRACOLoader(dracoLoader);
-
-        this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, '../brushes/', clock));
 
         function animate() {
             renderer.setAnimationLoop(render);
@@ -146,7 +155,6 @@ export class Viewer {
         function render() {
 
             const delta = clock.getDelta();
-            const elapsed = clock.getElapsedTime();
             
             if(renderer.xr.isPresenting) {
                 viewer.sceneCamera = xrCamera;
@@ -221,19 +229,20 @@ export class Viewer {
         this.initializeScene();
     }
 
-    public async loadGltf1(url : string) {
-        const tiltData = await this.tiltLoader.loadGltf1(url);
-        this.loadedModel = tiltData.scene;
-        this.initializeScene();
-    }
-
     public async loadTilt(url: string) {
-        const tiltData = await this.tiltLoader.loadTilt(url);
-        this.loadedModel = tiltData.scene;
+        const tiltData = await this.tiltLoader.loadAsync(url);
+        this.loadedModel = tiltData;
         this.initializeScene();
     }
 
     public loadObj(url: string) {
 
+    }
+
+    public async loadGltf1(url : string) {
+        const tiltData = await this.gltfLegacyLoader.loadAsync(url);
+        this.loadedModel = tiltData.scene;
+        await replaceBrushMaterials(this.brushPath, <Object3D>this.loadedModel);
+        this.initializeScene();
     }
 }

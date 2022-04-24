@@ -15,8 +15,8 @@
         <script type="module">
             import { Viewer } from "../dist/icosa-viewer.module.js";
 
-            var viewer = new Viewer();
-            await viewer.loadTilt("formats/gltf2/all_brushes.glb");
+            var viewer = new Viewer("https://icosa-gallery.github.io/three-icosa-template/brushes/");
+            await viewer.loadGltf("formats/gltf2/all_brushes.glb");
 
         </script>
         <div id="icosa-viewer"></div>
