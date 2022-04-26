@@ -52,7 +52,6 @@ import {
     UnsignedByteType,
     UnsignedShort4444Type,
     UnsignedShort5551Type,
-    UnsignedShort565Type,
     Mesh,
     LineLoop,
     Line,
@@ -508,8 +507,7 @@ var WEBGL_TEXTURE_FORMATS = {
 var WEBGL_TEXTURE_DATATYPES = {
     5121: UnsignedByteType,
     32819: UnsignedShort4444Type,
-    32820: UnsignedShort5551Type,
-    33635: UnsignedShort565Type
+    32820: UnsignedShort5551Type
 };
 
 var WEBGL_SIDES = {
