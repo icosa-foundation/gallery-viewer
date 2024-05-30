@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset="utf-8">
+<html>
+    <head>
+        <title>.gltf/.glb Viewer | Icosa Viewer</title>
+        <style>
+            html, body {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+            }
+        </style>
+        <script type="importmap" class="es6_modules_map">
+            {
+                "imports":{
+                    "camera-controls": "../dist/lib/camera-controls.module.js",
+                    "three-icosa": "../dist/lib/three-icosa.module.js",
+                    "three-tiltloader": "../dist/lib/three-tiltloader.module.js",
+                    "Navigation": "../dist/helpers/Navigation.js",
+                    "CameraControlsSetup": "../dist/helpers/CameraControlsSetup.js",
+                    "LegacyGLTFLoader": "../dist/legacy/LegacyGLTFLoader.js",
+                    "hold-event": "../dist/lib/hold-event.module.js",
+                    "three": "https://unpkg.com/three@0.149.0/build/three.module.js",
+                    "three/examples/": "https://unpkg.com/three@0.149.0/examples/"
+                }
+            }
+        </script>
+        <link rel="stylesheet" href="../src/css/style.css">
+    </head>
+    <body>
+        <script type="module">
+            import { Viewer } from "../dist/Viewer.js";
+            var viewer = new Viewer("https://icosa-foundation.github.io/brushes/");
+            await viewer.loadGltf("formats/gltf2/old-story.gltf");
+            // let col = viewer.sceneColor;
+            // console.log(viewer);
+            // console.log(viewer.scene.background.environment);
+            // [col.r, col.g, col.b] = viewer.loadedModel.userData.TB_SkyColorA.split(",");
+        </script>
+        <div id="icosa-viewer"></div>
+    </body>
+</html>

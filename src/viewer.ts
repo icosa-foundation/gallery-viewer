@@ -20,10 +20,10 @@ import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
 
-import './css/style.scss';
-import { setupNavigation } from './helpers/Navigation';
-import { subsetOfTHREE } from './helpers/CameraControlsSetup';
-import { LegacyGLTFLoader } from './legacy/LegacyGLTFLoader.js';
+// @ts-ignore
+import { setupNavigation } from 'Navigation';
+// @ts-ignore
+import { subsetOfTHREE } from 'CameraControlsSetup';
 import { replaceBrushMaterials } from './legacy/ReplaceLegacyMaterials.js';
 
 
@@ -33,7 +33,6 @@ export class Viewer {
     private scene : Scene;
 
     private tiltLoader: TiltLoader;
-    private gltfLegacyLoader: LegacyGLTFLoader;
     private gltfLoader: GLTFLoader;
 
     private sceneCamera: PerspectiveCamera;
@@ -138,7 +137,6 @@ export class Viewer {
         this.tiltLoader = new TiltLoader(manager);
         this.tiltLoader.setBrushPath(this.brushPath);
 
-        this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
         //this.gltfLegacyLoader.setPath(brushPath);
 
         this.gltfLoader = new GLTFLoader(manager);
@@ -236,13 +234,5 @@ export class Viewer {
     }
 
     public loadObj(url: string) {
-
-    }
-
-    public async loadGltf1(url : string) {
-        const tiltData = await this.gltfLegacyLoader.loadAsync(url);
-        this.loadedModel = tiltData.scene;
-        await replaceBrushMaterials(this.brushPath, <Object3D>this.loadedModel);
-        this.initializeScene();
     }
 }
