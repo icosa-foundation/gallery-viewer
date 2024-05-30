@@ -7,7 +7,8 @@
     "cp:tiltloader": "ncp node_modules/three-tiltloader/dist/three-tiltloader.module.js dist/lib/three-tiltloader.module.js",
     "cp:cameracontrols": "ncp node_modules/camera-controls/dist/camera-controls.module.js dist/lib/camera-controls.module.js",
     "cp:holdevent": "ncp node_modules/hold-event/dist/hold-event.module.js dist/lib/hold-event.module.js",
-    "copy": "npm run cp:threeicosa & npm run cp:tiltloader & npm run cp:cameracontrols & npm run cp:holdevent",
+    "cp:res": "ncp src/res/ dist/",
+    "copy": "npm run cp:threeicosa & npm run cp:tiltloader & npm run cp:cameracontrols & npm run cp:holdevent & npm run cp:res",
     "build": "tsc --build & npm run copy"
   },
   "repository": {
