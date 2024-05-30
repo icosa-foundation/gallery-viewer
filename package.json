@@ -3,13 +3,14 @@
   "version": "0.7.2",
   "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
+    "compile": "tsc --build",
     "cp:threeicosa": "ncp node_modules/three-icosa/dist/three-icosa.module.js dist/lib/three-icosa.module.js",
     "cp:tiltloader": "ncp node_modules/three-tiltloader/dist/three-tiltloader.module.js dist/lib/three-tiltloader.module.js",
     "cp:cameracontrols": "ncp node_modules/camera-controls/dist/camera-controls.module.js dist/lib/camera-controls.module.js",
     "cp:holdevent": "ncp node_modules/hold-event/dist/hold-event.module.js dist/lib/hold-event.module.js",
     "cp:res": "ncp src/res/ dist/",
     "copy": "npm run cp:threeicosa & npm run cp:tiltloader & npm run cp:cameracontrols & npm run cp:holdevent & npm run cp:res",
-    "build": "tsc --build & npm run copy"
+    "build": "npm run compile & npm run copy"
   },
   "repository": {
     "type": "git",
