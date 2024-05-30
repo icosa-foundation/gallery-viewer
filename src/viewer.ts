@@ -13,34 +13,69 @@
 // limitations under the License.
 
 import CameraControls from 'camera-controls';
-import { AmbientLight, Box3, Clock, Color, LoadingManager, Object3D, PerspectiveCamera, Scene, sRGBEncoding, Vector3, WebGLRenderer } from 'three';
+import * as THREE from 'three';
+
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
-
-// @ts-ignore
-import { setupNavigation } from 'Navigation';
-// @ts-ignore
-import { subsetOfTHREE } from 'CameraControlsSetup';
-import { replaceBrushMaterials } from './legacy/ReplaceLegacyMaterials.js';
-
+import * as holdEvent from "hold-event";
+import {MathUtils} from "three";
 
 export class Viewer {
     private icosa_frame? : HTMLElement | null;
     private brushPath: string;
-    private scene : Scene;
+    private scene : THREE.Scene;
 
     private tiltLoader: TiltLoader;
     private gltfLoader: GLTFLoader;
 
-    private sceneCamera: PerspectiveCamera;
-    private sceneColor: Color = new Color("#000000");
+    private sceneCamera: THREE.PerspectiveCamera;
+    private sceneColor: THREE.Color = new THREE.Color("#000000");
 
     private cameraControls: CameraControls;
 
-    private loadedModel?: Object3D;
+    private loadedModel?: THREE.Object3D;
+
+    private setupNavigation(cameraControls : CameraControls): void {
+        const KEYCODE = {
+            W: 87,
+            A: 65,
+            S: 83,
+            D: 68,
+            Q: 81,
+            E: 69,
+            ARROW_LEFT : 37,
+            ARROW_UP   : 38,
+            ARROW_RIGHT: 39,
+            ARROW_DOWN : 40,
+        };
+
+        const wKey = new holdEvent.KeyboardKeyHold( KEYCODE.W, 1);
+        const aKey = new holdEvent.KeyboardKeyHold( KEYCODE.A, 1);
+        const sKey = new holdEvent.KeyboardKeyHold( KEYCODE.S, 1);
+        const dKey = new holdEvent.KeyboardKeyHold( KEYCODE.D, 1);
+        const qKey = new holdEvent.KeyboardKeyHold( KEYCODE.Q, 1);
+        const eKey = new holdEvent.KeyboardKeyHold( KEYCODE.E, 1);
+        aKey.addEventListener( 'holding', function( event ) { cameraControls.truck(- 0.01 * event?.deltaTime, 0, true ) } );
+        dKey.addEventListener( 'holding', function( event ) { cameraControls.truck(  0.01 * event?.deltaTime, 0, true ) } );
+        wKey.addEventListener( 'holding', function( event ) { cameraControls.forward(   0.01 * event?.deltaTime, true ) } );
+        sKey.addEventListener( 'holding', function( event ) { cameraControls.forward( - 0.01 * event?.deltaTime, true ) } );
+        qKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,  0.01 * event?.deltaTime, true ) } );
+        eKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,- 0.01 * event?.deltaTime, true ) } );
+        // Leaving this here because I hope I can use it later somehow.
+        // cameraControls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
+
+        const leftKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_LEFT,  1);
+        const rightKey = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_RIGHT, 1);
+        const upKey    = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_UP,    1);
+        const downKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_DOWN,  1);
+        leftKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate(   0.1 * MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
+        rightKey.addEventListener( 'holding', function( event ) { cameraControls.rotate( - 0.1 * MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
+        upKey.addEventListener   ( 'holding', function( event ) { cameraControls.rotate( 0, - 0.05 * MathUtils.DEG2RAD * event?.deltaTime, true ) } );
+        downKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate( 0,   0.05 * MathUtils.DEG2RAD * event?.deltaTime, true ) } );
+    }
 
     constructor(brushPath: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -86,23 +121,23 @@ export class Viewer {
         canvas.onmousedown = () => { canvas.classList.add('grabbed'); }
         canvas.onmouseup = () => { canvas.classList.remove('grabbed'); }
 
-        const renderer = new WebGLRenderer({canvas : canvas});
+        const renderer = new THREE.WebGLRenderer({canvas : canvas});
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.outputEncoding = sRGBEncoding;
+        renderer.outputEncoding = THREE.sRGBEncoding;
 
         renderer.xr.enabled = true;
         this.icosa_frame.appendChild( VRButton.createButton( renderer ) );
         
-        const clock = new Clock();
+        const clock = new THREE.Clock();
         
         const fov = 75;
         const aspect = 2;  
         const near = 0.1;
         const far = 1000;
-        const flatCamera = new PerspectiveCamera(fov, aspect, near, far);
+        const flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         flatCamera.position.set(10, 10, 10);
 
-        CameraControls.install({ THREE: subsetOfTHREE });
+        CameraControls.install({ THREE: THREE });
         this.cameraControls = new CameraControls(flatCamera, canvas);
         this.cameraControls.dampingFactor = 0.1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
@@ -113,16 +148,16 @@ export class Viewer {
 
         this.sceneCamera = flatCamera;
 
-        const xrCamera = new PerspectiveCamera(fov, aspect, near, far);
+        const xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         xrCamera.updateProjectionMatrix();
 
-        setupNavigation(this.cameraControls);
+        this.setupNavigation(this.cameraControls);
 
-        this.scene = new Scene();
+        this.scene = new THREE.Scene();
 
         const viewer = this;
 
-        const manager = new LoadingManager();
+        const manager = new THREE.LoadingManager();
         manager.onStart = function() {
             document.getElementById('loadscreen')?.classList.remove('fade-out');
             document.getElementById('loadscreen')?.classList.remove('loaded');
@@ -136,8 +171,6 @@ export class Viewer {
 
         this.tiltLoader = new TiltLoader(manager);
         this.tiltLoader.setBrushPath(this.brushPath);
-
-        //this.gltfLegacyLoader.setPath(brushPath);
 
         this.gltfLoader = new GLTFLoader(manager);
         this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, this.brushPath));
@@ -205,9 +238,9 @@ export class Viewer {
         this.scene.add(this.loadedModel);
 
         // Setup camera to center model
-        const box = new Box3().setFromObject(this.loadedModel);
-        const boxSize = box.getSize(new Vector3()).length();
-        const boxCenter = box.getCenter(new Vector3());
+        const box = new THREE.Box3().setFromObject(this.loadedModel);
+        const boxSize = box.getSize(new THREE.Vector3()).length();
+        const boxCenter = box.getCenter(new THREE.Vector3());
 
         this.cameraControls.minDistance = boxSize * 0.01;
         this.cameraControls.maxDistance = boxSize;
@@ -217,7 +250,7 @@ export class Viewer {
         this.cameraControls.dollyTo(midDistance, true);
         this.cameraControls.saveState();
 
-        const ambientLight = new AmbientLight();
+        const ambientLight = new THREE.AmbientLight();
         this.scene.add(ambientLight);
     }
 
@@ -231,8 +264,5 @@ export class Viewer {
         const tiltData = await this.tiltLoader.loadAsync(url);
         this.loadedModel = tiltData;
         this.initializeScene();
-    }
-
-    public loadObj(url: string) {
     }
 }

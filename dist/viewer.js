@@ -8,17 +8,51 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import CameraControls from 'camera-controls';
-import { AmbientLight, Box3, Clock, Color, LoadingManager, PerspectiveCamera, Scene, sRGBEncoding, Vector3, WebGLRenderer } from 'three';
+import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
-import { setupNavigation } from 'Navigation';
-import { subsetOfTHREE } from 'CameraControlsSetup';
+import * as holdEvent from "hold-event";
+import { MathUtils } from "three";
 export class Viewer {
+    setupNavigation(cameraControls) {
+        const KEYCODE = {
+            W: 87,
+            A: 65,
+            S: 83,
+            D: 68,
+            Q: 81,
+            E: 69,
+            ARROW_LEFT: 37,
+            ARROW_UP: 38,
+            ARROW_RIGHT: 39,
+            ARROW_DOWN: 40,
+        };
+        const wKey = new holdEvent.KeyboardKeyHold(KEYCODE.W, 1);
+        const aKey = new holdEvent.KeyboardKeyHold(KEYCODE.A, 1);
+        const sKey = new holdEvent.KeyboardKeyHold(KEYCODE.S, 1);
+        const dKey = new holdEvent.KeyboardKeyHold(KEYCODE.D, 1);
+        const qKey = new holdEvent.KeyboardKeyHold(KEYCODE.Q, 1);
+        const eKey = new holdEvent.KeyboardKeyHold(KEYCODE.E, 1);
+        aKey.addEventListener('holding', function (event) { cameraControls.truck(-0.01 * (event === null || event === void 0 ? void 0 : event.deltaTime), 0, true); });
+        dKey.addEventListener('holding', function (event) { cameraControls.truck(0.01 * (event === null || event === void 0 ? void 0 : event.deltaTime), 0, true); });
+        wKey.addEventListener('holding', function (event) { cameraControls.forward(0.01 * (event === null || event === void 0 ? void 0 : event.deltaTime), true); });
+        sKey.addEventListener('holding', function (event) { cameraControls.forward(-0.01 * (event === null || event === void 0 ? void 0 : event.deltaTime), true); });
+        qKey.addEventListener('holding', function (event) { cameraControls.truck(0, 0.01 * (event === null || event === void 0 ? void 0 : event.deltaTime), true); });
+        eKey.addEventListener('holding', function (event) { cameraControls.truck(0, -0.01 * (event === null || event === void 0 ? void 0 : event.deltaTime), true); });
+        const leftKey = new holdEvent.KeyboardKeyHold(KEYCODE.ARROW_LEFT, 1);
+        const rightKey = new holdEvent.KeyboardKeyHold(KEYCODE.ARROW_RIGHT, 1);
+        const upKey = new holdEvent.KeyboardKeyHold(KEYCODE.ARROW_UP, 1);
+        const downKey = new holdEvent.KeyboardKeyHold(KEYCODE.ARROW_DOWN, 1);
+        leftKey.addEventListener('holding', function (event) { cameraControls.rotate(0.1 * MathUtils.DEG2RAD * (event === null || event === void 0 ? void 0 : event.deltaTime), 0, true); });
+        rightKey.addEventListener('holding', function (event) { cameraControls.rotate(-0.1 * MathUtils.DEG2RAD * (event === null || event === void 0 ? void 0 : event.deltaTime), 0, true); });
+        upKey.addEventListener('holding', function (event) { cameraControls.rotate(0, -0.05 * MathUtils.DEG2RAD * (event === null || event === void 0 ? void 0 : event.deltaTime), true); });
+        downKey.addEventListener('holding', function (event) { cameraControls.rotate(0, 0.05 * MathUtils.DEG2RAD * (event === null || event === void 0 ? void 0 : event.deltaTime), true); });
+    }
     constructor(brushPath, frame) {
-        this.sceneColor = new Color("#000000");
+        this.sceneColor = new THREE.Color("#000000");
         this.icosa_frame = frame;
         if (!this.icosa_frame)
             this.icosa_frame = document.getElementById('icosa-viewer');
@@ -50,19 +84,19 @@ export class Viewer {
         this.icosa_frame.appendChild(canvas);
         canvas.onmousedown = () => { canvas.classList.add('grabbed'); };
         canvas.onmouseup = () => { canvas.classList.remove('grabbed'); };
-        const renderer = new WebGLRenderer({ canvas: canvas });
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas });
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.outputEncoding = sRGBEncoding;
+        renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.xr.enabled = true;
         this.icosa_frame.appendChild(VRButton.createButton(renderer));
-        const clock = new Clock();
+        const clock = new THREE.Clock();
         const fov = 75;
         const aspect = 2;
         const near = 0.1;
         const far = 1000;
-        const flatCamera = new PerspectiveCamera(fov, aspect, near, far);
+        const flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         flatCamera.position.set(10, 10, 10);
-        CameraControls.install({ THREE: subsetOfTHREE });
+        CameraControls.install({ THREE: THREE });
         this.cameraControls = new CameraControls(flatCamera, canvas);
         this.cameraControls.dampingFactor = 0.1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
@@ -70,12 +104,12 @@ export class Viewer {
         this.cameraControls.dollyTo(3, true);
         flatCamera.updateProjectionMatrix();
         this.sceneCamera = flatCamera;
-        const xrCamera = new PerspectiveCamera(fov, aspect, near, far);
+        const xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         xrCamera.updateProjectionMatrix();
-        setupNavigation(this.cameraControls);
-        this.scene = new Scene();
+        this.setupNavigation(this.cameraControls);
+        this.scene = new THREE.Scene();
         const viewer = this;
-        const manager = new LoadingManager();
+        const manager = new THREE.LoadingManager();
         manager.onStart = function () {
             var _a, _b;
             (_a = document.getElementById('loadscreen')) === null || _a === void 0 ? void 0 : _a.classList.remove('fade-out');
@@ -143,16 +177,16 @@ export class Viewer {
         this.scene.clear();
         this.scene.background = this.sceneColor;
         this.scene.add(this.loadedModel);
-        const box = new Box3().setFromObject(this.loadedModel);
-        const boxSize = box.getSize(new Vector3()).length();
-        const boxCenter = box.getCenter(new Vector3());
+        const box = new THREE.Box3().setFromObject(this.loadedModel);
+        const boxSize = box.getSize(new THREE.Vector3()).length();
+        const boxCenter = box.getCenter(new THREE.Vector3());
         this.cameraControls.minDistance = boxSize * 0.01;
         this.cameraControls.maxDistance = boxSize;
         const midDistance = this.cameraControls.minDistance + (this.cameraControls.maxDistance - this.cameraControls.minDistance) / 2;
         this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
         this.cameraControls.dollyTo(midDistance, true);
         this.cameraControls.saveState();
-        const ambientLight = new AmbientLight();
+        const ambientLight = new THREE.AmbientLight();
         this.scene.add(ambientLight);
     }
     loadGltf(url) {
@@ -168,7 +202,5 @@ export class Viewer {
             this.loadedModel = tiltData;
             this.initializeScene();
         });
-    }
-    loadObj(url) {
     }
 }
