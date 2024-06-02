@@ -4,7 +4,7 @@
  * Copyright (c) 2021-2022 Icosa Gallery
  * Released under the Apache 2.0 Licence.
  */
-import { Vector4, Vector3, Loader, FileLoader, TextureLoader, RepeatWrapping, UniformsLib, RawShaderMaterial, Clock } from 'three';
+import { Vector4, Vector3, Loader, FileLoader, TextureLoader, GLSL3, RepeatWrapping, UniformsLib, RawShaderMaterial, Clock } from 'three';
 
 // Copyright 2021-2022 Icosa Gallery
 
@@ -36,6 +36,7 @@ class TiltShaderLoader extends Loader {
 
         const materialParams = tiltBrushMaterialParams[brushName];
 
+        materialParams.glslVersion = GLSL3;
         materialParams.vertexShader = await loader.loadAsync(materialParams.vertexShader);
         materialParams.fragmentShader = await loader.loadAsync(materialParams.fragmentShader);
 

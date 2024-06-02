@@ -12,13 +12,14 @@
         </style>
         <script type="importmap" class="es6_modules_map">
             {
-                "imports":{
+                "imports": {
                     "camera-controls": "../dist/lib/camera-controls.module.js",
                     "hold-event": "../dist/lib/hold-event.module.js",
                     "three-icosa": "../dist/lib/three-icosa.module.js",
                     "three-tiltloader": "../dist/lib/three-tiltloader.module.js",
-                    "three": "https://unpkg.com/three@0.149.0/build/three.module.js",
-                    "three/examples/": "https://unpkg.com/three@0.149.0/examples/"
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/",
+                    "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/"
                 }
             }
         </script>
@@ -27,8 +28,44 @@
     <body>
         <script type="module">
             import { Viewer } from "../dist/viewer.js";
-            var viewer = new Viewer("https://icosa-foundation.github.io/brushes/");
-            await viewer.loadGltf("formats/gltf2/old-story.gltf");
+            import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+            import * as three from "three";
+
+            var viewer = new Viewer("https://icosa-foundation.github.io/icosa-sketch-assets/");
+
+            await viewer.loadGltf("formats/gltf2/gradient.gltf", true);
+            // await viewer.loadGltf("formats/gltf2/snowman.gltf", true);
+            // await viewer.loadGltf("formats/gltf2/old-story.gltf", true);
+            // await viewer.loadGltf("formats/gltf2/all_brushes.glb", true);
+
+            const gui = new GUI( );
+
+            const settings = {
+                backgroundColor: 'rgb(0, 0, 0)',
+                fogColor: 'rgb(170, 0, 255)',
+                fogDensity: 0.5,
+                showEnvironment: true,
+            };
+
+            gui.addColor( settings, 'backgroundColor' ).onChange( update );
+            gui.addColor( settings, 'fogColor' ).onChange( update );
+            gui.add( settings, 'fogDensity', 0, 1 ).onChange( update );
+            // gui.add( settings, 'showEnvironment' ); // TODO
+
+            // update();
+
+            function update() {
+                if (settings.fogDensity > 0) {
+                    let fogBgColor = new three.Color(settings.fogColor);
+                    fogBgColor.multiplyScalar(settings.fogDensity);
+                    fogBgColor.add(new three.Color(settings.backgroundColor)); // Is this correct?
+                    viewer.scene.background = fogBgColor;
+                    viewer.scene.fog = new three.FogExp2(settings.fogColor, settings.fogDensity);
+                }
+                else {
+                    viewer.scene.background = new three.Color(settings.backgroundColor);
+                }
+            }
         </script>
         <div id="icosa-viewer"></div>
     </body>
