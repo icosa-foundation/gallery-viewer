@@ -3,14 +3,8 @@
   "version": "0.7.2",
   "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
-    "compile": "tsc --build",
-    "cp:threeicosa": "ncp node_modules/three-icosa/dist/three-icosa.module.js dist/lib/three-icosa.module.js",
-    "cp:tiltloader": "ncp node_modules/three-tiltloader/dist/three-tiltloader.module.js dist/lib/three-tiltloader.module.js",
-    "cp:cameracontrols": "ncp node_modules/camera-controls/dist/camera-controls.module.js dist/lib/camera-controls.module.js",
-    "cp:holdevent": "ncp node_modules/hold-event/dist/hold-event.module.js dist/lib/hold-event.module.js",
-    "cp:res": "ncp src/res/ dist/",
-    "copy": "npm run cp:threeicosa & npm run cp:tiltloader & npm run cp:cameracontrols & npm run cp:holdevent & npm run cp:res",
-    "build": "npm run compile & npm run copy"
+    "watch": "parcel watch",
+    "build": "parcel build"
   },
   "repository": {
     "type": "git",
@@ -18,24 +12,38 @@
   },
   "author": "Icosa Gallery",
   "license": "Apache-2.0",
-  "main": "dist/Viewer.js",
-  "module": "dist/icosa-viewer.module.js",
-  "types": "dist/icosa-viewer.d.ts",
+  "source": "./src/viewer.ts",
+  "main": "./dist/icosa-viewer.js",
+  "module": "./dist/icosa-viewer.module.js",
+  "types": "./dist/icosa-viewer.d.ts",
+  "targets": {
+    "module": {
+      "includeNodeModules": [
+        "three",
+        "@depasquale/three-immersive-controls",
+        "camera-controls",
+        "three-icosa",
+        "hold-event"
+      ]
+    }
+  },
   "bugs": {
     "url": "https://github.com/icosa-gallery/icosa-viewer/issues"
   },
   "homepage": "https://github.com/icosa-gallery/icosa-viewer#readme",
   "devDependencies": {
+    "@parcel/packager-ts": "^2.12.0",
+    "@parcel/transformer-typescript-types": "^2.12.0",
     "@types/three": "^0.164.0",
-    "typescript": "^4.1.3",
-    "ncp": "^2.0.0"
+    "parcel": "latest",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
-    "camera-controls": "^1.34.2",
+    "@depasquale/three-immersive-controls": "^0.0.15",
+    "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
-    "three-icosa": "^0.4.0",
-    "three-tiltloader": "^0.4.1"
     "three": "^0.164.0",
+    "three-icosa": "file:../three-icosa/index.js"
   },
   "files": [
     "dist",

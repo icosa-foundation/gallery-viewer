@@ -18,10 +18,7 @@ import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-// @ts-ignore
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
-// @ts-ignore
-import { TiltLoader } from 'three-tiltloader';
 import * as holdEvent from "hold-event";
 import {MathUtils, Object3D} from "three";
 // import { EffectComposer } from 'three/addons';
@@ -109,7 +106,6 @@ export class Viewer {
     private environmentPath: URL;
     private scene : THREE.Scene;
 
-    private tiltLoader: TiltLoader;
     private gltfLoader: GLTFLoader;
 
     private sceneCamera: THREE.PerspectiveCamera;
@@ -254,9 +250,6 @@ export class Viewer {
         this.brushPath = new URL('brushes/', assetBaseUrl);
         this.environmentPath = new URL('environments/', assetBaseUrl);
         this.texturePath = new URL('textures/', assetBaseUrl);
-
-        this.tiltLoader = new TiltLoader(manager);
-        this.tiltLoader.setBrushPath(this.brushPath.toString());
 
         this.gltfLoader = new GLTFLoader(manager);
         this.gltfLoader.register(
@@ -1732,12 +1725,6 @@ export class Viewer {
             }
         }
         this.loadedModel = sceneGltf.scene;
-        this.initializeScene();
-    }
-
-    public async loadTilt(url: string) {
-        const tiltData = await this.tiltLoader.loadAsync(url);
-        this.loadedModel = tiltData;
         this.initializeScene();
     }
 
