@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/icosa-gallery/icosa-viewer.git"
+    "url": "git+https://github.com/icosa-foundation/icosa-viewer.git"
   },
   "author": "Icosa Gallery",
   "license": "Apache-2.0",
@@ -28,13 +28,13 @@
     }
   },
   "bugs": {
-    "url": "https://github.com/icosa-gallery/icosa-viewer/issues"
+    "url": "https://github.com/icosa-foundation/icosa-viewer/issues"
   },
-  "homepage": "https://github.com/icosa-gallery/icosa-viewer#readme",
+  "homepage": "https://github.com/icosa-foundation/icosa-viewer#readme",
   "devDependencies": {
     "@parcel/packager-ts": "^2.12.0",
     "@parcel/transformer-typescript-types": "^2.12.0",
-    "@types/three": "^0.164.0",
+    "@types/three": "^0.164.1",
     "parcel": "latest",
     "typescript": "^5.4.5"
   },
@@ -43,7 +43,7 @@
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
     "three": "^0.164.0",
-    "three-icosa": "file:../three-icosa/index.js"
+    "three-icosa": "^0.4.2"
   },
   "files": [
     "dist",

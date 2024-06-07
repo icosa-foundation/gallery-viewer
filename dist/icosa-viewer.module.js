@@ -36686,12 +36686,20 @@ $a0eb85058b839254$export$da3cdac99155b982.xrSessionIsGranted = false;
 $a0eb85058b839254$export$da3cdac99155b982.registerSessionGrantedListener();
 
 
-/*!
- * three-icosa
- * https://github.com/icosa-gallery/three-icosa
- * Copyright (c) 2021-2022 Icosa Gallery
- * Released under the Apache 2.0 Licence.
- */ /**
+// Copyright 2021-2022 Icosa Gallery
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+/**
  * @license
  * Copyright 2010-2024 Three.js Authors
  * SPDX-License-Identifier: MIT
@@ -67427,8 +67435,7 @@ if (typeof window !== "undefined") {
 }
 
 
-// Copyright 2021-2022 Icosa Gallery
-class $f387dcfdbf1b337a$export$bcc22bf437a07d8f extends (0, $b739dc0140b7fd1e$export$3b0d6d7590275603) {
+class $512298bd690e3e81$export$bcc22bf437a07d8f extends (0, $b739dc0140b7fd1e$export$3b0d6d7590275603) {
     constructor(manager){
         super(manager);
         this.loadedMaterials = {};
@@ -67447,7 +67454,7 @@ class $f387dcfdbf1b337a$export$bcc22bf437a07d8f extends (0, $b739dc0140b7fd1e$ex
         const textureLoader = new (0, $b739dc0140b7fd1e$export$fd1bfc71f64c538c)(this.manager);
         textureLoader.setPath(this.path);
         textureLoader.setWithCredentials(this.withCredentials);
-        const materialParams = $f387dcfdbf1b337a$var$tiltBrushMaterialParams[brushName];
+        const materialParams = $512298bd690e3e81$var$tiltBrushMaterialParams[brushName];
         materialParams.glslVersion = (0, $b739dc0140b7fd1e$export$f63012db5506e7dd);
         materialParams.vertexShader = await loader.loadAsync(materialParams.vertexShader);
         materialParams.fragmentShader = await loader.loadAsync(materialParams.fragmentShader);
@@ -67486,7 +67493,7 @@ class $f387dcfdbf1b337a$export$bcc22bf437a07d8f extends (0, $b739dc0140b7fd1e$ex
     }
     lookupMaterial(nameOrGuid) {
         const name = this.lookupMaterialName(nameOrGuid);
-        return $f387dcfdbf1b337a$var$tiltBrushMaterialParams[name];
+        return $512298bd690e3e81$var$tiltBrushMaterialParams[name];
     }
     lookupMaterialName(nameOrGuid) {
         switch(nameOrGuid){
@@ -67685,7 +67692,7 @@ class $f387dcfdbf1b337a$export$bcc22bf437a07d8f extends (0, $b739dc0140b7fd1e$ex
         }
     }
 }
-const $f387dcfdbf1b337a$var$tiltBrushMaterialParams = {
+const $512298bd690e3e81$var$tiltBrushMaterialParams = {
     "BlocksBasic": {
         uniforms: {
             u_SceneLight_0_matrix: {
@@ -71807,15 +71814,31 @@ const $f387dcfdbf1b337a$var$tiltBrushMaterialParams = {
         blending: 0
     }
 };
+
+
 // Copyright 2021-2022 Icosa Gallery
-class $f387dcfdbf1b337a$export$2b011a5b12963d65 {
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
+class $7606bbbe8a672d0e$export$2b011a5b12963d65 {
     constructor(parser, brushPath){
         this.name = "GOOGLE_tilt_brush_material";
         this.parser = parser;
         this.brushPath = brushPath;
         // Quick repair of path if required
         if (this.brushPath.slice(this.brushPath.length - 1) !== "/") this.brushPath += "/";
-        this.tiltShaderLoader = new $f387dcfdbf1b337a$export$bcc22bf437a07d8f(parser.options.manager);
+        this.tiltShaderLoader = new (0, $512298bd690e3e81$export$bcc22bf437a07d8f)(parser.options.manager);
         this.tiltShaderLoader.setPath(brushPath);
         this.clock = new (0, $b739dc0140b7fd1e$export$9735c82c4bae3302)();
     }
@@ -72621,6 +72644,8 @@ class $f387dcfdbf1b337a$export$2b011a5b12963d65 {
 }
 
 
+
+
 /*!
  * hold-event
  * https://github.com/yomotsu/hold-event
@@ -72988,7 +73013,7 @@ class $c8b2145499396622$export$2ec4afd9b3c16a85 {
         this.environmentPath = new URL("environments/", assetBaseUrl);
         this.texturePath = new URL("textures/", assetBaseUrl);
         this.gltfLoader = new (0, $8e953d5d30c77184$export$aa93f11e7884f0f4)(manager);
-        this.gltfLoader.register((parser)=>new (0, $f387dcfdbf1b337a$export$2b011a5b12963d65)(parser, this.brushPath.toString()));
+        this.gltfLoader.register((parser)=>new (0, $7606bbbe8a672d0e$export$2b011a5b12963d65)(parser, this.brushPath.toString()));
         const dracoLoader = new (0, $84a7ca09b1c3b0bb$export$45c25de53be259ac)();
         dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
         this.gltfLoader.setDRACOLoader(dracoLoader);
