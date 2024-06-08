@@ -5,7 +5,6 @@ var $6d7Yh$threeexamplesjsmloadersGLTFLoaderjs = require("three/examples/jsm/loa
 var $6d7Yh$threeexamplesjsmwebxrVRButtonjs = require("three/examples/jsm/webxr/VRButton.js");
 var $6d7Yh$threeicosa = require("three-icosa");
 var $6d7Yh$holdevent = require("hold-event");
-var $6d7Yh$depasqualethreeimmersivecontrols = require("@depasquale/three-immersive-controls");
 
 
 function $parcel$interopDefault(a) {
@@ -30,7 +29,6 @@ $parcel$export(module.exports, "Viewer", () => $3f2b6f59492f6c9b$export$2ec4afd9
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 
 
 
@@ -208,8 +206,6 @@ class $3f2b6f59492f6c9b$export$2ec4afd9b3c16a85 {
         xrCamera.updateProjectionMatrix();
         this.setupNavigation(this.cameraControls);
         this.scene = new $6d7Yh$three.Scene();
-        const immersiveControls = new (0, ($parcel$interopDefault($6d7Yh$depasqualethreeimmersivecontrols)))(xrCamera, renderer, this.scene, {
-        });
         const viewer = this;
         const manager = new $6d7Yh$three.LoadingManager();
         manager.onStart = function() {
@@ -229,9 +225,8 @@ class $3f2b6f59492f6c9b$export$2ec4afd9b3c16a85 {
         this.gltfLoader.setDRACOLoader(dracoLoader);
         function animate() {
             renderer.setAnimationLoop(render);
-            // requestAnimationFrame( animate );
-            // composer.render();
-            immersiveControls.update();
+        // requestAnimationFrame( animate );
+        // composer.render();
         }
         function render() {
             const delta = clock.getDelta();

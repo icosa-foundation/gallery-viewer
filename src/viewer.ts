@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import CameraControls from 'camera-controls';
-import ImmersiveControls from '@depasquale/three-immersive-controls';
 import * as THREE from 'three';
 
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
@@ -235,9 +234,6 @@ export class Viewer {
         this.setupNavigation(this.cameraControls);
 
         this.scene = new THREE.Scene();
-        const immersiveControls = new ImmersiveControls(xrCamera, renderer, this.scene, {
-            /* options */
-        });
 
         const viewer = this;
 
@@ -268,7 +264,6 @@ export class Viewer {
             renderer.setAnimationLoop(render);
             // requestAnimationFrame( animate );
             // composer.render();
-            immersiveControls.update();
         }
 
         function render() {

@@ -18,7 +18,13 @@
   "types": "./dist/icosa-viewer.d.ts",
   "targets": {
     "module": {
-      "includeNodeModules": {}
+      "includeNodeModules": [
+        "three",
+        "@depasquale/three-immersive-controls",
+        "camera-controls",
+        "three-icosa",
+        "hold-event"
+      ]
     }
   },
   "bugs": {
