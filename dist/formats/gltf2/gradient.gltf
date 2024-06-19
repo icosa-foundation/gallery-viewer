@@ -1,0 +1,206 @@
+{
+	"asset": {
+		"generator": "Tilt Brush 23.3.841faedfb compatible (Actually: Open Brush 2.0.0.)",
+		"version": "2.0",
+		"copyright": "Unknown."
+	},
+	"buffers": [
+		{
+			"byteLength": 15840,
+			"uri": "gradient.bin"
+		}
+	],
+	"accessors": [
+		{
+			"bufferView": 3,
+			"byteOffset": 0,
+			"componentType": 5126,
+			"count": 240,
+			"max": [ 0.0780564249, 1.44680941, 0.950049579 ],
+			"min": [ -0.115783013, 1.35041964, 0.949368 ],
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"byteOffset": 2880,
+			"componentType": 5126,
+			"count": 240,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"byteOffset": 0,
+			"componentType": 5121,
+			"normalized": true,
+			"count": 240,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 4,
+			"byteOffset": 0,
+			"componentType": 5126,
+			"count": 240,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"byteOffset": 0,
+			"componentType": 5126,
+			"count": 240,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 3,
+			"byteOffset": 5760,
+			"componentType": 5126,
+			"count": 240,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 0,
+			"byteOffset": 0,
+			"componentType": 5123,
+			"count": 240,
+			"max": [ 239 ],
+			"min": [ 0 ],
+			"type": "SCALAR"
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 480,
+			"byteOffset": 0,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 960,
+			"byteOffset": 480,
+			"byteStride": 4,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 1920,
+			"byteOffset": 1440,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 8640,
+			"byteOffset": 3360,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 3840,
+			"byteOffset": 12000,
+			"byteStride": 16,
+			"target": 34962
+		}
+	],
+	"meshes": [
+		{
+			"name": "brush_Light_g0_b0",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"COLOR_0": 2,
+						"TANGENT": 3,
+						"_TB_TIMESTAMP": 5,
+						"_TB_UNITY_TEXCOORD_0": 4,
+						"TEXCOORD_0": 4
+					},
+					"indices": 6,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	],
+	"images": [
+		{
+			"uri": "Brush_Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-MainTex.png"
+		}
+	],
+	"materials": [
+		{
+			"alphaMode": "BLEND",
+			"doubleSided": true,
+			"pbrMetallicRoughness": {
+				"baseColorTexture": {
+					"index": 0,
+					"texCoord": 0
+				},
+				"metallicFactor": 0
+			},
+			"name": "brush_Light",
+			"extensions": {
+				"GOOGLE_tilt_brush_material": {
+					"guid": "2241cd32-8ba2-48a5-9ee7-2caef7e9ed62"
+				}
+			}
+		}
+	],
+	"nodes": [
+		{
+			"name": "brush_Light_g0_b0",
+			"mesh": 0
+		},
+		{
+			"name": "node_SceneLight_0_i1",
+			"matrix": [0.898794, -0.2191856, -0.3796406, 0, 0.4383712, 0.449397, 0.7783785, 0, -1.490116E-08, -0.8660254, 0.4999999, 0, 0, 0.021875, -0.05458749, 1]
+		},
+		{
+			"name": "node_SceneLight_1_i2",
+			"matrix": [0.7660444, 0.4924039, -0.4131759, 0, 0.6427876, -0.5868242, 0.4924039, 0, 8.940697E-08, -0.6427876, -0.7660446, 0, 0, 0.021875, -0.05458749, 1]
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [
+				0,
+				1,
+				2
+			],
+			"extras": {
+				"TB_EnvironmentGuid": "ab080599-e465-4a6d-8587-43bf495af68b",
+				"TB_Environment": "Standard",
+				"TB_UseGradient": "true",
+				"TB_SkyColorA": "0, 0.5921569, 0.1920806",
+				"TB_SkyColorB": "1, 0.3239951, 0.7165979",
+				"TB_SkyGradientDirection": "0.8368946, 0.547333, 0.005864106",
+				"TB_FogColor": "0.1647059, 0.1647059, 0.2078431",
+				"TB_FogDensity": "0.0025",
+				"TB_PoseTranslation": "0, 0, 0",
+				"TB_PoseRotation": "0, 0, 0",
+				"TB_PoseScale": 1,
+				"TB_SkyColorHorizon": "0, 0.5921569, 0.1920806",
+				"TB_SkyColorZenith": "1, 0.3239951, 0.7165979"
+			}
+		}
+	],
+	"extensionsUsed": [
+		"GOOGLE_tilt_brush_material"
+	]
+}

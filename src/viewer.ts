@@ -20,9 +20,12 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import * as holdEvent from "hold-event";
-import {MathUtils, Object3D} from "three";
+import {Object3D} from "three";
 // import { EffectComposer } from 'three/addons';
 // import { RenderPass } from 'three/addons';
+import { setupNavigation } from './helpers/Navigation';
+import { LegacyGLTFLoader } from './legacy/LegacyGLTFLoader.js';
+import { replaceBrushMaterials } from './legacy/ReplaceLegacyMaterials.js';
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
 
@@ -100,13 +103,15 @@ class EnvironmentPreset {
 }
 
 export class Viewer {
+
+    public gltfLoader: GLTFLoader;
+    public gltfLegacyLoader: LegacyGLTFLoader;
+
     private icosa_frame? : HTMLElement | null;
     private brushPath: URL;
     private texturePath: URL;
     private environmentPath: URL;
     private scene : THREE.Scene;
-
-    private gltfLoader: GLTFLoader;
 
     private sceneCamera: THREE.PerspectiveCamera;
     private sceneColor: THREE.Color = new THREE.Color("#000000");
@@ -116,46 +121,6 @@ export class Viewer {
     private loadedModel?: THREE.Object3D;
     private sketchBoundingBox?: THREE.Box3;
     private sketchMetadata?: SketchMetadata;
-
-    private setupNavigation(cameraControls : CameraControls): void {
-        const KEYCODE = {
-            W: 87,
-            A: 65,
-            S: 83,
-            D: 68,
-            Q: 81,
-            E: 69,
-            ARROW_LEFT : 37,
-            ARROW_UP   : 38,
-            ARROW_RIGHT: 39,
-            ARROW_DOWN : 40,
-        };
-
-
-        const wKey = new holdEvent.KeyboardKeyHold( KEYCODE.W, 1);
-        const aKey = new holdEvent.KeyboardKeyHold( KEYCODE.A, 1);
-        const sKey = new holdEvent.KeyboardKeyHold( KEYCODE.S, 1);
-        const dKey = new holdEvent.KeyboardKeyHold( KEYCODE.D, 1);
-        const qKey = new holdEvent.KeyboardKeyHold( KEYCODE.Q, 1);
-        const eKey = new holdEvent.KeyboardKeyHold( KEYCODE.E, 1);
-        aKey.addEventListener( 'holding', function( event ) { cameraControls.truck(- 0.01 * event?.deltaTime, 0, true ) } );
-        dKey.addEventListener( 'holding', function( event ) { cameraControls.truck(  0.01 * event?.deltaTime, 0, true ) } );
-        wKey.addEventListener( 'holding', function( event ) { cameraControls.forward(   0.01 * event?.deltaTime, true ) } );
-        sKey.addEventListener( 'holding', function( event ) { cameraControls.forward( - 0.01 * event?.deltaTime, true ) } );
-        qKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,  0.01 * event?.deltaTime, true ) } );
-        eKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,- 0.01 * event?.deltaTime, true ) } );
-        // Leaving this here because I hope I can use it later somehow.
-        // cameraControls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
-
-        const leftKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_LEFT,  1);
-        const rightKey = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_RIGHT, 1);
-        const upKey    = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_UP,    1);
-        const downKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_DOWN,  1);
-        leftKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate(   0.1 * MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
-        rightKey.addEventListener( 'holding', function( event ) { cameraControls.rotate( - 0.1 * MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
-        upKey.addEventListener   ( 'holding', function( event ) { cameraControls.rotate( 0, - 0.05 * MathUtils.DEG2RAD * event?.deltaTime, true ) } );
-        downKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate( 0,   0.05 * MathUtils.DEG2RAD * event?.deltaTime, true ) } );
-    }
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -231,7 +196,7 @@ export class Viewer {
         const xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         xrCamera.updateProjectionMatrix();
 
-        this.setupNavigation(this.cameraControls);
+        setupNavigation(this.cameraControls);
 
         this.scene = new THREE.Scene();
 
@@ -248,9 +213,11 @@ export class Viewer {
         };
 
         this.brushPath = new URL('brushes/', assetBaseUrl);
+
         this.environmentPath = new URL('environments/', assetBaseUrl);
         this.texturePath = new URL('textures/', assetBaseUrl);
-
+	
+        this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
         this.gltfLoader.register(
             parser => new GLTFGoogleTiltBrushMaterialExtension(parser, this.brushPath.toString())
@@ -1712,6 +1679,13 @@ export class Viewer {
         }[guid];
     }
 
+    public async loadGltf1(url : string) {
+        const sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
+        this.loadedModel = sceneGltf.scene;
+        await replaceBrushMaterials(this.brushPath.toString(), <Object3D>this.loadedModel);
+        this.initializeScene();
+    }
+
     public async loadGltf(url: string, loadEnvironment : boolean) {
         const sceneGltf = await this.gltfLoader.loadAsync(url);
         this.setupSketchMetaData(sceneGltf.scene);
@@ -1785,6 +1759,4 @@ export class Viewer {
             this.scene.background = this.sceneColor;
         }
     }
-
-
 }

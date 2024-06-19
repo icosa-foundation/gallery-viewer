@@ -1,0 +1,32 @@
+<!doctype html>
+<meta charset="utf-8">
+<html>
+<head>
+    <title>.gltf/.glb Viewer | Icosa Viewer</title>
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+        }
+    </style>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@<version>/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@<version>/examples/jsm/"
+          }
+        }
+    </script>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./viewer.ts" type="module"></script>
+</head>
+<body>
+<script type="module">
+    import { Viewer } from "./viewer.ts";
+    let viewer = new Viewer("https://icosa-foundation.github.io/icosa-sketch-assets/");
+    await viewer.loadGltf("formats/gltf2/all_brushes.glb", true);
+</script>
+<div id="icosa-viewer"></div>
+</body>
+</html>

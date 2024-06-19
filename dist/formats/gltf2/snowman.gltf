@@ -1,0 +1,206 @@
+{
+	"asset": {
+		"generator": "Tilt Brush 23.3.841faedfb compatible (Actually: Open Brush 2.0.0.)",
+		"version": "2.0",
+		"copyright": "Unknown."
+	},
+	"buffers": [
+		{
+			"byteLength": 45144,
+			"uri": "snowman.bin"
+		}
+	],
+	"accessors": [
+		{
+			"bufferView": 3,
+			"byteOffset": 0,
+			"componentType": 5126,
+			"count": 684,
+			"max": [ 0.618332326, 0.763172865, 0.950245023 ],
+			"min": [ 0.358433157, 0.443406552, 0.949074566 ],
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 3,
+			"byteOffset": 8208,
+			"componentType": 5126,
+			"count": 684,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"byteOffset": 0,
+			"componentType": 5121,
+			"normalized": true,
+			"count": 684,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 4,
+			"byteOffset": 0,
+			"componentType": 5126,
+			"count": 684,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 2,
+			"byteOffset": 0,
+			"componentType": 5126,
+			"count": 684,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 3,
+			"byteOffset": 16416,
+			"componentType": 5126,
+			"count": 684,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 0,
+			"byteOffset": 0,
+			"componentType": 5123,
+			"count": 684,
+			"max": [ 683 ],
+			"min": [ 0 ],
+			"type": "SCALAR"
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 1368,
+			"byteOffset": 0,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 2736,
+			"byteOffset": 1368,
+			"byteStride": 4,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 5472,
+			"byteOffset": 4104,
+			"byteStride": 8,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 24624,
+			"byteOffset": 9576,
+			"byteStride": 12,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 10944,
+			"byteOffset": 34200,
+			"byteStride": 16,
+			"target": 34962
+		}
+	],
+	"meshes": [
+		{
+			"name": "brush_Light_g0_b0",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"COLOR_0": 2,
+						"TANGENT": 3,
+						"_TB_TIMESTAMP": 5,
+						"_TB_UNITY_TEXCOORD_0": 4,
+						"TEXCOORD_0": 4
+					},
+					"indices": 6,
+					"material": 0,
+					"mode": 4
+				}
+			]
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987,
+			"wrapS": 10497,
+			"wrapT": 10497
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	],
+	"images": [
+		{
+			"uri": "Brush_Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-MainTex.png"
+		}
+	],
+	"materials": [
+		{
+			"alphaMode": "BLEND",
+			"doubleSided": true,
+			"pbrMetallicRoughness": {
+				"baseColorTexture": {
+					"index": 0,
+					"texCoord": 0
+				},
+				"metallicFactor": 0
+			},
+			"name": "brush_Light",
+			"extensions": {
+				"GOOGLE_tilt_brush_material": {
+					"guid": "2241cd32-8ba2-48a5-9ee7-2caef7e9ed62"
+				}
+			}
+		}
+	],
+	"nodes": [
+		{
+			"name": "brush_Light_g0_b0",
+			"mesh": 0
+		},
+		{
+			"name": "node_SceneLight_0_i1",
+			"matrix": [0.0111025, -0.4059419, -0.9138317, 0, 0.929715, 0.3406253, -0.1400169, 0, 0.3681129, -0.8480484, 0.3811918, 0, 0, 0.07816665, -0.0220875, 1]
+		},
+		{
+			"name": "node_SceneLight_1_i2",
+			"matrix": [0.3631349, 0.492404, -0.790994, 0, 0.8096892, -0.5868242, 0.006411911, 0, -0.4610172, -0.6427876, -0.6117905, 0, -5.811453E-09, 0.0636562, 0.0602054, 1]
+		}
+	],
+	"scene": 0,
+	"scenes": [
+		{
+			"nodes": [
+				0,
+				1,
+				2
+			],
+			"extras": {
+				"TB_EnvironmentGuid": "ab080511-e565-4a6d-8587-53bf495af68b",
+				"TB_Environment": "Snowman",
+				"TB_UseGradient": "false",
+				"TB_SkyColorA": "0.4627451, 0.5647059, 0.7058824",
+				"TB_SkyColorB": "0.7607843, 0.8156863, 0.972549",
+				"TB_SkyGradientDirection": "0, 1, 0",
+				"TB_FogColor": "0.6509804, 0.7254902, 0.8745098",
+				"TB_FogDensity": "0.005",
+				"TB_PoseTranslation": "0, 0, 0",
+				"TB_PoseRotation": "0, 0, 0",
+				"TB_PoseScale": 1,
+				"TB_SkyColorHorizon": "0.4627451, 0.5647059, 0.7058824",
+				"TB_SkyColorZenith": "0.7607843, 0.8156863, 0.972549"
+			}
+		}
+	],
+	"extensionsUsed": [
+		"GOOGLE_tilt_brush_material"
+	]
+}

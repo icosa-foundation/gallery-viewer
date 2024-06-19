@@ -4,7 +4,7 @@
   "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
     "watch": "parcel watch",
-    "build": "parcel build"
+    "build": "parcel build --no-cache"
   },
   "repository": {
     "type": "git",
@@ -12,10 +12,10 @@
   },
   "author": "Icosa Gallery",
   "license": "Apache-2.0",
-  "source": "./src/viewer.ts",
-  "main": "./dist/icosa-viewer.js",
-  "module": "./dist/icosa-viewer.module.js",
-  "types": "./dist/icosa-viewer.d.ts",
+  "module": "dist/icosa-viewer.module.js",
+  "default": "src/icosa-viewer.js",
+  "source": "src/viewer.ts",
+  "sourceMaps": true,
   "targets": {
     "module": {
       "includeNodeModules": [
@@ -42,8 +42,10 @@
     "@depasquale/three-immersive-controls": "^0.0.15",
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
-    "three": "^0.164.0",
-    "three-icosa": "^0.4.2"
+    "three-icosa": "^0.4.2-alpha.3"
+  },
+  "peerDependencies": {
+    "three": ">=0.139.0"
   },
   "files": [
     "dist",

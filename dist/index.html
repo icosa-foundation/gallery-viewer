@@ -19,20 +19,20 @@
                 }
             }
         </script>
-        <link rel="stylesheet" href="../dist/css/style.css">
+        <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
         <script type="module">
-            import * as three from "three";
-            import { Viewer } from "../dist/icosa-viewer.module.js";
+            import { Viewer } from "./icosa-viewer.module.js";
             import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
-            var viewer = new Viewer("https://icosa-foundation.github.io/icosa-sketch-assets/");
+            let viewer = new Viewer("https://icosa-foundation.github.io/icosa-sketch-assets/");
 
             // await viewer.loadGltf("formats/gltf2/gradient.gltf", true);
             // await viewer.loadGltf("formats/gltf2/snowman.gltf", true);
             // await viewer.loadGltf("formats/gltf2/old-story.gltf", true);
             await viewer.loadGltf("formats/gltf2/all_brushes.glb", true);
+            // await viewer.loadGltf1("formats/gltf1/all_brushes.gltf");
 
             const gui = new GUI( );
 
@@ -47,7 +47,6 @@
             gui.addColor( settings, 'fogColor' ).onChange( update );
             gui.add( settings, 'fogDensity', 0, 1 ).onChange( update );
             // gui.add( settings, 'showEnvironment' ); // TODO
-
             // update();
 
             function update() {
