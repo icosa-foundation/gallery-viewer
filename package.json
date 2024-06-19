@@ -1,6 +1,6 @@
 {
   "name": "icosa-viewer",
-  "version": "0.7.2",
+  "version": "0.7.3-alpha.0",
   "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
     "watch": "parcel watch",
