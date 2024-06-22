@@ -26,7 +26,6 @@ import {
     VectorKeyframeTrack,
     OrthographicCamera,
     PerspectiveCamera,
-    Math,
     BufferGeometry,
     Group,
 
