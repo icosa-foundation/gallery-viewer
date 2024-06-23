@@ -36,23 +36,38 @@ class SketchMetadata {
     public SkyColorA : THREE.Color;
     public SkyColorB : THREE.Color;
     public SkyGradientDirection : THREE.Vector3;
+    public AmbientLightColor : THREE.Color;
     public FogColor : THREE.Color;
     public FogDensity : number;
+    public SceneLight0Color : THREE.Color;
+    public SceneLight0Rotation : THREE.Vector3;
+    public SceneLight1Color : THREE.Color;
+    public SceneLight1Rotation : THREE.Vector3;
     public PoseTranslation : THREE.Vector3;
     public PoseRotation : THREE.Quaternion;
     public PoseScale : number;
+    private EnvironmentPreset: EnvironmentPreset;
 
     constructor()
     constructor(userData: any)
     constructor(userData?: any) {
         this.EnvironmentGuid = userData['TB_EnvironmentGuid'] ?? '';
-        this.Environment = userData['TB_Environment'] ?? '';
-        this.UseGradient = userData['TB_UseGradient'] ?? false;
-        this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA']);
-        this.SkyColorB = this.parseTBColor(userData['TB_SkyColorB']);
+        this.Environment = userData['TB_Environment'] ?? '(None)';
+        this.EnvironmentPreset = new EnvironmentPreset(Viewer.lookupEnvironment(this.EnvironmentGuid));
+
+        this.UseGradient = userData['TB_UseGradient'] ?? this.EnvironmentPreset.UseGradient;
+        this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
+        this.SkyColorB = this.parseTBColor(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
         this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
-        this.FogColor = this.parseTBColor(userData['TB_FogColor']);
-        this.FogDensity = userData['TB_FogDensity'] ?? 0;
+        this.AmbientLightColor = this.parseTBColor(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
+        this.FogColor = this.parseTBColor(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
+        this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
+
+        this.SceneLight0Color = userData['TB_SceneLight0Color'] ?? this.EnvironmentPreset.SceneLight0Color;
+        this.SceneLight0Rotation = userData['TB_SceneLight0Rotation'] ?? this.EnvironmentPreset.SceneLight0Rotation;
+        this.SceneLight1Color = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
+        this.SceneLight1Rotation = userData['TB_SceneLight1Rotation'] ?? this.EnvironmentPreset.SceneLight1Rotation;
+
         this.PoseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
         this.PoseRotation = this.parseTBRotation(userData['TB_PoseRotation']);
         this.PoseScale = userData['TB_PoseScale'] ?? 1;
@@ -70,10 +85,15 @@ class SketchMetadata {
         return new THREE.Vector3(x, y, z);
     }
 
-    private parseTBColor(colorString: string) {
-        if (!colorString) {return new THREE.Color("#000")}
-        let [r, g, b] = colorString.split(',').map(parseFloat);
-        return new THREE.Color(r, g, b);
+    private parseTBColor(colorString: string, defaultValue: THREE.Color) {
+        let r : number, g : number, b : number;
+        if (colorString) {
+            [r, g, b] = colorString.split(',').map(parseFloat);
+            return new THREE.Color(r, g, b);
+        } else {
+            return defaultValue;
+        }
+
     }
 }
 
@@ -87,18 +107,32 @@ class EnvironmentPreset {
     public SkyGradientDirection : THREE.Vector3;
     public FogColor : THREE.Color;
     public FogDensity : number;
+    public AmbientLightColor : THREE.Color;
+    public SceneLight0Color : THREE.Color;
+    public SceneLight0Rotation : THREE.Vector3;
+    public SceneLight1Color : THREE.Color;
+    public SceneLight1Rotation : THREE.Vector3;
 
     constructor()
     constructor(preset: any)
     constructor(preset?: any) {
+
+        let defaultColor = new THREE.Color("#000");
+        let defaultRotation = new THREE.Vector3(0, 1, 0);
+
         this.Guid = preset?.guid ?? "";
         this.Name = preset?.name ?? "No preset";
-        this.UseGradient = false    ;
-        this.SkyColorA = preset?.skyboxColorA ?? new THREE.Color("#000");
-        this.SkyColorB = preset?.skyboxColorB ?? new THREE.Color("#000");
+        this.AmbientLightColor = preset?.renderSettings.ambientColor ?? defaultColor;
+        this.UseGradient = false;
+        this.SkyColorA = preset?.skyboxColorA ?? defaultColor;
+        this.SkyColorB = preset?.skyboxColorB ?? defaultColor;
         this.SkyGradientDirection = new THREE.Vector3(0, 1, 0);
-        this.FogColor = preset?.renderSettings.fogColor ?? new THREE.Color("#000");
+        this.FogColor = preset?.renderSettings.fogColor ?? defaultColor;
         this.FogDensity = preset?.renderSettings.fogDensity ?? 0;
+        this.SceneLight0Color = preset?.lights[0].color ?? defaultColor;
+        this.SceneLight0Rotation = preset?.lights[0].rotation ?? defaultRotation;
+        this.SceneLight1Color = preset?.lights[1].color ?? defaultColor;
+        this.SceneLight1Rotation = preset?.lights[1].rotation ?? defaultRotation;
     }
 }
 
@@ -286,6 +320,7 @@ export class Viewer {
 
         this.scene.clear();
         this.initSceneBackground();
+        this.initFog();
         this.initSceneLights();
 
         this.scene.add(this.loadedModel);
@@ -306,7 +341,7 @@ export class Viewer {
         }
     }
 
-    private static lookupEnvironment(guid : string) {
+    static lookupEnvironment(guid : string) {
         return {
             "e38af599-4575-46ff-a040-459703dbcd36": {
                 name: "Passthrough",
@@ -1702,7 +1737,9 @@ export class Viewer {
         if (guid) {
             const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
             const envGltf = await this.gltfLoader.loadAsync(envUrl.toString());
-            scene.add(envGltf.scene);
+            envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
+            envGltf.scene.scale.set(.1, .1, .1);
+            scene.attach(envGltf.scene);
         }
     }
 
@@ -1735,21 +1772,54 @@ export class Viewer {
 
     private setupSketchMetaData(model: Object3D<THREE.Object3DEventMap>) {
         let sketchMetaData = new SketchMetadata(model.userData);
-        let envPreset = new EnvironmentPreset(Viewer.lookupEnvironment(sketchMetaData.EnvironmentGuid));
         this.sketchBoundingBox = new THREE.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
 
     private initSceneLights() {
-        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {return}
-        var lights = new THREE.Group();
-    //     lights.add(new THREE.DirectionalLight(this.sketchMetadata., 1.0));
-        this.loadedModel?.add(lights);
+        // Logic for scene light creation:
+        // 1. Are there explicit GLTF scene lights? If so use them and skip the rest
+        // 2. Are there dummy transforms in the GLTF that represent scene lights? If so use them in preference.
+        // 3. Does the GLTF have custom metadata for light transform and color?
+        // 4. Does the GLTF have an environment preset guid? If so use the light transform and colors from that
+        // 5. If there's neither custom metadata, an environment guid or explicit GLTF lights - create some default lighting.
+
+        function convertTBEuler(rot: THREE.Vector3) : THREE.Euler {
+            const deg2rad = Math.PI / 180;
+            return new THREE.Euler(rot.x * deg2rad, rot.y * deg2rad, rot.z * deg2rad);
+        }
+
+        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+            // Default lighting
+            return;
+        }
+
+        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
+        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
+        l0.setRotationFromEuler(convertTBEuler(this.sketchMetadata.SceneLight0Rotation))
+        l1.setRotationFromEuler(convertTBEuler(this.sketchMetadata.SceneLight1Rotation))
+        l0.castShadow = true;
+        l1.castShadow = false;
+        this.loadedModel?.add(l0);
+        this.loadedModel?.add(l1);
 
         const ambientLight = new THREE.AmbientLight();
+        ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.scene.add(ambientLight);
-
     }
+
+    private initFog() {
+        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+            return;
+        }
+        this.scene.fog = new THREE.FogExp2(
+            this.sketchMetadata.FogColor,
+            this.sketchMetadata.FogDensity
+        );
+    }
+
+
+
 
     private initSceneBackground() {
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {return}
