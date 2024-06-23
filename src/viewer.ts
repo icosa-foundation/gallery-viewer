@@ -16,7 +16,7 @@ import CameraControls from 'camera-controls';
 import * as THREE from 'three';
 
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import * as holdEvent from "hold-event";
@@ -1679,27 +1679,34 @@ export class Viewer {
         }[guid];
     }
 
-    public async loadGltf1(url : string) {
-        const sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
+    public async loadGltf1(url : string, loadEnvironment : boolean) {
+        const sceneGltf : GLTF = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
+        this.setupSketchMetaData(sceneGltf.scene);
+        if (loadEnvironment) {
+            await this.assignEnvironment(sceneGltf.scene);
+        }
         this.loadedModel = sceneGltf.scene;
         await replaceBrushMaterials(this.brushPath.toString(), <Object3D>this.loadedModel);
         this.initializeScene();
     }
 
     public async loadGltf(url: string, loadEnvironment : boolean) {
-        const sceneGltf = await this.gltfLoader.loadAsync(url);
+        const sceneGltf : GLTF = await this.gltfLoader.loadAsync(url);
         this.setupSketchMetaData(sceneGltf.scene);
-
         if (loadEnvironment) {
-            const guid = this.sketchMetadata?.EnvironmentGuid;
-            if (guid) {
-                const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
-                const envGltf = await this.gltfLoader.loadAsync(envUrl.toString());
-                sceneGltf.scene.add(envGltf.scene);
-            }
+            await this.assignEnvironment(sceneGltf.scene);
         }
         this.loadedModel = sceneGltf.scene;
         this.initializeScene();
+    }
+
+    private async assignEnvironment(scene : Object3D<THREE.Object3DEventMap>) {
+        const guid = this.sketchMetadata?.EnvironmentGuid;
+        if (guid) {
+            const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
+            const envGltf = await this.gltfLoader.loadAsync(envUrl.toString());
+            scene.add(envGltf.scene);
+        }
     }
 
     public generateGradientSky(colorA: THREE.Color, colorB: THREE.Color, direction : THREE.Vector3)
