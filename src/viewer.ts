@@ -1681,12 +1681,12 @@ export class Viewer {
 
     public async loadGltf1(url : string, loadEnvironment : boolean) {
         const sceneGltf : GLTF = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
+        await replaceBrushMaterials(this.brushPath.toString(), <Object3D>sceneGltf.scene);
         this.setupSketchMetaData(sceneGltf.scene);
         if (loadEnvironment) {
             await this.assignEnvironment(sceneGltf.scene);
         }
         this.loadedModel = sceneGltf.scene;
-        await replaceBrushMaterials(this.brushPath.toString(), <Object3D>this.loadedModel);
         this.initializeScene();
     }
 
