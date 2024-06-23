@@ -304,9 +304,6 @@ export class Viewer {
             this.cameraControls.dollyTo(midDistance, true);
             this.cameraControls.saveState();
         }
-
-        const ambientLight = new THREE.AmbientLight();
-        this.scene.add(ambientLight);
     }
 
     private static lookupEnvironment(guid : string) {
@@ -1748,6 +1745,10 @@ export class Viewer {
         var lights = new THREE.Group();
     //     lights.add(new THREE.DirectionalLight(this.sketchMetadata., 1.0));
         this.loadedModel?.add(lights);
+
+        const ambientLight = new THREE.AmbientLight();
+        this.scene.add(ambientLight);
+
     }
 
     private initSceneBackground() {
