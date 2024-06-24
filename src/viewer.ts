@@ -93,8 +93,8 @@ class SketchMetadata {
             };
         }
 
-        let light0rot = radToDeg3(sceneLights[0].rotation);
-        let light1rot = radToDeg3(sceneLights[1].rotation);
+        let light0rot = sceneLights.length == 1 ? radToDeg3(sceneLights[0].rotation) : null;
+        let light1rot = sceneLights.length == 2 ? radToDeg3(sceneLights[1].rotation) : null;
         this.SceneLight0Color = userData['TB_SceneLight0Color'] ?? this.EnvironmentPreset.SceneLight0Color;
         this.SceneLight0Rotation = userData['TB_SceneLight0Rotation'] ?? light0rot ?? this.EnvironmentPreset.SceneLight0Rotation;
         this.SceneLight1Color = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
