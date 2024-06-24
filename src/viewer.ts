@@ -50,7 +50,22 @@ class SketchMetadata {
 
     constructor()
     constructor(userData: any)
-    constructor(userData?: any) {
+    constructor(scene?: THREE.Scene) {
+        let userData = scene?.userData ?? {};
+
+        // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
+        let sceneLights: any[] = [];
+
+        scene?.traverse((node: any) => {
+            if (node.name && node.name.startsWith("node_SceneLight_")) {
+                sceneLights.push(node);
+                if (sceneLights.length === 2) {
+                    return false; // Bail out early
+                }
+            }
+            return true; // Continue traversal
+        });
+
         this.EnvironmentGuid = userData['TB_EnvironmentGuid'] ?? '';
         this.Environment = userData['TB_Environment'] ?? '(None)';
         this.EnvironmentPreset = new EnvironmentPreset(Viewer.lookupEnvironment(this.EnvironmentGuid));
@@ -63,10 +78,20 @@ class SketchMetadata {
         this.FogColor = this.parseTBColor(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
 
+        function radToDeg3(rot : THREE.Euler) {
+            return {
+                x: THREE.MathUtils.radToDeg(rot.x),
+                y: THREE.MathUtils.radToDeg(rot.y),
+                z: THREE.MathUtils.radToDeg(rot.z)
+            };
+        }
+
+        let light0rot = radToDeg3(sceneLights[0].rotation);
+        let light1rot = radToDeg3(sceneLights[1].rotation);
         this.SceneLight0Color = userData['TB_SceneLight0Color'] ?? this.EnvironmentPreset.SceneLight0Color;
-        this.SceneLight0Rotation = userData['TB_SceneLight0Rotation'] ?? this.EnvironmentPreset.SceneLight0Rotation;
+        this.SceneLight0Rotation = userData['TB_SceneLight0Rotation'] ?? light0rot ?? this.EnvironmentPreset.SceneLight0Rotation;
         this.SceneLight1Color = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
-        this.SceneLight1Rotation = userData['TB_SceneLight1Rotation'] ?? this.EnvironmentPreset.SceneLight1Rotation;
+        this.SceneLight1Rotation = userData['TB_SceneLight1Rotation'] ?? light1rot ?? this.EnvironmentPreset.SceneLight1Rotation;
 
         this.PoseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
         this.PoseRotation = this.parseTBRotation(userData['TB_PoseRotation']);
@@ -1771,7 +1796,7 @@ export class Viewer {
     }
 
     private setupSketchMetaData(model: Object3D<THREE.Object3DEventMap>) {
-        let sketchMetaData = new SketchMetadata(model.userData);
+        let sketchMetaData = new SketchMetadata(model);
         this.sketchBoundingBox = new THREE.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
@@ -1786,7 +1811,11 @@ export class Viewer {
 
         function convertTBEuler(rot: THREE.Vector3) : THREE.Euler {
             const deg2rad = Math.PI / 180;
-            return new THREE.Euler(rot.x * deg2rad, rot.y * deg2rad, rot.z * deg2rad);
+            return new THREE.Euler(
+                THREE.MathUtils.degToRad(rot.x),
+                THREE.MathUtils.degToRad(rot.y),
+                THREE.MathUtils.degToRad(rot.z)
+            );
         }
 
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
