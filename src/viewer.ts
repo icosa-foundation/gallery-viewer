@@ -74,7 +74,12 @@ class SketchMetadata {
         this.Environment = userData['TB_Environment'] ?? '(None)';
         this.EnvironmentPreset = new EnvironmentPreset(Viewer.lookupEnvironment(this.EnvironmentGuid));
 
-        this.UseGradient = JSON.parse(userData['TB_UseGradient']?.toLowerCase() ?? 'false') ?? this.EnvironmentPreset.UseGradient;
+        if (userData['TB_UseGradient'] == undefined) {
+            this.UseGradient = this.EnvironmentPreset.UseGradient;
+        } else {
+            this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
+        }
+        this.UseGradient = JSON.parse((userData['TB_UseGradient'] ?? 'false').toLowerCase()) ?? this.EnvironmentPreset.UseGradient;
         this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColor(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
