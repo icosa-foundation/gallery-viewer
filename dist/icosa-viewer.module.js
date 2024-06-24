@@ -41748,7 +41748,6 @@ class $c8b2145499396622$var$SketchMetadata {
         this.EnvironmentPreset = new $c8b2145499396622$var$EnvironmentPreset($c8b2145499396622$export$2ec4afd9b3c16a85.lookupEnvironment(this.EnvironmentGuid));
         if (userData["TB_UseGradient"] == undefined) this.UseGradient = this.EnvironmentPreset.UseGradient;
         else this.UseGradient = JSON.parse(userData["TB_UseGradient"].toLowerCase());
-        this.UseGradient = JSON.parse((userData["TB_UseGradient"] ?? "false").toLowerCase()) ?? this.EnvironmentPreset.UseGradient;
         this.SkyColorA = this.parseTBColor(userData["TB_SkyColorA"], this.EnvironmentPreset.SkyColorA);
         this.SkyColorA = this.parseTBColor(userData["TB_SkyColorA"], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColor(userData["TB_SkyColorB"], this.EnvironmentPreset.SkyColorB);

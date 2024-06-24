@@ -79,7 +79,6 @@ class SketchMetadata {
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
-        this.UseGradient = JSON.parse((userData['TB_UseGradient'] ?? 'false').toLowerCase()) ?? this.EnvironmentPreset.UseGradient;
         this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColor(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
