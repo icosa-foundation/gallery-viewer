@@ -20,12 +20,13 @@ import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import * as holdEvent from "hold-event";
-import {Object3D} from "three";
+import {CanvasTexture, Object3D} from "three";
 // import { EffectComposer } from 'three/addons';
 // import { RenderPass } from 'three/addons';
 import { setupNavigation } from './helpers/Navigation';
 import { LegacyGLTFLoader } from './legacy/LegacyGLTFLoader.js';
 import { replaceBrushMaterials } from './legacy/ReplaceLegacyMaterials.js';
+import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
 
@@ -46,7 +47,10 @@ class SketchMetadata {
     public PoseTranslation : THREE.Vector3;
     public PoseRotation : THREE.Quaternion;
     public PoseScale : number;
-    private EnvironmentPreset: EnvironmentPreset;
+    public EnvironmentPreset: EnvironmentPreset;
+    public SkyTexture: string;
+    public ReflectionTexture: string;
+    public ReflectionIntensity : number
 
     constructor()
     constructor(userData: any)
@@ -70,13 +74,16 @@ class SketchMetadata {
         this.Environment = userData['TB_Environment'] ?? '(None)';
         this.EnvironmentPreset = new EnvironmentPreset(Viewer.lookupEnvironment(this.EnvironmentGuid));
 
-        this.UseGradient = userData['TB_UseGradient'] ?? this.EnvironmentPreset.UseGradient;
+        this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase()) ?? this.EnvironmentPreset.UseGradient;
         this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColor(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
         this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
         this.AmbientLightColor = this.parseTBColor(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
         this.FogColor = this.parseTBColor(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
+        this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
+        this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
+        this.ReflectionIntensity = userData['TB_ReflectionIntensity'] ?? this.EnvironmentPreset.ReflectionIntensity;
 
         function radToDeg3(rot : THREE.Euler) {
             return {
@@ -137,6 +144,9 @@ class EnvironmentPreset {
     public SceneLight0Rotation : THREE.Vector3;
     public SceneLight1Color : THREE.Color;
     public SceneLight1Rotation : THREE.Vector3;
+    public SkyTexture: string;
+    public ReflectionTexture: string;
+    public ReflectionIntensity: number;
 
     constructor()
     constructor(preset: any)
@@ -145,7 +155,7 @@ class EnvironmentPreset {
         let defaultColor = new THREE.Color("#000");
         let defaultRotation = new THREE.Vector3(0, 1, 0);
 
-        this.Guid = preset?.guid ?? "";
+        this.Guid = preset?.guid ?? null;
         this.Name = preset?.name ?? "No preset";
         this.AmbientLightColor = preset?.renderSettings.ambientColor ?? defaultColor;
         this.UseGradient = false;
@@ -158,6 +168,9 @@ class EnvironmentPreset {
         this.SceneLight0Rotation = preset?.lights[0].rotation ?? defaultRotation;
         this.SceneLight1Color = preset?.lights[1].color ?? defaultColor;
         this.SceneLight1Rotation = preset?.lights[1].rotation ?? defaultRotation;
+        this.SkyTexture = preset?.renderSettings.skyboxCubemap ?? null;
+        this.ReflectionTexture = preset?.renderSettings.reflectionCubemap ?? null;
+        this.ReflectionIntensity = preset?.renderSettings.reflectionIntensity ?? 1;
     }
 }
 
@@ -403,7 +416,7 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/Passthrough",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_Room",
-                    skyboxCubemap: "",
+                    skyboxCubemap: null,
                     reflectionCubemap: "threelight_reflection",
                     reflectionIntensity: 0.3
                 },
@@ -508,7 +521,7 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/Standard",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_CarpetedHallway",
-                    skyboxCubemap: "",
+                    skyboxCubemap: null,
                     reflectionCubemap: "threelight_reflection",
                     reflectionIntensity: 0.3
                 },
@@ -823,7 +836,7 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/DressForm",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_LivingRoom",
-                    skyboxCubemap: "",
+                    skyboxCubemap: null,
                     reflectionCubemap: "threelight_reflection",
                     reflectionIntensity: 0.3
                 },
@@ -928,7 +941,7 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/Pedestal",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_LivingRoom",
-                    skyboxCubemap: "",
+                    skyboxCubemap: null,
                     reflectionCubemap: "threelight_reflection",
                     reflectionIntensity: 1.0
                 },
@@ -1138,7 +1151,7 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/AmbientDustDim",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_Room",
-                    skyboxCubemap: "",
+                    skyboxCubemap: null,
                     reflectionCubemap: "gradientblue",
                     reflectionIntensity: 0.0
                 },
@@ -1243,7 +1256,7 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/AmbientDustDim",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_Room",
-                    skyboxCubemap: "",
+                    skyboxCubemap: null,
                     reflectionCubemap: "gradientblue",
                     reflectionIntensity: 0.3
                 },
@@ -1348,8 +1361,8 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/AmbientDustDim",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_Room",
-                    skyboxCubemap: "",
-                    reflectionCubemap: "",
+                    skyboxCubemap: null,
+                    reflectionCubemap: null,
                     reflectionIntensity: 0.0
                 },
                 lights: [
@@ -1453,7 +1466,7 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/AmbientDust",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_Room",
-                    skyboxCubemap: "",
+                    skyboxCubemap: null,
                     reflectionCubemap: "threelight_reflection",
                     reflectionIntensity: 0.3
                 },
@@ -1558,7 +1571,7 @@ export class Viewer {
                     },
                     environmentPrefab: "EnvironmentPrefabs/AmbientGrid",
                     environmentReverbZone: "EnvironmentAudio/ReverbZone_Room",
-                    skyboxCubemap: "",
+                    skyboxCubemap: null,
                     reflectionCubemap: "threelight_reflection",
                     reflectionIntensity: 0.4
                 },
@@ -1768,13 +1781,12 @@ export class Viewer {
         }
     }
 
-    public generateGradientSky(colorA: THREE.Color, colorB: THREE.Color, direction : THREE.Vector3)
+    public generateGradientSky(colorA: THREE.Color, colorB: THREE.Color, direction : THREE.Vector3) : THREE.Mesh
     {
         const canvas = document.createElement('canvas');
         canvas.width = 2;
         canvas.height = 512;
         const context = canvas.getContext('2d');
-        if (context == null) return null;
 
         const gradient = context.createLinearGradient(0, 0, 0, 512);
         gradient.addColorStop(0, colorA.getStyle());
@@ -1785,14 +1797,24 @@ export class Viewer {
         const texture = new THREE.CanvasTexture(canvas);
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.ClampToEdgeWrapping;
-        const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
+        return this.generateSkyGeometry(texture, direction);
+    }
 
+    public generateTextureSky(textureName: string) : THREE.Mesh {
+        const textureUrl = new URL(`skies/${textureName}.png`, this.texturePath);
+        let texture = new THREE.TextureLoader().load(textureUrl.toString());
+        return this.generateSkyGeometry(texture, new THREE.Vector3(0, 1, 0));
+    }
+
+    public generateSkyGeometry(texture: THREE.Texture, direction: THREE.Vector3) : THREE.Mesh {
+        const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
         const geometry = new THREE.SphereGeometry(500, 64, 64);
-        const skybox = new THREE.Mesh(geometry, material);
+        const skysphere = new THREE.Mesh(geometry, material);
+        skysphere.name = "sky"
         const defaultUp = new THREE.Vector3(0, 1, 0);
         const quaternion = new THREE.Quaternion().setFromUnitVectors(defaultUp, direction);
-        skybox.applyQuaternion(quaternion);
-        return skybox;
+        skysphere.applyQuaternion(quaternion);
+        return skysphere;
     }
 
     private setupSketchMetaData(model: Object3D<THREE.Object3DEventMap>) {
@@ -1851,18 +1873,25 @@ export class Viewer {
 
 
     private initSceneBackground() {
+
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {return}
+
+        let sky : Object3D<THREE.Object3DEventMap> | null = null;
+
         if (this.sketchMetadata.UseGradient) {
-            var sky = this.generateGradientSky(
+            sky = this.generateGradientSky(
                 this.sketchMetadata.SkyColorA,
                 this.sketchMetadata.SkyColorB,
                 this.sketchMetadata.SkyGradientDirection
             );
-            if (sky !== null) {
-                this.loadedModel?.add(sky as Object3D<THREE.Object3DEventMap>);
-            }
+        } else if (this.sketchMetadata.SkyTexture) {
+            sky = this.generateTextureSky(
+                this.sketchMetadata.SkyTexture
+            );
         }
-        else {
+        if (sky !== null) {
+            this.loadedModel?.add(sky as Object3D<THREE.Object3DEventMap>);
+        } else {
             this.scene.background = this.sceneColor;
         }
     }
