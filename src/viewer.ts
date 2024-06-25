@@ -19,6 +19,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
+import { TiltLoader } from 'three-tiltloader';
 import * as holdEvent from "hold-event";
 import {CanvasTexture, Object3D} from "three";
 // import { EffectComposer } from 'three/addons';
@@ -74,12 +75,12 @@ class SketchMetadata {
         this.Environment = userData['TB_Environment'] ?? '(None)';
         this.EnvironmentPreset = new EnvironmentPreset(Viewer.lookupEnvironment(this.EnvironmentGuid));
 
+
         if (typeof userData['TB_UseGradient'] === 'undefined') {
             this.UseGradient = this.EnvironmentPreset.UseGradient;
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
-        this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColor(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
         this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
@@ -293,6 +294,9 @@ export class Viewer {
 
         this.environmentPath = new URL('environments/', assetBaseUrl);
         this.texturePath = new URL('textures/', assetBaseUrl);
+
+        this.tiltLoader = new TiltLoader(manager);
+        this.tiltLoader.setBrushPath(this.brushPath.toString());
 	
         this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
@@ -1772,6 +1776,12 @@ export class Viewer {
             await this.assignEnvironment(sceneGltf.scene);
         }
         this.loadedModel = sceneGltf.scene;
+        this.initializeScene();
+    }
+
+    public async loadTilt(url: string) {
+        const tiltData = await this.tiltLoader.loadAsync(url);
+        this.loadedModel = tiltData;
         this.initializeScene();
     }
 
