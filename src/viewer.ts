@@ -77,7 +77,7 @@ class SketchMetadata {
 
 
         if (typeof userData['TB_UseGradient'] === 'undefined') {
-            this.UseGradient = this.EnvironmentPreset.UseGradient;
+            this.UseGradient = this.EnvironmentPreset.SkyTexture != null;
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
@@ -158,13 +158,12 @@ class EnvironmentPreset {
     constructor(preset: any)
     constructor(preset?: any) {
 
-        let defaultColor = new THREE.Color("#000");
+        let defaultColor = new THREE.Color("#FFF");
         let defaultRotation = new THREE.Vector3(0, 1, 0);
 
         this.Guid = preset?.guid ?? null;
         this.Name = preset?.name ?? "No preset";
         this.AmbientLightColor = preset?.renderSettings.ambientColor ?? defaultColor;
-        this.UseGradient = false;
         this.SkyColorA = preset?.skyboxColorA ?? defaultColor;
         this.SkyColorB = preset?.skyboxColorB ?? defaultColor;
         this.SkyGradientDirection = new THREE.Vector3(0, 1, 0);
@@ -175,6 +174,7 @@ class EnvironmentPreset {
         this.SceneLight1Color = preset?.lights[1].color ?? defaultColor;
         this.SceneLight1Rotation = preset?.lights[1].rotation ?? defaultRotation;
         this.SkyTexture = preset?.renderSettings.skyboxCubemap ?? null;
+        this.UseGradient = false;
         this.ReflectionTexture = preset?.renderSettings.reflectionCubemap ?? null;
         this.ReflectionIntensity = preset?.renderSettings.reflectionIntensity ?? 1;
     }
@@ -184,6 +184,7 @@ export class Viewer {
 
     public gltfLoader: GLTFLoader;
     public gltfLegacyLoader: LegacyGLTFLoader;
+    public three : any;
 
     private icosa_frame? : HTMLElement | null;
     private brushPath: URL;
@@ -192,13 +193,11 @@ export class Viewer {
     private scene : THREE.Scene;
 
     private sceneCamera: THREE.PerspectiveCamera;
-    private sceneColor: THREE.Color = new THREE.Color("#000000");
-
     private cameraControls: CameraControls;
-
     private loadedModel?: THREE.Object3D;
     private sketchBoundingBox?: THREE.Box3;
     private sketchMetadata?: SketchMetadata;
+    private defaultBackgroundColor: Color; // Used if no environment sky is set
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -277,6 +276,7 @@ export class Viewer {
         setupNavigation(this.cameraControls);
 
         this.scene = new THREE.Scene();
+        this.three = THREE;
 
         const viewer = this;
 
@@ -1758,24 +1758,48 @@ export class Viewer {
         }[guid];
     }
 
-    public async loadGltf1(url : string, loadEnvironment : boolean) {
+    public async loadGltf1(
+            url : string, loadEnvironment : boolean,
+            defaultBackground : string,
+            tiltUrl: string) {
+
         const sceneGltf : GLTF = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
         await replaceBrushMaterials(this.brushPath.toString(), <Object3D>sceneGltf.scene);
         this.setupSketchMetaData(sceneGltf.scene);
         if (loadEnvironment) {
             await this.assignEnvironment(sceneGltf.scene);
         }
+        if (tiltUrl) {
+            this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
+        }
         this.loadedModel = sceneGltf.scene;
+        if (!defaultBackground) {
+            defaultBackground = "#000000";
+        }
+        this.defaultBackgroundColor = new THREE.Color(defaultBackground);
         this.initializeScene();
     }
 
-    public async loadGltf(url: string, loadEnvironment : boolean) {
+    public async loadGltf(
+            url: string, loadEnvironment : boolean,
+            defaultBackground : string,
+            tiltUrl: string) {
+
         const sceneGltf : GLTF = await this.gltfLoader.loadAsync(url);
         this.setupSketchMetaData(sceneGltf.scene);
         if (loadEnvironment) {
             await this.assignEnvironment(sceneGltf.scene);
         }
+        if (tiltUrl) {
+            console.log(tiltUrl);
+            console.log(this.tiltLoader.loadAsync(tiltUrl));
+            // this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
+        }
         this.loadedModel = sceneGltf.scene;
+        if (!defaultBackground) {
+            defaultBackground = "#000000";
+        }
+        this.defaultBackgroundColor = new THREE.Color(defaultBackground);
         this.initializeScene();
     }
 
@@ -1907,7 +1931,7 @@ export class Viewer {
         if (sky !== null) {
             this.loadedModel?.add(sky as Object3D<THREE.Object3DEventMap>);
         } else {
-            this.scene.background = this.sceneColor;
+            this.scene.background = this.defaultBackgroundColor;
         }
     }
 }

@@ -38768,7 +38768,7 @@ class $5a163a5102e7cfa5$export$2b011a5b12963d65 {
     afterRoot(glTF) {
         const parser = this.parser;
         const json = parser.json;
-        if (!json.extensionsUsed || !json.extensionsUsed.includes(this.name)) return null;
+        // if (!json.extensionsUsed || !json.extensionsUsed.includes(this.name)) return null;
         const shaderResolves = [];
         //const extensionDef = json.exensions[this.name];
         for (const scene of glTF.scenes)scene.traverse(async (object)=>{
@@ -38776,6 +38776,7 @@ class $5a163a5102e7cfa5$export$2b011a5b12963d65 {
             if (association === undefined || association.meshes === undefined) return;
             const mesh = json.meshes[association.meshes];
             mesh.primitives.forEach((prim)=>{
+                console.log(json.materials[prim.material]);
                 if (!prim.material) return;
                 const mat = json.materials[prim.material];
                 if (!mat.extensions || !mat.extensions[this.name]) return;
@@ -42436,6 +42437,8 @@ function $7a53d4f4e33d695e$export$fc22e28a11679cb8(cameraControls) {
 // Adapted from original GLTF 1.0 Loader in three.js r86
 // https://github.com/mrdoob/three.js/blob/r86/examples/js/loaders/GLTFLoader.js
 
+const $a970d3af3e0e453f$var$FS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; const float environmentStrength = 1.5; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; uniform vec3 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform mat4 u_modelMatrix; uniform sampler2D u_reflectionCube; uniform sampler2D u_reflectionCubeBlur; const float u_noiseIntensity = 0.015; const float colorNoiseAmount = 0.015; const float noiseScale = 700.0; uniform vec3 cameraPosition; // Noise functions from https://github.com/ashima/webgl-noise // Used under the MIT license - license text in MITLICENSE // Copyright (C) 2011 by Ashima Arts (Simplex noise) // Copyright (C) 2011-2016 by Stefan Gustavson (Classic noise and others) vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); } vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; } float snoise(vec3 v, out vec3 gradient) { const vec2 C = vec2(1.0/6.0, 1.0/3.0) ; const vec4 D = vec4(0.0, 0.5, 1.0, 2.0); // First corner vec3 i = floor(v + dot(v, C.yyy) ); vec3 x0 = v - i + dot(i, C.xxx) ; // Other corners vec3 g = step(x0.yzx, x0.xyz); vec3 l = 1.0 - g; vec3 i1 = min( g.xyz, l.zxy ); vec3 i2 = max( g.xyz, l.zxy ); // x0 = x0 - 0.0 + 0.0 * C.xxx; // x1 = x0 - i1 + 1.0 * C.xxx; // x2 = x0 - i2 + 2.0 * C.xxx; // x3 = x0 - 1.0 + 3.0 * C.xxx; vec3 x1 = x0 - i1 + C.xxx; vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y vec3 x3 = x0 - D.yyy; // -1.0+3.0*C.x = -0.5 = -D.y // Permutations i = mod289(i); vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 )); // Gradients: 7x7 points over a square, mapped onto an octahedron. // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294) float n_ = 0.142857142857; // 1.0/7.0 vec3 ns = n_ * D.wyz - D.xzx; vec4 j = p - 49.0 * floor(p * ns.z * ns.z); // mod(p,7*7) vec4 x_ = floor(j * ns.z); vec4 y_ = floor(j - 7.0 * x_ ); // mod(j,N) vec4 x = x_ *ns.x + ns.yyyy; vec4 y = y_ *ns.x + ns.yyyy; vec4 h = 1.0 - abs(x) - abs(y); vec4 b0 = vec4( x.xy, y.xy ); vec4 b1 = vec4( x.zw, y.zw ); //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0; //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0; vec4 s0 = floor(b0)*2.0 + 1.0; vec4 s1 = floor(b1)*2.0 + 1.0; vec4 sh = -step(h, vec4(0.0)); vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ; vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ; vec3 p0 = vec3(a0.xy,h.x); vec3 p1 = vec3(a0.zw,h.y); vec3 p2 = vec3(a1.xy,h.z); vec3 p3 = vec3(a1.zw,h.w); //Normalise gradients vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3))); p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w; // Mix final noise value vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0); vec4 m2 = m * m; vec4 m4 = m2 * m2; vec4 pdotx = vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)); // Determine noise gradient vec4 temp = m2 * m * pdotx; gradient = -8.0 * (temp.x * x0 + temp.y * x1 + temp.z * x2 + temp.w * x3); gradient += m4.x * p0 + m4.y * p1 + m4.z * p2 + m4.w * p3; gradient *= 42.0; return 42.0 * dot(m4, pdotx); } // End of noise code float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void generatePapercraftColorNormal(vec3 normal, vec3 tangent, vec3 binormal, vec3 noisePos, inout vec4 outColorMult, inout vec3 outNormal) { mat3 tangentToObject; tangentToObject[0] = vec3(tangent.x, tangent.y, tangent.z); tangentToObject[1] = vec3(binormal.x, binormal.y, binormal.z); tangentToObject[2] = vec3(normal.x, normal.y, normal.z); mat3 objectToTangent = transpose(tangentToObject); vec3 intensificator = vec3(u_noiseIntensity, u_noiseIntensity, 1.0); vec3 tangentPos = objectToTangent * noisePos; vec3 gradient = vec3(0.0); float noiseOut = snoise(tangentPos * noiseScale, gradient); vec3 tangentSpaceNormal = normalize(intensificator * vec3(gradient.xy, 1.0)); outNormal = tangentToObject * tangentSpaceNormal; outColorMult = vec4(vec3(1.0 + noiseOut * colorNoiseAmount), 1.0); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; generatePapercraftColorNormal(v_normal, v_tangent, v_binormal, v_position, outColorMult, normalisedNormal); setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor * outColorMult.rgb, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = (1.0 - u_metallic) * materialColor * outColorMult.rgb * 0.0; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor * outColorMult.rgb, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.7); evaluatePBRLight(materialColor * outColorMult.rgb, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.25); gl_FragColor = vec4(specular + diffuse * materialColor, 1.0); }";
+const $a970d3af3e0e453f$var$VS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; void main() { vec3 objPosition = a_position; vec4 worldPosition = vec4(objPosition, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; // Looking for an arbitrary vector that isn't parallel to the normal. Avoiding axis directions should improve our chances. vec3 arbitraryVector = normalize(vec3(0.42, -0.21, 0.15)); vec3 alternateArbitraryVector = normalize(vec3(0.43, 1.5, 0.15)); // If arbitrary vector is parallel to the normal, choose a different one. v_tangent = normalize(abs(dot(v_normal, arbitraryVector)) < 1.0 ? cross(v_normal, arbitraryVector) : cross(v_normal, alternateArbitraryVector)); v_binormal = normalize(cross(v_normal, v_tangent)); gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(objPosition, 1.0); }";
 class $a970d3af3e0e453f$export$9559c3115faeb0b0 extends (0, $ea01ff4a5048cd08$export$3b0d6d7590275603) {
     load(url, onLoad, onProgress, onError) {
         var scope = this;
@@ -42935,8 +42938,12 @@ class $a970d3af3e0e453f$var$GLTFParser {
                 if (shader.extensions && shader.extensions[$a970d3af3e0e453f$var$EXTENSIONS.KHR_BINARY_GLTF]) return extensions[$a970d3af3e0e453f$var$EXTENSIONS.KHR_BINARY_GLTF].loadShader(shader, dependencies.bufferViews);
                 return new Promise(function(resolve) {
                     var loader = new (0, $ea01ff4a5048cd08$export$98435a25b5cf7b2b)(options.manager);
-                    loader.setResponseType("text");
-                    loader.load($a970d3af3e0e453f$var$resolveURL(shader.uri, options.path), function(shaderText) {
+                    // Common google urls to save pointless requests
+                    if (shader.uri === "https://vr.google.com/shaders/w/fs.glsl") return $a970d3af3e0e453f$var$FS_GLSL;
+                    if (shader.uri === "https://vr.google.com/shaders/w/vs.glsl") return $a970d3af3e0e453f$var$VS_GLSL;
+                    // Catch anything else - it would give a CORS error in any case
+                    let url = shader.uri.replace("https://vr.google.com/shaders/w/", "");
+                    loader.load($a970d3af3e0e453f$var$resolveURL(url, options.path), function(shaderText) {
                         resolve(shaderText);
                     });
                 });
@@ -42952,6 +42959,7 @@ class $a970d3af3e0e453f$var$GLTFParser {
             if (buffer.type === "arraybuffer" || buffer.type === undefined) return new Promise(function(resolve) {
                 var loader = new (0, $ea01ff4a5048cd08$export$98435a25b5cf7b2b)(options.manager);
                 loader.setResponseType("arraybuffer");
+                loader.setCrossOrigin("no-cors");
                 loader.load($a970d3af3e0e453f$var$resolveURL(buffer.uri, options.path), function(buffer) {
                     resolve(buffer);
                 });
@@ -44315,7 +44323,7 @@ class $3c43f222267ed54b$var$SketchMetadata {
         this.EnvironmentGuid = userData["TB_EnvironmentGuid"] ?? "";
         this.Environment = userData["TB_Environment"] ?? "(None)";
         this.EnvironmentPreset = new $3c43f222267ed54b$var$EnvironmentPreset($3c43f222267ed54b$export$2ec4afd9b3c16a85.lookupEnvironment(this.EnvironmentGuid));
-        if (typeof userData["TB_UseGradient"] === "undefined") this.UseGradient = this.EnvironmentPreset.UseGradient;
+        if (typeof userData["TB_UseGradient"] === "undefined") this.UseGradient = this.EnvironmentPreset.SkyTexture != null;
         else this.UseGradient = JSON.parse(userData["TB_UseGradient"].toLowerCase());
         this.SkyColorA = this.parseTBColor(userData["TB_SkyColorA"], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColor(userData["TB_SkyColorB"], this.EnvironmentPreset.SkyColorB);
@@ -44363,12 +44371,11 @@ class $3c43f222267ed54b$var$SketchMetadata {
 }
 class $3c43f222267ed54b$var$EnvironmentPreset {
     constructor(preset){
-        let defaultColor = new $ea01ff4a5048cd08$exports.Color("#000");
+        let defaultColor = new $ea01ff4a5048cd08$exports.Color("#FFF");
         let defaultRotation = new $ea01ff4a5048cd08$exports.Vector3(0, 1, 0);
         this.Guid = preset?.guid ?? null;
         this.Name = preset?.name ?? "No preset";
         this.AmbientLightColor = preset?.renderSettings.ambientColor ?? defaultColor;
-        this.UseGradient = false;
         this.SkyColorA = preset?.skyboxColorA ?? defaultColor;
         this.SkyColorB = preset?.skyboxColorB ?? defaultColor;
         this.SkyGradientDirection = new $ea01ff4a5048cd08$exports.Vector3(0, 1, 0);
@@ -44379,13 +44386,13 @@ class $3c43f222267ed54b$var$EnvironmentPreset {
         this.SceneLight1Color = preset?.lights[1].color ?? defaultColor;
         this.SceneLight1Rotation = preset?.lights[1].rotation ?? defaultRotation;
         this.SkyTexture = preset?.renderSettings.skyboxCubemap ?? null;
+        this.UseGradient = false;
         this.ReflectionTexture = preset?.renderSettings.reflectionCubemap ?? null;
         this.ReflectionIntensity = preset?.renderSettings.reflectionIntensity ?? 1;
     }
 }
 class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     constructor(assetBaseUrl, frame){
-        this.sceneColor = new $ea01ff4a5048cd08$exports.Color("#000000");
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
         if (!this.icosa_frame) this.icosa_frame = document.getElementById("icosa-viewer");
@@ -44451,6 +44458,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         xrCamera.updateProjectionMatrix();
         (0, $7a53d4f4e33d695e$export$fc22e28a11679cb8)(this.cameraControls);
         this.scene = new $ea01ff4a5048cd08$exports.Scene();
+        this.three = $ea01ff4a5048cd08$exports;
         const viewer = this;
         const manager = new $ea01ff4a5048cd08$exports.LoadingManager();
         manager.onStart = function() {
@@ -45898,19 +45906,29 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             }
         })[guid];
     }
-    async loadGltf1(url, loadEnvironment) {
+    async loadGltf1(url, loadEnvironment, defaultBackground, tiltUrl) {
         const sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
         await (0, $fcb47f08b3ea937b$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene);
         this.setupSketchMetaData(sceneGltf.scene);
         if (loadEnvironment) await this.assignEnvironment(sceneGltf.scene);
+        if (tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         this.loadedModel = sceneGltf.scene;
+        if (!defaultBackground) defaultBackground = "#000000";
+        this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackground);
         this.initializeScene();
     }
-    async loadGltf(url, loadEnvironment) {
+    async loadGltf(url, loadEnvironment, defaultBackground, tiltUrl) {
         const sceneGltf = await this.gltfLoader.loadAsync(url);
         this.setupSketchMetaData(sceneGltf.scene);
         if (loadEnvironment) await this.assignEnvironment(sceneGltf.scene);
+        if (tiltUrl) {
+            console.log(tiltUrl);
+            console.log(this.tiltLoader.loadAsync(tiltUrl));
+        // this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
+        }
         this.loadedModel = sceneGltf.scene;
+        if (!defaultBackground) defaultBackground = "#000000";
+        this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackground);
         this.initializeScene();
     }
     async loadTilt(url) {
@@ -46001,7 +46019,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         if (this.sketchMetadata.UseGradient) sky = this.generateGradientSky(this.sketchMetadata.SkyColorA, this.sketchMetadata.SkyColorB, this.sketchMetadata.SkyGradientDirection);
         else if (this.sketchMetadata.SkyTexture) sky = this.generateTextureSky(this.sketchMetadata.SkyTexture);
         if (sky !== null) this.loadedModel?.add(sky);
-        else this.scene.background = this.sceneColor;
+        else this.scene.background = this.defaultBackgroundColor;
     }
 }
 
