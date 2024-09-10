@@ -17,6 +17,8 @@ import * as THREE from 'three';
 
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
@@ -184,6 +186,8 @@ export class Viewer {
 
     public gltfLoader: GLTFLoader;
     public gltfLegacyLoader: LegacyGLTFLoader;
+    public objLoader: OBJLoader;
+    public fbxLoader: FBXLoader;
     public three : any;
 
     private icosa_frame? : HTMLElement | null;
@@ -297,7 +301,10 @@ export class Viewer {
 
         this.tiltLoader = new TiltLoader(manager);
         this.tiltLoader.setBrushPath(this.brushPath.toString());
-	
+
+        this.objLoader = new OBJLoader(manager);
+        this.fbxLoader = new FBXLoader(manager);
+
         this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
         this.gltfLoader.register(
@@ -1809,6 +1816,18 @@ export class Viewer {
         this.initializeScene();
     }
 
+    public async loadObj(url: string) {
+        const objData = await this.objLoader.loadAsync(url);
+        this.loadedModel = objData;
+        this.initializeScene();
+    }
+
+    public async loadFbx(url: string) {
+        const fbxData = await this.fbxLoader.loadAsync(url);
+        this.loadedModel = fbxData;
+        this.initializeScene();
+    }
+
     private async assignEnvironment(scene : Object3D<THREE.Object3DEventMap>) {
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
@@ -1880,7 +1899,9 @@ export class Viewer {
         }
 
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
-            // Default lighting
+            const light = new THREE.DirectionalLight(0xffffff, 1);
+            light.position.set(10, 10, 10).normalize();
+            this.loadedModel.add(light);
             return;
         }
 
