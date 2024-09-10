@@ -34210,6 +34210,5505 @@ function $b4376e703aa0850c$var$buildNodeHierarchy(nodeId, parentObject, json, pa
 }
 
 
+
+// o object_name | g group_name
+const $21fa36e3a39b221c$var$_object_pattern = /^[og]\s*(.+)?/;
+// mtllib file_reference
+const $21fa36e3a39b221c$var$_material_library_pattern = /^mtllib /;
+// usemtl material_name
+const $21fa36e3a39b221c$var$_material_use_pattern = /^usemtl /;
+// usemap map_name
+const $21fa36e3a39b221c$var$_map_use_pattern = /^usemap /;
+const $21fa36e3a39b221c$var$_vA = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)();
+const $21fa36e3a39b221c$var$_vB = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)();
+const $21fa36e3a39b221c$var$_vC = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)();
+const $21fa36e3a39b221c$var$_ab = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)();
+const $21fa36e3a39b221c$var$_cb = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)();
+const $21fa36e3a39b221c$var$_color = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)();
+function $21fa36e3a39b221c$var$ParserState() {
+    const state = {
+        objects: [],
+        object: {},
+        vertices: [],
+        normals: [],
+        colors: [],
+        uvs: [],
+        materials: {},
+        materialLibraries: [],
+        startObject: function(name, fromDeclaration) {
+            // If the current object (initial from reset) is not from a g/o declaration in the parsed
+            // file. We need to use it for the first parsed g/o to keep things in sync.
+            if (this.object && this.object.fromDeclaration === false) {
+                this.object.name = name;
+                this.object.fromDeclaration = fromDeclaration !== false;
+                return;
+            }
+            const previousMaterial = this.object && typeof this.object.currentMaterial === "function" ? this.object.currentMaterial() : undefined;
+            if (this.object && typeof this.object._finalize === "function") this.object._finalize(true);
+            this.object = {
+                name: name || "",
+                fromDeclaration: fromDeclaration !== false,
+                geometry: {
+                    vertices: [],
+                    normals: [],
+                    colors: [],
+                    uvs: [],
+                    hasUVIndices: false
+                },
+                materials: [],
+                smooth: true,
+                startMaterial: function(name, libraries) {
+                    const previous = this._finalize(false);
+                    // New usemtl declaration overwrites an inherited material, except if faces were declared
+                    // after the material, then it must be preserved for proper MultiMaterial continuation.
+                    if (previous && (previous.inherited || previous.groupCount <= 0)) this.materials.splice(previous.index, 1);
+                    const material = {
+                        index: this.materials.length,
+                        name: name || "",
+                        mtllib: Array.isArray(libraries) && libraries.length > 0 ? libraries[libraries.length - 1] : "",
+                        smooth: previous !== undefined ? previous.smooth : this.smooth,
+                        groupStart: previous !== undefined ? previous.groupEnd : 0,
+                        groupEnd: -1,
+                        groupCount: -1,
+                        inherited: false,
+                        clone: function(index) {
+                            const cloned = {
+                                index: typeof index === "number" ? index : this.index,
+                                name: this.name,
+                                mtllib: this.mtllib,
+                                smooth: this.smooth,
+                                groupStart: 0,
+                                groupEnd: -1,
+                                groupCount: -1,
+                                inherited: false
+                            };
+                            cloned.clone = this.clone.bind(cloned);
+                            return cloned;
+                        }
+                    };
+                    this.materials.push(material);
+                    return material;
+                },
+                currentMaterial: function() {
+                    if (this.materials.length > 0) return this.materials[this.materials.length - 1];
+                    return undefined;
+                },
+                _finalize: function(end) {
+                    const lastMultiMaterial = this.currentMaterial();
+                    if (lastMultiMaterial && lastMultiMaterial.groupEnd === -1) {
+                        lastMultiMaterial.groupEnd = this.geometry.vertices.length / 3;
+                        lastMultiMaterial.groupCount = lastMultiMaterial.groupEnd - lastMultiMaterial.groupStart;
+                        lastMultiMaterial.inherited = false;
+                    }
+                    // Ignore objects tail materials if no face declarations followed them before a new o/g started.
+                    if (end && this.materials.length > 1) {
+                        for(let mi = this.materials.length - 1; mi >= 0; mi--)if (this.materials[mi].groupCount <= 0) this.materials.splice(mi, 1);
+                    }
+                    // Guarantee at least one empty material, this makes the creation later more straight forward.
+                    if (end && this.materials.length === 0) this.materials.push({
+                        name: "",
+                        smooth: this.smooth
+                    });
+                    return lastMultiMaterial;
+                }
+            };
+            // Inherit previous objects material.
+            // Spec tells us that a declared material must be set to all objects until a new material is declared.
+            // If a usemtl declaration is encountered while this new object is being parsed, it will
+            // overwrite the inherited material. Exception being that there was already face declarations
+            // to the inherited material, then it will be preserved for proper MultiMaterial continuation.
+            if (previousMaterial && previousMaterial.name && typeof previousMaterial.clone === "function") {
+                const declared = previousMaterial.clone(0);
+                declared.inherited = true;
+                this.object.materials.push(declared);
+            }
+            this.objects.push(this.object);
+        },
+        finalize: function() {
+            if (this.object && typeof this.object._finalize === "function") this.object._finalize(true);
+        },
+        parseVertexIndex: function(value, len) {
+            const index = parseInt(value, 10);
+            return (index >= 0 ? index - 1 : index + len / 3) * 3;
+        },
+        parseNormalIndex: function(value, len) {
+            const index = parseInt(value, 10);
+            return (index >= 0 ? index - 1 : index + len / 3) * 3;
+        },
+        parseUVIndex: function(value, len) {
+            const index = parseInt(value, 10);
+            return (index >= 0 ? index - 1 : index + len / 2) * 2;
+        },
+        addVertex: function(a, b, c) {
+            const src = this.vertices;
+            const dst = this.object.geometry.vertices;
+            dst.push(src[a + 0], src[a + 1], src[a + 2]);
+            dst.push(src[b + 0], src[b + 1], src[b + 2]);
+            dst.push(src[c + 0], src[c + 1], src[c + 2]);
+        },
+        addVertexPoint: function(a) {
+            const src = this.vertices;
+            const dst = this.object.geometry.vertices;
+            dst.push(src[a + 0], src[a + 1], src[a + 2]);
+        },
+        addVertexLine: function(a) {
+            const src = this.vertices;
+            const dst = this.object.geometry.vertices;
+            dst.push(src[a + 0], src[a + 1], src[a + 2]);
+        },
+        addNormal: function(a, b, c) {
+            const src = this.normals;
+            const dst = this.object.geometry.normals;
+            dst.push(src[a + 0], src[a + 1], src[a + 2]);
+            dst.push(src[b + 0], src[b + 1], src[b + 2]);
+            dst.push(src[c + 0], src[c + 1], src[c + 2]);
+        },
+        addFaceNormal: function(a, b, c) {
+            const src = this.vertices;
+            const dst = this.object.geometry.normals;
+            $21fa36e3a39b221c$var$_vA.fromArray(src, a);
+            $21fa36e3a39b221c$var$_vB.fromArray(src, b);
+            $21fa36e3a39b221c$var$_vC.fromArray(src, c);
+            $21fa36e3a39b221c$var$_cb.subVectors($21fa36e3a39b221c$var$_vC, $21fa36e3a39b221c$var$_vB);
+            $21fa36e3a39b221c$var$_ab.subVectors($21fa36e3a39b221c$var$_vA, $21fa36e3a39b221c$var$_vB);
+            $21fa36e3a39b221c$var$_cb.cross($21fa36e3a39b221c$var$_ab);
+            $21fa36e3a39b221c$var$_cb.normalize();
+            dst.push($21fa36e3a39b221c$var$_cb.x, $21fa36e3a39b221c$var$_cb.y, $21fa36e3a39b221c$var$_cb.z);
+            dst.push($21fa36e3a39b221c$var$_cb.x, $21fa36e3a39b221c$var$_cb.y, $21fa36e3a39b221c$var$_cb.z);
+            dst.push($21fa36e3a39b221c$var$_cb.x, $21fa36e3a39b221c$var$_cb.y, $21fa36e3a39b221c$var$_cb.z);
+        },
+        addColor: function(a, b, c) {
+            const src = this.colors;
+            const dst = this.object.geometry.colors;
+            if (src[a] !== undefined) dst.push(src[a + 0], src[a + 1], src[a + 2]);
+            if (src[b] !== undefined) dst.push(src[b + 0], src[b + 1], src[b + 2]);
+            if (src[c] !== undefined) dst.push(src[c + 0], src[c + 1], src[c + 2]);
+        },
+        addUV: function(a, b, c) {
+            const src = this.uvs;
+            const dst = this.object.geometry.uvs;
+            dst.push(src[a + 0], src[a + 1]);
+            dst.push(src[b + 0], src[b + 1]);
+            dst.push(src[c + 0], src[c + 1]);
+        },
+        addDefaultUV: function() {
+            const dst = this.object.geometry.uvs;
+            dst.push(0, 0);
+            dst.push(0, 0);
+            dst.push(0, 0);
+        },
+        addUVLine: function(a) {
+            const src = this.uvs;
+            const dst = this.object.geometry.uvs;
+            dst.push(src[a + 0], src[a + 1]);
+        },
+        addFace: function(a, b, c, ua, ub, uc, na, nb, nc) {
+            const vLen = this.vertices.length;
+            let ia = this.parseVertexIndex(a, vLen);
+            let ib = this.parseVertexIndex(b, vLen);
+            let ic = this.parseVertexIndex(c, vLen);
+            this.addVertex(ia, ib, ic);
+            this.addColor(ia, ib, ic);
+            // normals
+            if (na !== undefined && na !== "") {
+                const nLen = this.normals.length;
+                ia = this.parseNormalIndex(na, nLen);
+                ib = this.parseNormalIndex(nb, nLen);
+                ic = this.parseNormalIndex(nc, nLen);
+                this.addNormal(ia, ib, ic);
+            } else this.addFaceNormal(ia, ib, ic);
+            // uvs
+            if (ua !== undefined && ua !== "") {
+                const uvLen = this.uvs.length;
+                ia = this.parseUVIndex(ua, uvLen);
+                ib = this.parseUVIndex(ub, uvLen);
+                ic = this.parseUVIndex(uc, uvLen);
+                this.addUV(ia, ib, ic);
+                this.object.geometry.hasUVIndices = true;
+            } else // add placeholder values (for inconsistent face definitions)
+            this.addDefaultUV();
+        },
+        addPointGeometry: function(vertices) {
+            this.object.geometry.type = "Points";
+            const vLen = this.vertices.length;
+            for(let vi = 0, l = vertices.length; vi < l; vi++){
+                const index = this.parseVertexIndex(vertices[vi], vLen);
+                this.addVertexPoint(index);
+                this.addColor(index);
+            }
+        },
+        addLineGeometry: function(vertices, uvs) {
+            this.object.geometry.type = "Line";
+            const vLen = this.vertices.length;
+            const uvLen = this.uvs.length;
+            for(let vi = 0, l = vertices.length; vi < l; vi++)this.addVertexLine(this.parseVertexIndex(vertices[vi], vLen));
+            for(let uvi = 0, l = uvs.length; uvi < l; uvi++)this.addUVLine(this.parseUVIndex(uvs[uvi], uvLen));
+        }
+    };
+    state.startObject("", false);
+    return state;
+}
+//
+class $21fa36e3a39b221c$export$7ae31604ad04b4a7 extends (0, $ea01ff4a5048cd08$export$3b0d6d7590275603) {
+    constructor(manager){
+        super(manager);
+        this.materials = null;
+    }
+    load(url, onLoad, onProgress, onError) {
+        const scope = this;
+        const loader = new (0, $ea01ff4a5048cd08$export$98435a25b5cf7b2b)(this.manager);
+        loader.setPath(this.path);
+        loader.setRequestHeader(this.requestHeader);
+        loader.setWithCredentials(this.withCredentials);
+        loader.load(url, function(text) {
+            try {
+                onLoad(scope.parse(text));
+            } catch (e) {
+                if (onError) onError(e);
+                else console.error(e);
+                scope.manager.itemError(url);
+            }
+        }, onProgress, onError);
+    }
+    setMaterials(materials) {
+        this.materials = materials;
+        return this;
+    }
+    parse(text) {
+        const state = new $21fa36e3a39b221c$var$ParserState();
+        if (text.indexOf("\r\n") !== -1) // This is faster than String.split with regex that splits on both
+        text = text.replace(/\r\n/g, "\n");
+        if (text.indexOf("\\\n") !== -1) // join lines separated by a line continuation character (\)
+        text = text.replace(/\\\n/g, "");
+        const lines = text.split("\n");
+        let line = "", lineFirstChar = "";
+        let lineLength = 0;
+        let result = [];
+        // Faster to just trim left side of the line. Use if available.
+        const trimLeft = typeof "".trimLeft === "function";
+        for(let i = 0, l = lines.length; i < l; i++){
+            line = lines[i];
+            line = trimLeft ? line.trimLeft() : line.trim();
+            lineLength = line.length;
+            if (lineLength === 0) continue;
+            lineFirstChar = line.charAt(0);
+            // @todo invoke passed in handler if any
+            if (lineFirstChar === "#") continue;
+            if (lineFirstChar === "v") {
+                const data = line.split(/\s+/);
+                switch(data[0]){
+                    case "v":
+                        state.vertices.push(parseFloat(data[1]), parseFloat(data[2]), parseFloat(data[3]));
+                        if (data.length >= 7) {
+                            $21fa36e3a39b221c$var$_color.setRGB(parseFloat(data[4]), parseFloat(data[5]), parseFloat(data[6])).convertSRGBToLinear();
+                            state.colors.push($21fa36e3a39b221c$var$_color.r, $21fa36e3a39b221c$var$_color.g, $21fa36e3a39b221c$var$_color.b);
+                        } else // if no colors are defined, add placeholders so color and vertex indices match
+                        state.colors.push(undefined, undefined, undefined);
+                        break;
+                    case "vn":
+                        state.normals.push(parseFloat(data[1]), parseFloat(data[2]), parseFloat(data[3]));
+                        break;
+                    case "vt":
+                        state.uvs.push(parseFloat(data[1]), parseFloat(data[2]));
+                        break;
+                }
+            } else if (lineFirstChar === "f") {
+                const lineData = line.slice(1).trim();
+                const vertexData = lineData.split(/\s+/);
+                const faceVertices = [];
+                // Parse the face vertex data into an easy to work with format
+                for(let j = 0, jl = vertexData.length; j < jl; j++){
+                    const vertex = vertexData[j];
+                    if (vertex.length > 0) {
+                        const vertexParts = vertex.split("/");
+                        faceVertices.push(vertexParts);
+                    }
+                }
+                // Draw an edge between the first vertex and all subsequent vertices to form an n-gon
+                const v1 = faceVertices[0];
+                for(let j = 1, jl = faceVertices.length - 1; j < jl; j++){
+                    const v2 = faceVertices[j];
+                    const v3 = faceVertices[j + 1];
+                    state.addFace(v1[0], v2[0], v3[0], v1[1], v2[1], v3[1], v1[2], v2[2], v3[2]);
+                }
+            } else if (lineFirstChar === "l") {
+                const lineParts = line.substring(1).trim().split(" ");
+                let lineVertices = [];
+                const lineUVs = [];
+                if (line.indexOf("/") === -1) lineVertices = lineParts;
+                else for(let li = 0, llen = lineParts.length; li < llen; li++){
+                    const parts = lineParts[li].split("/");
+                    if (parts[0] !== "") lineVertices.push(parts[0]);
+                    if (parts[1] !== "") lineUVs.push(parts[1]);
+                }
+                state.addLineGeometry(lineVertices, lineUVs);
+            } else if (lineFirstChar === "p") {
+                const lineData = line.slice(1).trim();
+                const pointData = lineData.split(" ");
+                state.addPointGeometry(pointData);
+            } else if ((result = $21fa36e3a39b221c$var$_object_pattern.exec(line)) !== null) {
+                // o object_name
+                // or
+                // g group_name
+                // WORKAROUND: https://bugs.chromium.org/p/v8/issues/detail?id=2869
+                // let name = result[ 0 ].slice( 1 ).trim();
+                const name = (" " + result[0].slice(1).trim()).slice(1);
+                state.startObject(name);
+            } else if ($21fa36e3a39b221c$var$_material_use_pattern.test(line)) // material
+            state.object.startMaterial(line.substring(7).trim(), state.materialLibraries);
+            else if ($21fa36e3a39b221c$var$_material_library_pattern.test(line)) // mtl file
+            state.materialLibraries.push(line.substring(7).trim());
+            else if ($21fa36e3a39b221c$var$_map_use_pattern.test(line)) // the line is parsed but ignored since the loader assumes textures are defined MTL files
+            // (according to https://www.okino.com/conv/imp_wave.htm, 'usemap' is the old-style Wavefront texture reference method)
+            console.warn('THREE.OBJLoader: Rendering identifier "usemap" not supported. Textures must be defined in MTL files.');
+            else if (lineFirstChar === "s") {
+                result = line.split(" ");
+                // smooth shading
+                // @todo Handle files that have varying smooth values for a set of faces inside one geometry,
+                // but does not define a usemtl for each face set.
+                // This should be detected and a dummy material created (later MultiMaterial and geometry groups).
+                // This requires some care to not create extra material on each smooth value for "normal" obj files.
+                // where explicit usemtl defines geometry groups.
+                // Example asset: examples/models/obj/cerberus/Cerberus.obj
+                /*
+					 * http://paulbourke.net/dataformats/obj/
+					 *
+					 * From chapter "Grouping" Syntax explanation "s group_number":
+					 * "group_number is the smoothing group number. To turn off smoothing groups, use a value of 0 or off.
+					 * Polygonal elements use group numbers to put elements in different smoothing groups. For free-form
+					 * surfaces, smoothing groups are either turned on or off; there is no difference between values greater
+					 * than 0."
+					 */ if (result.length > 1) {
+                    const value = result[1].trim().toLowerCase();
+                    state.object.smooth = value !== "0" && value !== "off";
+                } else // ZBrush can produce "s" lines #11707
+                state.object.smooth = true;
+                const material = state.object.currentMaterial();
+                if (material) material.smooth = state.object.smooth;
+            } else {
+                // Handle null terminated files without exception
+                if (line === "\0") continue;
+                console.warn('THREE.OBJLoader: Unexpected line: "' + line + '"');
+            }
+        }
+        state.finalize();
+        const container = new (0, $ea01ff4a5048cd08$export$eb2fcfdbd7ba97d4)();
+        container.materialLibraries = [].concat(state.materialLibraries);
+        const hasPrimitives = !(state.objects.length === 1 && state.objects[0].geometry.vertices.length === 0);
+        if (hasPrimitives === true) for(let i = 0, l = state.objects.length; i < l; i++){
+            const object = state.objects[i];
+            const geometry = object.geometry;
+            const materials = object.materials;
+            const isLine = geometry.type === "Line";
+            const isPoints = geometry.type === "Points";
+            let hasVertexColors = false;
+            // Skip o/g line declarations that did not follow with any faces
+            if (geometry.vertices.length === 0) continue;
+            const buffergeometry = new (0, $ea01ff4a5048cd08$export$b7be63a67df8959)();
+            buffergeometry.setAttribute("position", new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(geometry.vertices, 3));
+            if (geometry.normals.length > 0) buffergeometry.setAttribute("normal", new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(geometry.normals, 3));
+            if (geometry.colors.length > 0) {
+                hasVertexColors = true;
+                buffergeometry.setAttribute("color", new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(geometry.colors, 3));
+            }
+            if (geometry.hasUVIndices === true) buffergeometry.setAttribute("uv", new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(geometry.uvs, 2));
+            // Create materials
+            const createdMaterials = [];
+            for(let mi = 0, miLen = materials.length; mi < miLen; mi++){
+                const sourceMaterial = materials[mi];
+                const materialHash = sourceMaterial.name + "_" + sourceMaterial.smooth + "_" + hasVertexColors;
+                let material = state.materials[materialHash];
+                if (this.materials !== null) {
+                    material = this.materials.create(sourceMaterial.name);
+                    // mtl etc. loaders probably can't create line materials correctly, copy properties to a line material.
+                    if (isLine && material && !(material instanceof (0, $ea01ff4a5048cd08$export$fbaaa33907730a0c))) {
+                        const materialLine = new (0, $ea01ff4a5048cd08$export$fbaaa33907730a0c)();
+                        (0, $ea01ff4a5048cd08$export$a2d8b23205c25948).prototype.copy.call(materialLine, material);
+                        materialLine.color.copy(material.color);
+                        material = materialLine;
+                    } else if (isPoints && material && !(material instanceof (0, $ea01ff4a5048cd08$export$a178c45366ce5d6b))) {
+                        const materialPoints = new (0, $ea01ff4a5048cd08$export$a178c45366ce5d6b)({
+                            size: 10,
+                            sizeAttenuation: false
+                        });
+                        (0, $ea01ff4a5048cd08$export$a2d8b23205c25948).prototype.copy.call(materialPoints, material);
+                        materialPoints.color.copy(material.color);
+                        materialPoints.map = material.map;
+                        material = materialPoints;
+                    }
+                }
+                if (material === undefined) {
+                    if (isLine) material = new (0, $ea01ff4a5048cd08$export$fbaaa33907730a0c)();
+                    else if (isPoints) material = new (0, $ea01ff4a5048cd08$export$a178c45366ce5d6b)({
+                        size: 1,
+                        sizeAttenuation: false
+                    });
+                    else material = new (0, $ea01ff4a5048cd08$export$24c72f71cbaf0678)();
+                    material.name = sourceMaterial.name;
+                    material.flatShading = sourceMaterial.smooth ? false : true;
+                    material.vertexColors = hasVertexColors;
+                    state.materials[materialHash] = material;
+                }
+                createdMaterials.push(material);
+            }
+            // Create mesh
+            let mesh;
+            if (createdMaterials.length > 1) {
+                for(let mi = 0, miLen = materials.length; mi < miLen; mi++){
+                    const sourceMaterial = materials[mi];
+                    buffergeometry.addGroup(sourceMaterial.groupStart, sourceMaterial.groupCount, mi);
+                }
+                if (isLine) mesh = new (0, $ea01ff4a5048cd08$export$ff1ed10fedfdd604)(buffergeometry, createdMaterials);
+                else if (isPoints) mesh = new (0, $ea01ff4a5048cd08$export$1c787534cb11aa3e)(buffergeometry, createdMaterials);
+                else mesh = new (0, $ea01ff4a5048cd08$export$e176487c05830cc5)(buffergeometry, createdMaterials);
+            } else {
+                if (isLine) mesh = new (0, $ea01ff4a5048cd08$export$ff1ed10fedfdd604)(buffergeometry, createdMaterials[0]);
+                else if (isPoints) mesh = new (0, $ea01ff4a5048cd08$export$1c787534cb11aa3e)(buffergeometry, createdMaterials[0]);
+                else mesh = new (0, $ea01ff4a5048cd08$export$e176487c05830cc5)(buffergeometry, createdMaterials[0]);
+            }
+            mesh.name = object.name;
+            container.add(mesh);
+        }
+        else // if there is only the default parser state object with no geometry data, interpret data as point cloud
+        if (state.vertices.length > 0) {
+            const material = new (0, $ea01ff4a5048cd08$export$a178c45366ce5d6b)({
+                size: 1,
+                sizeAttenuation: false
+            });
+            const buffergeometry = new (0, $ea01ff4a5048cd08$export$b7be63a67df8959)();
+            buffergeometry.setAttribute("position", new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(state.vertices, 3));
+            if (state.colors.length > 0 && state.colors[0] !== undefined) {
+                buffergeometry.setAttribute("color", new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(state.colors, 3));
+                material.vertexColors = true;
+            }
+            const points = new (0, $ea01ff4a5048cd08$export$1c787534cb11aa3e)(buffergeometry, material);
+            container.add(points);
+        }
+        return container;
+    }
+}
+
+
+
+var $550ca672a3f483a3$exports = {};
+
+$parcel$export($550ca672a3f483a3$exports, "inflateSync", () => $550ca672a3f483a3$export$90366d8b308ba94a);
+$parcel$export($550ca672a3f483a3$exports, "deflateSync", () => $550ca672a3f483a3$export$21533ff51b8a0b4a);
+$parcel$export($550ca672a3f483a3$exports, "Deflate", () => $550ca672a3f483a3$export$ae157b6234afe138);
+$parcel$export($550ca672a3f483a3$exports, "AsyncDeflate", () => $550ca672a3f483a3$export$84e526fabcba03e3);
+$parcel$export($550ca672a3f483a3$exports, "deflate", () => $550ca672a3f483a3$export$2316623ecd1285ab);
+$parcel$export($550ca672a3f483a3$exports, "Inflate", () => $550ca672a3f483a3$export$d1de70a877d6e43c);
+$parcel$export($550ca672a3f483a3$exports, "AsyncInflate", () => $550ca672a3f483a3$export$fff8358d6dbaa9cc);
+$parcel$export($550ca672a3f483a3$exports, "inflate", () => $550ca672a3f483a3$export$cae1ce83fe4a1782);
+$parcel$export($550ca672a3f483a3$exports, "Gzip", () => $550ca672a3f483a3$export$8e4b66d280bf8342);
+$parcel$export($550ca672a3f483a3$exports, "AsyncGzip", () => $550ca672a3f483a3$export$b4c75ae96cdf708b);
+$parcel$export($550ca672a3f483a3$exports, "gzip", () => $550ca672a3f483a3$export$69f0ea7cf3a331a8);
+$parcel$export($550ca672a3f483a3$exports, "gzipSync", () => $550ca672a3f483a3$export$3d616c3fb3e15483);
+$parcel$export($550ca672a3f483a3$exports, "Gunzip", () => $550ca672a3f483a3$export$4cb607de6db70415);
+$parcel$export($550ca672a3f483a3$exports, "AsyncGunzip", () => $550ca672a3f483a3$export$d5adcdd968132151);
+$parcel$export($550ca672a3f483a3$exports, "gunzip", () => $550ca672a3f483a3$export$b6df3e950734d697);
+$parcel$export($550ca672a3f483a3$exports, "gunzipSync", () => $550ca672a3f483a3$export$c80456f7aaba691c);
+$parcel$export($550ca672a3f483a3$exports, "Zlib", () => $550ca672a3f483a3$export$4187ccf2467013b9);
+$parcel$export($550ca672a3f483a3$exports, "AsyncZlib", () => $550ca672a3f483a3$export$bedbe3a2c2136490);
+$parcel$export($550ca672a3f483a3$exports, "zlib", () => $550ca672a3f483a3$export$925212de7058410b);
+$parcel$export($550ca672a3f483a3$exports, "zlibSync", () => $550ca672a3f483a3$export$f87121a6d50aff25);
+$parcel$export($550ca672a3f483a3$exports, "Unzlib", () => $550ca672a3f483a3$export$af2424f875ff1b17);
+$parcel$export($550ca672a3f483a3$exports, "AsyncUnzlib", () => $550ca672a3f483a3$export$cf6668790220dcad);
+$parcel$export($550ca672a3f483a3$exports, "unzlib", () => $550ca672a3f483a3$export$ca7cbb494e731274);
+$parcel$export($550ca672a3f483a3$exports, "unzlibSync", () => $550ca672a3f483a3$export$9ec8134f0f1b9fc6);
+$parcel$export($550ca672a3f483a3$exports, "compress", () => $550ca672a3f483a3$export$69f0ea7cf3a331a8);
+$parcel$export($550ca672a3f483a3$exports, "AsyncCompress", () => $550ca672a3f483a3$export$b4c75ae96cdf708b);
+$parcel$export($550ca672a3f483a3$exports, "compressSync", () => $550ca672a3f483a3$export$3d616c3fb3e15483);
+$parcel$export($550ca672a3f483a3$exports, "Compress", () => $550ca672a3f483a3$export$8e4b66d280bf8342);
+$parcel$export($550ca672a3f483a3$exports, "Decompress", () => $550ca672a3f483a3$export$578fe199ef655b76);
+$parcel$export($550ca672a3f483a3$exports, "AsyncDecompress", () => $550ca672a3f483a3$export$ae2c1d81988d4b43);
+$parcel$export($550ca672a3f483a3$exports, "decompress", () => $550ca672a3f483a3$export$678d868aab8fb3c7);
+$parcel$export($550ca672a3f483a3$exports, "decompressSync", () => $550ca672a3f483a3$export$c4bdbbbc9a4faabe);
+$parcel$export($550ca672a3f483a3$exports, "DecodeUTF8", () => $550ca672a3f483a3$export$ba46860a31c72e94);
+$parcel$export($550ca672a3f483a3$exports, "EncodeUTF8", () => $550ca672a3f483a3$export$283f13d12b1b210e);
+$parcel$export($550ca672a3f483a3$exports, "strToU8", () => $550ca672a3f483a3$export$366b39a6daa8ed7a);
+$parcel$export($550ca672a3f483a3$exports, "strFromU8", () => $550ca672a3f483a3$export$adb211f8cb999894);
+$parcel$export($550ca672a3f483a3$exports, "ZipPassThrough", () => $550ca672a3f483a3$export$2b25194e1767ea06);
+$parcel$export($550ca672a3f483a3$exports, "ZipDeflate", () => $550ca672a3f483a3$export$f7e481ca646388b6);
+$parcel$export($550ca672a3f483a3$exports, "AsyncZipDeflate", () => $550ca672a3f483a3$export$ffb5e59e179924b2);
+$parcel$export($550ca672a3f483a3$exports, "Zip", () => $550ca672a3f483a3$export$9a4d4a7c32a75d2f);
+$parcel$export($550ca672a3f483a3$exports, "zip", () => $550ca672a3f483a3$export$8901015135f2fb22);
+$parcel$export($550ca672a3f483a3$exports, "zipSync", () => $550ca672a3f483a3$export$eb1654f146d54eb3);
+$parcel$export($550ca672a3f483a3$exports, "UnzipPassThrough", () => $550ca672a3f483a3$export$93f81d5bbbb7c6bf);
+$parcel$export($550ca672a3f483a3$exports, "UnzipInflate", () => $550ca672a3f483a3$export$eb188945cc39e642);
+$parcel$export($550ca672a3f483a3$exports, "AsyncUnzipInflate", () => $550ca672a3f483a3$export$6235d84645dad4f9);
+$parcel$export($550ca672a3f483a3$exports, "Unzip", () => $550ca672a3f483a3$export$9b7485f84cbaaa56);
+$parcel$export($550ca672a3f483a3$exports, "unzip", () => $550ca672a3f483a3$export$23c8d3f8757cab88);
+$parcel$export($550ca672a3f483a3$exports, "unzipSync", () => $550ca672a3f483a3$export$c757709326bb5901);
+/*!
+fflate - fast JavaScript compression/decompression
+<https://101arrowz.github.io/fflate>
+Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
+version 0.6.9
+*/ // DEFLATE is a complex format; to read this code, you should probably check the RFC first:
+// https://tools.ietf.org/html/rfc1951
+// You may also wish to take a look at the guide I made about this program:
+// https://gist.github.com/101arrowz/253f31eb5abc3d9275ab943003ffecad
+// Some of the following code is similar to that of UZIP.js:
+// https://github.com/photopea/UZIP.js
+// However, the vast majority of the codebase has diverged from UZIP.js to increase performance and reduce bundle size.
+// Sometimes 0 will appear where -1 would be more appropriate. This is because using a uint
+// is better for memory in most engines (I *think*).
+var $550ca672a3f483a3$var$ch2 = {};
+var $550ca672a3f483a3$var$durl = function(c) {
+    return URL.createObjectURL(new Blob([
+        c
+    ], {
+        type: "text/javascript"
+    }));
+};
+var $550ca672a3f483a3$var$cwk = function(u) {
+    return new Worker(u);
+};
+try {
+    URL.revokeObjectURL($550ca672a3f483a3$var$durl(""));
+} catch (e) {
+    // We're in Deno or a very old browser
+    $550ca672a3f483a3$var$durl = function(c) {
+        return "data:application/javascript;charset=UTF-8," + encodeURI(c);
+    };
+    // If Deno, this is necessary; if not, this changes nothing
+    $550ca672a3f483a3$var$cwk = function(u) {
+        return new Worker(u, {
+            type: "module"
+        });
+    };
+}
+var $550ca672a3f483a3$var$wk = function(c, id, msg, transfer, cb) {
+    var w = $550ca672a3f483a3$var$cwk($550ca672a3f483a3$var$ch2[id] || ($550ca672a3f483a3$var$ch2[id] = $550ca672a3f483a3$var$durl(c)));
+    w.onerror = function(e) {
+        return cb(e.error, null);
+    };
+    w.onmessage = function(e) {
+        return cb(null, e.data);
+    };
+    w.postMessage(msg, transfer);
+    return w;
+};
+// aliases for shorter compressed code (most minifers don't do this)
+var $550ca672a3f483a3$var$u8 = Uint8Array, $550ca672a3f483a3$var$u16 = Uint16Array, $550ca672a3f483a3$var$u32 = Uint32Array;
+// fixed length extra bits
+var $550ca672a3f483a3$var$fleb = new $550ca672a3f483a3$var$u8([
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    2,
+    2,
+    2,
+    2,
+    3,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    5,
+    5,
+    5,
+    5,
+    0,
+    /* unused */ 0,
+    0,
+    /* impossible */ 0
+]);
+// fixed distance extra bits
+// see fleb note
+var $550ca672a3f483a3$var$fdeb = new $550ca672a3f483a3$var$u8([
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    2,
+    2,
+    3,
+    3,
+    4,
+    4,
+    5,
+    5,
+    6,
+    6,
+    7,
+    7,
+    8,
+    8,
+    9,
+    9,
+    10,
+    10,
+    11,
+    11,
+    12,
+    12,
+    13,
+    13,
+    /* unused */ 0,
+    0
+]);
+// code length index map
+var $550ca672a3f483a3$var$clim = new $550ca672a3f483a3$var$u8([
+    16,
+    17,
+    18,
+    0,
+    8,
+    7,
+    9,
+    6,
+    10,
+    5,
+    11,
+    4,
+    12,
+    3,
+    13,
+    2,
+    14,
+    1,
+    15
+]);
+// get base, reverse index map from extra bits
+var $550ca672a3f483a3$var$freb = function(eb, start) {
+    var b = new $550ca672a3f483a3$var$u16(31);
+    for(var i = 0; i < 31; ++i)b[i] = start += 1 << eb[i - 1];
+    // numbers here are at max 18 bits
+    var r = new $550ca672a3f483a3$var$u32(b[30]);
+    for(var i = 1; i < 30; ++i)for(var j = b[i]; j < b[i + 1]; ++j)r[j] = j - b[i] << 5 | i;
+    return [
+        b,
+        r
+    ];
+};
+var $550ca672a3f483a3$var$_a = $550ca672a3f483a3$var$freb($550ca672a3f483a3$var$fleb, 2), $550ca672a3f483a3$var$fl = $550ca672a3f483a3$var$_a[0], $550ca672a3f483a3$var$revfl = $550ca672a3f483a3$var$_a[1];
+// we can ignore the fact that the other numbers are wrong; they never happen anyway
+$550ca672a3f483a3$var$fl[28] = 258, $550ca672a3f483a3$var$revfl[258] = 28;
+var $550ca672a3f483a3$var$_b = $550ca672a3f483a3$var$freb($550ca672a3f483a3$var$fdeb, 0), $550ca672a3f483a3$var$fd = $550ca672a3f483a3$var$_b[0], $550ca672a3f483a3$var$revfd = $550ca672a3f483a3$var$_b[1];
+// map of value to reverse (assuming 16 bits)
+var $550ca672a3f483a3$var$rev = new $550ca672a3f483a3$var$u16(32768);
+for(var $550ca672a3f483a3$var$i = 0; $550ca672a3f483a3$var$i < 32768; ++$550ca672a3f483a3$var$i){
+    // reverse table algorithm from SO
+    var $550ca672a3f483a3$var$x = ($550ca672a3f483a3$var$i & 0xAAAA) >>> 1 | ($550ca672a3f483a3$var$i & 0x5555) << 1;
+    $550ca672a3f483a3$var$x = ($550ca672a3f483a3$var$x & 0xCCCC) >>> 2 | ($550ca672a3f483a3$var$x & 0x3333) << 2;
+    $550ca672a3f483a3$var$x = ($550ca672a3f483a3$var$x & 0xF0F0) >>> 4 | ($550ca672a3f483a3$var$x & 0x0F0F) << 4;
+    $550ca672a3f483a3$var$rev[$550ca672a3f483a3$var$i] = (($550ca672a3f483a3$var$x & 0xFF00) >>> 8 | ($550ca672a3f483a3$var$x & 0x00FF) << 8) >>> 1;
+}
+// create huffman tree from u8 "map": index -> code length for code index
+// mb (max bits) must be at most 15
+// TODO: optimize/split up?
+var $550ca672a3f483a3$var$hMap = function(cd, mb, r) {
+    var s = cd.length;
+    // index
+    var i = 0;
+    // u16 "map": index -> # of codes with bit length = index
+    var l = new $550ca672a3f483a3$var$u16(mb);
+    // length of cd must be 288 (total # of codes)
+    for(; i < s; ++i)++l[cd[i] - 1];
+    // u16 "map": index -> minimum code for bit length = index
+    var le = new $550ca672a3f483a3$var$u16(mb);
+    for(i = 0; i < mb; ++i)le[i] = le[i - 1] + l[i - 1] << 1;
+    var co;
+    if (r) {
+        // u16 "map": index -> number of actual bits, symbol for code
+        co = new $550ca672a3f483a3$var$u16(1 << mb);
+        // bits to remove for reverser
+        var rvb = 15 - mb;
+        for(i = 0; i < s; ++i)// ignore 0 lengths
+        if (cd[i]) {
+            // num encoding both symbol and bits read
+            var sv = i << 4 | cd[i];
+            // free bits
+            var r_1 = mb - cd[i];
+            // start value
+            var v = le[cd[i] - 1]++ << r_1;
+            // m is end value
+            for(var m = v | (1 << r_1) - 1; v <= m; ++v)// every 16 bit value starting with the code yields the same result
+            co[$550ca672a3f483a3$var$rev[v] >>> rvb] = sv;
+        }
+    } else {
+        co = new $550ca672a3f483a3$var$u16(s);
+        for(i = 0; i < s; ++i)if (cd[i]) co[i] = $550ca672a3f483a3$var$rev[le[cd[i] - 1]++] >>> 15 - cd[i];
+    }
+    return co;
+};
+// fixed length tree
+var $550ca672a3f483a3$var$flt = new $550ca672a3f483a3$var$u8(288);
+for(var $550ca672a3f483a3$var$i = 0; $550ca672a3f483a3$var$i < 144; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$flt[$550ca672a3f483a3$var$i] = 8;
+for(var $550ca672a3f483a3$var$i = 144; $550ca672a3f483a3$var$i < 256; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$flt[$550ca672a3f483a3$var$i] = 9;
+for(var $550ca672a3f483a3$var$i = 256; $550ca672a3f483a3$var$i < 280; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$flt[$550ca672a3f483a3$var$i] = 7;
+for(var $550ca672a3f483a3$var$i = 280; $550ca672a3f483a3$var$i < 288; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$flt[$550ca672a3f483a3$var$i] = 8;
+// fixed distance tree
+var $550ca672a3f483a3$var$fdt = new $550ca672a3f483a3$var$u8(32);
+for(var $550ca672a3f483a3$var$i = 0; $550ca672a3f483a3$var$i < 32; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$fdt[$550ca672a3f483a3$var$i] = 5;
+// fixed length map
+var $550ca672a3f483a3$var$flm = /*#__PURE__*/ $550ca672a3f483a3$var$hMap($550ca672a3f483a3$var$flt, 9, 0), $550ca672a3f483a3$var$flrm = /*#__PURE__*/ $550ca672a3f483a3$var$hMap($550ca672a3f483a3$var$flt, 9, 1);
+// fixed distance map
+var $550ca672a3f483a3$var$fdm = /*#__PURE__*/ $550ca672a3f483a3$var$hMap($550ca672a3f483a3$var$fdt, 5, 0), $550ca672a3f483a3$var$fdrm = /*#__PURE__*/ $550ca672a3f483a3$var$hMap($550ca672a3f483a3$var$fdt, 5, 1);
+// find max of array
+var $550ca672a3f483a3$var$max = function(a) {
+    var m = a[0];
+    for(var i = 1; i < a.length; ++i)if (a[i] > m) m = a[i];
+    return m;
+};
+// read d, starting at bit p and mask with m
+var $550ca672a3f483a3$var$bits = function(d, p, m) {
+    var o = p / 8 | 0;
+    return (d[o] | d[o + 1] << 8) >> (p & 7) & m;
+};
+// read d, starting at bit p continuing for at least 16 bits
+var $550ca672a3f483a3$var$bits16 = function(d, p) {
+    var o = p / 8 | 0;
+    return (d[o] | d[o + 1] << 8 | d[o + 2] << 16) >> (p & 7);
+};
+// get end of byte
+var $550ca672a3f483a3$var$shft = function(p) {
+    return (p / 8 | 0) + (p & 7 && 1);
+};
+// typed array slice - allows garbage collector to free original reference,
+// while being more compatible than .slice
+var $550ca672a3f483a3$var$slc = function(v, s, e) {
+    if (s == null || s < 0) s = 0;
+    if (e == null || e > v.length) e = v.length;
+    // can't use .constructor in case user-supplied
+    var n = new (v instanceof $550ca672a3f483a3$var$u16 ? $550ca672a3f483a3$var$u16 : v instanceof $550ca672a3f483a3$var$u32 ? $550ca672a3f483a3$var$u32 : $550ca672a3f483a3$var$u8)(e - s);
+    n.set(v.subarray(s, e));
+    return n;
+};
+// expands raw DEFLATE data
+var $550ca672a3f483a3$var$inflt = function(dat, buf, st) {
+    // source length
+    var sl = dat.length;
+    if (!sl || st && !st.l && sl < 5) return buf || new $550ca672a3f483a3$var$u8(0);
+    // have to estimate size
+    var noBuf = !buf || st;
+    // no state
+    var noSt = !st || st.i;
+    if (!st) st = {};
+    // Assumes roughly 33% compression ratio average
+    if (!buf) buf = new $550ca672a3f483a3$var$u8(sl * 3);
+    // ensure buffer can fit at least l elements
+    var cbuf = function(l) {
+        var bl = buf.length;
+        // need to increase size to fit
+        if (l > bl) {
+            // Double or set to necessary, whichever is greater
+            var nbuf = new $550ca672a3f483a3$var$u8(Math.max(bl * 2, l));
+            nbuf.set(buf);
+            buf = nbuf;
+        }
+    };
+    //  last chunk         bitpos           bytes
+    var final = st.f || 0, pos = st.p || 0, bt = st.b || 0, lm = st.l, dm = st.d, lbt = st.m, dbt = st.n;
+    // total bits
+    var tbts = sl * 8;
+    do {
+        if (!lm) {
+            // BFINAL - this is only 1 when last chunk is next
+            st.f = final = $550ca672a3f483a3$var$bits(dat, pos, 1);
+            // type: 0 = no compression, 1 = fixed huffman, 2 = dynamic huffman
+            var type = $550ca672a3f483a3$var$bits(dat, pos + 1, 3);
+            pos += 3;
+            if (!type) {
+                // go to end of byte boundary
+                var s = $550ca672a3f483a3$var$shft(pos) + 4, l = dat[s - 4] | dat[s - 3] << 8, t = s + l;
+                if (t > sl) {
+                    if (noSt) throw "unexpected EOF";
+                    break;
+                }
+                // ensure size
+                if (noBuf) cbuf(bt + l);
+                // Copy over uncompressed data
+                buf.set(dat.subarray(s, t), bt);
+                // Get new bitpos, update byte count
+                st.b = bt += l, st.p = pos = t * 8;
+                continue;
+            } else if (type == 1) lm = $550ca672a3f483a3$var$flrm, dm = $550ca672a3f483a3$var$fdrm, lbt = 9, dbt = 5;
+            else if (type == 2) {
+                //  literal                            lengths
+                var hLit = $550ca672a3f483a3$var$bits(dat, pos, 31) + 257, hcLen = $550ca672a3f483a3$var$bits(dat, pos + 10, 15) + 4;
+                var tl = hLit + $550ca672a3f483a3$var$bits(dat, pos + 5, 31) + 1;
+                pos += 14;
+                // length+distance tree
+                var ldt = new $550ca672a3f483a3$var$u8(tl);
+                // code length tree
+                var clt = new $550ca672a3f483a3$var$u8(19);
+                for(var i = 0; i < hcLen; ++i)// use index map to get real code
+                clt[$550ca672a3f483a3$var$clim[i]] = $550ca672a3f483a3$var$bits(dat, pos + i * 3, 7);
+                pos += hcLen * 3;
+                // code lengths bits
+                var clb = $550ca672a3f483a3$var$max(clt), clbmsk = (1 << clb) - 1;
+                // code lengths map
+                var clm = $550ca672a3f483a3$var$hMap(clt, clb, 1);
+                for(var i = 0; i < tl;){
+                    var r = clm[$550ca672a3f483a3$var$bits(dat, pos, clbmsk)];
+                    // bits read
+                    pos += r & 15;
+                    // symbol
+                    var s = r >>> 4;
+                    // code length to copy
+                    if (s < 16) ldt[i++] = s;
+                    else {
+                        //  copy   count
+                        var c = 0, n = 0;
+                        if (s == 16) n = 3 + $550ca672a3f483a3$var$bits(dat, pos, 3), pos += 2, c = ldt[i - 1];
+                        else if (s == 17) n = 3 + $550ca672a3f483a3$var$bits(dat, pos, 7), pos += 3;
+                        else if (s == 18) n = 11 + $550ca672a3f483a3$var$bits(dat, pos, 127), pos += 7;
+                        while(n--)ldt[i++] = c;
+                    }
+                }
+                //    length tree                 distance tree
+                var lt = ldt.subarray(0, hLit), dt = ldt.subarray(hLit);
+                // max length bits
+                lbt = $550ca672a3f483a3$var$max(lt);
+                // max dist bits
+                dbt = $550ca672a3f483a3$var$max(dt);
+                lm = $550ca672a3f483a3$var$hMap(lt, lbt, 1);
+                dm = $550ca672a3f483a3$var$hMap(dt, dbt, 1);
+            } else throw "invalid block type";
+            if (pos > tbts) {
+                if (noSt) throw "unexpected EOF";
+                break;
+            }
+        }
+        // Make sure the buffer can hold this + the largest possible addition
+        // Maximum chunk size (practically, theoretically infinite) is 2^17;
+        if (noBuf) cbuf(bt + 131072);
+        var lms = (1 << lbt) - 1, dms = (1 << dbt) - 1;
+        var lpos = pos;
+        for(;; lpos = pos){
+            // bits read, code
+            var c = lm[$550ca672a3f483a3$var$bits16(dat, pos) & lms], sym = c >>> 4;
+            pos += c & 15;
+            if (pos > tbts) {
+                if (noSt) throw "unexpected EOF";
+                break;
+            }
+            if (!c) throw "invalid length/literal";
+            if (sym < 256) buf[bt++] = sym;
+            else if (sym == 256) {
+                lpos = pos, lm = null;
+                break;
+            } else {
+                var add = sym - 254;
+                // no extra bits needed if less
+                if (sym > 264) {
+                    // index
+                    var i = sym - 257, b = $550ca672a3f483a3$var$fleb[i];
+                    add = $550ca672a3f483a3$var$bits(dat, pos, (1 << b) - 1) + $550ca672a3f483a3$var$fl[i];
+                    pos += b;
+                }
+                // dist
+                var d = dm[$550ca672a3f483a3$var$bits16(dat, pos) & dms], dsym = d >>> 4;
+                if (!d) throw "invalid distance";
+                pos += d & 15;
+                var dt = $550ca672a3f483a3$var$fd[dsym];
+                if (dsym > 3) {
+                    var b = $550ca672a3f483a3$var$fdeb[dsym];
+                    dt += $550ca672a3f483a3$var$bits16(dat, pos) & (1 << b) - 1, pos += b;
+                }
+                if (pos > tbts) {
+                    if (noSt) throw "unexpected EOF";
+                    break;
+                }
+                if (noBuf) cbuf(bt + 131072);
+                var end = bt + add;
+                for(; bt < end; bt += 4){
+                    buf[bt] = buf[bt - dt];
+                    buf[bt + 1] = buf[bt + 1 - dt];
+                    buf[bt + 2] = buf[bt + 2 - dt];
+                    buf[bt + 3] = buf[bt + 3 - dt];
+                }
+                bt = end;
+            }
+        }
+        st.l = lm, st.p = lpos, st.b = bt;
+        if (lm) final = 1, st.m = lbt, st.d = dm, st.n = dbt;
+    }while (!final);
+    return bt == buf.length ? buf : $550ca672a3f483a3$var$slc(buf, 0, bt);
+};
+// starting at p, write the minimum number of bits that can hold v to d
+var $550ca672a3f483a3$var$wbits = function(d, p, v) {
+    v <<= p & 7;
+    var o = p / 8 | 0;
+    d[o] |= v;
+    d[o + 1] |= v >>> 8;
+};
+// starting at p, write the minimum number of bits (>8) that can hold v to d
+var $550ca672a3f483a3$var$wbits16 = function(d, p, v) {
+    v <<= p & 7;
+    var o = p / 8 | 0;
+    d[o] |= v;
+    d[o + 1] |= v >>> 8;
+    d[o + 2] |= v >>> 16;
+};
+// creates code lengths from a frequency table
+var $550ca672a3f483a3$var$hTree = function(d, mb) {
+    // Need extra info to make a tree
+    var t = [];
+    for(var i = 0; i < d.length; ++i)if (d[i]) t.push({
+        s: i,
+        f: d[i]
+    });
+    var s = t.length;
+    var t2 = t.slice();
+    if (!s) return [
+        $550ca672a3f483a3$var$et,
+        0
+    ];
+    if (s == 1) {
+        var v = new $550ca672a3f483a3$var$u8(t[0].s + 1);
+        v[t[0].s] = 1;
+        return [
+            v,
+            1
+        ];
+    }
+    t.sort(function(a, b) {
+        return a.f - b.f;
+    });
+    // after i2 reaches last ind, will be stopped
+    // freq must be greater than largest possible number of symbols
+    t.push({
+        s: -1,
+        f: 25001
+    });
+    var l = t[0], r = t[1], i0 = 0, i1 = 1, i2 = 2;
+    t[0] = {
+        s: -1,
+        f: l.f + r.f,
+        l: l,
+        r: r
+    };
+    // efficient algorithm from UZIP.js
+    // i0 is lookbehind, i2 is lookahead - after processing two low-freq
+    // symbols that combined have high freq, will start processing i2 (high-freq,
+    // non-composite) symbols instead
+    // see https://reddit.com/r/photopea/comments/ikekht/uzipjs_questions/
+    while(i1 != s - 1){
+        l = t[t[i0].f < t[i2].f ? i0++ : i2++];
+        r = t[i0 != i1 && t[i0].f < t[i2].f ? i0++ : i2++];
+        t[i1++] = {
+            s: -1,
+            f: l.f + r.f,
+            l: l,
+            r: r
+        };
+    }
+    var maxSym = t2[0].s;
+    for(var i = 1; i < s; ++i)if (t2[i].s > maxSym) maxSym = t2[i].s;
+    // code lengths
+    var tr = new $550ca672a3f483a3$var$u16(maxSym + 1);
+    // max bits in tree
+    var mbt = $550ca672a3f483a3$var$ln(t[i1 - 1], tr, 0);
+    if (mbt > mb) {
+        // more algorithms from UZIP.js
+        // TODO: find out how this code works (debt)
+        //  ind    debt
+        var i = 0, dt = 0;
+        //    left            cost
+        var lft = mbt - mb, cst = 1 << lft;
+        t2.sort(function(a, b) {
+            return tr[b.s] - tr[a.s] || a.f - b.f;
+        });
+        for(; i < s; ++i){
+            var i2_1 = t2[i].s;
+            if (tr[i2_1] > mb) {
+                dt += cst - (1 << mbt - tr[i2_1]);
+                tr[i2_1] = mb;
+            } else break;
+        }
+        dt >>>= lft;
+        while(dt > 0){
+            var i2_2 = t2[i].s;
+            if (tr[i2_2] < mb) dt -= 1 << mb - tr[i2_2]++ - 1;
+            else ++i;
+        }
+        for(; i >= 0 && dt; --i){
+            var i2_3 = t2[i].s;
+            if (tr[i2_3] == mb) {
+                --tr[i2_3];
+                ++dt;
+            }
+        }
+        mbt = mb;
+    }
+    return [
+        new $550ca672a3f483a3$var$u8(tr),
+        mbt
+    ];
+};
+// get the max length and assign length codes
+var $550ca672a3f483a3$var$ln = function(n, l, d) {
+    return n.s == -1 ? Math.max($550ca672a3f483a3$var$ln(n.l, l, d + 1), $550ca672a3f483a3$var$ln(n.r, l, d + 1)) : l[n.s] = d;
+};
+// length codes generation
+var $550ca672a3f483a3$var$lc = function(c) {
+    var s = c.length;
+    // Note that the semicolon was intentional
+    while(s && !c[--s]);
+    var cl = new $550ca672a3f483a3$var$u16(++s);
+    //  ind      num         streak
+    var cli = 0, cln = c[0], cls = 1;
+    var w = function(v) {
+        cl[cli++] = v;
+    };
+    for(var i = 1; i <= s; ++i)if (c[i] == cln && i != s) ++cls;
+    else {
+        if (!cln && cls > 2) {
+            for(; cls > 138; cls -= 138)w(32754);
+            if (cls > 2) {
+                w(cls > 10 ? cls - 11 << 5 | 28690 : cls - 3 << 5 | 12305);
+                cls = 0;
+            }
+        } else if (cls > 3) {
+            w(cln), --cls;
+            for(; cls > 6; cls -= 6)w(8304);
+            if (cls > 2) w(cls - 3 << 5 | 8208), cls = 0;
+        }
+        while(cls--)w(cln);
+        cls = 1;
+        cln = c[i];
+    }
+    return [
+        cl.subarray(0, cli),
+        s
+    ];
+};
+// calculate the length of output from tree, code lengths
+var $550ca672a3f483a3$var$clen = function(cf, cl) {
+    var l = 0;
+    for(var i = 0; i < cl.length; ++i)l += cf[i] * cl[i];
+    return l;
+};
+// writes a fixed block
+// returns the new bit pos
+var $550ca672a3f483a3$var$wfblk = function(out, pos, dat) {
+    // no need to write 00 as type: TypedArray defaults to 0
+    var s = dat.length;
+    var o = $550ca672a3f483a3$var$shft(pos + 2);
+    out[o] = s & 255;
+    out[o + 1] = s >>> 8;
+    out[o + 2] = out[o] ^ 255;
+    out[o + 3] = out[o + 1] ^ 255;
+    for(var i = 0; i < s; ++i)out[o + i + 4] = dat[i];
+    return (o + 4 + s) * 8;
+};
+// writes a block
+var $550ca672a3f483a3$var$wblk = function(dat, out, final, syms, lf, df, eb, li, bs, bl, p) {
+    $550ca672a3f483a3$var$wbits(out, p++, final);
+    ++lf[256];
+    var _a = $550ca672a3f483a3$var$hTree(lf, 15), dlt = _a[0], mlb = _a[1];
+    var _b = $550ca672a3f483a3$var$hTree(df, 15), ddt = _b[0], mdb = _b[1];
+    var _c = $550ca672a3f483a3$var$lc(dlt), lclt = _c[0], nlc = _c[1];
+    var _d = $550ca672a3f483a3$var$lc(ddt), lcdt = _d[0], ndc = _d[1];
+    var lcfreq = new $550ca672a3f483a3$var$u16(19);
+    for(var i = 0; i < lclt.length; ++i)lcfreq[lclt[i] & 31]++;
+    for(var i = 0; i < lcdt.length; ++i)lcfreq[lcdt[i] & 31]++;
+    var _e = $550ca672a3f483a3$var$hTree(lcfreq, 7), lct = _e[0], mlcb = _e[1];
+    var nlcc = 19;
+    for(; nlcc > 4 && !lct[$550ca672a3f483a3$var$clim[nlcc - 1]]; --nlcc);
+    var flen = bl + 5 << 3;
+    var ftlen = $550ca672a3f483a3$var$clen(lf, $550ca672a3f483a3$var$flt) + $550ca672a3f483a3$var$clen(df, $550ca672a3f483a3$var$fdt) + eb;
+    var dtlen = $550ca672a3f483a3$var$clen(lf, dlt) + $550ca672a3f483a3$var$clen(df, ddt) + eb + 14 + 3 * nlcc + $550ca672a3f483a3$var$clen(lcfreq, lct) + (2 * lcfreq[16] + 3 * lcfreq[17] + 7 * lcfreq[18]);
+    if (flen <= ftlen && flen <= dtlen) return $550ca672a3f483a3$var$wfblk(out, p, dat.subarray(bs, bs + bl));
+    var lm, ll, dm, dl;
+    $550ca672a3f483a3$var$wbits(out, p, 1 + (dtlen < ftlen)), p += 2;
+    if (dtlen < ftlen) {
+        lm = $550ca672a3f483a3$var$hMap(dlt, mlb, 0), ll = dlt, dm = $550ca672a3f483a3$var$hMap(ddt, mdb, 0), dl = ddt;
+        var llm = $550ca672a3f483a3$var$hMap(lct, mlcb, 0);
+        $550ca672a3f483a3$var$wbits(out, p, nlc - 257);
+        $550ca672a3f483a3$var$wbits(out, p + 5, ndc - 1);
+        $550ca672a3f483a3$var$wbits(out, p + 10, nlcc - 4);
+        p += 14;
+        for(var i = 0; i < nlcc; ++i)$550ca672a3f483a3$var$wbits(out, p + 3 * i, lct[$550ca672a3f483a3$var$clim[i]]);
+        p += 3 * nlcc;
+        var lcts = [
+            lclt,
+            lcdt
+        ];
+        for(var it = 0; it < 2; ++it){
+            var clct = lcts[it];
+            for(var i = 0; i < clct.length; ++i){
+                var len = clct[i] & 31;
+                $550ca672a3f483a3$var$wbits(out, p, llm[len]), p += lct[len];
+                if (len > 15) $550ca672a3f483a3$var$wbits(out, p, clct[i] >>> 5 & 127), p += clct[i] >>> 12;
+            }
+        }
+    } else lm = $550ca672a3f483a3$var$flm, ll = $550ca672a3f483a3$var$flt, dm = $550ca672a3f483a3$var$fdm, dl = $550ca672a3f483a3$var$fdt;
+    for(var i = 0; i < li; ++i)if (syms[i] > 255) {
+        var len = syms[i] >>> 18 & 31;
+        $550ca672a3f483a3$var$wbits16(out, p, lm[len + 257]), p += ll[len + 257];
+        if (len > 7) $550ca672a3f483a3$var$wbits(out, p, syms[i] >>> 23 & 31), p += $550ca672a3f483a3$var$fleb[len];
+        var dst = syms[i] & 31;
+        $550ca672a3f483a3$var$wbits16(out, p, dm[dst]), p += dl[dst];
+        if (dst > 3) $550ca672a3f483a3$var$wbits16(out, p, syms[i] >>> 5 & 8191), p += $550ca672a3f483a3$var$fdeb[dst];
+    } else $550ca672a3f483a3$var$wbits16(out, p, lm[syms[i]]), p += ll[syms[i]];
+    $550ca672a3f483a3$var$wbits16(out, p, lm[256]);
+    return p + ll[256];
+};
+// deflate options (nice << 13) | chain
+var $550ca672a3f483a3$var$deo = /*#__PURE__*/ new $550ca672a3f483a3$var$u32([
+    65540,
+    131080,
+    131088,
+    131104,
+    262176,
+    1048704,
+    1048832,
+    2114560,
+    2117632
+]);
+// empty
+var $550ca672a3f483a3$var$et = /*#__PURE__*/ new $550ca672a3f483a3$var$u8(0);
+// compresses data into a raw DEFLATE buffer
+var $550ca672a3f483a3$var$dflt = function(dat, lvl, plvl, pre, post, lst) {
+    var s = dat.length;
+    var o = new $550ca672a3f483a3$var$u8(pre + s + 5 * (1 + Math.ceil(s / 7000)) + post);
+    // writing to this writes to the output buffer
+    var w = o.subarray(pre, o.length - post);
+    var pos = 0;
+    if (!lvl || s < 8) for(var i = 0; i <= s; i += 65535){
+        // end
+        var e = i + 65535;
+        if (e < s) // write full block
+        pos = $550ca672a3f483a3$var$wfblk(w, pos, dat.subarray(i, e));
+        else {
+            // write final block
+            w[i] = lst;
+            pos = $550ca672a3f483a3$var$wfblk(w, pos, dat.subarray(i, s));
+        }
+    }
+    else {
+        var opt = $550ca672a3f483a3$var$deo[lvl - 1];
+        var n = opt >>> 13, c = opt & 8191;
+        var msk_1 = (1 << plvl) - 1;
+        //    prev 2-byte val map    curr 2-byte val map
+        var prev = new $550ca672a3f483a3$var$u16(32768), head = new $550ca672a3f483a3$var$u16(msk_1 + 1);
+        var bs1_1 = Math.ceil(plvl / 3), bs2_1 = 2 * bs1_1;
+        var hsh = function(i) {
+            return (dat[i] ^ dat[i + 1] << bs1_1 ^ dat[i + 2] << bs2_1) & msk_1;
+        };
+        // 24576 is an arbitrary number of maximum symbols per block
+        // 424 buffer for last block
+        var syms = new $550ca672a3f483a3$var$u32(25000);
+        // length/literal freq   distance freq
+        var lf = new $550ca672a3f483a3$var$u16(288), df = new $550ca672a3f483a3$var$u16(32);
+        //  l/lcnt  exbits  index  l/lind  waitdx  bitpos
+        var lc_1 = 0, eb = 0, i = 0, li = 0, wi = 0, bs = 0;
+        for(; i < s; ++i){
+            // hash value
+            // deopt when i > s - 3 - at end, deopt acceptable
+            var hv = hsh(i);
+            // index mod 32768    previous index mod
+            var imod = i & 32767, pimod = head[hv];
+            prev[imod] = pimod;
+            head[hv] = imod;
+            // We always should modify head and prev, but only add symbols if
+            // this data is not yet processed ("wait" for wait index)
+            if (wi <= i) {
+                // bytes remaining
+                var rem = s - i;
+                if ((lc_1 > 7000 || li > 24576) && rem > 423) {
+                    pos = $550ca672a3f483a3$var$wblk(dat, w, 0, syms, lf, df, eb, li, bs, i - bs, pos);
+                    li = lc_1 = eb = 0, bs = i;
+                    for(var j = 0; j < 286; ++j)lf[j] = 0;
+                    for(var j = 0; j < 30; ++j)df[j] = 0;
+                }
+                //  len    dist   chain
+                var l = 2, d = 0, ch_1 = c, dif = imod - pimod & 32767;
+                if (rem > 2 && hv == hsh(i - dif)) {
+                    var maxn = Math.min(n, rem) - 1;
+                    var maxd = Math.min(32767, i);
+                    // max possible length
+                    // not capped at dif because decompressors implement "rolling" index population
+                    var ml = Math.min(258, rem);
+                    while(dif <= maxd && --ch_1 && imod != pimod){
+                        if (dat[i + l] == dat[i + l - dif]) {
+                            var nl = 0;
+                            for(; nl < ml && dat[i + nl] == dat[i + nl - dif]; ++nl);
+                            if (nl > l) {
+                                l = nl, d = dif;
+                                // break out early when we reach "nice" (we are satisfied enough)
+                                if (nl > maxn) break;
+                                // now, find the rarest 2-byte sequence within this
+                                // length of literals and search for that instead.
+                                // Much faster than just using the start
+                                var mmd = Math.min(dif, nl - 2);
+                                var md = 0;
+                                for(var j = 0; j < mmd; ++j){
+                                    var ti = i - dif + j + 32768 & 32767;
+                                    var pti = prev[ti];
+                                    var cd = ti - pti + 32768 & 32767;
+                                    if (cd > md) md = cd, pimod = ti;
+                                }
+                            }
+                        }
+                        // check the previous match
+                        imod = pimod, pimod = prev[imod];
+                        dif += imod - pimod + 32768 & 32767;
+                    }
+                }
+                // d will be nonzero only when a match was found
+                if (d) {
+                    // store both dist and len data in one Uint32
+                    // Make sure this is recognized as a len/dist with 28th bit (2^28)
+                    syms[li++] = 268435456 | $550ca672a3f483a3$var$revfl[l] << 18 | $550ca672a3f483a3$var$revfd[d];
+                    var lin = $550ca672a3f483a3$var$revfl[l] & 31, din = $550ca672a3f483a3$var$revfd[d] & 31;
+                    eb += $550ca672a3f483a3$var$fleb[lin] + $550ca672a3f483a3$var$fdeb[din];
+                    ++lf[257 + lin];
+                    ++df[din];
+                    wi = i + l;
+                    ++lc_1;
+                } else {
+                    syms[li++] = dat[i];
+                    ++lf[dat[i]];
+                }
+            }
+        }
+        pos = $550ca672a3f483a3$var$wblk(dat, w, lst, syms, lf, df, eb, li, bs, i - bs, pos);
+        // this is the easiest way to avoid needing to maintain state
+        if (!lst && pos & 7) pos = $550ca672a3f483a3$var$wfblk(w, pos + 1, $550ca672a3f483a3$var$et);
+    }
+    return $550ca672a3f483a3$var$slc(o, 0, pre + $550ca672a3f483a3$var$shft(pos) + post);
+};
+// CRC32 table
+var $550ca672a3f483a3$var$crct = /*#__PURE__*/ function() {
+    var t = new $550ca672a3f483a3$var$u32(256);
+    for(var i = 0; i < 256; ++i){
+        var c = i, k = 9;
+        while(--k)c = (c & 1 && 0xEDB88320) ^ c >>> 1;
+        t[i] = c;
+    }
+    return t;
+}();
+// CRC32
+var $550ca672a3f483a3$var$crc = function() {
+    var c = -1;
+    return {
+        p: function(d) {
+            // closures have awful performance
+            var cr = c;
+            for(var i = 0; i < d.length; ++i)cr = $550ca672a3f483a3$var$crct[cr & 255 ^ d[i]] ^ cr >>> 8;
+            c = cr;
+        },
+        d: function() {
+            return ~c;
+        }
+    };
+};
+// Alder32
+var $550ca672a3f483a3$var$adler = function() {
+    var a = 1, b = 0;
+    return {
+        p: function(d) {
+            // closures have awful performance
+            var n = a, m = b;
+            var l = d.length;
+            for(var i = 0; i != l;){
+                var e = Math.min(i + 2655, l);
+                for(; i < e; ++i)m += n += d[i];
+                n = (n & 65535) + 15 * (n >> 16), m = (m & 65535) + 15 * (m >> 16);
+            }
+            a = n, b = m;
+        },
+        d: function() {
+            a %= 65521, b %= 65521;
+            return (a & 255) << 24 | a >>> 8 << 16 | (b & 255) << 8 | b >>> 8;
+        }
+    };
+};
+// deflate with opts
+var $550ca672a3f483a3$var$dopt = function(dat, opt, pre, post, st) {
+    return $550ca672a3f483a3$var$dflt(dat, opt.level == null ? 6 : opt.level, opt.mem == null ? Math.ceil(Math.max(8, Math.min(13, Math.log(dat.length))) * 1.5) : 12 + opt.mem, pre, post, !st);
+};
+// Walmart object spread
+var $550ca672a3f483a3$var$mrg = function(a, b) {
+    var o = {};
+    for(var k in a)o[k] = a[k];
+    for(var k in b)o[k] = b[k];
+    return o;
+};
+// worker clone
+// This is possibly the craziest part of the entire codebase, despite how simple it may seem.
+// The only parameter to this function is a closure that returns an array of variables outside of the function scope.
+// We're going to try to figure out the variable names used in the closure as strings because that is crucial for workerization.
+// We will return an object mapping of true variable name to value (basically, the current scope as a JS object).
+// The reason we can't just use the original variable names is minifiers mangling the toplevel scope.
+// This took me three weeks to figure out how to do.
+var $550ca672a3f483a3$var$wcln = function(fn, fnStr, td) {
+    var dt = fn();
+    var st = fn.toString();
+    var ks = st.slice(st.indexOf("[") + 1, st.lastIndexOf("]")).replace(/ /g, "").split(",");
+    for(var i = 0; i < dt.length; ++i){
+        var v = dt[i], k = ks[i];
+        if (typeof v == "function") {
+            fnStr += ";" + k + "=";
+            var st_1 = v.toString();
+            if (v.prototype) {
+                // for global objects
+                if (st_1.indexOf("[native code]") != -1) {
+                    var spInd = st_1.indexOf(" ", 8) + 1;
+                    fnStr += st_1.slice(spInd, st_1.indexOf("(", spInd));
+                } else {
+                    fnStr += st_1;
+                    for(var t in v.prototype)fnStr += ";" + k + ".prototype." + t + "=" + v.prototype[t].toString();
+                }
+            } else fnStr += st_1;
+        } else td[k] = v;
+    }
+    return [
+        fnStr,
+        td
+    ];
+};
+var $550ca672a3f483a3$var$ch = [];
+// clone bufs
+var $550ca672a3f483a3$var$cbfs = function(v) {
+    var tl = [];
+    for(var k in v)if (v[k] instanceof $550ca672a3f483a3$var$u8 || v[k] instanceof $550ca672a3f483a3$var$u16 || v[k] instanceof $550ca672a3f483a3$var$u32) tl.push((v[k] = new v[k].constructor(v[k])).buffer);
+    return tl;
+};
+// use a worker to execute code
+var $550ca672a3f483a3$var$wrkr = function(fns, init, id, cb) {
+    var _a;
+    if (!$550ca672a3f483a3$var$ch[id]) {
+        var fnStr = "", td_1 = {}, m = fns.length - 1;
+        for(var i = 0; i < m; ++i)_a = $550ca672a3f483a3$var$wcln(fns[i], fnStr, td_1), fnStr = _a[0], td_1 = _a[1];
+        $550ca672a3f483a3$var$ch[id] = $550ca672a3f483a3$var$wcln(fns[m], fnStr, td_1);
+    }
+    var td = $550ca672a3f483a3$var$mrg({}, $550ca672a3f483a3$var$ch[id][1]);
+    return $550ca672a3f483a3$var$wk($550ca672a3f483a3$var$ch[id][0] + ";onmessage=function(e){for(var k in e.data)self[k]=e.data[k];onmessage=" + init.toString() + "}", id, td, $550ca672a3f483a3$var$cbfs(td), cb);
+};
+// base async inflate fn
+var $550ca672a3f483a3$var$bInflt = function() {
+    return [
+        $550ca672a3f483a3$var$u8,
+        $550ca672a3f483a3$var$u16,
+        $550ca672a3f483a3$var$u32,
+        $550ca672a3f483a3$var$fleb,
+        $550ca672a3f483a3$var$fdeb,
+        $550ca672a3f483a3$var$clim,
+        $550ca672a3f483a3$var$fl,
+        $550ca672a3f483a3$var$fd,
+        $550ca672a3f483a3$var$flrm,
+        $550ca672a3f483a3$var$fdrm,
+        $550ca672a3f483a3$var$rev,
+        $550ca672a3f483a3$var$hMap,
+        $550ca672a3f483a3$var$max,
+        $550ca672a3f483a3$var$bits,
+        $550ca672a3f483a3$var$bits16,
+        $550ca672a3f483a3$var$shft,
+        $550ca672a3f483a3$var$slc,
+        $550ca672a3f483a3$var$inflt,
+        $550ca672a3f483a3$export$90366d8b308ba94a,
+        $550ca672a3f483a3$var$pbf,
+        $550ca672a3f483a3$var$gu8
+    ];
+};
+var $550ca672a3f483a3$var$bDflt = function() {
+    return [
+        $550ca672a3f483a3$var$u8,
+        $550ca672a3f483a3$var$u16,
+        $550ca672a3f483a3$var$u32,
+        $550ca672a3f483a3$var$fleb,
+        $550ca672a3f483a3$var$fdeb,
+        $550ca672a3f483a3$var$clim,
+        $550ca672a3f483a3$var$revfl,
+        $550ca672a3f483a3$var$revfd,
+        $550ca672a3f483a3$var$flm,
+        $550ca672a3f483a3$var$flt,
+        $550ca672a3f483a3$var$fdm,
+        $550ca672a3f483a3$var$fdt,
+        $550ca672a3f483a3$var$rev,
+        $550ca672a3f483a3$var$deo,
+        $550ca672a3f483a3$var$et,
+        $550ca672a3f483a3$var$hMap,
+        $550ca672a3f483a3$var$wbits,
+        $550ca672a3f483a3$var$wbits16,
+        $550ca672a3f483a3$var$hTree,
+        $550ca672a3f483a3$var$ln,
+        $550ca672a3f483a3$var$lc,
+        $550ca672a3f483a3$var$clen,
+        $550ca672a3f483a3$var$wfblk,
+        $550ca672a3f483a3$var$wblk,
+        $550ca672a3f483a3$var$shft,
+        $550ca672a3f483a3$var$slc,
+        $550ca672a3f483a3$var$dflt,
+        $550ca672a3f483a3$var$dopt,
+        $550ca672a3f483a3$export$21533ff51b8a0b4a,
+        $550ca672a3f483a3$var$pbf
+    ];
+};
+// gzip extra
+var $550ca672a3f483a3$var$gze = function() {
+    return [
+        $550ca672a3f483a3$var$gzh,
+        $550ca672a3f483a3$var$gzhl,
+        $550ca672a3f483a3$var$wbytes,
+        $550ca672a3f483a3$var$crc,
+        $550ca672a3f483a3$var$crct
+    ];
+};
+// gunzip extra
+var $550ca672a3f483a3$var$guze = function() {
+    return [
+        $550ca672a3f483a3$var$gzs,
+        $550ca672a3f483a3$var$gzl
+    ];
+};
+// zlib extra
+var $550ca672a3f483a3$var$zle = function() {
+    return [
+        $550ca672a3f483a3$var$zlh,
+        $550ca672a3f483a3$var$wbytes,
+        $550ca672a3f483a3$var$adler
+    ];
+};
+// unzlib extra
+var $550ca672a3f483a3$var$zule = function() {
+    return [
+        $550ca672a3f483a3$var$zlv
+    ];
+};
+// post buf
+var $550ca672a3f483a3$var$pbf = function(msg) {
+    return postMessage(msg, [
+        msg.buffer
+    ]);
+};
+// get u8
+var $550ca672a3f483a3$var$gu8 = function(o) {
+    return o && o.size && new $550ca672a3f483a3$var$u8(o.size);
+};
+// async helper
+var $550ca672a3f483a3$var$cbify = function(dat, opts, fns, init, id, cb) {
+    var w = $550ca672a3f483a3$var$wrkr(fns, init, id, function(err, dat) {
+        w.terminate();
+        cb(err, dat);
+    });
+    w.postMessage([
+        dat,
+        opts
+    ], opts.consume ? [
+        dat.buffer
+    ] : []);
+    return function() {
+        w.terminate();
+    };
+};
+// auto stream
+var $550ca672a3f483a3$var$astrm = function(strm) {
+    strm.ondata = function(dat, final) {
+        return postMessage([
+            dat,
+            final
+        ], [
+            dat.buffer
+        ]);
+    };
+    return function(ev) {
+        return strm.push(ev.data[0], ev.data[1]);
+    };
+};
+// async stream attach
+var $550ca672a3f483a3$var$astrmify = function(fns, strm, opts, init, id) {
+    var t;
+    var w = $550ca672a3f483a3$var$wrkr(fns, init, id, function(err, dat) {
+        if (err) w.terminate(), strm.ondata.call(strm, err);
+        else {
+            if (dat[1]) w.terminate();
+            strm.ondata.call(strm, err, dat[0], dat[1]);
+        }
+    });
+    w.postMessage(opts);
+    strm.push = function(d, f) {
+        if (t) throw "stream finished";
+        if (!strm.ondata) throw "no stream handler";
+        w.postMessage([
+            d,
+            t = f
+        ], [
+            d.buffer
+        ]);
+    };
+    strm.terminate = function() {
+        w.terminate();
+    };
+};
+// read 2 bytes
+var $550ca672a3f483a3$var$b2 = function(d, b) {
+    return d[b] | d[b + 1] << 8;
+};
+// read 4 bytes
+var $550ca672a3f483a3$var$b4 = function(d, b) {
+    return (d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24) >>> 0;
+};
+var $550ca672a3f483a3$var$b8 = function(d, b) {
+    return $550ca672a3f483a3$var$b4(d, b) + $550ca672a3f483a3$var$b4(d, b + 4) * 4294967296;
+};
+// write bytes
+var $550ca672a3f483a3$var$wbytes = function(d, b, v) {
+    for(; v; ++b)d[b] = v, v >>>= 8;
+};
+// gzip header
+var $550ca672a3f483a3$var$gzh = function(c, o) {
+    var fn = o.filename;
+    c[0] = 31, c[1] = 139, c[2] = 8, c[8] = o.level < 2 ? 4 : o.level == 9 ? 2 : 0, c[9] = 3; // assume Unix
+    if (o.mtime != 0) $550ca672a3f483a3$var$wbytes(c, 4, Math.floor(new Date(o.mtime || Date.now()) / 1000));
+    if (fn) {
+        c[3] = 8;
+        for(var i = 0; i <= fn.length; ++i)c[i + 10] = fn.charCodeAt(i);
+    }
+};
+// gzip footer: -8 to -4 = CRC, -4 to -0 is length
+// gzip start
+var $550ca672a3f483a3$var$gzs = function(d) {
+    if (d[0] != 31 || d[1] != 139 || d[2] != 8) throw "invalid gzip data";
+    var flg = d[3];
+    var st = 10;
+    if (flg & 4) st += d[10] | (d[11] << 8) + 2;
+    for(var zs = (flg >> 3 & 1) + (flg >> 4 & 1); zs > 0; zs -= !d[st++]);
+    return st + (flg & 2);
+};
+// gzip length
+var $550ca672a3f483a3$var$gzl = function(d) {
+    var l = d.length;
+    return (d[l - 4] | d[l - 3] << 8 | d[l - 2] << 16 | d[l - 1] << 24) >>> 0;
+};
+// gzip header length
+var $550ca672a3f483a3$var$gzhl = function(o) {
+    return 10 + (o.filename && o.filename.length + 1 || 0);
+};
+// zlib header
+var $550ca672a3f483a3$var$zlh = function(c, o) {
+    var lv = o.level, fl = lv == 0 ? 0 : lv < 6 ? 1 : lv == 9 ? 3 : 2;
+    c[0] = 120, c[1] = fl << 6 | (fl ? 32 - 2 * fl : 1);
+};
+// zlib valid
+var $550ca672a3f483a3$var$zlv = function(d) {
+    if ((d[0] & 15) != 8 || d[0] >>> 4 > 7 || (d[0] << 8 | d[1]) % 31) throw "invalid zlib data";
+    if (d[1] & 32) throw "invalid zlib data: preset dictionaries not supported";
+};
+function $550ca672a3f483a3$var$AsyncCmpStrm(opts, cb) {
+    if (!cb && typeof opts == "function") cb = opts, opts = {};
+    this.ondata = cb;
+    return opts;
+}
+// zlib footer: -4 to -0 is Adler32
+/**
+ * Streaming DEFLATE compression
+ */ var $550ca672a3f483a3$export$ae157b6234afe138 = /*#__PURE__*/ function() {
+    function Deflate(opts, cb) {
+        if (!cb && typeof opts == "function") cb = opts, opts = {};
+        this.ondata = cb;
+        this.o = opts || {};
+    }
+    Deflate.prototype.p = function(c, f) {
+        this.ondata($550ca672a3f483a3$var$dopt(c, this.o, 0, 0, !f), f);
+    };
+    /**
+     * Pushes a chunk to be deflated
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ Deflate.prototype.push = function(chunk, final) {
+        if (this.d) throw "stream finished";
+        if (!this.ondata) throw "no stream handler";
+        this.d = final;
+        this.p(chunk, final || false);
+    };
+    return Deflate;
+}();
+/**
+ * Asynchronous streaming DEFLATE compression
+ */ var $550ca672a3f483a3$export$84e526fabcba03e3 = /*#__PURE__*/ function() {
+    function AsyncDeflate(opts, cb) {
+        $550ca672a3f483a3$var$astrmify([
+            $550ca672a3f483a3$var$bDflt,
+            function() {
+                return [
+                    $550ca672a3f483a3$var$astrm,
+                    $550ca672a3f483a3$export$ae157b6234afe138
+                ];
+            }
+        ], this, $550ca672a3f483a3$var$AsyncCmpStrm.call(this, opts, cb), function(ev) {
+            var strm = new $550ca672a3f483a3$export$ae157b6234afe138(ev.data);
+            onmessage = $550ca672a3f483a3$var$astrm(strm);
+        }, 6);
+    }
+    return AsyncDeflate;
+}();
+function $550ca672a3f483a3$export$2316623ecd1285ab(data, opts, cb) {
+    if (!cb) cb = opts, opts = {};
+    if (typeof cb != "function") throw "no callback";
+    return $550ca672a3f483a3$var$cbify(data, opts, [
+        $550ca672a3f483a3$var$bDflt
+    ], function(ev) {
+        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$21533ff51b8a0b4a(ev.data[0], ev.data[1]));
+    }, 0, cb);
+}
+function $550ca672a3f483a3$export$21533ff51b8a0b4a(data, opts) {
+    return $550ca672a3f483a3$var$dopt(data, opts || {}, 0, 0);
+}
+/**
+ * Streaming DEFLATE decompression
+ */ var $550ca672a3f483a3$export$d1de70a877d6e43c = /*#__PURE__*/ function() {
+    /**
+     * Creates an inflation stream
+     * @param cb The callback to call whenever data is inflated
+     */ function Inflate(cb) {
+        this.s = {};
+        this.p = new $550ca672a3f483a3$var$u8(0);
+        this.ondata = cb;
+    }
+    Inflate.prototype.e = function(c) {
+        if (this.d) throw "stream finished";
+        if (!this.ondata) throw "no stream handler";
+        var l = this.p.length;
+        var n = new $550ca672a3f483a3$var$u8(l + c.length);
+        n.set(this.p), n.set(c, l), this.p = n;
+    };
+    Inflate.prototype.c = function(final) {
+        this.d = this.s.i = final || false;
+        var bts = this.s.b;
+        var dt = $550ca672a3f483a3$var$inflt(this.p, this.o, this.s);
+        this.ondata($550ca672a3f483a3$var$slc(dt, bts, this.s.b), this.d);
+        this.o = $550ca672a3f483a3$var$slc(dt, this.s.b - 32768), this.s.b = this.o.length;
+        this.p = $550ca672a3f483a3$var$slc(this.p, this.s.p / 8 | 0), this.s.p &= 7;
+    };
+    /**
+     * Pushes a chunk to be inflated
+     * @param chunk The chunk to push
+     * @param final Whether this is the final chunk
+     */ Inflate.prototype.push = function(chunk, final) {
+        this.e(chunk), this.c(final);
+    };
+    return Inflate;
+}();
+/**
+ * Asynchronous streaming DEFLATE decompression
+ */ var $550ca672a3f483a3$export$fff8358d6dbaa9cc = /*#__PURE__*/ function() {
+    /**
+     * Creates an asynchronous inflation stream
+     * @param cb The callback to call whenever data is deflated
+     */ function AsyncInflate(cb) {
+        this.ondata = cb;
+        $550ca672a3f483a3$var$astrmify([
+            $550ca672a3f483a3$var$bInflt,
+            function() {
+                return [
+                    $550ca672a3f483a3$var$astrm,
+                    $550ca672a3f483a3$export$d1de70a877d6e43c
+                ];
+            }
+        ], this, 0, function() {
+            var strm = new $550ca672a3f483a3$export$d1de70a877d6e43c();
+            onmessage = $550ca672a3f483a3$var$astrm(strm);
+        }, 7);
+    }
+    return AsyncInflate;
+}();
+function $550ca672a3f483a3$export$cae1ce83fe4a1782(data, opts, cb) {
+    if (!cb) cb = opts, opts = {};
+    if (typeof cb != "function") throw "no callback";
+    return $550ca672a3f483a3$var$cbify(data, opts, [
+        $550ca672a3f483a3$var$bInflt
+    ], function(ev) {
+        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$90366d8b308ba94a(ev.data[0], $550ca672a3f483a3$var$gu8(ev.data[1])));
+    }, 1, cb);
+}
+function $550ca672a3f483a3$export$90366d8b308ba94a(data, out) {
+    return $550ca672a3f483a3$var$inflt(data, out);
+}
+// before you yell at me for not just using extends, my reason is that TS inheritance is hard to workerize.
+/**
+ * Streaming GZIP compression
+ */ var $550ca672a3f483a3$export$8e4b66d280bf8342 = /*#__PURE__*/ function() {
+    function Gzip(opts, cb) {
+        this.c = $550ca672a3f483a3$var$crc();
+        this.l = 0;
+        this.v = 1;
+        $550ca672a3f483a3$export$ae157b6234afe138.call(this, opts, cb);
+    }
+    /**
+     * Pushes a chunk to be GZIPped
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ Gzip.prototype.push = function(chunk, final) {
+        $550ca672a3f483a3$export$ae157b6234afe138.prototype.push.call(this, chunk, final);
+    };
+    Gzip.prototype.p = function(c, f) {
+        this.c.p(c);
+        this.l += c.length;
+        var raw = $550ca672a3f483a3$var$dopt(c, this.o, this.v && $550ca672a3f483a3$var$gzhl(this.o), f && 8, !f);
+        if (this.v) $550ca672a3f483a3$var$gzh(raw, this.o), this.v = 0;
+        if (f) $550ca672a3f483a3$var$wbytes(raw, raw.length - 8, this.c.d()), $550ca672a3f483a3$var$wbytes(raw, raw.length - 4, this.l);
+        this.ondata(raw, f);
+    };
+    return Gzip;
+}();
+/**
+ * Asynchronous streaming GZIP compression
+ */ var $550ca672a3f483a3$export$b4c75ae96cdf708b = /*#__PURE__*/ function() {
+    function AsyncGzip(opts, cb) {
+        $550ca672a3f483a3$var$astrmify([
+            $550ca672a3f483a3$var$bDflt,
+            $550ca672a3f483a3$var$gze,
+            function() {
+                return [
+                    $550ca672a3f483a3$var$astrm,
+                    $550ca672a3f483a3$export$ae157b6234afe138,
+                    $550ca672a3f483a3$export$8e4b66d280bf8342
+                ];
+            }
+        ], this, $550ca672a3f483a3$var$AsyncCmpStrm.call(this, opts, cb), function(ev) {
+            var strm = new $550ca672a3f483a3$export$8e4b66d280bf8342(ev.data);
+            onmessage = $550ca672a3f483a3$var$astrm(strm);
+        }, 8);
+    }
+    return AsyncGzip;
+}();
+function $550ca672a3f483a3$export$69f0ea7cf3a331a8(data, opts, cb) {
+    if (!cb) cb = opts, opts = {};
+    if (typeof cb != "function") throw "no callback";
+    return $550ca672a3f483a3$var$cbify(data, opts, [
+        $550ca672a3f483a3$var$bDflt,
+        $550ca672a3f483a3$var$gze,
+        function() {
+            return [
+                $550ca672a3f483a3$export$3d616c3fb3e15483
+            ];
+        }
+    ], function(ev) {
+        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$3d616c3fb3e15483(ev.data[0], ev.data[1]));
+    }, 2, cb);
+}
+function $550ca672a3f483a3$export$3d616c3fb3e15483(data, opts) {
+    if (!opts) opts = {};
+    var c = $550ca672a3f483a3$var$crc(), l = data.length;
+    c.p(data);
+    var d = $550ca672a3f483a3$var$dopt(data, opts, $550ca672a3f483a3$var$gzhl(opts), 8), s = d.length;
+    return $550ca672a3f483a3$var$gzh(d, opts), $550ca672a3f483a3$var$wbytes(d, s - 8, c.d()), $550ca672a3f483a3$var$wbytes(d, s - 4, l), d;
+}
+/**
+ * Streaming GZIP decompression
+ */ var $550ca672a3f483a3$export$4cb607de6db70415 = /*#__PURE__*/ function() {
+    /**
+     * Creates a GUNZIP stream
+     * @param cb The callback to call whenever data is inflated
+     */ function Gunzip(cb) {
+        this.v = 1;
+        $550ca672a3f483a3$export$d1de70a877d6e43c.call(this, cb);
+    }
+    /**
+     * Pushes a chunk to be GUNZIPped
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ Gunzip.prototype.push = function(chunk, final) {
+        $550ca672a3f483a3$export$d1de70a877d6e43c.prototype.e.call(this, chunk);
+        if (this.v) {
+            var s = this.p.length > 3 ? $550ca672a3f483a3$var$gzs(this.p) : 4;
+            if (s >= this.p.length && !final) return;
+            this.p = this.p.subarray(s), this.v = 0;
+        }
+        if (final) {
+            if (this.p.length < 8) throw "invalid gzip stream";
+            this.p = this.p.subarray(0, -8);
+        }
+        // necessary to prevent TS from using the closure value
+        // This allows for workerization to function correctly
+        $550ca672a3f483a3$export$d1de70a877d6e43c.prototype.c.call(this, final);
+    };
+    return Gunzip;
+}();
+/**
+ * Asynchronous streaming GZIP decompression
+ */ var $550ca672a3f483a3$export$d5adcdd968132151 = /*#__PURE__*/ function() {
+    /**
+     * Creates an asynchronous GUNZIP stream
+     * @param cb The callback to call whenever data is deflated
+     */ function AsyncGunzip(cb) {
+        this.ondata = cb;
+        $550ca672a3f483a3$var$astrmify([
+            $550ca672a3f483a3$var$bInflt,
+            $550ca672a3f483a3$var$guze,
+            function() {
+                return [
+                    $550ca672a3f483a3$var$astrm,
+                    $550ca672a3f483a3$export$d1de70a877d6e43c,
+                    $550ca672a3f483a3$export$4cb607de6db70415
+                ];
+            }
+        ], this, 0, function() {
+            var strm = new $550ca672a3f483a3$export$4cb607de6db70415();
+            onmessage = $550ca672a3f483a3$var$astrm(strm);
+        }, 9);
+    }
+    return AsyncGunzip;
+}();
+function $550ca672a3f483a3$export$b6df3e950734d697(data, opts, cb) {
+    if (!cb) cb = opts, opts = {};
+    if (typeof cb != "function") throw "no callback";
+    return $550ca672a3f483a3$var$cbify(data, opts, [
+        $550ca672a3f483a3$var$bInflt,
+        $550ca672a3f483a3$var$guze,
+        function() {
+            return [
+                $550ca672a3f483a3$export$c80456f7aaba691c
+            ];
+        }
+    ], function(ev) {
+        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$c80456f7aaba691c(ev.data[0]));
+    }, 3, cb);
+}
+function $550ca672a3f483a3$export$c80456f7aaba691c(data, out) {
+    return $550ca672a3f483a3$var$inflt(data.subarray($550ca672a3f483a3$var$gzs(data), -8), out || new $550ca672a3f483a3$var$u8($550ca672a3f483a3$var$gzl(data)));
+}
+/**
+ * Streaming Zlib compression
+ */ var $550ca672a3f483a3$export$4187ccf2467013b9 = /*#__PURE__*/ function() {
+    function Zlib(opts, cb) {
+        this.c = $550ca672a3f483a3$var$adler();
+        this.v = 1;
+        $550ca672a3f483a3$export$ae157b6234afe138.call(this, opts, cb);
+    }
+    /**
+     * Pushes a chunk to be zlibbed
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ Zlib.prototype.push = function(chunk, final) {
+        $550ca672a3f483a3$export$ae157b6234afe138.prototype.push.call(this, chunk, final);
+    };
+    Zlib.prototype.p = function(c, f) {
+        this.c.p(c);
+        var raw = $550ca672a3f483a3$var$dopt(c, this.o, this.v && 2, f && 4, !f);
+        if (this.v) $550ca672a3f483a3$var$zlh(raw, this.o), this.v = 0;
+        if (f) $550ca672a3f483a3$var$wbytes(raw, raw.length - 4, this.c.d());
+        this.ondata(raw, f);
+    };
+    return Zlib;
+}();
+/**
+ * Asynchronous streaming Zlib compression
+ */ var $550ca672a3f483a3$export$bedbe3a2c2136490 = /*#__PURE__*/ function() {
+    function AsyncZlib(opts, cb) {
+        $550ca672a3f483a3$var$astrmify([
+            $550ca672a3f483a3$var$bDflt,
+            $550ca672a3f483a3$var$zle,
+            function() {
+                return [
+                    $550ca672a3f483a3$var$astrm,
+                    $550ca672a3f483a3$export$ae157b6234afe138,
+                    $550ca672a3f483a3$export$4187ccf2467013b9
+                ];
+            }
+        ], this, $550ca672a3f483a3$var$AsyncCmpStrm.call(this, opts, cb), function(ev) {
+            var strm = new $550ca672a3f483a3$export$4187ccf2467013b9(ev.data);
+            onmessage = $550ca672a3f483a3$var$astrm(strm);
+        }, 10);
+    }
+    return AsyncZlib;
+}();
+function $550ca672a3f483a3$export$925212de7058410b(data, opts, cb) {
+    if (!cb) cb = opts, opts = {};
+    if (typeof cb != "function") throw "no callback";
+    return $550ca672a3f483a3$var$cbify(data, opts, [
+        $550ca672a3f483a3$var$bDflt,
+        $550ca672a3f483a3$var$zle,
+        function() {
+            return [
+                $550ca672a3f483a3$export$f87121a6d50aff25
+            ];
+        }
+    ], function(ev) {
+        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$f87121a6d50aff25(ev.data[0], ev.data[1]));
+    }, 4, cb);
+}
+function $550ca672a3f483a3$export$f87121a6d50aff25(data, opts) {
+    if (!opts) opts = {};
+    var a = $550ca672a3f483a3$var$adler();
+    a.p(data);
+    var d = $550ca672a3f483a3$var$dopt(data, opts, 2, 4);
+    return $550ca672a3f483a3$var$zlh(d, opts), $550ca672a3f483a3$var$wbytes(d, d.length - 4, a.d()), d;
+}
+/**
+ * Streaming Zlib decompression
+ */ var $550ca672a3f483a3$export$af2424f875ff1b17 = /*#__PURE__*/ function() {
+    /**
+     * Creates a Zlib decompression stream
+     * @param cb The callback to call whenever data is inflated
+     */ function Unzlib(cb) {
+        this.v = 1;
+        $550ca672a3f483a3$export$d1de70a877d6e43c.call(this, cb);
+    }
+    /**
+     * Pushes a chunk to be unzlibbed
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ Unzlib.prototype.push = function(chunk, final) {
+        $550ca672a3f483a3$export$d1de70a877d6e43c.prototype.e.call(this, chunk);
+        if (this.v) {
+            if (this.p.length < 2 && !final) return;
+            this.p = this.p.subarray(2), this.v = 0;
+        }
+        if (final) {
+            if (this.p.length < 4) throw "invalid zlib stream";
+            this.p = this.p.subarray(0, -4);
+        }
+        // necessary to prevent TS from using the closure value
+        // This allows for workerization to function correctly
+        $550ca672a3f483a3$export$d1de70a877d6e43c.prototype.c.call(this, final);
+    };
+    return Unzlib;
+}();
+/**
+ * Asynchronous streaming Zlib decompression
+ */ var $550ca672a3f483a3$export$cf6668790220dcad = /*#__PURE__*/ function() {
+    /**
+     * Creates an asynchronous Zlib decompression stream
+     * @param cb The callback to call whenever data is deflated
+     */ function AsyncUnzlib(cb) {
+        this.ondata = cb;
+        $550ca672a3f483a3$var$astrmify([
+            $550ca672a3f483a3$var$bInflt,
+            $550ca672a3f483a3$var$zule,
+            function() {
+                return [
+                    $550ca672a3f483a3$var$astrm,
+                    $550ca672a3f483a3$export$d1de70a877d6e43c,
+                    $550ca672a3f483a3$export$af2424f875ff1b17
+                ];
+            }
+        ], this, 0, function() {
+            var strm = new $550ca672a3f483a3$export$af2424f875ff1b17();
+            onmessage = $550ca672a3f483a3$var$astrm(strm);
+        }, 11);
+    }
+    return AsyncUnzlib;
+}();
+function $550ca672a3f483a3$export$ca7cbb494e731274(data, opts, cb) {
+    if (!cb) cb = opts, opts = {};
+    if (typeof cb != "function") throw "no callback";
+    return $550ca672a3f483a3$var$cbify(data, opts, [
+        $550ca672a3f483a3$var$bInflt,
+        $550ca672a3f483a3$var$zule,
+        function() {
+            return [
+                $550ca672a3f483a3$export$9ec8134f0f1b9fc6
+            ];
+        }
+    ], function(ev) {
+        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$9ec8134f0f1b9fc6(ev.data[0], $550ca672a3f483a3$var$gu8(ev.data[1])));
+    }, 5, cb);
+}
+function $550ca672a3f483a3$export$9ec8134f0f1b9fc6(data, out) {
+    return $550ca672a3f483a3$var$inflt(($550ca672a3f483a3$var$zlv(data), data.subarray(2, -4)), out);
+}
+/**
+ * Streaming GZIP, Zlib, or raw DEFLATE decompression
+ */ var $550ca672a3f483a3$export$578fe199ef655b76 = /*#__PURE__*/ function() {
+    /**
+     * Creates a decompression stream
+     * @param cb The callback to call whenever data is decompressed
+     */ function Decompress(cb) {
+        this.G = $550ca672a3f483a3$export$4cb607de6db70415;
+        this.I = $550ca672a3f483a3$export$d1de70a877d6e43c;
+        this.Z = $550ca672a3f483a3$export$af2424f875ff1b17;
+        this.ondata = cb;
+    }
+    /**
+     * Pushes a chunk to be decompressed
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ Decompress.prototype.push = function(chunk, final) {
+        if (!this.ondata) throw "no stream handler";
+        if (!this.s) {
+            if (this.p && this.p.length) {
+                var n = new $550ca672a3f483a3$var$u8(this.p.length + chunk.length);
+                n.set(this.p), n.set(chunk, this.p.length);
+            } else this.p = chunk;
+            if (this.p.length > 2) {
+                var _this_1 = this;
+                var cb = function() {
+                    _this_1.ondata.apply(_this_1, arguments);
+                };
+                this.s = this.p[0] == 31 && this.p[1] == 139 && this.p[2] == 8 ? new this.G(cb) : (this.p[0] & 15) != 8 || this.p[0] >> 4 > 7 || (this.p[0] << 8 | this.p[1]) % 31 ? new this.I(cb) : new this.Z(cb);
+                this.s.push(this.p, final);
+                this.p = null;
+            }
+        } else this.s.push(chunk, final);
+    };
+    return Decompress;
+}();
+/**
+ * Asynchronous streaming GZIP, Zlib, or raw DEFLATE decompression
+ */ var $550ca672a3f483a3$export$ae2c1d81988d4b43 = /*#__PURE__*/ function() {
+    /**
+   * Creates an asynchronous decompression stream
+   * @param cb The callback to call whenever data is decompressed
+   */ function AsyncDecompress(cb) {
+        this.G = $550ca672a3f483a3$export$d5adcdd968132151;
+        this.I = $550ca672a3f483a3$export$fff8358d6dbaa9cc;
+        this.Z = $550ca672a3f483a3$export$cf6668790220dcad;
+        this.ondata = cb;
+    }
+    /**
+     * Pushes a chunk to be decompressed
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ AsyncDecompress.prototype.push = function(chunk, final) {
+        $550ca672a3f483a3$export$578fe199ef655b76.prototype.push.call(this, chunk, final);
+    };
+    return AsyncDecompress;
+}();
+function $550ca672a3f483a3$export$678d868aab8fb3c7(data, opts, cb) {
+    if (!cb) cb = opts, opts = {};
+    if (typeof cb != "function") throw "no callback";
+    return data[0] == 31 && data[1] == 139 && data[2] == 8 ? $550ca672a3f483a3$export$b6df3e950734d697(data, opts, cb) : (data[0] & 15) != 8 || data[0] >> 4 > 7 || (data[0] << 8 | data[1]) % 31 ? $550ca672a3f483a3$export$cae1ce83fe4a1782(data, opts, cb) : $550ca672a3f483a3$export$ca7cbb494e731274(data, opts, cb);
+}
+function $550ca672a3f483a3$export$c4bdbbbc9a4faabe(data, out) {
+    return data[0] == 31 && data[1] == 139 && data[2] == 8 ? $550ca672a3f483a3$export$c80456f7aaba691c(data, out) : (data[0] & 15) != 8 || data[0] >> 4 > 7 || (data[0] << 8 | data[1]) % 31 ? $550ca672a3f483a3$export$90366d8b308ba94a(data, out) : $550ca672a3f483a3$export$9ec8134f0f1b9fc6(data, out);
+}
+// flatten a directory structure
+var $550ca672a3f483a3$var$fltn = function(d, p, t, o) {
+    for(var k in d){
+        var val = d[k], n = p + k;
+        if (val instanceof $550ca672a3f483a3$var$u8) t[n] = [
+            val,
+            o
+        ];
+        else if (Array.isArray(val)) t[n] = [
+            val[0],
+            $550ca672a3f483a3$var$mrg(o, val[1])
+        ];
+        else $550ca672a3f483a3$var$fltn(val, n + "/", t, o);
+    }
+};
+// text encoder
+var $550ca672a3f483a3$var$te = typeof TextEncoder != "undefined" && /*#__PURE__*/ new TextEncoder();
+// text decoder
+var $550ca672a3f483a3$var$td = typeof TextDecoder != "undefined" && /*#__PURE__*/ new TextDecoder();
+// text decoder stream
+var $550ca672a3f483a3$var$tds = 0;
+try {
+    $550ca672a3f483a3$var$td.decode($550ca672a3f483a3$var$et, {
+        stream: true
+    });
+    $550ca672a3f483a3$var$tds = 1;
+} catch (e) {}
+// decode UTF8
+var $550ca672a3f483a3$var$dutf8 = function(d) {
+    for(var r = "", i = 0;;){
+        var c = d[i++];
+        var eb = (c > 127) + (c > 223) + (c > 239);
+        if (i + eb > d.length) return [
+            r,
+            $550ca672a3f483a3$var$slc(d, i - 1)
+        ];
+        if (!eb) r += String.fromCharCode(c);
+        else if (eb == 3) c = ((c & 15) << 18 | (d[i++] & 63) << 12 | (d[i++] & 63) << 6 | d[i++] & 63) - 65536, r += String.fromCharCode(55296 | c >> 10, 56320 | c & 1023);
+        else if (eb & 1) r += String.fromCharCode((c & 31) << 6 | d[i++] & 63);
+        else r += String.fromCharCode((c & 15) << 12 | (d[i++] & 63) << 6 | d[i++] & 63);
+    }
+};
+/**
+ * Streaming UTF-8 decoding
+ */ var $550ca672a3f483a3$export$ba46860a31c72e94 = /*#__PURE__*/ function() {
+    /**
+     * Creates a UTF-8 decoding stream
+     * @param cb The callback to call whenever data is decoded
+     */ function DecodeUTF8(cb) {
+        this.ondata = cb;
+        if ($550ca672a3f483a3$var$tds) this.t = new TextDecoder();
+        else this.p = $550ca672a3f483a3$var$et;
+    }
+    /**
+     * Pushes a chunk to be decoded from UTF-8 binary
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ DecodeUTF8.prototype.push = function(chunk, final) {
+        if (!this.ondata) throw "no callback";
+        final = !!final;
+        if (this.t) {
+            this.ondata(this.t.decode(chunk, {
+                stream: true
+            }), final);
+            if (final) {
+                if (this.t.decode().length) throw "invalid utf-8 data";
+                this.t = null;
+            }
+            return;
+        }
+        if (!this.p) throw "stream finished";
+        var dat = new $550ca672a3f483a3$var$u8(this.p.length + chunk.length);
+        dat.set(this.p);
+        dat.set(chunk, this.p.length);
+        var _a = $550ca672a3f483a3$var$dutf8(dat), ch = _a[0], np = _a[1];
+        if (final) {
+            if (np.length) throw "invalid utf-8 data";
+            this.p = null;
+        } else this.p = np;
+        this.ondata(ch, final);
+    };
+    return DecodeUTF8;
+}();
+/**
+ * Streaming UTF-8 encoding
+ */ var $550ca672a3f483a3$export$283f13d12b1b210e = /*#__PURE__*/ function() {
+    /**
+     * Creates a UTF-8 decoding stream
+     * @param cb The callback to call whenever data is encoded
+     */ function EncodeUTF8(cb) {
+        this.ondata = cb;
+    }
+    /**
+     * Pushes a chunk to be encoded to UTF-8
+     * @param chunk The string data to push
+     * @param final Whether this is the last chunk
+     */ EncodeUTF8.prototype.push = function(chunk, final) {
+        if (!this.ondata) throw "no callback";
+        if (this.d) throw "stream finished";
+        this.ondata($550ca672a3f483a3$export$366b39a6daa8ed7a(chunk), this.d = final || false);
+    };
+    return EncodeUTF8;
+}();
+function $550ca672a3f483a3$export$366b39a6daa8ed7a(str, latin1) {
+    if (latin1) {
+        var ar_1 = new $550ca672a3f483a3$var$u8(str.length);
+        for(var i = 0; i < str.length; ++i)ar_1[i] = str.charCodeAt(i);
+        return ar_1;
+    }
+    if ($550ca672a3f483a3$var$te) return $550ca672a3f483a3$var$te.encode(str);
+    var l = str.length;
+    var ar = new $550ca672a3f483a3$var$u8(str.length + (str.length >> 1));
+    var ai = 0;
+    var w = function(v) {
+        ar[ai++] = v;
+    };
+    for(var i = 0; i < l; ++i){
+        if (ai + 5 > ar.length) {
+            var n = new $550ca672a3f483a3$var$u8(ai + 8 + (l - i << 1));
+            n.set(ar);
+            ar = n;
+        }
+        var c = str.charCodeAt(i);
+        if (c < 128 || latin1) w(c);
+        else if (c < 2048) w(192 | c >> 6), w(128 | c & 63);
+        else if (c > 55295 && c < 57344) c = 65536 + (c & 1047552) | str.charCodeAt(++i) & 1023, w(240 | c >> 18), w(128 | c >> 12 & 63), w(128 | c >> 6 & 63), w(128 | c & 63);
+        else w(224 | c >> 12), w(128 | c >> 6 & 63), w(128 | c & 63);
+    }
+    return $550ca672a3f483a3$var$slc(ar, 0, ai);
+}
+function $550ca672a3f483a3$export$adb211f8cb999894(dat, latin1) {
+    if (latin1) {
+        var r = "";
+        for(var i = 0; i < dat.length; i += 16384)r += String.fromCharCode.apply(null, dat.subarray(i, i + 16384));
+        return r;
+    } else if ($550ca672a3f483a3$var$td) return $550ca672a3f483a3$var$td.decode(dat);
+    else {
+        var _a = $550ca672a3f483a3$var$dutf8(dat), out = _a[0], ext = _a[1];
+        if (ext.length) throw "invalid utf-8 data";
+        return out;
+    }
+}
+// deflate bit flag
+var $550ca672a3f483a3$var$dbf = function(l) {
+    return l == 1 ? 3 : l < 6 ? 2 : l == 9 ? 1 : 0;
+};
+// skip local zip header
+var $550ca672a3f483a3$var$slzh = function(d, b) {
+    return b + 30 + $550ca672a3f483a3$var$b2(d, b + 26) + $550ca672a3f483a3$var$b2(d, b + 28);
+};
+// read zip header
+var $550ca672a3f483a3$var$zh = function(d, b, z) {
+    var fnl = $550ca672a3f483a3$var$b2(d, b + 28), fn = $550ca672a3f483a3$export$adb211f8cb999894(d.subarray(b + 46, b + 46 + fnl), !($550ca672a3f483a3$var$b2(d, b + 8) & 2048)), es = b + 46 + fnl, bs = $550ca672a3f483a3$var$b4(d, b + 20);
+    var _a = z && bs == 4294967295 ? $550ca672a3f483a3$var$z64e(d, es) : [
+        bs,
+        $550ca672a3f483a3$var$b4(d, b + 24),
+        $550ca672a3f483a3$var$b4(d, b + 42)
+    ], sc = _a[0], su = _a[1], off = _a[2];
+    return [
+        $550ca672a3f483a3$var$b2(d, b + 10),
+        sc,
+        su,
+        fn,
+        es + $550ca672a3f483a3$var$b2(d, b + 30) + $550ca672a3f483a3$var$b2(d, b + 32),
+        off
+    ];
+};
+// read zip64 extra field
+var $550ca672a3f483a3$var$z64e = function(d, b) {
+    for(; $550ca672a3f483a3$var$b2(d, b) != 1; b += 4 + $550ca672a3f483a3$var$b2(d, b + 2));
+    return [
+        $550ca672a3f483a3$var$b8(d, b + 12),
+        $550ca672a3f483a3$var$b8(d, b + 4),
+        $550ca672a3f483a3$var$b8(d, b + 20)
+    ];
+};
+// extra field length
+var $550ca672a3f483a3$var$exfl = function(ex) {
+    var le = 0;
+    if (ex) for(var k in ex){
+        var l = ex[k].length;
+        if (l > 65535) throw "extra field too long";
+        le += l + 4;
+    }
+    return le;
+};
+// write zip header
+var $550ca672a3f483a3$var$wzh = function(d, b, f, fn, u, c, ce, co) {
+    var fl = fn.length, ex = f.extra, col = co && co.length;
+    var exl = $550ca672a3f483a3$var$exfl(ex);
+    $550ca672a3f483a3$var$wbytes(d, b, ce != null ? 0x2014B50 : 0x4034B50), b += 4;
+    if (ce != null) d[b++] = 20, d[b++] = f.os;
+    d[b] = 20, b += 2; // spec compliance? what's that?
+    d[b++] = f.flag << 1 | (c == null && 8), d[b++] = u && 8;
+    d[b++] = f.compression & 255, d[b++] = f.compression >> 8;
+    var dt = new Date(f.mtime == null ? Date.now() : f.mtime), y = dt.getFullYear() - 1980;
+    if (y < 0 || y > 119) throw "date not in range 1980-2099";
+    $550ca672a3f483a3$var$wbytes(d, b, y << 25 | dt.getMonth() + 1 << 21 | dt.getDate() << 16 | dt.getHours() << 11 | dt.getMinutes() << 5 | dt.getSeconds() >>> 1), b += 4;
+    if (c != null) {
+        $550ca672a3f483a3$var$wbytes(d, b, f.crc);
+        $550ca672a3f483a3$var$wbytes(d, b + 4, c);
+        $550ca672a3f483a3$var$wbytes(d, b + 8, f.size);
+    }
+    $550ca672a3f483a3$var$wbytes(d, b + 12, fl);
+    $550ca672a3f483a3$var$wbytes(d, b + 14, exl), b += 16;
+    if (ce != null) {
+        $550ca672a3f483a3$var$wbytes(d, b, col);
+        $550ca672a3f483a3$var$wbytes(d, b + 6, f.attrs);
+        $550ca672a3f483a3$var$wbytes(d, b + 10, ce), b += 14;
+    }
+    d.set(fn, b);
+    b += fl;
+    if (exl) for(var k in ex){
+        var exf = ex[k], l = exf.length;
+        $550ca672a3f483a3$var$wbytes(d, b, +k);
+        $550ca672a3f483a3$var$wbytes(d, b + 2, l);
+        d.set(exf, b + 4), b += 4 + l;
+    }
+    if (col) d.set(co, b), b += col;
+    return b;
+};
+// write zip footer (end of central directory)
+var $550ca672a3f483a3$var$wzf = function(o, b, c, d, e) {
+    $550ca672a3f483a3$var$wbytes(o, b, 0x6054B50); // skip disk
+    $550ca672a3f483a3$var$wbytes(o, b + 8, c);
+    $550ca672a3f483a3$var$wbytes(o, b + 10, c);
+    $550ca672a3f483a3$var$wbytes(o, b + 12, d);
+    $550ca672a3f483a3$var$wbytes(o, b + 16, e);
+};
+/**
+ * A pass-through stream to keep data uncompressed in a ZIP archive.
+ */ var $550ca672a3f483a3$export$2b25194e1767ea06 = /*#__PURE__*/ function() {
+    /**
+     * Creates a pass-through stream that can be added to ZIP archives
+     * @param filename The filename to associate with this data stream
+     */ function ZipPassThrough(filename) {
+        this.filename = filename;
+        this.c = $550ca672a3f483a3$var$crc();
+        this.size = 0;
+        this.compression = 0;
+    }
+    /**
+     * Processes a chunk and pushes to the output stream. You can override this
+     * method in a subclass for custom behavior, but by default this passes
+     * the data through. You must call this.ondata(err, chunk, final) at some
+     * point in this method.
+     * @param chunk The chunk to process
+     * @param final Whether this is the last chunk
+     */ ZipPassThrough.prototype.process = function(chunk, final) {
+        this.ondata(null, chunk, final);
+    };
+    /**
+     * Pushes a chunk to be added. If you are subclassing this with a custom
+     * compression algorithm, note that you must push data from the source
+     * file only, pre-compression.
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ ZipPassThrough.prototype.push = function(chunk, final) {
+        if (!this.ondata) throw "no callback - add to ZIP archive before pushing";
+        this.c.p(chunk);
+        this.size += chunk.length;
+        if (final) this.crc = this.c.d();
+        this.process(chunk, final || false);
+    };
+    return ZipPassThrough;
+}();
+// I don't extend because TypeScript extension adds 1kB of runtime bloat
+/**
+ * Streaming DEFLATE compression for ZIP archives. Prefer using AsyncZipDeflate
+ * for better performance
+ */ var $550ca672a3f483a3$export$f7e481ca646388b6 = /*#__PURE__*/ function() {
+    /**
+     * Creates a DEFLATE stream that can be added to ZIP archives
+     * @param filename The filename to associate with this data stream
+     * @param opts The compression options
+     */ function ZipDeflate(filename, opts) {
+        var _this_1 = this;
+        if (!opts) opts = {};
+        $550ca672a3f483a3$export$2b25194e1767ea06.call(this, filename);
+        this.d = new $550ca672a3f483a3$export$ae157b6234afe138(opts, function(dat, final) {
+            _this_1.ondata(null, dat, final);
+        });
+        this.compression = 8;
+        this.flag = $550ca672a3f483a3$var$dbf(opts.level);
+    }
+    ZipDeflate.prototype.process = function(chunk, final) {
+        try {
+            this.d.push(chunk, final);
+        } catch (e) {
+            this.ondata(e, null, final);
+        }
+    };
+    /**
+     * Pushes a chunk to be deflated
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ ZipDeflate.prototype.push = function(chunk, final) {
+        $550ca672a3f483a3$export$2b25194e1767ea06.prototype.push.call(this, chunk, final);
+    };
+    return ZipDeflate;
+}();
+/**
+ * Asynchronous streaming DEFLATE compression for ZIP archives
+ */ var $550ca672a3f483a3$export$ffb5e59e179924b2 = /*#__PURE__*/ function() {
+    /**
+     * Creates a DEFLATE stream that can be added to ZIP archives
+     * @param filename The filename to associate with this data stream
+     * @param opts The compression options
+     */ function AsyncZipDeflate(filename, opts) {
+        var _this_1 = this;
+        if (!opts) opts = {};
+        $550ca672a3f483a3$export$2b25194e1767ea06.call(this, filename);
+        this.d = new $550ca672a3f483a3$export$84e526fabcba03e3(opts, function(err, dat, final) {
+            _this_1.ondata(err, dat, final);
+        });
+        this.compression = 8;
+        this.flag = $550ca672a3f483a3$var$dbf(opts.level);
+        this.terminate = this.d.terminate;
+    }
+    AsyncZipDeflate.prototype.process = function(chunk, final) {
+        this.d.push(chunk, final);
+    };
+    /**
+     * Pushes a chunk to be deflated
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ AsyncZipDeflate.prototype.push = function(chunk, final) {
+        $550ca672a3f483a3$export$2b25194e1767ea06.prototype.push.call(this, chunk, final);
+    };
+    return AsyncZipDeflate;
+}();
+// TODO: Better tree shaking
+/**
+ * A zippable archive to which files can incrementally be added
+ */ var $550ca672a3f483a3$export$9a4d4a7c32a75d2f = /*#__PURE__*/ function() {
+    /**
+     * Creates an empty ZIP archive to which files can be added
+     * @param cb The callback to call whenever data for the generated ZIP archive
+     *           is available
+     */ function Zip(cb) {
+        this.ondata = cb;
+        this.u = [];
+        this.d = 1;
+    }
+    /**
+     * Adds a file to the ZIP archive
+     * @param file The file stream to add
+     */ Zip.prototype.add = function(file) {
+        var _this_1 = this;
+        if (this.d & 2) throw "stream finished";
+        var f = $550ca672a3f483a3$export$366b39a6daa8ed7a(file.filename), fl = f.length;
+        var com = file.comment, o = com && $550ca672a3f483a3$export$366b39a6daa8ed7a(com);
+        var u = fl != file.filename.length || o && com.length != o.length;
+        var hl = fl + $550ca672a3f483a3$var$exfl(file.extra) + 30;
+        if (fl > 65535) throw "filename too long";
+        var header = new $550ca672a3f483a3$var$u8(hl);
+        $550ca672a3f483a3$var$wzh(header, 0, file, f, u);
+        var chks = [
+            header
+        ];
+        var pAll = function() {
+            for(var _i = 0, chks_1 = chks; _i < chks_1.length; _i++){
+                var chk = chks_1[_i];
+                _this_1.ondata(null, chk, false);
+            }
+            chks = [];
+        };
+        var tr = this.d;
+        this.d = 0;
+        var ind = this.u.length;
+        var uf = $550ca672a3f483a3$var$mrg(file, {
+            f: f,
+            u: u,
+            o: o,
+            t: function() {
+                if (file.terminate) file.terminate();
+            },
+            r: function() {
+                pAll();
+                if (tr) {
+                    var nxt = _this_1.u[ind + 1];
+                    if (nxt) nxt.r();
+                    else _this_1.d = 1;
+                }
+                tr = 1;
+            }
+        });
+        var cl = 0;
+        file.ondata = function(err, dat, final) {
+            if (err) {
+                _this_1.ondata(err, dat, final);
+                _this_1.terminate();
+            } else {
+                cl += dat.length;
+                chks.push(dat);
+                if (final) {
+                    var dd = new $550ca672a3f483a3$var$u8(16);
+                    $550ca672a3f483a3$var$wbytes(dd, 0, 0x8074B50);
+                    $550ca672a3f483a3$var$wbytes(dd, 4, file.crc);
+                    $550ca672a3f483a3$var$wbytes(dd, 8, cl);
+                    $550ca672a3f483a3$var$wbytes(dd, 12, file.size);
+                    chks.push(dd);
+                    uf.c = cl, uf.b = hl + cl + 16, uf.crc = file.crc, uf.size = file.size;
+                    if (tr) uf.r();
+                    tr = 1;
+                } else if (tr) pAll();
+            }
+        };
+        this.u.push(uf);
+    };
+    /**
+     * Ends the process of adding files and prepares to emit the final chunks.
+     * This *must* be called after adding all desired files for the resulting
+     * ZIP file to work properly.
+     */ Zip.prototype.end = function() {
+        var _this_1 = this;
+        if (this.d & 2) {
+            if (this.d & 1) throw "stream finishing";
+            throw "stream finished";
+        }
+        if (this.d) this.e();
+        else this.u.push({
+            r: function() {
+                if (!(_this_1.d & 1)) return;
+                _this_1.u.splice(-1, 1);
+                _this_1.e();
+            },
+            t: function() {}
+        });
+        this.d = 3;
+    };
+    Zip.prototype.e = function() {
+        var bt = 0, l = 0, tl = 0;
+        for(var _i = 0, _a = this.u; _i < _a.length; _i++){
+            var f = _a[_i];
+            tl += 46 + f.f.length + $550ca672a3f483a3$var$exfl(f.extra) + (f.o ? f.o.length : 0);
+        }
+        var out = new $550ca672a3f483a3$var$u8(tl + 22);
+        for(var _b = 0, _c = this.u; _b < _c.length; _b++){
+            var f = _c[_b];
+            $550ca672a3f483a3$var$wzh(out, bt, f, f.f, f.u, f.c, l, f.o);
+            bt += 46 + f.f.length + $550ca672a3f483a3$var$exfl(f.extra) + (f.o ? f.o.length : 0), l += f.b;
+        }
+        $550ca672a3f483a3$var$wzf(out, bt, this.u.length, tl, l);
+        this.ondata(null, out, true);
+        this.d = 2;
+    };
+    /**
+     * A method to terminate any internal workers used by the stream. Subsequent
+     * calls to add() will fail.
+     */ Zip.prototype.terminate = function() {
+        for(var _i = 0, _a = this.u; _i < _a.length; _i++){
+            var f = _a[_i];
+            f.t();
+        }
+        this.d = 2;
+    };
+    return Zip;
+}();
+function $550ca672a3f483a3$export$8901015135f2fb22(data, opts, cb) {
+    if (!cb) cb = opts, opts = {};
+    if (typeof cb != "function") throw "no callback";
+    var r = {};
+    $550ca672a3f483a3$var$fltn(data, "", r, opts);
+    var k = Object.keys(r);
+    var lft = k.length, o = 0, tot = 0;
+    var slft = lft, files = new Array(lft);
+    var term = [];
+    var tAll = function() {
+        for(var i = 0; i < term.length; ++i)term[i]();
+    };
+    var cbf = function() {
+        var out = new $550ca672a3f483a3$var$u8(tot + 22), oe = o, cdl = tot - o;
+        tot = 0;
+        for(var i = 0; i < slft; ++i){
+            var f = files[i];
+            try {
+                var l = f.c.length;
+                $550ca672a3f483a3$var$wzh(out, tot, f, f.f, f.u, l);
+                var badd = 30 + f.f.length + $550ca672a3f483a3$var$exfl(f.extra);
+                var loc = tot + badd;
+                out.set(f.c, loc);
+                $550ca672a3f483a3$var$wzh(out, o, f, f.f, f.u, l, tot, f.m), o += 16 + badd + (f.m ? f.m.length : 0), tot = loc + l;
+            } catch (e) {
+                return cb(e, null);
+            }
+        }
+        $550ca672a3f483a3$var$wzf(out, o, files.length, cdl, oe);
+        cb(null, out);
+    };
+    if (!lft) cbf();
+    var _loop_1 = function(i) {
+        var fn = k[i];
+        var _a = r[fn], file = _a[0], p = _a[1];
+        var c = $550ca672a3f483a3$var$crc(), size = file.length;
+        c.p(file);
+        var f = $550ca672a3f483a3$export$366b39a6daa8ed7a(fn), s = f.length;
+        var com = p.comment, m = com && $550ca672a3f483a3$export$366b39a6daa8ed7a(com), ms = m && m.length;
+        var exl = $550ca672a3f483a3$var$exfl(p.extra);
+        var compression = p.level == 0 ? 0 : 8;
+        var cbl = function(e, d) {
+            if (e) {
+                tAll();
+                cb(e, null);
+            } else {
+                var l = d.length;
+                files[i] = $550ca672a3f483a3$var$mrg(p, {
+                    size: size,
+                    crc: c.d(),
+                    c: d,
+                    f: f,
+                    m: m,
+                    u: s != fn.length || m && com.length != ms,
+                    compression: compression
+                });
+                o += 30 + s + exl + l;
+                tot += 76 + 2 * (s + exl) + (ms || 0) + l;
+                if (!--lft) cbf();
+            }
+        };
+        if (s > 65535) cbl("filename too long", null);
+        if (!compression) cbl(null, file);
+        else if (size < 160000) try {
+            cbl(null, $550ca672a3f483a3$export$21533ff51b8a0b4a(file, p));
+        } catch (e) {
+            cbl(e, null);
+        }
+        else term.push($550ca672a3f483a3$export$2316623ecd1285ab(file, p, cbl));
+    };
+    // Cannot use lft because it can decrease
+    for(var i = 0; i < slft; ++i)_loop_1(i);
+    return tAll;
+}
+function $550ca672a3f483a3$export$eb1654f146d54eb3(data, opts) {
+    if (!opts) opts = {};
+    var r = {};
+    var files = [];
+    $550ca672a3f483a3$var$fltn(data, "", r, opts);
+    var o = 0;
+    var tot = 0;
+    for(var fn in r){
+        var _a = r[fn], file = _a[0], p = _a[1];
+        var compression = p.level == 0 ? 0 : 8;
+        var f = $550ca672a3f483a3$export$366b39a6daa8ed7a(fn), s = f.length;
+        var com = p.comment, m = com && $550ca672a3f483a3$export$366b39a6daa8ed7a(com), ms = m && m.length;
+        var exl = $550ca672a3f483a3$var$exfl(p.extra);
+        if (s > 65535) throw "filename too long";
+        var d = compression ? $550ca672a3f483a3$export$21533ff51b8a0b4a(file, p) : file, l = d.length;
+        var c = $550ca672a3f483a3$var$crc();
+        c.p(file);
+        files.push($550ca672a3f483a3$var$mrg(p, {
+            size: file.length,
+            crc: c.d(),
+            c: d,
+            f: f,
+            m: m,
+            u: s != fn.length || m && com.length != ms,
+            o: o,
+            compression: compression
+        }));
+        o += 30 + s + exl + l;
+        tot += 76 + 2 * (s + exl) + (ms || 0) + l;
+    }
+    var out = new $550ca672a3f483a3$var$u8(tot + 22), oe = o, cdl = tot - o;
+    for(var i = 0; i < files.length; ++i){
+        var f = files[i];
+        $550ca672a3f483a3$var$wzh(out, f.o, f, f.f, f.u, f.c.length);
+        var badd = 30 + f.f.length + $550ca672a3f483a3$var$exfl(f.extra);
+        out.set(f.c, f.o + badd);
+        $550ca672a3f483a3$var$wzh(out, o, f, f.f, f.u, f.c.length, f.o, f.m), o += 16 + badd + (f.m ? f.m.length : 0);
+    }
+    $550ca672a3f483a3$var$wzf(out, o, files.length, cdl, oe);
+    return out;
+}
+/**
+ * Streaming pass-through decompression for ZIP archives
+ */ var $550ca672a3f483a3$export$93f81d5bbbb7c6bf = /*#__PURE__*/ function() {
+    function UnzipPassThrough() {}
+    UnzipPassThrough.prototype.push = function(data, final) {
+        this.ondata(null, data, final);
+    };
+    UnzipPassThrough.compression = 0;
+    return UnzipPassThrough;
+}();
+/**
+ * Streaming DEFLATE decompression for ZIP archives. Prefer AsyncZipInflate for
+ * better performance.
+ */ var $550ca672a3f483a3$export$eb188945cc39e642 = /*#__PURE__*/ function() {
+    /**
+     * Creates a DEFLATE decompression that can be used in ZIP archives
+     */ function UnzipInflate() {
+        var _this_1 = this;
+        this.i = new $550ca672a3f483a3$export$d1de70a877d6e43c(function(dat, final) {
+            _this_1.ondata(null, dat, final);
+        });
+    }
+    UnzipInflate.prototype.push = function(data, final) {
+        try {
+            this.i.push(data, final);
+        } catch (e) {
+            this.ondata(e, data, final);
+        }
+    };
+    UnzipInflate.compression = 8;
+    return UnzipInflate;
+}();
+/**
+ * Asynchronous streaming DEFLATE decompression for ZIP archives
+ */ var $550ca672a3f483a3$export$6235d84645dad4f9 = /*#__PURE__*/ function() {
+    /**
+     * Creates a DEFLATE decompression that can be used in ZIP archives
+     */ function AsyncUnzipInflate(_, sz) {
+        var _this_1 = this;
+        if (sz < 320000) this.i = new $550ca672a3f483a3$export$d1de70a877d6e43c(function(dat, final) {
+            _this_1.ondata(null, dat, final);
+        });
+        else {
+            this.i = new $550ca672a3f483a3$export$fff8358d6dbaa9cc(function(err, dat, final) {
+                _this_1.ondata(err, dat, final);
+            });
+            this.terminate = this.i.terminate;
+        }
+    }
+    AsyncUnzipInflate.prototype.push = function(data, final) {
+        if (this.i.terminate) data = $550ca672a3f483a3$var$slc(data, 0);
+        this.i.push(data, final);
+    };
+    AsyncUnzipInflate.compression = 8;
+    return AsyncUnzipInflate;
+}();
+/**
+ * A ZIP archive decompression stream that emits files as they are discovered
+ */ var $550ca672a3f483a3$export$9b7485f84cbaaa56 = /*#__PURE__*/ function() {
+    /**
+     * Creates a ZIP decompression stream
+     * @param cb The callback to call whenever a file in the ZIP archive is found
+     */ function Unzip(cb) {
+        this.onfile = cb;
+        this.k = [];
+        this.o = {
+            0: $550ca672a3f483a3$export$93f81d5bbbb7c6bf
+        };
+        this.p = $550ca672a3f483a3$var$et;
+    }
+    /**
+     * Pushes a chunk to be unzipped
+     * @param chunk The chunk to push
+     * @param final Whether this is the last chunk
+     */ Unzip.prototype.push = function(chunk, final) {
+        var _this_1 = this;
+        if (!this.onfile) throw "no callback";
+        if (!this.p) throw "stream finished";
+        if (this.c > 0) {
+            var len = Math.min(this.c, chunk.length);
+            var toAdd = chunk.subarray(0, len);
+            this.c -= len;
+            if (this.d) this.d.push(toAdd, !this.c);
+            else this.k[0].push(toAdd);
+            chunk = chunk.subarray(len);
+            if (chunk.length) return this.push(chunk, final);
+        } else {
+            var f = 0, i = 0, is = void 0, buf = void 0;
+            if (!this.p.length) buf = chunk;
+            else if (!chunk.length) buf = this.p;
+            else {
+                buf = new $550ca672a3f483a3$var$u8(this.p.length + chunk.length);
+                buf.set(this.p), buf.set(chunk, this.p.length);
+            }
+            var l = buf.length, oc = this.c, add = oc && this.d;
+            var _loop_2 = function() {
+                var _a;
+                var sig = $550ca672a3f483a3$var$b4(buf, i);
+                if (sig == 0x4034B50) {
+                    f = 1, is = i;
+                    this_1.d = null;
+                    this_1.c = 0;
+                    var bf = $550ca672a3f483a3$var$b2(buf, i + 6), cmp_1 = $550ca672a3f483a3$var$b2(buf, i + 8), u = bf & 2048, dd = bf & 8, fnl = $550ca672a3f483a3$var$b2(buf, i + 26), es = $550ca672a3f483a3$var$b2(buf, i + 28);
+                    if (l > i + 30 + fnl + es) {
+                        var chks_2 = [];
+                        this_1.k.unshift(chks_2);
+                        f = 2;
+                        var sc_1 = $550ca672a3f483a3$var$b4(buf, i + 18), su_1 = $550ca672a3f483a3$var$b4(buf, i + 22);
+                        var fn_1 = $550ca672a3f483a3$export$adb211f8cb999894(buf.subarray(i + 30, i += 30 + fnl), !u);
+                        if (sc_1 == 4294967295) _a = dd ? [
+                            -2
+                        ] : $550ca672a3f483a3$var$z64e(buf, i), sc_1 = _a[0], su_1 = _a[1];
+                        else if (dd) sc_1 = -1;
+                        i += es;
+                        this_1.c = sc_1;
+                        var d_1;
+                        var file_1 = {
+                            name: fn_1,
+                            compression: cmp_1,
+                            start: function() {
+                                if (!file_1.ondata) throw "no callback";
+                                if (!sc_1) file_1.ondata(null, $550ca672a3f483a3$var$et, true);
+                                else {
+                                    var ctr = _this_1.o[cmp_1];
+                                    if (!ctr) throw "unknown compression type " + cmp_1;
+                                    d_1 = sc_1 < 0 ? new ctr(fn_1) : new ctr(fn_1, sc_1, su_1);
+                                    d_1.ondata = function(err, dat, final) {
+                                        file_1.ondata(err, dat, final);
+                                    };
+                                    for(var _i = 0, chks_3 = chks_2; _i < chks_3.length; _i++){
+                                        var dat = chks_3[_i];
+                                        d_1.push(dat, false);
+                                    }
+                                    if (_this_1.k[0] == chks_2 && _this_1.c) _this_1.d = d_1;
+                                    else d_1.push($550ca672a3f483a3$var$et, true);
+                                }
+                            },
+                            terminate: function() {
+                                if (d_1 && d_1.terminate) d_1.terminate();
+                            }
+                        };
+                        if (sc_1 >= 0) file_1.size = sc_1, file_1.originalSize = su_1;
+                        this_1.onfile(file_1);
+                    }
+                    return "break";
+                } else if (oc) {
+                    if (sig == 0x8074B50) {
+                        is = i += 12 + (oc == -2 && 8), f = 3, this_1.c = 0;
+                        return "break";
+                    } else if (sig == 0x2014B50) {
+                        is = i -= 4, f = 3, this_1.c = 0;
+                        return "break";
+                    }
+                }
+            };
+            var this_1 = this;
+            for(; i < l - 4; ++i){
+                var state_1 = _loop_2();
+                if (state_1 === "break") break;
+            }
+            this.p = $550ca672a3f483a3$var$et;
+            if (oc < 0) {
+                var dat = f ? buf.subarray(0, is - 12 - (oc == -2 && 8) - ($550ca672a3f483a3$var$b4(buf, is - 16) == 0x8074B50 && 4)) : buf.subarray(0, i);
+                if (add) add.push(dat, !!f);
+                else this.k[+(f == 2)].push(dat);
+            }
+            if (f & 2) return this.push(buf.subarray(i), final);
+            this.p = buf.subarray(i);
+        }
+        if (final) {
+            if (this.c) throw "invalid zip file";
+            this.p = null;
+        }
+    };
+    /**
+     * Registers a decoder with the stream, allowing for files compressed with
+     * the compression type provided to be expanded correctly
+     * @param decoder The decoder constructor
+     */ Unzip.prototype.register = function(decoder) {
+        this.o[decoder.compression] = decoder;
+    };
+    return Unzip;
+}();
+function $550ca672a3f483a3$export$23c8d3f8757cab88(data, cb) {
+    if (typeof cb != "function") throw "no callback";
+    var term = [];
+    var tAll = function() {
+        for(var i = 0; i < term.length; ++i)term[i]();
+    };
+    var files = {};
+    var e = data.length - 22;
+    for(; $550ca672a3f483a3$var$b4(data, e) != 0x6054B50; --e)if (!e || data.length - e > 65558) {
+        cb("invalid zip file", null);
+        return;
+    }
+    var lft = $550ca672a3f483a3$var$b2(data, e + 8);
+    if (!lft) cb(null, {});
+    var c = lft;
+    var o = $550ca672a3f483a3$var$b4(data, e + 16);
+    var z = o == 4294967295;
+    if (z) {
+        e = $550ca672a3f483a3$var$b4(data, e - 12);
+        if ($550ca672a3f483a3$var$b4(data, e) != 0x6064B50) {
+            cb("invalid zip file", null);
+            return;
+        }
+        c = lft = $550ca672a3f483a3$var$b4(data, e + 32);
+        o = $550ca672a3f483a3$var$b4(data, e + 48);
+    }
+    var _loop_3 = function(i) {
+        var _a = $550ca672a3f483a3$var$zh(data, o, z), c_1 = _a[0], sc = _a[1], su = _a[2], fn = _a[3], no = _a[4], off = _a[5], b = $550ca672a3f483a3$var$slzh(data, off);
+        o = no;
+        var cbl = function(e, d) {
+            if (e) {
+                tAll();
+                cb(e, null);
+            } else {
+                files[fn] = d;
+                if (!--lft) cb(null, files);
+            }
+        };
+        if (!c_1) cbl(null, $550ca672a3f483a3$var$slc(data, b, b + sc));
+        else if (c_1 == 8) {
+            var infl = data.subarray(b, b + sc);
+            if (sc < 320000) try {
+                cbl(null, $550ca672a3f483a3$export$90366d8b308ba94a(infl, new $550ca672a3f483a3$var$u8(su)));
+            } catch (e) {
+                cbl(e, null);
+            }
+            else term.push($550ca672a3f483a3$export$cae1ce83fe4a1782(infl, {
+                size: su
+            }, cbl));
+        } else cbl("unknown compression type " + c_1, null);
+    };
+    for(var i = 0; i < c; ++i)_loop_3(i);
+    return tAll;
+}
+function $550ca672a3f483a3$export$c757709326bb5901(data) {
+    var files = {};
+    var e = data.length - 22;
+    for(; $550ca672a3f483a3$var$b4(data, e) != 0x6054B50; --e){
+        if (!e || data.length - e > 65558) throw "invalid zip file";
+    }
+    var c = $550ca672a3f483a3$var$b2(data, e + 8);
+    if (!c) return {};
+    var o = $550ca672a3f483a3$var$b4(data, e + 16);
+    var z = o == 4294967295;
+    if (z) {
+        e = $550ca672a3f483a3$var$b4(data, e - 12);
+        if ($550ca672a3f483a3$var$b4(data, e) != 0x6064B50) throw "invalid zip file";
+        c = $550ca672a3f483a3$var$b4(data, e + 32);
+        o = $550ca672a3f483a3$var$b4(data, e + 48);
+    }
+    for(var i = 0; i < c; ++i){
+        var _a = $550ca672a3f483a3$var$zh(data, o, z), c_2 = _a[0], sc = _a[1], su = _a[2], fn = _a[3], no = _a[4], off = _a[5], b = $550ca672a3f483a3$var$slzh(data, off);
+        o = no;
+        if (!c_2) files[fn] = $550ca672a3f483a3$var$slc(data, b, b + sc);
+        else if (c_2 == 8) files[fn] = $550ca672a3f483a3$export$90366d8b308ba94a(data.subarray(b, b + sc), new $550ca672a3f483a3$var$u8(su));
+        else throw "unknown compression type " + c_2;
+    }
+    return files;
+}
+
+
+
+
+/**
+ * NURBS utils
+ *
+ * See NURBSCurve and NURBSSurface.
+ **/ /**************************************************************
+ *	NURBS Utils
+ **************************************************************/ /*
+Finds knot vector span.
+
+p : degree
+u : parametric value
+U : knot vector
+
+returns the span
+*/ function $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U) {
+    const n = U.length - p - 1;
+    if (u >= U[n]) return n - 1;
+    if (u <= U[p]) return p;
+    let low = p;
+    let high = n;
+    let mid = Math.floor((low + high) / 2);
+    while(u < U[mid] || u >= U[mid + 1]){
+        if (u < U[mid]) high = mid;
+        else low = mid;
+        mid = Math.floor((low + high) / 2);
+    }
+    return mid;
+}
+/*
+Calculate basis functions. See The NURBS Book, page 70, algorithm A2.2
+
+span : span in which u lies
+u    : parametric point
+p    : degree
+U    : knot vector
+
+returns array[p+1] with basis functions values.
+*/ function $d96d9caabed772f3$export$bbebd61f407f7f41(span, u, p, U) {
+    const N = [];
+    const left = [];
+    const right = [];
+    N[0] = 1.0;
+    for(let j = 1; j <= p; ++j){
+        left[j] = u - U[span + 1 - j];
+        right[j] = U[span + j] - u;
+        let saved = 0.0;
+        for(let r = 0; r < j; ++r){
+            const rv = right[r + 1];
+            const lv = left[j - r];
+            const temp = N[r] / (rv + lv);
+            N[r] = saved + rv * temp;
+            saved = lv * temp;
+        }
+        N[j] = saved;
+    }
+    return N;
+}
+/*
+Calculate B-Spline curve points. See The NURBS Book, page 82, algorithm A3.1.
+
+p : degree of B-Spline
+U : knot vector
+P : control points (x, y, z, w)
+u : parametric point
+
+returns point for given u
+*/ function $d96d9caabed772f3$export$3672a5d5ca534534(p, U, P, u) {
+    const span = $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U);
+    const N = $d96d9caabed772f3$export$bbebd61f407f7f41(span, u, p, U);
+    const C = new (0, $ea01ff4a5048cd08$export$fa7daccca11cdbe3)(0, 0, 0, 0);
+    for(let j = 0; j <= p; ++j){
+        const point = P[span - p + j];
+        const Nj = N[j];
+        const wNj = point.w * Nj;
+        C.x += point.x * wNj;
+        C.y += point.y * wNj;
+        C.z += point.z * wNj;
+        C.w += point.w * Nj;
+    }
+    return C;
+}
+/*
+Calculate basis functions derivatives. See The NURBS Book, page 72, algorithm A2.3.
+
+span : span in which u lies
+u    : parametric point
+p    : degree
+n    : number of derivatives to calculate
+U    : knot vector
+
+returns array[n+1][p+1] with basis functions derivatives
+*/ function $d96d9caabed772f3$export$70bfab2ede47286(span, u, p, n, U) {
+    const zeroArr = [];
+    for(let i = 0; i <= p; ++i)zeroArr[i] = 0.0;
+    const ders = [];
+    for(let i = 0; i <= n; ++i)ders[i] = zeroArr.slice(0);
+    const ndu = [];
+    for(let i = 0; i <= p; ++i)ndu[i] = zeroArr.slice(0);
+    ndu[0][0] = 1.0;
+    const left = zeroArr.slice(0);
+    const right = zeroArr.slice(0);
+    for(let j = 1; j <= p; ++j){
+        left[j] = u - U[span + 1 - j];
+        right[j] = U[span + j] - u;
+        let saved = 0.0;
+        for(let r = 0; r < j; ++r){
+            const rv = right[r + 1];
+            const lv = left[j - r];
+            ndu[j][r] = rv + lv;
+            const temp = ndu[r][j - 1] / ndu[j][r];
+            ndu[r][j] = saved + rv * temp;
+            saved = lv * temp;
+        }
+        ndu[j][j] = saved;
+    }
+    for(let j = 0; j <= p; ++j)ders[0][j] = ndu[j][p];
+    for(let r = 0; r <= p; ++r){
+        let s1 = 0;
+        let s2 = 1;
+        const a = [];
+        for(let i = 0; i <= p; ++i)a[i] = zeroArr.slice(0);
+        a[0][0] = 1.0;
+        for(let k = 1; k <= n; ++k){
+            let d = 0.0;
+            const rk = r - k;
+            const pk = p - k;
+            if (r >= k) {
+                a[s2][0] = a[s1][0] / ndu[pk + 1][rk];
+                d = a[s2][0] * ndu[rk][pk];
+            }
+            const j1 = rk >= -1 ? 1 : -rk;
+            const j2 = r - 1 <= pk ? k - 1 : p - r;
+            for(let j = j1; j <= j2; ++j){
+                a[s2][j] = (a[s1][j] - a[s1][j - 1]) / ndu[pk + 1][rk + j];
+                d += a[s2][j] * ndu[rk + j][pk];
+            }
+            if (r <= pk) {
+                a[s2][k] = -a[s1][k - 1] / ndu[pk + 1][r];
+                d += a[s2][k] * ndu[r][pk];
+            }
+            ders[k][r] = d;
+            const j = s1;
+            s1 = s2;
+            s2 = j;
+        }
+    }
+    let r = p;
+    for(let k = 1; k <= n; ++k){
+        for(let j = 0; j <= p; ++j)ders[k][j] *= r;
+        r *= p - k;
+    }
+    return ders;
+}
+/*
+	Calculate derivatives of a B-Spline. See The NURBS Book, page 93, algorithm A3.2.
+
+	p  : degree
+	U  : knot vector
+	P  : control points
+	u  : Parametric points
+	nd : number of derivatives
+
+	returns array[d+1] with derivatives
+	*/ function $d96d9caabed772f3$export$ae5bff7435823e13(p, U, P, u, nd) {
+    const du = nd < p ? nd : p;
+    const CK = [];
+    const span = $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U);
+    const nders = $d96d9caabed772f3$export$70bfab2ede47286(span, u, p, du, U);
+    const Pw = [];
+    for(let i = 0; i < P.length; ++i){
+        const point = P[i].clone();
+        const w = point.w;
+        point.x *= w;
+        point.y *= w;
+        point.z *= w;
+        Pw[i] = point;
+    }
+    for(let k = 0; k <= du; ++k){
+        const point = Pw[span - p].clone().multiplyScalar(nders[k][0]);
+        for(let j = 1; j <= p; ++j)point.add(Pw[span - p + j].clone().multiplyScalar(nders[k][j]));
+        CK[k] = point;
+    }
+    for(let k = du + 1; k <= nd + 1; ++k)CK[k] = new (0, $ea01ff4a5048cd08$export$fa7daccca11cdbe3)(0, 0, 0);
+    return CK;
+}
+/*
+Calculate "K over I"
+
+returns k!/(i!(k-i)!)
+*/ function $d96d9caabed772f3$export$3c88b91ac9312187(k, i) {
+    let nom = 1;
+    for(let j = 2; j <= k; ++j)nom *= j;
+    let denom = 1;
+    for(let j = 2; j <= i; ++j)denom *= j;
+    for(let j = 2; j <= k - i; ++j)denom *= j;
+    return nom / denom;
+}
+/*
+Calculate derivatives (0-nd) of rational curve. See The NURBS Book, page 127, algorithm A4.2.
+
+Pders : result of function calcBSplineDerivatives
+
+returns array with derivatives for rational curve.
+*/ function $d96d9caabed772f3$export$66805edec2c1a55d(Pders) {
+    const nd = Pders.length;
+    const Aders = [];
+    const wders = [];
+    for(let i = 0; i < nd; ++i){
+        const point = Pders[i];
+        Aders[i] = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)(point.x, point.y, point.z);
+        wders[i] = point.w;
+    }
+    const CK = [];
+    for(let k = 0; k < nd; ++k){
+        const v = Aders[k].clone();
+        for(let i = 1; i <= k; ++i)v.sub(CK[k - i].clone().multiplyScalar($d96d9caabed772f3$export$3c88b91ac9312187(k, i) * wders[i]));
+        CK[k] = v.divideScalar(wders[0]);
+    }
+    return CK;
+}
+/*
+Calculate NURBS curve derivatives. See The NURBS Book, page 127, algorithm A4.2.
+
+p  : degree
+U  : knot vector
+P  : control points in homogeneous space
+u  : parametric points
+nd : number of derivatives
+
+returns array with derivatives.
+*/ function $d96d9caabed772f3$export$692f68f163c8f6b(p, U, P, u, nd) {
+    const Pders = $d96d9caabed772f3$export$ae5bff7435823e13(p, U, P, u, nd);
+    return $d96d9caabed772f3$export$66805edec2c1a55d(Pders);
+}
+/*
+Calculate rational B-Spline surface point. See The NURBS Book, page 134, algorithm A4.3.
+
+p1, p2 : degrees of B-Spline surface
+U1, U2 : knot vectors
+P      : control points (x, y, z, w)
+u, v   : parametric values
+
+returns point for given (u, v)
+*/ function $d96d9caabed772f3$export$6574b03464941be7(p, q, U, V, P, u, v, target) {
+    const uspan = $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U);
+    const vspan = $d96d9caabed772f3$export$5d44f085c0641ab4(q, v, V);
+    const Nu = $d96d9caabed772f3$export$bbebd61f407f7f41(uspan, u, p, U);
+    const Nv = $d96d9caabed772f3$export$bbebd61f407f7f41(vspan, v, q, V);
+    const temp = [];
+    for(let l = 0; l <= q; ++l){
+        temp[l] = new (0, $ea01ff4a5048cd08$export$fa7daccca11cdbe3)(0, 0, 0, 0);
+        for(let k = 0; k <= p; ++k){
+            const point = P[uspan - p + k][vspan - q + l].clone();
+            const w = point.w;
+            point.x *= w;
+            point.y *= w;
+            point.z *= w;
+            temp[l].add(point.multiplyScalar(Nu[k]));
+        }
+    }
+    const Sw = new (0, $ea01ff4a5048cd08$export$fa7daccca11cdbe3)(0, 0, 0, 0);
+    for(let l = 0; l <= q; ++l)Sw.add(temp[l].multiplyScalar(Nv[l]));
+    Sw.divideScalar(Sw.w);
+    target.set(Sw.x, Sw.y, Sw.z);
+}
+
+
+/**
+ * NURBS curve object
+ *
+ * Derives from Curve, overriding getPoint and getTangent.
+ *
+ * Implementation is based on (x, y [, z=0 [, w=1]]) control points with w=weight.
+ *
+ **/ class $10d2d5414403be6f$export$12efb26d7429b049 extends (0, $ea01ff4a5048cd08$export$b0e83c3ef8d2db1) {
+    constructor(degree, knots /* array of reals */ , controlPoints /* array of Vector(2|3|4) */ , startKnot /* index in knots */ , endKnot /* index in knots */ ){
+        super();
+        this.degree = degree;
+        this.knots = knots;
+        this.controlPoints = [];
+        // Used by periodic NURBS to remove hidden spans
+        this.startKnot = startKnot || 0;
+        this.endKnot = endKnot || this.knots.length - 1;
+        for(let i = 0; i < controlPoints.length; ++i){
+            // ensure Vector4 for control points
+            const point = controlPoints[i];
+            this.controlPoints[i] = new (0, $ea01ff4a5048cd08$export$fa7daccca11cdbe3)(point.x, point.y, point.z, point.w);
+        }
+    }
+    getPoint(t, optionalTarget = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)()) {
+        const point = optionalTarget;
+        const u = this.knots[this.startKnot] + t * (this.knots[this.endKnot] - this.knots[this.startKnot]); // linear mapping t->u
+        // following results in (wx, wy, wz, w) homogeneous point
+        const hpoint = $d96d9caabed772f3$export$3672a5d5ca534534(this.degree, this.knots, this.controlPoints, u);
+        if (hpoint.w !== 1.0) // project to 3D space: (wx, wy, wz, w) -> (x, y, z, 1)
+        hpoint.divideScalar(hpoint.w);
+        return point.set(hpoint.x, hpoint.y, hpoint.z);
+    }
+    getTangent(t, optionalTarget = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)()) {
+        const tangent = optionalTarget;
+        const u = this.knots[0] + t * (this.knots[this.knots.length - 1] - this.knots[0]);
+        const ders = $d96d9caabed772f3$export$692f68f163c8f6b(this.degree, this.knots, this.controlPoints, u, 1);
+        tangent.copy(ders[1]).normalize();
+        return tangent;
+    }
+}
+
+
+/**
+ * Loader loads FBX file and generates Group representing FBX scene.
+ * Requires FBX file to be >= 7.0 and in ASCII or >= 6400 in Binary format
+ * Versions lower than this may load but will probably have errors
+ *
+ * Needs Support:
+ *  Morph normals / blend shape normals
+ *
+ * FBX format references:
+ * 	https://help.autodesk.com/view/FBX/2017/ENU/?guid=__cpp_ref_index_html (C++ SDK reference)
+ *
+ * Binary format specification:
+ *	https://code.blender.org/2013/08/fbx-binary-file-format-specification/
+ */ let $4299b50047f4476c$var$fbxTree;
+let $4299b50047f4476c$var$connections;
+let $4299b50047f4476c$var$sceneGraph;
+class $4299b50047f4476c$export$60c52e42bb04b96 extends (0, $ea01ff4a5048cd08$export$3b0d6d7590275603) {
+    constructor(manager){
+        super(manager);
+    }
+    load(url, onLoad, onProgress, onError) {
+        const scope = this;
+        const path = scope.path === "" ? (0, $ea01ff4a5048cd08$export$b5d2dc08d867e41a).extractUrlBase(url) : scope.path;
+        const loader = new (0, $ea01ff4a5048cd08$export$98435a25b5cf7b2b)(this.manager);
+        loader.setPath(scope.path);
+        loader.setResponseType("arraybuffer");
+        loader.setRequestHeader(scope.requestHeader);
+        loader.setWithCredentials(scope.withCredentials);
+        loader.load(url, function(buffer) {
+            try {
+                onLoad(scope.parse(buffer, path));
+            } catch (e) {
+                if (onError) onError(e);
+                else console.error(e);
+                scope.manager.itemError(url);
+            }
+        }, onProgress, onError);
+    }
+    parse(FBXBuffer, path) {
+        if ($4299b50047f4476c$var$isFbxFormatBinary(FBXBuffer)) $4299b50047f4476c$var$fbxTree = new $4299b50047f4476c$var$BinaryParser().parse(FBXBuffer);
+        else {
+            const FBXText = $4299b50047f4476c$var$convertArrayBufferToString(FBXBuffer);
+            if (!$4299b50047f4476c$var$isFbxFormatASCII(FBXText)) throw new Error("THREE.FBXLoader: Unknown format.");
+            if ($4299b50047f4476c$var$getFbxVersion(FBXText) < 7000) throw new Error("THREE.FBXLoader: FBX version not supported, FileVersion: " + $4299b50047f4476c$var$getFbxVersion(FBXText));
+            $4299b50047f4476c$var$fbxTree = new $4299b50047f4476c$var$TextParser().parse(FBXText);
+        }
+        // console.log( fbxTree );
+        const textureLoader = new (0, $ea01ff4a5048cd08$export$fd1bfc71f64c538c)(this.manager).setPath(this.resourcePath || path).setCrossOrigin(this.crossOrigin);
+        return new $4299b50047f4476c$var$FBXTreeParser(textureLoader, this.manager).parse($4299b50047f4476c$var$fbxTree);
+    }
+}
+// Parse the FBXTree object returned by the BinaryParser or TextParser and return a Group
+class $4299b50047f4476c$var$FBXTreeParser {
+    constructor(textureLoader, manager){
+        this.textureLoader = textureLoader;
+        this.manager = manager;
+    }
+    parse() {
+        $4299b50047f4476c$var$connections = this.parseConnections();
+        const images = this.parseImages();
+        const textures = this.parseTextures(images);
+        const materials = this.parseMaterials(textures);
+        const deformers = this.parseDeformers();
+        const geometryMap = new $4299b50047f4476c$var$GeometryParser().parse(deformers);
+        this.parseScene(deformers, geometryMap, materials);
+        return $4299b50047f4476c$var$sceneGraph;
+    }
+    // Parses FBXTree.Connections which holds parent-child connections between objects (e.g. material -> texture, model->geometry )
+    // and details the connection type
+    parseConnections() {
+        const connectionMap = new Map();
+        if ("Connections" in $4299b50047f4476c$var$fbxTree) {
+            const rawConnections = $4299b50047f4476c$var$fbxTree.Connections.connections;
+            rawConnections.forEach(function(rawConnection) {
+                const fromID = rawConnection[0];
+                const toID = rawConnection[1];
+                const relationship = rawConnection[2];
+                if (!connectionMap.has(fromID)) connectionMap.set(fromID, {
+                    parents: [],
+                    children: []
+                });
+                const parentRelationship = {
+                    ID: toID,
+                    relationship: relationship
+                };
+                connectionMap.get(fromID).parents.push(parentRelationship);
+                if (!connectionMap.has(toID)) connectionMap.set(toID, {
+                    parents: [],
+                    children: []
+                });
+                const childRelationship = {
+                    ID: fromID,
+                    relationship: relationship
+                };
+                connectionMap.get(toID).children.push(childRelationship);
+            });
+        }
+        return connectionMap;
+    }
+    // Parse FBXTree.Objects.Video for embedded image data
+    // These images are connected to textures in FBXTree.Objects.Textures
+    // via FBXTree.Connections.
+    parseImages() {
+        const images = {};
+        const blobs = {};
+        if ("Video" in $4299b50047f4476c$var$fbxTree.Objects) {
+            const videoNodes = $4299b50047f4476c$var$fbxTree.Objects.Video;
+            for(const nodeID in videoNodes){
+                const videoNode = videoNodes[nodeID];
+                const id = parseInt(nodeID);
+                images[id] = videoNode.RelativeFilename || videoNode.Filename;
+                // raw image data is in videoNode.Content
+                if ("Content" in videoNode) {
+                    const arrayBufferContent = videoNode.Content instanceof ArrayBuffer && videoNode.Content.byteLength > 0;
+                    const base64Content = typeof videoNode.Content === "string" && videoNode.Content !== "";
+                    if (arrayBufferContent || base64Content) {
+                        const image = this.parseImage(videoNodes[nodeID]);
+                        blobs[videoNode.RelativeFilename || videoNode.Filename] = image;
+                    }
+                }
+            }
+        }
+        for(const id in images){
+            const filename = images[id];
+            if (blobs[filename] !== undefined) images[id] = blobs[filename];
+            else images[id] = images[id].split("\\").pop();
+        }
+        return images;
+    }
+    // Parse embedded image data in FBXTree.Video.Content
+    parseImage(videoNode) {
+        const content = videoNode.Content;
+        const fileName = videoNode.RelativeFilename || videoNode.Filename;
+        const extension = fileName.slice(fileName.lastIndexOf(".") + 1).toLowerCase();
+        let type;
+        switch(extension){
+            case "bmp":
+                type = "image/bmp";
+                break;
+            case "jpg":
+            case "jpeg":
+                type = "image/jpeg";
+                break;
+            case "png":
+                type = "image/png";
+                break;
+            case "tif":
+                type = "image/tiff";
+                break;
+            case "tga":
+                if (this.manager.getHandler(".tga") === null) console.warn("FBXLoader: TGA loader not found, skipping ", fileName);
+                type = "image/tga";
+                break;
+            default:
+                console.warn('FBXLoader: Image type "' + extension + '" is not supported.');
+                return;
+        }
+        if (typeof content === "string") return "data:" + type + ";base64," + content;
+        else {
+            const array = new Uint8Array(content);
+            return window.URL.createObjectURL(new Blob([
+                array
+            ], {
+                type: type
+            }));
+        }
+    }
+    // Parse nodes in FBXTree.Objects.Texture
+    // These contain details such as UV scaling, cropping, rotation etc and are connected
+    // to images in FBXTree.Objects.Video
+    parseTextures(images) {
+        const textureMap = new Map();
+        if ("Texture" in $4299b50047f4476c$var$fbxTree.Objects) {
+            const textureNodes = $4299b50047f4476c$var$fbxTree.Objects.Texture;
+            for(const nodeID in textureNodes){
+                const texture = this.parseTexture(textureNodes[nodeID], images);
+                textureMap.set(parseInt(nodeID), texture);
+            }
+        }
+        return textureMap;
+    }
+    // Parse individual node in FBXTree.Objects.Texture
+    parseTexture(textureNode, images) {
+        const texture = this.loadTexture(textureNode, images);
+        texture.ID = textureNode.id;
+        texture.name = textureNode.attrName;
+        const wrapModeU = textureNode.WrapModeU;
+        const wrapModeV = textureNode.WrapModeV;
+        const valueU = wrapModeU !== undefined ? wrapModeU.value : 0;
+        const valueV = wrapModeV !== undefined ? wrapModeV.value : 0;
+        // http://download.autodesk.com/us/fbx/SDKdocs/FBX_SDK_Help/files/fbxsdkref/class_k_fbx_texture.html#889640e63e2e681259ea81061b85143a
+        // 0: repeat(default), 1: clamp
+        texture.wrapS = valueU === 0 ? (0, $ea01ff4a5048cd08$export$533346c8e8dac0f5) : (0, $ea01ff4a5048cd08$export$9d9334239a5a5e06);
+        texture.wrapT = valueV === 0 ? (0, $ea01ff4a5048cd08$export$533346c8e8dac0f5) : (0, $ea01ff4a5048cd08$export$9d9334239a5a5e06);
+        if ("Scaling" in textureNode) {
+            const values = textureNode.Scaling.value;
+            texture.repeat.x = values[0];
+            texture.repeat.y = values[1];
+        }
+        return texture;
+    }
+    // load a texture specified as a blob or data URI, or via an external URL using TextureLoader
+    loadTexture(textureNode, images) {
+        let fileName;
+        const currentPath = this.textureLoader.path;
+        const children = $4299b50047f4476c$var$connections.get(textureNode.id).children;
+        if (children !== undefined && children.length > 0 && images[children[0].ID] !== undefined) {
+            fileName = images[children[0].ID];
+            if (fileName.indexOf("blob:") === 0 || fileName.indexOf("data:") === 0) this.textureLoader.setPath(undefined);
+        }
+        let texture;
+        const extension = textureNode.FileName.slice(-3).toLowerCase();
+        if (extension === "tga") {
+            const loader = this.manager.getHandler(".tga");
+            if (loader === null) {
+                console.warn("FBXLoader: TGA loader not found, creating placeholder texture for", textureNode.RelativeFilename);
+                texture = new (0, $ea01ff4a5048cd08$export$5431306cf43de24a)();
+            } else {
+                loader.setPath(this.textureLoader.path);
+                texture = loader.load(fileName);
+            }
+        } else if (extension === "psd") {
+            console.warn("FBXLoader: PSD textures are not supported, creating placeholder texture for", textureNode.RelativeFilename);
+            texture = new (0, $ea01ff4a5048cd08$export$5431306cf43de24a)();
+        } else texture = this.textureLoader.load(fileName);
+        this.textureLoader.setPath(currentPath);
+        return texture;
+    }
+    // Parse nodes in FBXTree.Objects.Material
+    parseMaterials(textureMap) {
+        const materialMap = new Map();
+        if ("Material" in $4299b50047f4476c$var$fbxTree.Objects) {
+            const materialNodes = $4299b50047f4476c$var$fbxTree.Objects.Material;
+            for(const nodeID in materialNodes){
+                const material = this.parseMaterial(materialNodes[nodeID], textureMap);
+                if (material !== null) materialMap.set(parseInt(nodeID), material);
+            }
+        }
+        return materialMap;
+    }
+    // Parse single node in FBXTree.Objects.Material
+    // Materials are connected to texture maps in FBXTree.Objects.Textures
+    // FBX format currently only supports Lambert and Phong shading models
+    parseMaterial(materialNode, textureMap) {
+        const ID = materialNode.id;
+        const name = materialNode.attrName;
+        let type = materialNode.ShadingModel;
+        // Case where FBX wraps shading model in property object.
+        if (typeof type === "object") type = type.value;
+        // Ignore unused materials which don't have any connections.
+        if (!$4299b50047f4476c$var$connections.has(ID)) return null;
+        const parameters = this.parseParameters(materialNode, textureMap, ID);
+        let material;
+        switch(type.toLowerCase()){
+            case "phong":
+                material = new (0, $ea01ff4a5048cd08$export$24c72f71cbaf0678)();
+                break;
+            case "lambert":
+                material = new (0, $ea01ff4a5048cd08$export$5023a9a8114806b8)();
+                break;
+            default:
+                console.warn('THREE.FBXLoader: unknown material type "%s". Defaulting to MeshPhongMaterial.', type);
+                material = new (0, $ea01ff4a5048cd08$export$24c72f71cbaf0678)();
+                break;
+        }
+        material.setValues(parameters);
+        material.name = name;
+        return material;
+    }
+    // Parse FBX material and return parameters suitable for a three.js material
+    // Also parse the texture map and return any textures associated with the material
+    parseParameters(materialNode, textureMap, ID) {
+        const parameters = {};
+        if (materialNode.BumpFactor) parameters.bumpScale = materialNode.BumpFactor.value;
+        if (materialNode.Diffuse) parameters.color = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(materialNode.Diffuse.value);
+        else if (materialNode.DiffuseColor && (materialNode.DiffuseColor.type === "Color" || materialNode.DiffuseColor.type === "ColorRGB")) // The blender exporter exports diffuse here instead of in materialNode.Diffuse
+        parameters.color = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(materialNode.DiffuseColor.value);
+        if (materialNode.DisplacementFactor) parameters.displacementScale = materialNode.DisplacementFactor.value;
+        if (materialNode.Emissive) parameters.emissive = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(materialNode.Emissive.value);
+        else if (materialNode.EmissiveColor && (materialNode.EmissiveColor.type === "Color" || materialNode.EmissiveColor.type === "ColorRGB")) // The blender exporter exports emissive color here instead of in materialNode.Emissive
+        parameters.emissive = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(materialNode.EmissiveColor.value);
+        if (materialNode.EmissiveFactor) parameters.emissiveIntensity = parseFloat(materialNode.EmissiveFactor.value);
+        if (materialNode.Opacity) parameters.opacity = parseFloat(materialNode.Opacity.value);
+        if (parameters.opacity < 1.0) parameters.transparent = true;
+        if (materialNode.ReflectionFactor) parameters.reflectivity = materialNode.ReflectionFactor.value;
+        if (materialNode.Shininess) parameters.shininess = materialNode.Shininess.value;
+        if (materialNode.Specular) parameters.specular = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(materialNode.Specular.value);
+        else if (materialNode.SpecularColor && materialNode.SpecularColor.type === "Color") // The blender exporter exports specular color here instead of in materialNode.Specular
+        parameters.specular = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(materialNode.SpecularColor.value);
+        const scope = this;
+        $4299b50047f4476c$var$connections.get(ID).children.forEach(function(child) {
+            const type = child.relationship;
+            switch(type){
+                case "Bump":
+                    parameters.bumpMap = scope.getTexture(textureMap, child.ID);
+                    break;
+                case "Maya|TEX_ao_map":
+                    parameters.aoMap = scope.getTexture(textureMap, child.ID);
+                    break;
+                case "DiffuseColor":
+                case "Maya|TEX_color_map":
+                    parameters.map = scope.getTexture(textureMap, child.ID);
+                    if (parameters.map !== undefined) parameters.map.encoding = (0, $ea01ff4a5048cd08$export$f32388edbb32674);
+                    break;
+                case "DisplacementColor":
+                    parameters.displacementMap = scope.getTexture(textureMap, child.ID);
+                    break;
+                case "EmissiveColor":
+                    parameters.emissiveMap = scope.getTexture(textureMap, child.ID);
+                    if (parameters.emissiveMap !== undefined) parameters.emissiveMap.encoding = (0, $ea01ff4a5048cd08$export$f32388edbb32674);
+                    break;
+                case "NormalMap":
+                case "Maya|TEX_normal_map":
+                    parameters.normalMap = scope.getTexture(textureMap, child.ID);
+                    break;
+                case "ReflectionColor":
+                    parameters.envMap = scope.getTexture(textureMap, child.ID);
+                    if (parameters.envMap !== undefined) {
+                        parameters.envMap.mapping = (0, $ea01ff4a5048cd08$export$d64030b316d3b087);
+                        parameters.envMap.encoding = (0, $ea01ff4a5048cd08$export$f32388edbb32674);
+                    }
+                    break;
+                case "SpecularColor":
+                    parameters.specularMap = scope.getTexture(textureMap, child.ID);
+                    if (parameters.specularMap !== undefined) parameters.specularMap.encoding = (0, $ea01ff4a5048cd08$export$f32388edbb32674);
+                    break;
+                case "TransparentColor":
+                case "TransparencyFactor":
+                    parameters.alphaMap = scope.getTexture(textureMap, child.ID);
+                    parameters.transparent = true;
+                    break;
+                case "AmbientColor":
+                case "ShininessExponent":
+                case "SpecularFactor":
+                case "VectorDisplacementColor":
+                default:
+                    console.warn("THREE.FBXLoader: %s map is not supported in three.js, skipping texture.", type);
+                    break;
+            }
+        });
+        return parameters;
+    }
+    // get a texture from the textureMap for use by a material.
+    getTexture(textureMap, id) {
+        // if the texture is a layered texture, just use the first layer and issue a warning
+        if ("LayeredTexture" in $4299b50047f4476c$var$fbxTree.Objects && id in $4299b50047f4476c$var$fbxTree.Objects.LayeredTexture) {
+            console.warn("THREE.FBXLoader: layered textures are not supported in three.js. Discarding all but first layer.");
+            id = $4299b50047f4476c$var$connections.get(id).children[0].ID;
+        }
+        return textureMap.get(id);
+    }
+    // Parse nodes in FBXTree.Objects.Deformer
+    // Deformer node can contain skinning or Vertex Cache animation data, however only skinning is supported here
+    // Generates map of Skeleton-like objects for use later when generating and binding skeletons.
+    parseDeformers() {
+        const skeletons = {};
+        const morphTargets = {};
+        if ("Deformer" in $4299b50047f4476c$var$fbxTree.Objects) {
+            const DeformerNodes = $4299b50047f4476c$var$fbxTree.Objects.Deformer;
+            for(const nodeID in DeformerNodes){
+                const deformerNode = DeformerNodes[nodeID];
+                const relationships = $4299b50047f4476c$var$connections.get(parseInt(nodeID));
+                if (deformerNode.attrType === "Skin") {
+                    const skeleton = this.parseSkeleton(relationships, DeformerNodes);
+                    skeleton.ID = nodeID;
+                    if (relationships.parents.length > 1) console.warn("THREE.FBXLoader: skeleton attached to more than one geometry is not supported.");
+                    skeleton.geometryID = relationships.parents[0].ID;
+                    skeletons[nodeID] = skeleton;
+                } else if (deformerNode.attrType === "BlendShape") {
+                    const morphTarget = {
+                        id: nodeID
+                    };
+                    morphTarget.rawTargets = this.parseMorphTargets(relationships, DeformerNodes);
+                    morphTarget.id = nodeID;
+                    if (relationships.parents.length > 1) console.warn("THREE.FBXLoader: morph target attached to more than one geometry is not supported.");
+                    morphTargets[nodeID] = morphTarget;
+                }
+            }
+        }
+        return {
+            skeletons: skeletons,
+            morphTargets: morphTargets
+        };
+    }
+    // Parse single nodes in FBXTree.Objects.Deformer
+    // The top level skeleton node has type 'Skin' and sub nodes have type 'Cluster'
+    // Each skin node represents a skeleton and each cluster node represents a bone
+    parseSkeleton(relationships, deformerNodes) {
+        const rawBones = [];
+        relationships.children.forEach(function(child) {
+            const boneNode = deformerNodes[child.ID];
+            if (boneNode.attrType !== "Cluster") return;
+            const rawBone = {
+                ID: child.ID,
+                indices: [],
+                weights: [],
+                transformLink: new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)().fromArray(boneNode.TransformLink.a)
+            };
+            if ("Indexes" in boneNode) {
+                rawBone.indices = boneNode.Indexes.a;
+                rawBone.weights = boneNode.Weights.a;
+            }
+            rawBones.push(rawBone);
+        });
+        return {
+            rawBones: rawBones,
+            bones: []
+        };
+    }
+    // The top level morph deformer node has type "BlendShape" and sub nodes have type "BlendShapeChannel"
+    parseMorphTargets(relationships, deformerNodes) {
+        const rawMorphTargets = [];
+        for(let i = 0; i < relationships.children.length; i++){
+            const child = relationships.children[i];
+            const morphTargetNode = deformerNodes[child.ID];
+            const rawMorphTarget = {
+                name: morphTargetNode.attrName,
+                initialWeight: morphTargetNode.DeformPercent,
+                id: morphTargetNode.id,
+                fullWeights: morphTargetNode.FullWeights.a
+            };
+            if (morphTargetNode.attrType !== "BlendShapeChannel") return;
+            rawMorphTarget.geoID = $4299b50047f4476c$var$connections.get(parseInt(child.ID)).children.filter(function(child) {
+                return child.relationship === undefined;
+            })[0].ID;
+            rawMorphTargets.push(rawMorphTarget);
+        }
+        return rawMorphTargets;
+    }
+    // create the main Group() to be returned by the loader
+    parseScene(deformers, geometryMap, materialMap) {
+        $4299b50047f4476c$var$sceneGraph = new (0, $ea01ff4a5048cd08$export$eb2fcfdbd7ba97d4)();
+        const modelMap = this.parseModels(deformers.skeletons, geometryMap, materialMap);
+        const modelNodes = $4299b50047f4476c$var$fbxTree.Objects.Model;
+        const scope = this;
+        modelMap.forEach(function(model) {
+            const modelNode = modelNodes[model.ID];
+            scope.setLookAtProperties(model, modelNode);
+            const parentConnections = $4299b50047f4476c$var$connections.get(model.ID).parents;
+            parentConnections.forEach(function(connection) {
+                const parent = modelMap.get(connection.ID);
+                if (parent !== undefined) parent.add(model);
+            });
+            if (model.parent === null) $4299b50047f4476c$var$sceneGraph.add(model);
+        });
+        this.bindSkeleton(deformers.skeletons, geometryMap, modelMap);
+        this.createAmbientLight();
+        $4299b50047f4476c$var$sceneGraph.traverse(function(node) {
+            if (node.userData.transformData) {
+                if (node.parent) {
+                    node.userData.transformData.parentMatrix = node.parent.matrix;
+                    node.userData.transformData.parentMatrixWorld = node.parent.matrixWorld;
+                }
+                const transform = $4299b50047f4476c$var$generateTransform(node.userData.transformData);
+                node.applyMatrix4(transform);
+                node.updateWorldMatrix();
+            }
+        });
+        const animations = new $4299b50047f4476c$var$AnimationParser().parse();
+        // if all the models where already combined in a single group, just return that
+        if ($4299b50047f4476c$var$sceneGraph.children.length === 1 && $4299b50047f4476c$var$sceneGraph.children[0].isGroup) {
+            $4299b50047f4476c$var$sceneGraph.children[0].animations = animations;
+            $4299b50047f4476c$var$sceneGraph = $4299b50047f4476c$var$sceneGraph.children[0];
+        }
+        $4299b50047f4476c$var$sceneGraph.animations = animations;
+    }
+    // parse nodes in FBXTree.Objects.Model
+    parseModels(skeletons, geometryMap, materialMap) {
+        const modelMap = new Map();
+        const modelNodes = $4299b50047f4476c$var$fbxTree.Objects.Model;
+        for(const nodeID in modelNodes){
+            const id = parseInt(nodeID);
+            const node = modelNodes[nodeID];
+            const relationships = $4299b50047f4476c$var$connections.get(id);
+            let model = this.buildSkeleton(relationships, skeletons, id, node.attrName);
+            if (!model) {
+                switch(node.attrType){
+                    case "Camera":
+                        model = this.createCamera(relationships);
+                        break;
+                    case "Light":
+                        model = this.createLight(relationships);
+                        break;
+                    case "Mesh":
+                        model = this.createMesh(relationships, geometryMap, materialMap);
+                        break;
+                    case "NurbsCurve":
+                        model = this.createCurve(relationships, geometryMap);
+                        break;
+                    case "LimbNode":
+                    case "Root":
+                        model = new (0, $ea01ff4a5048cd08$export$b127726e56765aa4)();
+                        break;
+                    case "Null":
+                    default:
+                        model = new (0, $ea01ff4a5048cd08$export$eb2fcfdbd7ba97d4)();
+                        break;
+                }
+                model.name = node.attrName ? (0, $ea01ff4a5048cd08$export$7bf70fcf9f891893).sanitizeNodeName(node.attrName) : "";
+                model.ID = id;
+            }
+            this.getTransformData(model, node);
+            modelMap.set(id, model);
+        }
+        return modelMap;
+    }
+    buildSkeleton(relationships, skeletons, id, name) {
+        let bone = null;
+        relationships.parents.forEach(function(parent) {
+            for(const ID in skeletons){
+                const skeleton = skeletons[ID];
+                skeleton.rawBones.forEach(function(rawBone, i) {
+                    if (rawBone.ID === parent.ID) {
+                        const subBone = bone;
+                        bone = new (0, $ea01ff4a5048cd08$export$b127726e56765aa4)();
+                        bone.matrixWorld.copy(rawBone.transformLink);
+                        // set name and id here - otherwise in cases where "subBone" is created it will not have a name / id
+                        bone.name = name ? (0, $ea01ff4a5048cd08$export$7bf70fcf9f891893).sanitizeNodeName(name) : "";
+                        bone.ID = id;
+                        skeleton.bones[i] = bone;
+                        // In cases where a bone is shared between multiple meshes
+                        // duplicate the bone here and and it as a child of the first bone
+                        if (subBone !== null) bone.add(subBone);
+                    }
+                });
+            }
+        });
+        return bone;
+    }
+    // create a PerspectiveCamera or OrthographicCamera
+    createCamera(relationships) {
+        let model;
+        let cameraAttribute;
+        relationships.children.forEach(function(child) {
+            const attr = $4299b50047f4476c$var$fbxTree.Objects.NodeAttribute[child.ID];
+            if (attr !== undefined) cameraAttribute = attr;
+        });
+        if (cameraAttribute === undefined) model = new (0, $ea01ff4a5048cd08$export$e4dd07dff30cc924)();
+        else {
+            let type = 0;
+            if (cameraAttribute.CameraProjectionType !== undefined && cameraAttribute.CameraProjectionType.value === 1) type = 1;
+            let nearClippingPlane = 1;
+            if (cameraAttribute.NearPlane !== undefined) nearClippingPlane = cameraAttribute.NearPlane.value / 1000;
+            let farClippingPlane = 1000;
+            if (cameraAttribute.FarPlane !== undefined) farClippingPlane = cameraAttribute.FarPlane.value / 1000;
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            if (cameraAttribute.AspectWidth !== undefined && cameraAttribute.AspectHeight !== undefined) {
+                width = cameraAttribute.AspectWidth.value;
+                height = cameraAttribute.AspectHeight.value;
+            }
+            const aspect = width / height;
+            let fov = 45;
+            if (cameraAttribute.FieldOfView !== undefined) fov = cameraAttribute.FieldOfView.value;
+            const focalLength = cameraAttribute.FocalLength ? cameraAttribute.FocalLength.value : null;
+            switch(type){
+                case 0:
+                    model = new (0, $ea01ff4a5048cd08$export$74e4ae24825f68d7)(fov, aspect, nearClippingPlane, farClippingPlane);
+                    if (focalLength !== null) model.setFocalLength(focalLength);
+                    break;
+                case 1:
+                    model = new (0, $ea01ff4a5048cd08$export$9ebf355ee4ed261b)(-width / 2, width / 2, height / 2, -height / 2, nearClippingPlane, farClippingPlane);
+                    break;
+                default:
+                    console.warn("THREE.FBXLoader: Unknown camera type " + type + ".");
+                    model = new (0, $ea01ff4a5048cd08$export$e4dd07dff30cc924)();
+                    break;
+            }
+        }
+        return model;
+    }
+    // Create a DirectionalLight, PointLight or SpotLight
+    createLight(relationships) {
+        let model;
+        let lightAttribute;
+        relationships.children.forEach(function(child) {
+            const attr = $4299b50047f4476c$var$fbxTree.Objects.NodeAttribute[child.ID];
+            if (attr !== undefined) lightAttribute = attr;
+        });
+        if (lightAttribute === undefined) model = new (0, $ea01ff4a5048cd08$export$e4dd07dff30cc924)();
+        else {
+            let type;
+            // LightType can be undefined for Point lights
+            if (lightAttribute.LightType === undefined) type = 0;
+            else type = lightAttribute.LightType.value;
+            let color = 0xffffff;
+            if (lightAttribute.Color !== undefined) color = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(lightAttribute.Color.value);
+            let intensity = lightAttribute.Intensity === undefined ? 1 : lightAttribute.Intensity.value / 100;
+            // light disabled
+            if (lightAttribute.CastLightOnObject !== undefined && lightAttribute.CastLightOnObject.value === 0) intensity = 0;
+            let distance = 0;
+            if (lightAttribute.FarAttenuationEnd !== undefined) {
+                if (lightAttribute.EnableFarAttenuation !== undefined && lightAttribute.EnableFarAttenuation.value === 0) distance = 0;
+                else distance = lightAttribute.FarAttenuationEnd.value;
+            }
+            // TODO: could this be calculated linearly from FarAttenuationStart to FarAttenuationEnd?
+            const decay = 1;
+            switch(type){
+                case 0:
+                    model = new (0, $ea01ff4a5048cd08$export$4c9c1cb3f0b6f455)(color, intensity, distance, decay);
+                    break;
+                case 1:
+                    model = new (0, $ea01ff4a5048cd08$export$3fea33cc9972c868)(color, intensity);
+                    break;
+                case 2:
+                    let angle = Math.PI / 3;
+                    if (lightAttribute.InnerAngle !== undefined) angle = (0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad(lightAttribute.InnerAngle.value);
+                    let penumbra = 0;
+                    if (lightAttribute.OuterAngle !== undefined) {
+                        // TODO: this is not correct - FBX calculates outer and inner angle in degrees
+                        // with OuterAngle > InnerAngle && OuterAngle <= Math.PI
+                        // while three.js uses a penumbra between (0, 1) to attenuate the inner angle
+                        penumbra = (0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad(lightAttribute.OuterAngle.value);
+                        penumbra = Math.max(penumbra, 1);
+                    }
+                    model = new (0, $ea01ff4a5048cd08$export$81495cbb73897362)(color, intensity, distance, angle, penumbra, decay);
+                    break;
+                default:
+                    console.warn("THREE.FBXLoader: Unknown light type " + lightAttribute.LightType.value + ", defaulting to a PointLight.");
+                    model = new (0, $ea01ff4a5048cd08$export$4c9c1cb3f0b6f455)(color, intensity);
+                    break;
+            }
+            if (lightAttribute.CastShadows !== undefined && lightAttribute.CastShadows.value === 1) model.castShadow = true;
+        }
+        return model;
+    }
+    createMesh(relationships, geometryMap, materialMap) {
+        let model;
+        let geometry = null;
+        let material = null;
+        const materials = [];
+        // get geometry and materials(s) from connections
+        relationships.children.forEach(function(child) {
+            if (geometryMap.has(child.ID)) geometry = geometryMap.get(child.ID);
+            if (materialMap.has(child.ID)) materials.push(materialMap.get(child.ID));
+        });
+        if (materials.length > 1) material = materials;
+        else if (materials.length > 0) material = materials[0];
+        else {
+            material = new (0, $ea01ff4a5048cd08$export$24c72f71cbaf0678)({
+                color: 0xcccccc
+            });
+            materials.push(material);
+        }
+        if ("color" in geometry.attributes) materials.forEach(function(material) {
+            material.vertexColors = true;
+        });
+        if (geometry.FBX_Deformer) {
+            model = new (0, $ea01ff4a5048cd08$export$b303577035157ecf)(geometry, material);
+            model.normalizeSkinWeights();
+        } else model = new (0, $ea01ff4a5048cd08$export$e176487c05830cc5)(geometry, material);
+        return model;
+    }
+    createCurve(relationships, geometryMap) {
+        const geometry = relationships.children.reduce(function(geo, child) {
+            if (geometryMap.has(child.ID)) geo = geometryMap.get(child.ID);
+            return geo;
+        }, null);
+        // FBX does not list materials for Nurbs lines, so we'll just put our own in here.
+        const material = new (0, $ea01ff4a5048cd08$export$fbaaa33907730a0c)({
+            color: 0x3300ff,
+            linewidth: 1
+        });
+        return new (0, $ea01ff4a5048cd08$export$17d680238e50603e)(geometry, material);
+    }
+    // parse the model node for transform data
+    getTransformData(model, modelNode) {
+        const transformData = {};
+        if ("InheritType" in modelNode) transformData.inheritType = parseInt(modelNode.InheritType.value);
+        if ("RotationOrder" in modelNode) transformData.eulerOrder = $4299b50047f4476c$var$getEulerOrder(modelNode.RotationOrder.value);
+        else transformData.eulerOrder = "ZYX";
+        if ("Lcl_Translation" in modelNode) transformData.translation = modelNode.Lcl_Translation.value;
+        if ("PreRotation" in modelNode) transformData.preRotation = modelNode.PreRotation.value;
+        if ("Lcl_Rotation" in modelNode) transformData.rotation = modelNode.Lcl_Rotation.value;
+        if ("PostRotation" in modelNode) transformData.postRotation = modelNode.PostRotation.value;
+        if ("Lcl_Scaling" in modelNode) transformData.scale = modelNode.Lcl_Scaling.value;
+        if ("ScalingOffset" in modelNode) transformData.scalingOffset = modelNode.ScalingOffset.value;
+        if ("ScalingPivot" in modelNode) transformData.scalingPivot = modelNode.ScalingPivot.value;
+        if ("RotationOffset" in modelNode) transformData.rotationOffset = modelNode.RotationOffset.value;
+        if ("RotationPivot" in modelNode) transformData.rotationPivot = modelNode.RotationPivot.value;
+        model.userData.transformData = transformData;
+    }
+    setLookAtProperties(model, modelNode) {
+        if ("LookAtProperty" in modelNode) {
+            const children = $4299b50047f4476c$var$connections.get(model.ID).children;
+            children.forEach(function(child) {
+                if (child.relationship === "LookAtProperty") {
+                    const lookAtTarget = $4299b50047f4476c$var$fbxTree.Objects.Model[child.ID];
+                    if ("Lcl_Translation" in lookAtTarget) {
+                        const pos = lookAtTarget.Lcl_Translation.value;
+                        // DirectionalLight, SpotLight
+                        if (model.target !== undefined) {
+                            model.target.position.fromArray(pos);
+                            $4299b50047f4476c$var$sceneGraph.add(model.target);
+                        } else model.lookAt(new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)().fromArray(pos));
+                    }
+                }
+            });
+        }
+    }
+    bindSkeleton(skeletons, geometryMap, modelMap) {
+        const bindMatrices = this.parsePoseNodes();
+        for(const ID in skeletons){
+            const skeleton = skeletons[ID];
+            const parents = $4299b50047f4476c$var$connections.get(parseInt(skeleton.ID)).parents;
+            parents.forEach(function(parent) {
+                if (geometryMap.has(parent.ID)) {
+                    const geoID = parent.ID;
+                    const geoRelationships = $4299b50047f4476c$var$connections.get(geoID);
+                    geoRelationships.parents.forEach(function(geoConnParent) {
+                        if (modelMap.has(geoConnParent.ID)) {
+                            const model = modelMap.get(geoConnParent.ID);
+                            model.bind(new (0, $ea01ff4a5048cd08$export$8f31e4c4a37b8e9c)(skeleton.bones), bindMatrices[geoConnParent.ID]);
+                        }
+                    });
+                }
+            });
+        }
+    }
+    parsePoseNodes() {
+        const bindMatrices = {};
+        if ("Pose" in $4299b50047f4476c$var$fbxTree.Objects) {
+            const BindPoseNode = $4299b50047f4476c$var$fbxTree.Objects.Pose;
+            for(const nodeID in BindPoseNode)if (BindPoseNode[nodeID].attrType === "BindPose" && BindPoseNode[nodeID].NbPoseNodes > 0) {
+                const poseNodes = BindPoseNode[nodeID].PoseNode;
+                if (Array.isArray(poseNodes)) poseNodes.forEach(function(poseNode) {
+                    bindMatrices[poseNode.Node] = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)().fromArray(poseNode.Matrix.a);
+                });
+                else bindMatrices[poseNodes.Node] = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)().fromArray(poseNodes.Matrix.a);
+            }
+        }
+        return bindMatrices;
+    }
+    // Parse ambient color in FBXTree.GlobalSettings - if it's not set to black (default), create an ambient light
+    createAmbientLight() {
+        if ("GlobalSettings" in $4299b50047f4476c$var$fbxTree && "AmbientColor" in $4299b50047f4476c$var$fbxTree.GlobalSettings) {
+            const ambientColor = $4299b50047f4476c$var$fbxTree.GlobalSettings.AmbientColor.value;
+            const r = ambientColor[0];
+            const g = ambientColor[1];
+            const b = ambientColor[2];
+            if (r !== 0 || g !== 0 || b !== 0) {
+                const color = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)(r, g, b);
+                $4299b50047f4476c$var$sceneGraph.add(new (0, $ea01ff4a5048cd08$export$af279bfef9ec2c96)(color, 1));
+            }
+        }
+    }
+}
+// parse Geometry data from FBXTree and return map of BufferGeometries
+class $4299b50047f4476c$var$GeometryParser {
+    // Parse nodes in FBXTree.Objects.Geometry
+    parse(deformers) {
+        const geometryMap = new Map();
+        if ("Geometry" in $4299b50047f4476c$var$fbxTree.Objects) {
+            const geoNodes = $4299b50047f4476c$var$fbxTree.Objects.Geometry;
+            for(const nodeID in geoNodes){
+                const relationships = $4299b50047f4476c$var$connections.get(parseInt(nodeID));
+                const geo = this.parseGeometry(relationships, geoNodes[nodeID], deformers);
+                geometryMap.set(parseInt(nodeID), geo);
+            }
+        }
+        return geometryMap;
+    }
+    // Parse single node in FBXTree.Objects.Geometry
+    parseGeometry(relationships, geoNode, deformers) {
+        switch(geoNode.attrType){
+            case "Mesh":
+                return this.parseMeshGeometry(relationships, geoNode, deformers);
+            case "NurbsCurve":
+                return this.parseNurbsGeometry(geoNode);
+        }
+    }
+    // Parse single node mesh geometry in FBXTree.Objects.Geometry
+    parseMeshGeometry(relationships, geoNode, deformers) {
+        const skeletons = deformers.skeletons;
+        const morphTargets = [];
+        const modelNodes = relationships.parents.map(function(parent) {
+            return $4299b50047f4476c$var$fbxTree.Objects.Model[parent.ID];
+        });
+        // don't create geometry if it is not associated with any models
+        if (modelNodes.length === 0) return;
+        const skeleton = relationships.children.reduce(function(skeleton, child) {
+            if (skeletons[child.ID] !== undefined) skeleton = skeletons[child.ID];
+            return skeleton;
+        }, null);
+        relationships.children.forEach(function(child) {
+            if (deformers.morphTargets[child.ID] !== undefined) morphTargets.push(deformers.morphTargets[child.ID]);
+        });
+        // Assume one model and get the preRotation from that
+        // if there is more than one model associated with the geometry this may cause problems
+        const modelNode = modelNodes[0];
+        const transformData = {};
+        if ("RotationOrder" in modelNode) transformData.eulerOrder = $4299b50047f4476c$var$getEulerOrder(modelNode.RotationOrder.value);
+        if ("InheritType" in modelNode) transformData.inheritType = parseInt(modelNode.InheritType.value);
+        if ("GeometricTranslation" in modelNode) transformData.translation = modelNode.GeometricTranslation.value;
+        if ("GeometricRotation" in modelNode) transformData.rotation = modelNode.GeometricRotation.value;
+        if ("GeometricScaling" in modelNode) transformData.scale = modelNode.GeometricScaling.value;
+        const transform = $4299b50047f4476c$var$generateTransform(transformData);
+        return this.genGeometry(geoNode, skeleton, morphTargets, transform);
+    }
+    // Generate a BufferGeometry from a node in FBXTree.Objects.Geometry
+    genGeometry(geoNode, skeleton, morphTargets, preTransform) {
+        const geo = new (0, $ea01ff4a5048cd08$export$b7be63a67df8959)();
+        if (geoNode.attrName) geo.name = geoNode.attrName;
+        const geoInfo = this.parseGeoNode(geoNode, skeleton);
+        const buffers = this.genBuffers(geoInfo);
+        const positionAttribute = new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(buffers.vertex, 3);
+        positionAttribute.applyMatrix4(preTransform);
+        geo.setAttribute("position", positionAttribute);
+        if (buffers.colors.length > 0) geo.setAttribute("color", new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(buffers.colors, 3));
+        if (skeleton) {
+            geo.setAttribute("skinIndex", new (0, $ea01ff4a5048cd08$export$640a853f68025f2e)(buffers.weightsIndices, 4));
+            geo.setAttribute("skinWeight", new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(buffers.vertexWeights, 4));
+            // used later to bind the skeleton to the model
+            geo.FBX_Deformer = skeleton;
+        }
+        if (buffers.normal.length > 0) {
+            const normalMatrix = new (0, $ea01ff4a5048cd08$export$8ff26dafa08918)().getNormalMatrix(preTransform);
+            const normalAttribute = new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(buffers.normal, 3);
+            normalAttribute.applyNormalMatrix(normalMatrix);
+            geo.setAttribute("normal", normalAttribute);
+        }
+        buffers.uvs.forEach(function(uvBuffer, i) {
+            // subsequent uv buffers are called 'uv1', 'uv2', ...
+            let name = "uv" + (i + 1).toString();
+            // the first uv buffer is just called 'uv'
+            if (i === 0) name = "uv";
+            geo.setAttribute(name, new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(buffers.uvs[i], 2));
+        });
+        if (geoInfo.material && geoInfo.material.mappingType !== "AllSame") {
+            // Convert the material indices of each vertex into rendering groups on the geometry.
+            let prevMaterialIndex = buffers.materialIndex[0];
+            let startIndex = 0;
+            buffers.materialIndex.forEach(function(currentIndex, i) {
+                if (currentIndex !== prevMaterialIndex) {
+                    geo.addGroup(startIndex, i - startIndex, prevMaterialIndex);
+                    prevMaterialIndex = currentIndex;
+                    startIndex = i;
+                }
+            });
+            // the loop above doesn't add the last group, do that here.
+            if (geo.groups.length > 0) {
+                const lastGroup = geo.groups[geo.groups.length - 1];
+                const lastIndex = lastGroup.start + lastGroup.count;
+                if (lastIndex !== buffers.materialIndex.length) geo.addGroup(lastIndex, buffers.materialIndex.length - lastIndex, prevMaterialIndex);
+            }
+            // case where there are multiple materials but the whole geometry is only
+            // using one of them
+            if (geo.groups.length === 0) geo.addGroup(0, buffers.materialIndex.length, buffers.materialIndex[0]);
+        }
+        this.addMorphTargets(geo, geoNode, morphTargets, preTransform);
+        return geo;
+    }
+    parseGeoNode(geoNode, skeleton) {
+        const geoInfo = {};
+        geoInfo.vertexPositions = geoNode.Vertices !== undefined ? geoNode.Vertices.a : [];
+        geoInfo.vertexIndices = geoNode.PolygonVertexIndex !== undefined ? geoNode.PolygonVertexIndex.a : [];
+        if (geoNode.LayerElementColor) geoInfo.color = this.parseVertexColors(geoNode.LayerElementColor[0]);
+        if (geoNode.LayerElementMaterial) geoInfo.material = this.parseMaterialIndices(geoNode.LayerElementMaterial[0]);
+        if (geoNode.LayerElementNormal) geoInfo.normal = this.parseNormals(geoNode.LayerElementNormal[0]);
+        if (geoNode.LayerElementUV) {
+            geoInfo.uv = [];
+            let i = 0;
+            while(geoNode.LayerElementUV[i]){
+                if (geoNode.LayerElementUV[i].UV) geoInfo.uv.push(this.parseUVs(geoNode.LayerElementUV[i]));
+                i++;
+            }
+        }
+        geoInfo.weightTable = {};
+        if (skeleton !== null) {
+            geoInfo.skeleton = skeleton;
+            skeleton.rawBones.forEach(function(rawBone, i) {
+                // loop over the bone's vertex indices and weights
+                rawBone.indices.forEach(function(index, j) {
+                    if (geoInfo.weightTable[index] === undefined) geoInfo.weightTable[index] = [];
+                    geoInfo.weightTable[index].push({
+                        id: i,
+                        weight: rawBone.weights[j]
+                    });
+                });
+            });
+        }
+        return geoInfo;
+    }
+    genBuffers(geoInfo) {
+        const buffers = {
+            vertex: [],
+            normal: [],
+            colors: [],
+            uvs: [],
+            materialIndex: [],
+            vertexWeights: [],
+            weightsIndices: []
+        };
+        let polygonIndex = 0;
+        let faceLength = 0;
+        let displayedWeightsWarning = false;
+        // these will hold data for a single face
+        let facePositionIndexes = [];
+        let faceNormals = [];
+        let faceColors = [];
+        let faceUVs = [];
+        let faceWeights = [];
+        let faceWeightIndices = [];
+        const scope = this;
+        geoInfo.vertexIndices.forEach(function(vertexIndex, polygonVertexIndex) {
+            let materialIndex;
+            let endOfFace = false;
+            // Face index and vertex index arrays are combined in a single array
+            // A cube with quad faces looks like this:
+            // PolygonVertexIndex: *24 {
+            //  a: 0, 1, 3, -3, 2, 3, 5, -5, 4, 5, 7, -7, 6, 7, 1, -1, 1, 7, 5, -4, 6, 0, 2, -5
+            //  }
+            // Negative numbers mark the end of a face - first face here is 0, 1, 3, -3
+            // to find index of last vertex bit shift the index: ^ - 1
+            if (vertexIndex < 0) {
+                vertexIndex = vertexIndex ^ -1; // equivalent to ( x * -1 ) - 1
+                endOfFace = true;
+            }
+            let weightIndices = [];
+            let weights = [];
+            facePositionIndexes.push(vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
+            if (geoInfo.color) {
+                const data = $4299b50047f4476c$var$getData(polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.color);
+                faceColors.push(data[0], data[1], data[2]);
+            }
+            if (geoInfo.skeleton) {
+                if (geoInfo.weightTable[vertexIndex] !== undefined) geoInfo.weightTable[vertexIndex].forEach(function(wt) {
+                    weights.push(wt.weight);
+                    weightIndices.push(wt.id);
+                });
+                if (weights.length > 4) {
+                    if (!displayedWeightsWarning) {
+                        console.warn("THREE.FBXLoader: Vertex has more than 4 skinning weights assigned to vertex. Deleting additional weights.");
+                        displayedWeightsWarning = true;
+                    }
+                    const wIndex = [
+                        0,
+                        0,
+                        0,
+                        0
+                    ];
+                    const Weight = [
+                        0,
+                        0,
+                        0,
+                        0
+                    ];
+                    weights.forEach(function(weight, weightIndex) {
+                        let currentWeight = weight;
+                        let currentIndex = weightIndices[weightIndex];
+                        Weight.forEach(function(comparedWeight, comparedWeightIndex, comparedWeightArray) {
+                            if (currentWeight > comparedWeight) {
+                                comparedWeightArray[comparedWeightIndex] = currentWeight;
+                                currentWeight = comparedWeight;
+                                const tmp = wIndex[comparedWeightIndex];
+                                wIndex[comparedWeightIndex] = currentIndex;
+                                currentIndex = tmp;
+                            }
+                        });
+                    });
+                    weightIndices = wIndex;
+                    weights = Weight;
+                }
+                // if the weight array is shorter than 4 pad with 0s
+                while(weights.length < 4){
+                    weights.push(0);
+                    weightIndices.push(0);
+                }
+                for(let i = 0; i < 4; ++i){
+                    faceWeights.push(weights[i]);
+                    faceWeightIndices.push(weightIndices[i]);
+                }
+            }
+            if (geoInfo.normal) {
+                const data = $4299b50047f4476c$var$getData(polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.normal);
+                faceNormals.push(data[0], data[1], data[2]);
+            }
+            if (geoInfo.material && geoInfo.material.mappingType !== "AllSame") materialIndex = $4299b50047f4476c$var$getData(polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.material)[0];
+            if (geoInfo.uv) geoInfo.uv.forEach(function(uv, i) {
+                const data = $4299b50047f4476c$var$getData(polygonVertexIndex, polygonIndex, vertexIndex, uv);
+                if (faceUVs[i] === undefined) faceUVs[i] = [];
+                faceUVs[i].push(data[0]);
+                faceUVs[i].push(data[1]);
+            });
+            faceLength++;
+            if (endOfFace) {
+                scope.genFace(buffers, geoInfo, facePositionIndexes, materialIndex, faceNormals, faceColors, faceUVs, faceWeights, faceWeightIndices, faceLength);
+                polygonIndex++;
+                faceLength = 0;
+                // reset arrays for the next face
+                facePositionIndexes = [];
+                faceNormals = [];
+                faceColors = [];
+                faceUVs = [];
+                faceWeights = [];
+                faceWeightIndices = [];
+            }
+        });
+        return buffers;
+    }
+    // Generate data for a single face in a geometry. If the face is a quad then split it into 2 tris
+    genFace(buffers, geoInfo, facePositionIndexes, materialIndex, faceNormals, faceColors, faceUVs, faceWeights, faceWeightIndices, faceLength) {
+        for(let i = 2; i < faceLength; i++){
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[0]]);
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[1]]);
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[2]]);
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[(i - 1) * 3]]);
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[(i - 1) * 3 + 1]]);
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[(i - 1) * 3 + 2]]);
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[i * 3]]);
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[i * 3 + 1]]);
+            buffers.vertex.push(geoInfo.vertexPositions[facePositionIndexes[i * 3 + 2]]);
+            if (geoInfo.skeleton) {
+                buffers.vertexWeights.push(faceWeights[0]);
+                buffers.vertexWeights.push(faceWeights[1]);
+                buffers.vertexWeights.push(faceWeights[2]);
+                buffers.vertexWeights.push(faceWeights[3]);
+                buffers.vertexWeights.push(faceWeights[(i - 1) * 4]);
+                buffers.vertexWeights.push(faceWeights[(i - 1) * 4 + 1]);
+                buffers.vertexWeights.push(faceWeights[(i - 1) * 4 + 2]);
+                buffers.vertexWeights.push(faceWeights[(i - 1) * 4 + 3]);
+                buffers.vertexWeights.push(faceWeights[i * 4]);
+                buffers.vertexWeights.push(faceWeights[i * 4 + 1]);
+                buffers.vertexWeights.push(faceWeights[i * 4 + 2]);
+                buffers.vertexWeights.push(faceWeights[i * 4 + 3]);
+                buffers.weightsIndices.push(faceWeightIndices[0]);
+                buffers.weightsIndices.push(faceWeightIndices[1]);
+                buffers.weightsIndices.push(faceWeightIndices[2]);
+                buffers.weightsIndices.push(faceWeightIndices[3]);
+                buffers.weightsIndices.push(faceWeightIndices[(i - 1) * 4]);
+                buffers.weightsIndices.push(faceWeightIndices[(i - 1) * 4 + 1]);
+                buffers.weightsIndices.push(faceWeightIndices[(i - 1) * 4 + 2]);
+                buffers.weightsIndices.push(faceWeightIndices[(i - 1) * 4 + 3]);
+                buffers.weightsIndices.push(faceWeightIndices[i * 4]);
+                buffers.weightsIndices.push(faceWeightIndices[i * 4 + 1]);
+                buffers.weightsIndices.push(faceWeightIndices[i * 4 + 2]);
+                buffers.weightsIndices.push(faceWeightIndices[i * 4 + 3]);
+            }
+            if (geoInfo.color) {
+                buffers.colors.push(faceColors[0]);
+                buffers.colors.push(faceColors[1]);
+                buffers.colors.push(faceColors[2]);
+                buffers.colors.push(faceColors[(i - 1) * 3]);
+                buffers.colors.push(faceColors[(i - 1) * 3 + 1]);
+                buffers.colors.push(faceColors[(i - 1) * 3 + 2]);
+                buffers.colors.push(faceColors[i * 3]);
+                buffers.colors.push(faceColors[i * 3 + 1]);
+                buffers.colors.push(faceColors[i * 3 + 2]);
+            }
+            if (geoInfo.material && geoInfo.material.mappingType !== "AllSame") {
+                buffers.materialIndex.push(materialIndex);
+                buffers.materialIndex.push(materialIndex);
+                buffers.materialIndex.push(materialIndex);
+            }
+            if (geoInfo.normal) {
+                buffers.normal.push(faceNormals[0]);
+                buffers.normal.push(faceNormals[1]);
+                buffers.normal.push(faceNormals[2]);
+                buffers.normal.push(faceNormals[(i - 1) * 3]);
+                buffers.normal.push(faceNormals[(i - 1) * 3 + 1]);
+                buffers.normal.push(faceNormals[(i - 1) * 3 + 2]);
+                buffers.normal.push(faceNormals[i * 3]);
+                buffers.normal.push(faceNormals[i * 3 + 1]);
+                buffers.normal.push(faceNormals[i * 3 + 2]);
+            }
+            if (geoInfo.uv) geoInfo.uv.forEach(function(uv, j) {
+                if (buffers.uvs[j] === undefined) buffers.uvs[j] = [];
+                buffers.uvs[j].push(faceUVs[j][0]);
+                buffers.uvs[j].push(faceUVs[j][1]);
+                buffers.uvs[j].push(faceUVs[j][(i - 1) * 2]);
+                buffers.uvs[j].push(faceUVs[j][(i - 1) * 2 + 1]);
+                buffers.uvs[j].push(faceUVs[j][i * 2]);
+                buffers.uvs[j].push(faceUVs[j][i * 2 + 1]);
+            });
+        }
+    }
+    addMorphTargets(parentGeo, parentGeoNode, morphTargets, preTransform) {
+        if (morphTargets.length === 0) return;
+        parentGeo.morphTargetsRelative = true;
+        parentGeo.morphAttributes.position = [];
+        // parentGeo.morphAttributes.normal = []; // not implemented
+        const scope = this;
+        morphTargets.forEach(function(morphTarget) {
+            morphTarget.rawTargets.forEach(function(rawTarget) {
+                const morphGeoNode = $4299b50047f4476c$var$fbxTree.Objects.Geometry[rawTarget.geoID];
+                if (morphGeoNode !== undefined) scope.genMorphGeometry(parentGeo, parentGeoNode, morphGeoNode, preTransform, rawTarget.name);
+            });
+        });
+    }
+    // a morph geometry node is similar to a standard  node, and the node is also contained
+    // in FBXTree.Objects.Geometry, however it can only have attributes for position, normal
+    // and a special attribute Index defining which vertices of the original geometry are affected
+    // Normal and position attributes only have data for the vertices that are affected by the morph
+    genMorphGeometry(parentGeo, parentGeoNode, morphGeoNode, preTransform, name) {
+        const vertexIndices = parentGeoNode.PolygonVertexIndex !== undefined ? parentGeoNode.PolygonVertexIndex.a : [];
+        const morphPositionsSparse = morphGeoNode.Vertices !== undefined ? morphGeoNode.Vertices.a : [];
+        const indices = morphGeoNode.Indexes !== undefined ? morphGeoNode.Indexes.a : [];
+        const length = parentGeo.attributes.position.count * 3;
+        const morphPositions = new Float32Array(length);
+        for(let i = 0; i < indices.length; i++){
+            const morphIndex = indices[i] * 3;
+            morphPositions[morphIndex] = morphPositionsSparse[i * 3];
+            morphPositions[morphIndex + 1] = morphPositionsSparse[i * 3 + 1];
+            morphPositions[morphIndex + 2] = morphPositionsSparse[i * 3 + 2];
+        }
+        // TODO: add morph normal support
+        const morphGeoInfo = {
+            vertexIndices: vertexIndices,
+            vertexPositions: morphPositions
+        };
+        const morphBuffers = this.genBuffers(morphGeoInfo);
+        const positionAttribute = new (0, $ea01ff4a5048cd08$export$cbe7a62641830ebd)(morphBuffers.vertex, 3);
+        positionAttribute.name = name || morphGeoNode.attrName;
+        positionAttribute.applyMatrix4(preTransform);
+        parentGeo.morphAttributes.position.push(positionAttribute);
+    }
+    // Parse normal from FBXTree.Objects.Geometry.LayerElementNormal if it exists
+    parseNormals(NormalNode) {
+        const mappingType = NormalNode.MappingInformationType;
+        const referenceType = NormalNode.ReferenceInformationType;
+        const buffer = NormalNode.Normals.a;
+        let indexBuffer = [];
+        if (referenceType === "IndexToDirect") {
+            if ("NormalIndex" in NormalNode) indexBuffer = NormalNode.NormalIndex.a;
+            else if ("NormalsIndex" in NormalNode) indexBuffer = NormalNode.NormalsIndex.a;
+        }
+        return {
+            dataSize: 3,
+            buffer: buffer,
+            indices: indexBuffer,
+            mappingType: mappingType,
+            referenceType: referenceType
+        };
+    }
+    // Parse UVs from FBXTree.Objects.Geometry.LayerElementUV if it exists
+    parseUVs(UVNode) {
+        const mappingType = UVNode.MappingInformationType;
+        const referenceType = UVNode.ReferenceInformationType;
+        const buffer = UVNode.UV.a;
+        let indexBuffer = [];
+        if (referenceType === "IndexToDirect") indexBuffer = UVNode.UVIndex.a;
+        return {
+            dataSize: 2,
+            buffer: buffer,
+            indices: indexBuffer,
+            mappingType: mappingType,
+            referenceType: referenceType
+        };
+    }
+    // Parse Vertex Colors from FBXTree.Objects.Geometry.LayerElementColor if it exists
+    parseVertexColors(ColorNode) {
+        const mappingType = ColorNode.MappingInformationType;
+        const referenceType = ColorNode.ReferenceInformationType;
+        const buffer = ColorNode.Colors.a;
+        let indexBuffer = [];
+        if (referenceType === "IndexToDirect") indexBuffer = ColorNode.ColorIndex.a;
+        return {
+            dataSize: 4,
+            buffer: buffer,
+            indices: indexBuffer,
+            mappingType: mappingType,
+            referenceType: referenceType
+        };
+    }
+    // Parse mapping and material data in FBXTree.Objects.Geometry.LayerElementMaterial if it exists
+    parseMaterialIndices(MaterialNode) {
+        const mappingType = MaterialNode.MappingInformationType;
+        const referenceType = MaterialNode.ReferenceInformationType;
+        if (mappingType === "NoMappingInformation") return {
+            dataSize: 1,
+            buffer: [
+                0
+            ],
+            indices: [
+                0
+            ],
+            mappingType: "AllSame",
+            referenceType: referenceType
+        };
+        const materialIndexBuffer = MaterialNode.Materials.a;
+        // Since materials are stored as indices, there's a bit of a mismatch between FBX and what
+        // we expect.So we create an intermediate buffer that points to the index in the buffer,
+        // for conforming with the other functions we've written for other data.
+        const materialIndices = [];
+        for(let i = 0; i < materialIndexBuffer.length; ++i)materialIndices.push(i);
+        return {
+            dataSize: 1,
+            buffer: materialIndexBuffer,
+            indices: materialIndices,
+            mappingType: mappingType,
+            referenceType: referenceType
+        };
+    }
+    // Generate a NurbGeometry from a node in FBXTree.Objects.Geometry
+    parseNurbsGeometry(geoNode) {
+        if ((0, $10d2d5414403be6f$export$12efb26d7429b049) === undefined) {
+            console.error("THREE.FBXLoader: The loader relies on NURBSCurve for any nurbs present in the model. Nurbs will show up as empty geometry.");
+            return new (0, $ea01ff4a5048cd08$export$b7be63a67df8959)();
+        }
+        const order = parseInt(geoNode.Order);
+        if (isNaN(order)) {
+            console.error("THREE.FBXLoader: Invalid Order %s given for geometry ID: %s", geoNode.Order, geoNode.id);
+            return new (0, $ea01ff4a5048cd08$export$b7be63a67df8959)();
+        }
+        const degree = order - 1;
+        const knots = geoNode.KnotVector.a;
+        const controlPoints = [];
+        const pointsValues = geoNode.Points.a;
+        for(let i = 0, l = pointsValues.length; i < l; i += 4)controlPoints.push(new (0, $ea01ff4a5048cd08$export$fa7daccca11cdbe3)().fromArray(pointsValues, i));
+        let startKnot, endKnot;
+        if (geoNode.Form === "Closed") controlPoints.push(controlPoints[0]);
+        else if (geoNode.Form === "Periodic") {
+            startKnot = degree;
+            endKnot = knots.length - 1 - startKnot;
+            for(let i = 0; i < degree; ++i)controlPoints.push(controlPoints[i]);
+        }
+        const curve = new (0, $10d2d5414403be6f$export$12efb26d7429b049)(degree, knots, controlPoints, startKnot, endKnot);
+        const points = curve.getPoints(controlPoints.length * 12);
+        return new (0, $ea01ff4a5048cd08$export$b7be63a67df8959)().setFromPoints(points);
+    }
+}
+// parse animation data from FBXTree
+class $4299b50047f4476c$var$AnimationParser {
+    // take raw animation clips and turn them into three.js animation clips
+    parse() {
+        const animationClips = [];
+        const rawClips = this.parseClips();
+        if (rawClips !== undefined) for(const key in rawClips){
+            const rawClip = rawClips[key];
+            const clip = this.addClip(rawClip);
+            animationClips.push(clip);
+        }
+        return animationClips;
+    }
+    parseClips() {
+        // since the actual transformation data is stored in FBXTree.Objects.AnimationCurve,
+        // if this is undefined we can safely assume there are no animations
+        if ($4299b50047f4476c$var$fbxTree.Objects.AnimationCurve === undefined) return undefined;
+        const curveNodesMap = this.parseAnimationCurveNodes();
+        this.parseAnimationCurves(curveNodesMap);
+        const layersMap = this.parseAnimationLayers(curveNodesMap);
+        const rawClips = this.parseAnimStacks(layersMap);
+        return rawClips;
+    }
+    // parse nodes in FBXTree.Objects.AnimationCurveNode
+    // each AnimationCurveNode holds data for an animation transform for a model (e.g. left arm rotation )
+    // and is referenced by an AnimationLayer
+    parseAnimationCurveNodes() {
+        const rawCurveNodes = $4299b50047f4476c$var$fbxTree.Objects.AnimationCurveNode;
+        const curveNodesMap = new Map();
+        for(const nodeID in rawCurveNodes){
+            const rawCurveNode = rawCurveNodes[nodeID];
+            if (rawCurveNode.attrName.match(/S|R|T|DeformPercent/) !== null) {
+                const curveNode = {
+                    id: rawCurveNode.id,
+                    attr: rawCurveNode.attrName,
+                    curves: {}
+                };
+                curveNodesMap.set(curveNode.id, curveNode);
+            }
+        }
+        return curveNodesMap;
+    }
+    // parse nodes in FBXTree.Objects.AnimationCurve and connect them up to
+    // previously parsed AnimationCurveNodes. Each AnimationCurve holds data for a single animated
+    // axis ( e.g. times and values of x rotation)
+    parseAnimationCurves(curveNodesMap) {
+        const rawCurves = $4299b50047f4476c$var$fbxTree.Objects.AnimationCurve;
+        // TODO: Many values are identical up to roundoff error, but won't be optimised
+        // e.g. position times: [0, 0.4, 0. 8]
+        // position values: [7.23538335023477e-7, 93.67518615722656, -0.9982695579528809, 7.23538335023477e-7, 93.67518615722656, -0.9982695579528809, 7.235384487103147e-7, 93.67520904541016, -0.9982695579528809]
+        // clearly, this should be optimised to
+        // times: [0], positions [7.23538335023477e-7, 93.67518615722656, -0.9982695579528809]
+        // this shows up in nearly every FBX file, and generally time array is length > 100
+        for(const nodeID in rawCurves){
+            const animationCurve = {
+                id: rawCurves[nodeID].id,
+                times: rawCurves[nodeID].KeyTime.a.map($4299b50047f4476c$var$convertFBXTimeToSeconds),
+                values: rawCurves[nodeID].KeyValueFloat.a
+            };
+            const relationships = $4299b50047f4476c$var$connections.get(animationCurve.id);
+            if (relationships !== undefined) {
+                const animationCurveID = relationships.parents[0].ID;
+                const animationCurveRelationship = relationships.parents[0].relationship;
+                if (animationCurveRelationship.match(/X/)) curveNodesMap.get(animationCurveID).curves["x"] = animationCurve;
+                else if (animationCurveRelationship.match(/Y/)) curveNodesMap.get(animationCurveID).curves["y"] = animationCurve;
+                else if (animationCurveRelationship.match(/Z/)) curveNodesMap.get(animationCurveID).curves["z"] = animationCurve;
+                else if (animationCurveRelationship.match(/d|DeformPercent/) && curveNodesMap.has(animationCurveID)) curveNodesMap.get(animationCurveID).curves["morph"] = animationCurve;
+            }
+        }
+    }
+    // parse nodes in FBXTree.Objects.AnimationLayer. Each layers holds references
+    // to various AnimationCurveNodes and is referenced by an AnimationStack node
+    // note: theoretically a stack can have multiple layers, however in practice there always seems to be one per stack
+    parseAnimationLayers(curveNodesMap) {
+        const rawLayers = $4299b50047f4476c$var$fbxTree.Objects.AnimationLayer;
+        const layersMap = new Map();
+        for(const nodeID in rawLayers){
+            const layerCurveNodes = [];
+            const connection = $4299b50047f4476c$var$connections.get(parseInt(nodeID));
+            if (connection !== undefined) {
+                // all the animationCurveNodes used in the layer
+                const children = connection.children;
+                children.forEach(function(child, i) {
+                    if (curveNodesMap.has(child.ID)) {
+                        const curveNode = curveNodesMap.get(child.ID);
+                        // check that the curves are defined for at least one axis, otherwise ignore the curveNode
+                        if (curveNode.curves.x !== undefined || curveNode.curves.y !== undefined || curveNode.curves.z !== undefined) {
+                            if (layerCurveNodes[i] === undefined) {
+                                const modelID = $4299b50047f4476c$var$connections.get(child.ID).parents.filter(function(parent) {
+                                    return parent.relationship !== undefined;
+                                })[0].ID;
+                                if (modelID !== undefined) {
+                                    const rawModel = $4299b50047f4476c$var$fbxTree.Objects.Model[modelID.toString()];
+                                    if (rawModel === undefined) {
+                                        console.warn("THREE.FBXLoader: Encountered a unused curve.", child);
+                                        return;
+                                    }
+                                    const node = {
+                                        modelName: rawModel.attrName ? (0, $ea01ff4a5048cd08$export$7bf70fcf9f891893).sanitizeNodeName(rawModel.attrName) : "",
+                                        ID: rawModel.id,
+                                        initialPosition: [
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        initialRotation: [
+                                            0,
+                                            0,
+                                            0
+                                        ],
+                                        initialScale: [
+                                            1,
+                                            1,
+                                            1
+                                        ]
+                                    };
+                                    $4299b50047f4476c$var$sceneGraph.traverse(function(child) {
+                                        if (child.ID === rawModel.id) {
+                                            node.transform = child.matrix;
+                                            if (child.userData.transformData) node.eulerOrder = child.userData.transformData.eulerOrder;
+                                        }
+                                    });
+                                    if (!node.transform) node.transform = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+                                    // if the animated model is pre rotated, we'll have to apply the pre rotations to every
+                                    // animation value as well
+                                    if ("PreRotation" in rawModel) node.preRotation = rawModel.PreRotation.value;
+                                    if ("PostRotation" in rawModel) node.postRotation = rawModel.PostRotation.value;
+                                    layerCurveNodes[i] = node;
+                                }
+                            }
+                            if (layerCurveNodes[i]) layerCurveNodes[i][curveNode.attr] = curveNode;
+                        } else if (curveNode.curves.morph !== undefined) {
+                            if (layerCurveNodes[i] === undefined) {
+                                const deformerID = $4299b50047f4476c$var$connections.get(child.ID).parents.filter(function(parent) {
+                                    return parent.relationship !== undefined;
+                                })[0].ID;
+                                const morpherID = $4299b50047f4476c$var$connections.get(deformerID).parents[0].ID;
+                                const geoID = $4299b50047f4476c$var$connections.get(morpherID).parents[0].ID;
+                                // assuming geometry is not used in more than one model
+                                const modelID = $4299b50047f4476c$var$connections.get(geoID).parents[0].ID;
+                                const rawModel = $4299b50047f4476c$var$fbxTree.Objects.Model[modelID];
+                                const node = {
+                                    modelName: rawModel.attrName ? (0, $ea01ff4a5048cd08$export$7bf70fcf9f891893).sanitizeNodeName(rawModel.attrName) : "",
+                                    morphName: $4299b50047f4476c$var$fbxTree.Objects.Deformer[deformerID].attrName
+                                };
+                                layerCurveNodes[i] = node;
+                            }
+                            layerCurveNodes[i][curveNode.attr] = curveNode;
+                        }
+                    }
+                });
+                layersMap.set(parseInt(nodeID), layerCurveNodes);
+            }
+        }
+        return layersMap;
+    }
+    // parse nodes in FBXTree.Objects.AnimationStack. These are the top level node in the animation
+    // hierarchy. Each Stack node will be used to create a AnimationClip
+    parseAnimStacks(layersMap) {
+        const rawStacks = $4299b50047f4476c$var$fbxTree.Objects.AnimationStack;
+        // connect the stacks (clips) up to the layers
+        const rawClips = {};
+        for(const nodeID in rawStacks){
+            const children = $4299b50047f4476c$var$connections.get(parseInt(nodeID)).children;
+            if (children.length > 1) // it seems like stacks will always be associated with a single layer. But just in case there are files
+            // where there are multiple layers per stack, we'll display a warning
+            console.warn("THREE.FBXLoader: Encountered an animation stack with multiple layers, this is currently not supported. Ignoring subsequent layers.");
+            const layer = layersMap.get(children[0].ID);
+            rawClips[nodeID] = {
+                name: rawStacks[nodeID].attrName,
+                layer: layer
+            };
+        }
+        return rawClips;
+    }
+    addClip(rawClip) {
+        let tracks = [];
+        const scope = this;
+        rawClip.layer.forEach(function(rawTracks) {
+            tracks = tracks.concat(scope.generateTracks(rawTracks));
+        });
+        return new (0, $ea01ff4a5048cd08$export$d942c706bf23829c)(rawClip.name, -1, tracks);
+    }
+    generateTracks(rawTracks) {
+        const tracks = [];
+        let initialPosition = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)();
+        let initialRotation = new (0, $ea01ff4a5048cd08$export$23d6a54f0bbc85a3)();
+        let initialScale = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)();
+        if (rawTracks.transform) rawTracks.transform.decompose(initialPosition, initialRotation, initialScale);
+        initialPosition = initialPosition.toArray();
+        initialRotation = new (0, $ea01ff4a5048cd08$export$d93cc409a0768c5f)().setFromQuaternion(initialRotation, rawTracks.eulerOrder).toArray();
+        initialScale = initialScale.toArray();
+        if (rawTracks.T !== undefined && Object.keys(rawTracks.T.curves).length > 0) {
+            const positionTrack = this.generateVectorTrack(rawTracks.modelName, rawTracks.T.curves, initialPosition, "position");
+            if (positionTrack !== undefined) tracks.push(positionTrack);
+        }
+        if (rawTracks.R !== undefined && Object.keys(rawTracks.R.curves).length > 0) {
+            const rotationTrack = this.generateRotationTrack(rawTracks.modelName, rawTracks.R.curves, initialRotation, rawTracks.preRotation, rawTracks.postRotation, rawTracks.eulerOrder);
+            if (rotationTrack !== undefined) tracks.push(rotationTrack);
+        }
+        if (rawTracks.S !== undefined && Object.keys(rawTracks.S.curves).length > 0) {
+            const scaleTrack = this.generateVectorTrack(rawTracks.modelName, rawTracks.S.curves, initialScale, "scale");
+            if (scaleTrack !== undefined) tracks.push(scaleTrack);
+        }
+        if (rawTracks.DeformPercent !== undefined) {
+            const morphTrack = this.generateMorphTrack(rawTracks);
+            if (morphTrack !== undefined) tracks.push(morphTrack);
+        }
+        return tracks;
+    }
+    generateVectorTrack(modelName, curves, initialValue, type) {
+        const times = this.getTimesForAllAxes(curves);
+        const values = this.getKeyframeTrackValues(times, curves, initialValue);
+        return new (0, $ea01ff4a5048cd08$export$5ce2dcb4cc9f2bff)(modelName + "." + type, times, values);
+    }
+    generateRotationTrack(modelName, curves, initialValue, preRotation, postRotation, eulerOrder) {
+        if (curves.x !== undefined) {
+            this.interpolateRotations(curves.x);
+            curves.x.values = curves.x.values.map((0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad);
+        }
+        if (curves.y !== undefined) {
+            this.interpolateRotations(curves.y);
+            curves.y.values = curves.y.values.map((0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad);
+        }
+        if (curves.z !== undefined) {
+            this.interpolateRotations(curves.z);
+            curves.z.values = curves.z.values.map((0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad);
+        }
+        const times = this.getTimesForAllAxes(curves);
+        const values = this.getKeyframeTrackValues(times, curves, initialValue);
+        if (preRotation !== undefined) {
+            preRotation = preRotation.map((0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad);
+            preRotation.push(eulerOrder);
+            preRotation = new (0, $ea01ff4a5048cd08$export$d93cc409a0768c5f)().fromArray(preRotation);
+            preRotation = new (0, $ea01ff4a5048cd08$export$23d6a54f0bbc85a3)().setFromEuler(preRotation);
+        }
+        if (postRotation !== undefined) {
+            postRotation = postRotation.map((0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad);
+            postRotation.push(eulerOrder);
+            postRotation = new (0, $ea01ff4a5048cd08$export$d93cc409a0768c5f)().fromArray(postRotation);
+            postRotation = new (0, $ea01ff4a5048cd08$export$23d6a54f0bbc85a3)().setFromEuler(postRotation).invert();
+        }
+        const quaternion = new (0, $ea01ff4a5048cd08$export$23d6a54f0bbc85a3)();
+        const euler = new (0, $ea01ff4a5048cd08$export$d93cc409a0768c5f)();
+        const quaternionValues = [];
+        for(let i = 0; i < values.length; i += 3){
+            euler.set(values[i], values[i + 1], values[i + 2], eulerOrder);
+            quaternion.setFromEuler(euler);
+            if (preRotation !== undefined) quaternion.premultiply(preRotation);
+            if (postRotation !== undefined) quaternion.multiply(postRotation);
+            quaternion.toArray(quaternionValues, i / 3 * 4);
+        }
+        return new (0, $ea01ff4a5048cd08$export$b8043f12b5aafbd7)(modelName + ".quaternion", times, quaternionValues);
+    }
+    generateMorphTrack(rawTracks) {
+        const curves = rawTracks.DeformPercent.curves.morph;
+        const values = curves.values.map(function(val) {
+            return val / 100;
+        });
+        const morphNum = $4299b50047f4476c$var$sceneGraph.getObjectByName(rawTracks.modelName).morphTargetDictionary[rawTracks.morphName];
+        return new (0, $ea01ff4a5048cd08$export$d45f0d1a4d9a9314)(rawTracks.modelName + ".morphTargetInfluences[" + morphNum + "]", curves.times, values);
+    }
+    // For all animated objects, times are defined separately for each axis
+    // Here we'll combine the times into one sorted array without duplicates
+    getTimesForAllAxes(curves) {
+        let times = [];
+        // first join together the times for each axis, if defined
+        if (curves.x !== undefined) times = times.concat(curves.x.times);
+        if (curves.y !== undefined) times = times.concat(curves.y.times);
+        if (curves.z !== undefined) times = times.concat(curves.z.times);
+        // then sort them
+        times = times.sort(function(a, b) {
+            return a - b;
+        });
+        // and remove duplicates
+        if (times.length > 1) {
+            let targetIndex = 1;
+            let lastValue = times[0];
+            for(let i = 1; i < times.length; i++){
+                const currentValue = times[i];
+                if (currentValue !== lastValue) {
+                    times[targetIndex] = currentValue;
+                    lastValue = currentValue;
+                    targetIndex++;
+                }
+            }
+            times = times.slice(0, targetIndex);
+        }
+        return times;
+    }
+    getKeyframeTrackValues(times, curves, initialValue) {
+        const prevValue = initialValue;
+        const values = [];
+        let xIndex = -1;
+        let yIndex = -1;
+        let zIndex = -1;
+        times.forEach(function(time) {
+            if (curves.x) xIndex = curves.x.times.indexOf(time);
+            if (curves.y) yIndex = curves.y.times.indexOf(time);
+            if (curves.z) zIndex = curves.z.times.indexOf(time);
+            // if there is an x value defined for this frame, use that
+            if (xIndex !== -1) {
+                const xValue = curves.x.values[xIndex];
+                values.push(xValue);
+                prevValue[0] = xValue;
+            } else // otherwise use the x value from the previous frame
+            values.push(prevValue[0]);
+            if (yIndex !== -1) {
+                const yValue = curves.y.values[yIndex];
+                values.push(yValue);
+                prevValue[1] = yValue;
+            } else values.push(prevValue[1]);
+            if (zIndex !== -1) {
+                const zValue = curves.z.values[zIndex];
+                values.push(zValue);
+                prevValue[2] = zValue;
+            } else values.push(prevValue[2]);
+        });
+        return values;
+    }
+    // Rotations are defined as Euler angles which can have values  of any size
+    // These will be converted to quaternions which don't support values greater than
+    // PI, so we'll interpolate large rotations
+    interpolateRotations(curve) {
+        for(let i = 1; i < curve.values.length; i++){
+            const initialValue = curve.values[i - 1];
+            const valuesSpan = curve.values[i] - initialValue;
+            const absoluteSpan = Math.abs(valuesSpan);
+            if (absoluteSpan >= 180) {
+                const numSubIntervals = absoluteSpan / 180;
+                const step = valuesSpan / numSubIntervals;
+                let nextValue = initialValue + step;
+                const initialTime = curve.times[i - 1];
+                const timeSpan = curve.times[i] - initialTime;
+                const interval = timeSpan / numSubIntervals;
+                let nextTime = initialTime + interval;
+                const interpolatedTimes = [];
+                const interpolatedValues = [];
+                while(nextTime < curve.times[i]){
+                    interpolatedTimes.push(nextTime);
+                    nextTime += interval;
+                    interpolatedValues.push(nextValue);
+                    nextValue += step;
+                }
+                curve.times = $4299b50047f4476c$var$inject(curve.times, i, interpolatedTimes);
+                curve.values = $4299b50047f4476c$var$inject(curve.values, i, interpolatedValues);
+            }
+        }
+    }
+}
+// parse an FBX file in ASCII format
+class $4299b50047f4476c$var$TextParser {
+    getPrevNode() {
+        return this.nodeStack[this.currentIndent - 2];
+    }
+    getCurrentNode() {
+        return this.nodeStack[this.currentIndent - 1];
+    }
+    getCurrentProp() {
+        return this.currentProp;
+    }
+    pushStack(node) {
+        this.nodeStack.push(node);
+        this.currentIndent += 1;
+    }
+    popStack() {
+        this.nodeStack.pop();
+        this.currentIndent -= 1;
+    }
+    setCurrentProp(val, name) {
+        this.currentProp = val;
+        this.currentPropName = name;
+    }
+    parse(text) {
+        this.currentIndent = 0;
+        this.allNodes = new $4299b50047f4476c$var$FBXTree();
+        this.nodeStack = [];
+        this.currentProp = [];
+        this.currentPropName = "";
+        const scope = this;
+        const split = text.split(/[\r\n]+/);
+        split.forEach(function(line, i) {
+            const matchComment = line.match(/^[\s\t]*;/);
+            const matchEmpty = line.match(/^[\s\t]*$/);
+            if (matchComment || matchEmpty) return;
+            const matchBeginning = line.match("^\\t{" + scope.currentIndent + "}(\\w+):(.*){", "");
+            const matchProperty = line.match("^\\t{" + scope.currentIndent + "}(\\w+):[\\s\\t\\r\\n](.*)");
+            const matchEnd = line.match("^\\t{" + (scope.currentIndent - 1) + "}}");
+            if (matchBeginning) scope.parseNodeBegin(line, matchBeginning);
+            else if (matchProperty) scope.parseNodeProperty(line, matchProperty, split[++i]);
+            else if (matchEnd) scope.popStack();
+            else if (line.match(/^[^\s\t}]/)) // large arrays are split over multiple lines terminated with a ',' character
+            // if this is encountered the line needs to be joined to the previous line
+            scope.parseNodePropertyContinued(line);
+        });
+        return this.allNodes;
+    }
+    parseNodeBegin(line, property) {
+        const nodeName = property[1].trim().replace(/^"/, "").replace(/"$/, "");
+        const nodeAttrs = property[2].split(",").map(function(attr) {
+            return attr.trim().replace(/^"/, "").replace(/"$/, "");
+        });
+        const node = {
+            name: nodeName
+        };
+        const attrs = this.parseNodeAttr(nodeAttrs);
+        const currentNode = this.getCurrentNode();
+        // a top node
+        if (this.currentIndent === 0) this.allNodes.add(nodeName, node);
+        else {
+            // if the subnode already exists, append it
+            if (nodeName in currentNode) {
+                // special case Pose needs PoseNodes as an array
+                if (nodeName === "PoseNode") currentNode.PoseNode.push(node);
+                else if (currentNode[nodeName].id !== undefined) {
+                    currentNode[nodeName] = {};
+                    currentNode[nodeName][currentNode[nodeName].id] = currentNode[nodeName];
+                }
+                if (attrs.id !== "") currentNode[nodeName][attrs.id] = node;
+            } else if (typeof attrs.id === "number") {
+                currentNode[nodeName] = {};
+                currentNode[nodeName][attrs.id] = node;
+            } else if (nodeName !== "Properties70") {
+                if (nodeName === "PoseNode") currentNode[nodeName] = [
+                    node
+                ];
+                else currentNode[nodeName] = node;
+            }
+        }
+        if (typeof attrs.id === "number") node.id = attrs.id;
+        if (attrs.name !== "") node.attrName = attrs.name;
+        if (attrs.type !== "") node.attrType = attrs.type;
+        this.pushStack(node);
+    }
+    parseNodeAttr(attrs) {
+        let id = attrs[0];
+        if (attrs[0] !== "") {
+            id = parseInt(attrs[0]);
+            if (isNaN(id)) id = attrs[0];
+        }
+        let name = "", type = "";
+        if (attrs.length > 1) {
+            name = attrs[1].replace(/^(\w+)::/, "");
+            type = attrs[2];
+        }
+        return {
+            id: id,
+            name: name,
+            type: type
+        };
+    }
+    parseNodeProperty(line, property, contentLine) {
+        let propName = property[1].replace(/^"/, "").replace(/"$/, "").trim();
+        let propValue = property[2].replace(/^"/, "").replace(/"$/, "").trim();
+        // for special case: base64 image data follows "Content: ," line
+        //	Content: ,
+        //	 "/9j/4RDaRXhpZgAATU0A..."
+        if (propName === "Content" && propValue === ",") propValue = contentLine.replace(/"/g, "").replace(/,$/, "").trim();
+        const currentNode = this.getCurrentNode();
+        const parentName = currentNode.name;
+        if (parentName === "Properties70") {
+            this.parseNodeSpecialProperty(line, propName, propValue);
+            return;
+        }
+        // Connections
+        if (propName === "C") {
+            const connProps = propValue.split(",").slice(1);
+            const from = parseInt(connProps[0]);
+            const to = parseInt(connProps[1]);
+            let rest = propValue.split(",").slice(3);
+            rest = rest.map(function(elem) {
+                return elem.trim().replace(/^"/, "");
+            });
+            propName = "connections";
+            propValue = [
+                from,
+                to
+            ];
+            $4299b50047f4476c$var$append(propValue, rest);
+            if (currentNode[propName] === undefined) currentNode[propName] = [];
+        }
+        // Node
+        if (propName === "Node") currentNode.id = propValue;
+        // connections
+        if (propName in currentNode && Array.isArray(currentNode[propName])) currentNode[propName].push(propValue);
+        else if (propName !== "a") currentNode[propName] = propValue;
+        else currentNode.a = propValue;
+        this.setCurrentProp(currentNode, propName);
+        // convert string to array, unless it ends in ',' in which case more will be added to it
+        if (propName === "a" && propValue.slice(-1) !== ",") currentNode.a = $4299b50047f4476c$var$parseNumberArray(propValue);
+    }
+    parseNodePropertyContinued(line) {
+        const currentNode = this.getCurrentNode();
+        currentNode.a += line;
+        // if the line doesn't end in ',' we have reached the end of the property value
+        // so convert the string to an array
+        if (line.slice(-1) !== ",") currentNode.a = $4299b50047f4476c$var$parseNumberArray(currentNode.a);
+    }
+    // parse "Property70"
+    parseNodeSpecialProperty(line, propName, propValue) {
+        // split this
+        // P: "Lcl Scaling", "Lcl Scaling", "", "A",1,1,1
+        // into array like below
+        // ["Lcl Scaling", "Lcl Scaling", "", "A", "1,1,1" ]
+        const props = propValue.split('",').map(function(prop) {
+            return prop.trim().replace(/^\"/, "").replace(/\s/, "_");
+        });
+        const innerPropName = props[0];
+        const innerPropType1 = props[1];
+        const innerPropType2 = props[2];
+        const innerPropFlag = props[3];
+        let innerPropValue = props[4];
+        // cast values where needed, otherwise leave as strings
+        switch(innerPropType1){
+            case "int":
+            case "enum":
+            case "bool":
+            case "ULongLong":
+            case "double":
+            case "Number":
+            case "FieldOfView":
+                innerPropValue = parseFloat(innerPropValue);
+                break;
+            case "Color":
+            case "ColorRGB":
+            case "Vector3D":
+            case "Lcl_Translation":
+            case "Lcl_Rotation":
+            case "Lcl_Scaling":
+                innerPropValue = $4299b50047f4476c$var$parseNumberArray(innerPropValue);
+                break;
+        }
+        // CAUTION: these props must append to parent's parent
+        this.getPrevNode()[innerPropName] = {
+            "type": innerPropType1,
+            "type2": innerPropType2,
+            "flag": innerPropFlag,
+            "value": innerPropValue
+        };
+        this.setCurrentProp(this.getPrevNode(), innerPropName);
+    }
+}
+// Parse an FBX file in Binary format
+class $4299b50047f4476c$var$BinaryParser {
+    parse(buffer) {
+        const reader = new $4299b50047f4476c$var$BinaryReader(buffer);
+        reader.skip(23); // skip magic 23 bytes
+        const version = reader.getUint32();
+        if (version < 6400) throw new Error("THREE.FBXLoader: FBX version not supported, FileVersion: " + version);
+        const allNodes = new $4299b50047f4476c$var$FBXTree();
+        while(!this.endOfContent(reader)){
+            const node = this.parseNode(reader, version);
+            if (node !== null) allNodes.add(node.name, node);
+        }
+        return allNodes;
+    }
+    // Check if reader has reached the end of content.
+    endOfContent(reader) {
+        // footer size: 160bytes + 16-byte alignment padding
+        // - 16bytes: magic
+        // - padding til 16-byte alignment (at least 1byte?)
+        //	(seems like some exporters embed fixed 15 or 16bytes?)
+        // - 4bytes: magic
+        // - 4bytes: version
+        // - 120bytes: zero
+        // - 16bytes: magic
+        if (reader.size() % 16 === 0) return (reader.getOffset() + 160 + 16 & -16) >= reader.size();
+        else return reader.getOffset() + 160 + 16 >= reader.size();
+    }
+    // recursively parse nodes until the end of the file is reached
+    parseNode(reader, version) {
+        const node = {};
+        // The first three data sizes depends on version.
+        const endOffset = version >= 7500 ? reader.getUint64() : reader.getUint32();
+        const numProperties = version >= 7500 ? reader.getUint64() : reader.getUint32();
+        version >= 7500 ? reader.getUint64() : reader.getUint32(); // the returned propertyListLen is not used
+        const nameLen = reader.getUint8();
+        const name = reader.getString(nameLen);
+        // Regards this node as NULL-record if endOffset is zero
+        if (endOffset === 0) return null;
+        const propertyList = [];
+        for(let i = 0; i < numProperties; i++)propertyList.push(this.parseProperty(reader));
+        // Regards the first three elements in propertyList as id, attrName, and attrType
+        const id = propertyList.length > 0 ? propertyList[0] : "";
+        const attrName = propertyList.length > 1 ? propertyList[1] : "";
+        const attrType = propertyList.length > 2 ? propertyList[2] : "";
+        // check if this node represents just a single property
+        // like (name, 0) set or (name2, [0, 1, 2]) set of {name: 0, name2: [0, 1, 2]}
+        node.singleProperty = numProperties === 1 && reader.getOffset() === endOffset ? true : false;
+        while(endOffset > reader.getOffset()){
+            const subNode = this.parseNode(reader, version);
+            if (subNode !== null) this.parseSubNode(name, node, subNode);
+        }
+        node.propertyList = propertyList; // raw property list used by parent
+        if (typeof id === "number") node.id = id;
+        if (attrName !== "") node.attrName = attrName;
+        if (attrType !== "") node.attrType = attrType;
+        if (name !== "") node.name = name;
+        return node;
+    }
+    parseSubNode(name, node, subNode) {
+        // special case: child node is single property
+        if (subNode.singleProperty === true) {
+            const value = subNode.propertyList[0];
+            if (Array.isArray(value)) {
+                node[subNode.name] = subNode;
+                subNode.a = value;
+            } else node[subNode.name] = value;
+        } else if (name === "Connections" && subNode.name === "C") {
+            const array = [];
+            subNode.propertyList.forEach(function(property, i) {
+                // first Connection is FBX type (OO, OP, etc.). We'll discard these
+                if (i !== 0) array.push(property);
+            });
+            if (node.connections === undefined) node.connections = [];
+            node.connections.push(array);
+        } else if (subNode.name === "Properties70") {
+            const keys = Object.keys(subNode);
+            keys.forEach(function(key) {
+                node[key] = subNode[key];
+            });
+        } else if (name === "Properties70" && subNode.name === "P") {
+            let innerPropName = subNode.propertyList[0];
+            let innerPropType1 = subNode.propertyList[1];
+            const innerPropType2 = subNode.propertyList[2];
+            const innerPropFlag = subNode.propertyList[3];
+            let innerPropValue;
+            if (innerPropName.indexOf("Lcl ") === 0) innerPropName = innerPropName.replace("Lcl ", "Lcl_");
+            if (innerPropType1.indexOf("Lcl ") === 0) innerPropType1 = innerPropType1.replace("Lcl ", "Lcl_");
+            if (innerPropType1 === "Color" || innerPropType1 === "ColorRGB" || innerPropType1 === "Vector" || innerPropType1 === "Vector3D" || innerPropType1.indexOf("Lcl_") === 0) innerPropValue = [
+                subNode.propertyList[4],
+                subNode.propertyList[5],
+                subNode.propertyList[6]
+            ];
+            else innerPropValue = subNode.propertyList[4];
+            // this will be copied to parent, see above
+            node[innerPropName] = {
+                "type": innerPropType1,
+                "type2": innerPropType2,
+                "flag": innerPropFlag,
+                "value": innerPropValue
+            };
+        } else if (node[subNode.name] === undefined) {
+            if (typeof subNode.id === "number") {
+                node[subNode.name] = {};
+                node[subNode.name][subNode.id] = subNode;
+            } else node[subNode.name] = subNode;
+        } else {
+            if (subNode.name === "PoseNode") {
+                if (!Array.isArray(node[subNode.name])) node[subNode.name] = [
+                    node[subNode.name]
+                ];
+                node[subNode.name].push(subNode);
+            } else if (node[subNode.name][subNode.id] === undefined) node[subNode.name][subNode.id] = subNode;
+        }
+    }
+    parseProperty(reader) {
+        const type = reader.getString(1);
+        let length;
+        switch(type){
+            case "C":
+                return reader.getBoolean();
+            case "D":
+                return reader.getFloat64();
+            case "F":
+                return reader.getFloat32();
+            case "I":
+                return reader.getInt32();
+            case "L":
+                return reader.getInt64();
+            case "R":
+                length = reader.getUint32();
+                return reader.getArrayBuffer(length);
+            case "S":
+                length = reader.getUint32();
+                return reader.getString(length);
+            case "Y":
+                return reader.getInt16();
+            case "b":
+            case "c":
+            case "d":
+            case "f":
+            case "i":
+            case "l":
+                const arrayLength = reader.getUint32();
+                const encoding = reader.getUint32(); // 0: non-compressed, 1: compressed
+                const compressedLength = reader.getUint32();
+                if (encoding === 0) switch(type){
+                    case "b":
+                    case "c":
+                        return reader.getBooleanArray(arrayLength);
+                    case "d":
+                        return reader.getFloat64Array(arrayLength);
+                    case "f":
+                        return reader.getFloat32Array(arrayLength);
+                    case "i":
+                        return reader.getInt32Array(arrayLength);
+                    case "l":
+                        return reader.getInt64Array(arrayLength);
+                }
+                if (typeof $550ca672a3f483a3$exports === "undefined") console.error("THREE.FBXLoader: External library fflate.min.js required.");
+                const data = $550ca672a3f483a3$exports.unzlibSync(new Uint8Array(reader.getArrayBuffer(compressedLength))); // eslint-disable-line no-undef
+                const reader2 = new $4299b50047f4476c$var$BinaryReader(data.buffer);
+                switch(type){
+                    case "b":
+                    case "c":
+                        return reader2.getBooleanArray(arrayLength);
+                    case "d":
+                        return reader2.getFloat64Array(arrayLength);
+                    case "f":
+                        return reader2.getFloat32Array(arrayLength);
+                    case "i":
+                        return reader2.getInt32Array(arrayLength);
+                    case "l":
+                        return reader2.getInt64Array(arrayLength);
+                }
+            default:
+                throw new Error("THREE.FBXLoader: Unknown property type " + type);
+        }
+    }
+}
+class $4299b50047f4476c$var$BinaryReader {
+    constructor(buffer, littleEndian){
+        this.dv = new DataView(buffer);
+        this.offset = 0;
+        this.littleEndian = littleEndian !== undefined ? littleEndian : true;
+    }
+    getOffset() {
+        return this.offset;
+    }
+    size() {
+        return this.dv.buffer.byteLength;
+    }
+    skip(length) {
+        this.offset += length;
+    }
+    // seems like true/false representation depends on exporter.
+    // true: 1 or 'Y'(=0x59), false: 0 or 'T'(=0x54)
+    // then sees LSB.
+    getBoolean() {
+        return (this.getUint8() & 1) === 1;
+    }
+    getBooleanArray(size) {
+        const a = [];
+        for(let i = 0; i < size; i++)a.push(this.getBoolean());
+        return a;
+    }
+    getUint8() {
+        const value = this.dv.getUint8(this.offset);
+        this.offset += 1;
+        return value;
+    }
+    getInt16() {
+        const value = this.dv.getInt16(this.offset, this.littleEndian);
+        this.offset += 2;
+        return value;
+    }
+    getInt32() {
+        const value = this.dv.getInt32(this.offset, this.littleEndian);
+        this.offset += 4;
+        return value;
+    }
+    getInt32Array(size) {
+        const a = [];
+        for(let i = 0; i < size; i++)a.push(this.getInt32());
+        return a;
+    }
+    getUint32() {
+        const value = this.dv.getUint32(this.offset, this.littleEndian);
+        this.offset += 4;
+        return value;
+    }
+    // JavaScript doesn't support 64-bit integer so calculate this here
+    // 1 << 32 will return 1 so using multiply operation instead here.
+    // There's a possibility that this method returns wrong value if the value
+    // is out of the range between Number.MAX_SAFE_INTEGER and Number.MIN_SAFE_INTEGER.
+    // TODO: safely handle 64-bit integer
+    getInt64() {
+        let low, high;
+        if (this.littleEndian) {
+            low = this.getUint32();
+            high = this.getUint32();
+        } else {
+            high = this.getUint32();
+            low = this.getUint32();
+        }
+        // calculate negative value
+        if (high & 0x80000000) {
+            high = ~high & 0xFFFFFFFF;
+            low = ~low & 0xFFFFFFFF;
+            if (low === 0xFFFFFFFF) high = high + 1 & 0xFFFFFFFF;
+            low = low + 1 & 0xFFFFFFFF;
+            return -(high * 0x100000000 + low);
+        }
+        return high * 0x100000000 + low;
+    }
+    getInt64Array(size) {
+        const a = [];
+        for(let i = 0; i < size; i++)a.push(this.getInt64());
+        return a;
+    }
+    // Note: see getInt64() comment
+    getUint64() {
+        let low, high;
+        if (this.littleEndian) {
+            low = this.getUint32();
+            high = this.getUint32();
+        } else {
+            high = this.getUint32();
+            low = this.getUint32();
+        }
+        return high * 0x100000000 + low;
+    }
+    getFloat32() {
+        const value = this.dv.getFloat32(this.offset, this.littleEndian);
+        this.offset += 4;
+        return value;
+    }
+    getFloat32Array(size) {
+        const a = [];
+        for(let i = 0; i < size; i++)a.push(this.getFloat32());
+        return a;
+    }
+    getFloat64() {
+        const value = this.dv.getFloat64(this.offset, this.littleEndian);
+        this.offset += 8;
+        return value;
+    }
+    getFloat64Array(size) {
+        const a = [];
+        for(let i = 0; i < size; i++)a.push(this.getFloat64());
+        return a;
+    }
+    getArrayBuffer(size) {
+        const value = this.dv.buffer.slice(this.offset, this.offset + size);
+        this.offset += size;
+        return value;
+    }
+    getString(size) {
+        // note: safari 9 doesn't support Uint8Array.indexOf; create intermediate array instead
+        let a = [];
+        for(let i = 0; i < size; i++)a[i] = this.getUint8();
+        const nullByte = a.indexOf(0);
+        if (nullByte >= 0) a = a.slice(0, nullByte);
+        return (0, $ea01ff4a5048cd08$export$b5d2dc08d867e41a).decodeText(new Uint8Array(a));
+    }
+}
+// FBXTree holds a representation of the FBX data, returned by the TextParser ( FBX ASCII format)
+// and BinaryParser( FBX Binary format)
+class $4299b50047f4476c$var$FBXTree {
+    add(key, val) {
+        this[key] = val;
+    }
+}
+// ************** UTILITY FUNCTIONS **************
+function $4299b50047f4476c$var$isFbxFormatBinary(buffer) {
+    const CORRECT = "Kaydara FBX Binary  \0";
+    return buffer.byteLength >= CORRECT.length && CORRECT === $4299b50047f4476c$var$convertArrayBufferToString(buffer, 0, CORRECT.length);
+}
+function $4299b50047f4476c$var$isFbxFormatASCII(text) {
+    const CORRECT = [
+        "K",
+        "a",
+        "y",
+        "d",
+        "a",
+        "r",
+        "a",
+        "\\",
+        "F",
+        "B",
+        "X",
+        "\\",
+        "B",
+        "i",
+        "n",
+        "a",
+        "r",
+        "y",
+        "\\",
+        "\\"
+    ];
+    let cursor = 0;
+    function read(offset) {
+        const result = text[offset - 1];
+        text = text.slice(cursor + offset);
+        cursor++;
+        return result;
+    }
+    for(let i = 0; i < CORRECT.length; ++i){
+        const num = read(1);
+        if (num === CORRECT[i]) return false;
+    }
+    return true;
+}
+function $4299b50047f4476c$var$getFbxVersion(text) {
+    const versionRegExp = /FBXVersion: (\d+)/;
+    const match = text.match(versionRegExp);
+    if (match) {
+        const version = parseInt(match[1]);
+        return version;
+    }
+    throw new Error("THREE.FBXLoader: Cannot find the version number for the file given.");
+}
+// Converts FBX ticks into real time seconds.
+function $4299b50047f4476c$var$convertFBXTimeToSeconds(time) {
+    return time / 46186158000;
+}
+const $4299b50047f4476c$var$dataArray = [];
+// extracts the data from the correct position in the FBX array based on indexing type
+function $4299b50047f4476c$var$getData(polygonVertexIndex, polygonIndex, vertexIndex, infoObject) {
+    let index;
+    switch(infoObject.mappingType){
+        case "ByPolygonVertex":
+            index = polygonVertexIndex;
+            break;
+        case "ByPolygon":
+            index = polygonIndex;
+            break;
+        case "ByVertice":
+            index = vertexIndex;
+            break;
+        case "AllSame":
+            index = infoObject.indices[0];
+            break;
+        default:
+            console.warn("THREE.FBXLoader: unknown attribute mapping type " + infoObject.mappingType);
+    }
+    if (infoObject.referenceType === "IndexToDirect") index = infoObject.indices[index];
+    const from = index * infoObject.dataSize;
+    const to = from + infoObject.dataSize;
+    return $4299b50047f4476c$var$slice($4299b50047f4476c$var$dataArray, infoObject.buffer, from, to);
+}
+const $4299b50047f4476c$var$tempEuler = new (0, $ea01ff4a5048cd08$export$d93cc409a0768c5f)();
+const $4299b50047f4476c$var$tempVec = new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)();
+// generate transformation from FBX transform data
+// ref: https://help.autodesk.com/view/FBX/2017/ENU/?guid=__files_GUID_10CDD63C_79C1_4F2D_BB28_AD2BE65A02ED_htm
+// ref: http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/_transformations_2main_8cxx-example.html,topicNumber=cpp_ref__transformations_2main_8cxx_example_htmlfc10a1e1-b18d-4e72-9dc0-70d0f1959f5e
+function $4299b50047f4476c$var$generateTransform(transformData) {
+    const lTranslationM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lPreRotationM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lRotationM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lPostRotationM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lScalingM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lScalingPivotM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lScalingOffsetM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lRotationOffsetM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lRotationPivotM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lParentGX = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lParentLX = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const lGlobalT = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    const inheritType = transformData.inheritType ? transformData.inheritType : 0;
+    if (transformData.translation) lTranslationM.setPosition($4299b50047f4476c$var$tempVec.fromArray(transformData.translation));
+    if (transformData.preRotation) {
+        const array = transformData.preRotation.map((0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad);
+        array.push(transformData.eulerOrder);
+        lPreRotationM.makeRotationFromEuler($4299b50047f4476c$var$tempEuler.fromArray(array));
+    }
+    if (transformData.rotation) {
+        const array = transformData.rotation.map((0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad);
+        array.push(transformData.eulerOrder);
+        lRotationM.makeRotationFromEuler($4299b50047f4476c$var$tempEuler.fromArray(array));
+    }
+    if (transformData.postRotation) {
+        const array = transformData.postRotation.map((0, $ea01ff4a5048cd08$export$380958644dbbc22b).degToRad);
+        array.push(transformData.eulerOrder);
+        lPostRotationM.makeRotationFromEuler($4299b50047f4476c$var$tempEuler.fromArray(array));
+        lPostRotationM.invert();
+    }
+    if (transformData.scale) lScalingM.scale($4299b50047f4476c$var$tempVec.fromArray(transformData.scale));
+    // Pivots and offsets
+    if (transformData.scalingOffset) lScalingOffsetM.setPosition($4299b50047f4476c$var$tempVec.fromArray(transformData.scalingOffset));
+    if (transformData.scalingPivot) lScalingPivotM.setPosition($4299b50047f4476c$var$tempVec.fromArray(transformData.scalingPivot));
+    if (transformData.rotationOffset) lRotationOffsetM.setPosition($4299b50047f4476c$var$tempVec.fromArray(transformData.rotationOffset));
+    if (transformData.rotationPivot) lRotationPivotM.setPosition($4299b50047f4476c$var$tempVec.fromArray(transformData.rotationPivot));
+    // parent transform
+    if (transformData.parentMatrixWorld) {
+        lParentLX.copy(transformData.parentMatrix);
+        lParentGX.copy(transformData.parentMatrixWorld);
+    }
+    const lLRM = lPreRotationM.clone().multiply(lRotationM).multiply(lPostRotationM);
+    // Global Rotation
+    const lParentGRM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    lParentGRM.extractRotation(lParentGX);
+    // Global Shear*Scaling
+    const lParentTM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    lParentTM.copyPosition(lParentGX);
+    const lParentGRSM = lParentTM.clone().invert().multiply(lParentGX);
+    const lParentGSM = lParentGRM.clone().invert().multiply(lParentGRSM);
+    const lLSM = lScalingM;
+    const lGlobalRS = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)();
+    if (inheritType === 0) lGlobalRS.copy(lParentGRM).multiply(lLRM).multiply(lParentGSM).multiply(lLSM);
+    else if (inheritType === 1) lGlobalRS.copy(lParentGRM).multiply(lParentGSM).multiply(lLRM).multiply(lLSM);
+    else {
+        const lParentLSM = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)().scale(new (0, $ea01ff4a5048cd08$export$64b5c384219d3699)().setFromMatrixScale(lParentLX));
+        const lParentLSM_inv = lParentLSM.clone().invert();
+        const lParentGSM_noLocal = lParentGSM.clone().multiply(lParentLSM_inv);
+        lGlobalRS.copy(lParentGRM).multiply(lLRM).multiply(lParentGSM_noLocal).multiply(lLSM);
+    }
+    const lRotationPivotM_inv = lRotationPivotM.clone().invert();
+    const lScalingPivotM_inv = lScalingPivotM.clone().invert();
+    // Calculate the local transform matrix
+    let lTransform = lTranslationM.clone().multiply(lRotationOffsetM).multiply(lRotationPivotM).multiply(lPreRotationM).multiply(lRotationM).multiply(lPostRotationM).multiply(lRotationPivotM_inv).multiply(lScalingOffsetM).multiply(lScalingPivotM).multiply(lScalingM).multiply(lScalingPivotM_inv);
+    const lLocalTWithAllPivotAndOffsetInfo = new (0, $ea01ff4a5048cd08$export$2ae72fc923e5eb5)().copyPosition(lTransform);
+    const lGlobalTranslation = lParentGX.clone().multiply(lLocalTWithAllPivotAndOffsetInfo);
+    lGlobalT.copyPosition(lGlobalTranslation);
+    lTransform = lGlobalT.clone().multiply(lGlobalRS);
+    // from global to local
+    lTransform.premultiply(lParentGX.invert());
+    return lTransform;
+}
+// Returns the three.js intrinsic Euler order corresponding to FBX extrinsic Euler order
+// ref: http://help.autodesk.com/view/FBX/2017/ENU/?guid=__cpp_ref_class_fbx_euler_html
+function $4299b50047f4476c$var$getEulerOrder(order) {
+    order = order || 0;
+    const enums = [
+        "ZYX",
+        "YZX",
+        "XZY",
+        "ZXY",
+        "YXZ",
+        "XYZ"
+    ];
+    if (order === 6) {
+        console.warn("THREE.FBXLoader: unsupported Euler Order: Spherical XYZ. Animations and rotations may be incorrect.");
+        return enums[0];
+    }
+    return enums[order];
+}
+// Parses comma separated list of numbers and returns them an array.
+// Used internally by the TextParser
+function $4299b50047f4476c$var$parseNumberArray(value) {
+    const array = value.split(",").map(function(val) {
+        return parseFloat(val);
+    });
+    return array;
+}
+function $4299b50047f4476c$var$convertArrayBufferToString(buffer, from, to) {
+    if (from === undefined) from = 0;
+    if (to === undefined) to = buffer.byteLength;
+    return (0, $ea01ff4a5048cd08$export$b5d2dc08d867e41a).decodeText(new Uint8Array(buffer, from, to));
+}
+function $4299b50047f4476c$var$append(a, b) {
+    for(let i = 0, j = a.length, l = b.length; i < l; i++, j++)a[j] = b[i];
+}
+function $4299b50047f4476c$var$slice(a, b, from, to) {
+    for(let i = from, j = 0; i < to; i++, j++)a[j] = b[i];
+    return a;
+}
+// inject array a2 into array a1 at index
+function $4299b50047f4476c$var$inject(a1, index, a2) {
+    return a1.slice(0, index).concat(a2).concat(a1.slice(index));
+}
+
+
 class $9b4178cdd40d138c$export$da3cdac99155b982 {
     static createButton(renderer, options) {
         if (options) console.error('THREE.VRButton: The "options" parameter has been removed. Please set the reference space type via renderer.xr.setReferenceSpaceType() instead.');
@@ -38776,9 +44275,9 @@ class $5a163a5102e7cfa5$export$2b011a5b12963d65 {
             if (association === undefined || association.meshes === undefined) return;
             const mesh = json.meshes[association.meshes];
             mesh.primitives.forEach((prim)=>{
-                console.log(json.materials[prim.material]);
                 if (!prim.material) return;
                 const mat = json.materials[prim.material];
+                console.log(json.materials[prim.material]);
                 if (!mat.extensions || !mat.extensions[this.name]) return;
                 const guid = mat.extensions.GOOGLE_tilt_brush_material.guid;
                 shaderResolves.push(this.replaceMaterial(object, guid));
@@ -39610,2388 +45109,6 @@ class $5a163a5102e7cfa5$export$2b011a5b12963d65 {
 
 
 
-/*!
-fflate - fast JavaScript compression/decompression
-<https://101arrowz.github.io/fflate>
-Licensed under MIT. https://github.com/101arrowz/fflate/blob/master/LICENSE
-version 0.6.9
-*/ // DEFLATE is a complex format; to read this code, you should probably check the RFC first:
-// https://tools.ietf.org/html/rfc1951
-// You may also wish to take a look at the guide I made about this program:
-// https://gist.github.com/101arrowz/253f31eb5abc3d9275ab943003ffecad
-// Some of the following code is similar to that of UZIP.js:
-// https://github.com/photopea/UZIP.js
-// However, the vast majority of the codebase has diverged from UZIP.js to increase performance and reduce bundle size.
-// Sometimes 0 will appear where -1 would be more appropriate. This is because using a uint
-// is better for memory in most engines (I *think*).
-var $550ca672a3f483a3$var$ch2 = {};
-var $550ca672a3f483a3$var$durl = function(c) {
-    return URL.createObjectURL(new Blob([
-        c
-    ], {
-        type: "text/javascript"
-    }));
-};
-var $550ca672a3f483a3$var$cwk = function(u) {
-    return new Worker(u);
-};
-try {
-    URL.revokeObjectURL($550ca672a3f483a3$var$durl(""));
-} catch (e) {
-    // We're in Deno or a very old browser
-    $550ca672a3f483a3$var$durl = function(c) {
-        return "data:application/javascript;charset=UTF-8," + encodeURI(c);
-    };
-    // If Deno, this is necessary; if not, this changes nothing
-    $550ca672a3f483a3$var$cwk = function(u) {
-        return new Worker(u, {
-            type: "module"
-        });
-    };
-}
-var $550ca672a3f483a3$var$wk = function(c, id, msg, transfer, cb) {
-    var w = $550ca672a3f483a3$var$cwk($550ca672a3f483a3$var$ch2[id] || ($550ca672a3f483a3$var$ch2[id] = $550ca672a3f483a3$var$durl(c)));
-    w.onerror = function(e) {
-        return cb(e.error, null);
-    };
-    w.onmessage = function(e) {
-        return cb(null, e.data);
-    };
-    w.postMessage(msg, transfer);
-    return w;
-};
-// aliases for shorter compressed code (most minifers don't do this)
-var $550ca672a3f483a3$var$u8 = Uint8Array, $550ca672a3f483a3$var$u16 = Uint16Array, $550ca672a3f483a3$var$u32 = Uint32Array;
-// fixed length extra bits
-var $550ca672a3f483a3$var$fleb = new $550ca672a3f483a3$var$u8([
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    1,
-    1,
-    2,
-    2,
-    2,
-    2,
-    3,
-    3,
-    3,
-    3,
-    4,
-    4,
-    4,
-    4,
-    5,
-    5,
-    5,
-    5,
-    0,
-    /* unused */ 0,
-    0,
-    /* impossible */ 0
-]);
-// fixed distance extra bits
-// see fleb note
-var $550ca672a3f483a3$var$fdeb = new $550ca672a3f483a3$var$u8([
-    0,
-    0,
-    0,
-    0,
-    1,
-    1,
-    2,
-    2,
-    3,
-    3,
-    4,
-    4,
-    5,
-    5,
-    6,
-    6,
-    7,
-    7,
-    8,
-    8,
-    9,
-    9,
-    10,
-    10,
-    11,
-    11,
-    12,
-    12,
-    13,
-    13,
-    /* unused */ 0,
-    0
-]);
-// code length index map
-var $550ca672a3f483a3$var$clim = new $550ca672a3f483a3$var$u8([
-    16,
-    17,
-    18,
-    0,
-    8,
-    7,
-    9,
-    6,
-    10,
-    5,
-    11,
-    4,
-    12,
-    3,
-    13,
-    2,
-    14,
-    1,
-    15
-]);
-// get base, reverse index map from extra bits
-var $550ca672a3f483a3$var$freb = function(eb, start) {
-    var b = new $550ca672a3f483a3$var$u16(31);
-    for(var i = 0; i < 31; ++i)b[i] = start += 1 << eb[i - 1];
-    // numbers here are at max 18 bits
-    var r = new $550ca672a3f483a3$var$u32(b[30]);
-    for(var i = 1; i < 30; ++i)for(var j = b[i]; j < b[i + 1]; ++j)r[j] = j - b[i] << 5 | i;
-    return [
-        b,
-        r
-    ];
-};
-var $550ca672a3f483a3$var$_a = $550ca672a3f483a3$var$freb($550ca672a3f483a3$var$fleb, 2), $550ca672a3f483a3$var$fl = $550ca672a3f483a3$var$_a[0], $550ca672a3f483a3$var$revfl = $550ca672a3f483a3$var$_a[1];
-// we can ignore the fact that the other numbers are wrong; they never happen anyway
-$550ca672a3f483a3$var$fl[28] = 258, $550ca672a3f483a3$var$revfl[258] = 28;
-var $550ca672a3f483a3$var$_b = $550ca672a3f483a3$var$freb($550ca672a3f483a3$var$fdeb, 0), $550ca672a3f483a3$var$fd = $550ca672a3f483a3$var$_b[0], $550ca672a3f483a3$var$revfd = $550ca672a3f483a3$var$_b[1];
-// map of value to reverse (assuming 16 bits)
-var $550ca672a3f483a3$var$rev = new $550ca672a3f483a3$var$u16(32768);
-for(var $550ca672a3f483a3$var$i = 0; $550ca672a3f483a3$var$i < 32768; ++$550ca672a3f483a3$var$i){
-    // reverse table algorithm from SO
-    var $550ca672a3f483a3$var$x = ($550ca672a3f483a3$var$i & 0xAAAA) >>> 1 | ($550ca672a3f483a3$var$i & 0x5555) << 1;
-    $550ca672a3f483a3$var$x = ($550ca672a3f483a3$var$x & 0xCCCC) >>> 2 | ($550ca672a3f483a3$var$x & 0x3333) << 2;
-    $550ca672a3f483a3$var$x = ($550ca672a3f483a3$var$x & 0xF0F0) >>> 4 | ($550ca672a3f483a3$var$x & 0x0F0F) << 4;
-    $550ca672a3f483a3$var$rev[$550ca672a3f483a3$var$i] = (($550ca672a3f483a3$var$x & 0xFF00) >>> 8 | ($550ca672a3f483a3$var$x & 0x00FF) << 8) >>> 1;
-}
-// create huffman tree from u8 "map": index -> code length for code index
-// mb (max bits) must be at most 15
-// TODO: optimize/split up?
-var $550ca672a3f483a3$var$hMap = function(cd, mb, r) {
-    var s = cd.length;
-    // index
-    var i = 0;
-    // u16 "map": index -> # of codes with bit length = index
-    var l = new $550ca672a3f483a3$var$u16(mb);
-    // length of cd must be 288 (total # of codes)
-    for(; i < s; ++i)++l[cd[i] - 1];
-    // u16 "map": index -> minimum code for bit length = index
-    var le = new $550ca672a3f483a3$var$u16(mb);
-    for(i = 0; i < mb; ++i)le[i] = le[i - 1] + l[i - 1] << 1;
-    var co;
-    if (r) {
-        // u16 "map": index -> number of actual bits, symbol for code
-        co = new $550ca672a3f483a3$var$u16(1 << mb);
-        // bits to remove for reverser
-        var rvb = 15 - mb;
-        for(i = 0; i < s; ++i)// ignore 0 lengths
-        if (cd[i]) {
-            // num encoding both symbol and bits read
-            var sv = i << 4 | cd[i];
-            // free bits
-            var r_1 = mb - cd[i];
-            // start value
-            var v = le[cd[i] - 1]++ << r_1;
-            // m is end value
-            for(var m = v | (1 << r_1) - 1; v <= m; ++v)// every 16 bit value starting with the code yields the same result
-            co[$550ca672a3f483a3$var$rev[v] >>> rvb] = sv;
-        }
-    } else {
-        co = new $550ca672a3f483a3$var$u16(s);
-        for(i = 0; i < s; ++i)if (cd[i]) co[i] = $550ca672a3f483a3$var$rev[le[cd[i] - 1]++] >>> 15 - cd[i];
-    }
-    return co;
-};
-// fixed length tree
-var $550ca672a3f483a3$var$flt = new $550ca672a3f483a3$var$u8(288);
-for(var $550ca672a3f483a3$var$i = 0; $550ca672a3f483a3$var$i < 144; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$flt[$550ca672a3f483a3$var$i] = 8;
-for(var $550ca672a3f483a3$var$i = 144; $550ca672a3f483a3$var$i < 256; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$flt[$550ca672a3f483a3$var$i] = 9;
-for(var $550ca672a3f483a3$var$i = 256; $550ca672a3f483a3$var$i < 280; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$flt[$550ca672a3f483a3$var$i] = 7;
-for(var $550ca672a3f483a3$var$i = 280; $550ca672a3f483a3$var$i < 288; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$flt[$550ca672a3f483a3$var$i] = 8;
-// fixed distance tree
-var $550ca672a3f483a3$var$fdt = new $550ca672a3f483a3$var$u8(32);
-for(var $550ca672a3f483a3$var$i = 0; $550ca672a3f483a3$var$i < 32; ++$550ca672a3f483a3$var$i)$550ca672a3f483a3$var$fdt[$550ca672a3f483a3$var$i] = 5;
-// fixed length map
-var $550ca672a3f483a3$var$flm = /*#__PURE__*/ $550ca672a3f483a3$var$hMap($550ca672a3f483a3$var$flt, 9, 0), $550ca672a3f483a3$var$flrm = /*#__PURE__*/ $550ca672a3f483a3$var$hMap($550ca672a3f483a3$var$flt, 9, 1);
-// fixed distance map
-var $550ca672a3f483a3$var$fdm = /*#__PURE__*/ $550ca672a3f483a3$var$hMap($550ca672a3f483a3$var$fdt, 5, 0), $550ca672a3f483a3$var$fdrm = /*#__PURE__*/ $550ca672a3f483a3$var$hMap($550ca672a3f483a3$var$fdt, 5, 1);
-// find max of array
-var $550ca672a3f483a3$var$max = function(a) {
-    var m = a[0];
-    for(var i = 1; i < a.length; ++i)if (a[i] > m) m = a[i];
-    return m;
-};
-// read d, starting at bit p and mask with m
-var $550ca672a3f483a3$var$bits = function(d, p, m) {
-    var o = p / 8 | 0;
-    return (d[o] | d[o + 1] << 8) >> (p & 7) & m;
-};
-// read d, starting at bit p continuing for at least 16 bits
-var $550ca672a3f483a3$var$bits16 = function(d, p) {
-    var o = p / 8 | 0;
-    return (d[o] | d[o + 1] << 8 | d[o + 2] << 16) >> (p & 7);
-};
-// get end of byte
-var $550ca672a3f483a3$var$shft = function(p) {
-    return (p / 8 | 0) + (p & 7 && 1);
-};
-// typed array slice - allows garbage collector to free original reference,
-// while being more compatible than .slice
-var $550ca672a3f483a3$var$slc = function(v, s, e) {
-    if (s == null || s < 0) s = 0;
-    if (e == null || e > v.length) e = v.length;
-    // can't use .constructor in case user-supplied
-    var n = new (v instanceof $550ca672a3f483a3$var$u16 ? $550ca672a3f483a3$var$u16 : v instanceof $550ca672a3f483a3$var$u32 ? $550ca672a3f483a3$var$u32 : $550ca672a3f483a3$var$u8)(e - s);
-    n.set(v.subarray(s, e));
-    return n;
-};
-// expands raw DEFLATE data
-var $550ca672a3f483a3$var$inflt = function(dat, buf, st) {
-    // source length
-    var sl = dat.length;
-    if (!sl || st && !st.l && sl < 5) return buf || new $550ca672a3f483a3$var$u8(0);
-    // have to estimate size
-    var noBuf = !buf || st;
-    // no state
-    var noSt = !st || st.i;
-    if (!st) st = {};
-    // Assumes roughly 33% compression ratio average
-    if (!buf) buf = new $550ca672a3f483a3$var$u8(sl * 3);
-    // ensure buffer can fit at least l elements
-    var cbuf = function(l) {
-        var bl = buf.length;
-        // need to increase size to fit
-        if (l > bl) {
-            // Double or set to necessary, whichever is greater
-            var nbuf = new $550ca672a3f483a3$var$u8(Math.max(bl * 2, l));
-            nbuf.set(buf);
-            buf = nbuf;
-        }
-    };
-    //  last chunk         bitpos           bytes
-    var final = st.f || 0, pos = st.p || 0, bt = st.b || 0, lm = st.l, dm = st.d, lbt = st.m, dbt = st.n;
-    // total bits
-    var tbts = sl * 8;
-    do {
-        if (!lm) {
-            // BFINAL - this is only 1 when last chunk is next
-            st.f = final = $550ca672a3f483a3$var$bits(dat, pos, 1);
-            // type: 0 = no compression, 1 = fixed huffman, 2 = dynamic huffman
-            var type = $550ca672a3f483a3$var$bits(dat, pos + 1, 3);
-            pos += 3;
-            if (!type) {
-                // go to end of byte boundary
-                var s = $550ca672a3f483a3$var$shft(pos) + 4, l = dat[s - 4] | dat[s - 3] << 8, t = s + l;
-                if (t > sl) {
-                    if (noSt) throw "unexpected EOF";
-                    break;
-                }
-                // ensure size
-                if (noBuf) cbuf(bt + l);
-                // Copy over uncompressed data
-                buf.set(dat.subarray(s, t), bt);
-                // Get new bitpos, update byte count
-                st.b = bt += l, st.p = pos = t * 8;
-                continue;
-            } else if (type == 1) lm = $550ca672a3f483a3$var$flrm, dm = $550ca672a3f483a3$var$fdrm, lbt = 9, dbt = 5;
-            else if (type == 2) {
-                //  literal                            lengths
-                var hLit = $550ca672a3f483a3$var$bits(dat, pos, 31) + 257, hcLen = $550ca672a3f483a3$var$bits(dat, pos + 10, 15) + 4;
-                var tl = hLit + $550ca672a3f483a3$var$bits(dat, pos + 5, 31) + 1;
-                pos += 14;
-                // length+distance tree
-                var ldt = new $550ca672a3f483a3$var$u8(tl);
-                // code length tree
-                var clt = new $550ca672a3f483a3$var$u8(19);
-                for(var i = 0; i < hcLen; ++i)// use index map to get real code
-                clt[$550ca672a3f483a3$var$clim[i]] = $550ca672a3f483a3$var$bits(dat, pos + i * 3, 7);
-                pos += hcLen * 3;
-                // code lengths bits
-                var clb = $550ca672a3f483a3$var$max(clt), clbmsk = (1 << clb) - 1;
-                // code lengths map
-                var clm = $550ca672a3f483a3$var$hMap(clt, clb, 1);
-                for(var i = 0; i < tl;){
-                    var r = clm[$550ca672a3f483a3$var$bits(dat, pos, clbmsk)];
-                    // bits read
-                    pos += r & 15;
-                    // symbol
-                    var s = r >>> 4;
-                    // code length to copy
-                    if (s < 16) ldt[i++] = s;
-                    else {
-                        //  copy   count
-                        var c = 0, n = 0;
-                        if (s == 16) n = 3 + $550ca672a3f483a3$var$bits(dat, pos, 3), pos += 2, c = ldt[i - 1];
-                        else if (s == 17) n = 3 + $550ca672a3f483a3$var$bits(dat, pos, 7), pos += 3;
-                        else if (s == 18) n = 11 + $550ca672a3f483a3$var$bits(dat, pos, 127), pos += 7;
-                        while(n--)ldt[i++] = c;
-                    }
-                }
-                //    length tree                 distance tree
-                var lt = ldt.subarray(0, hLit), dt = ldt.subarray(hLit);
-                // max length bits
-                lbt = $550ca672a3f483a3$var$max(lt);
-                // max dist bits
-                dbt = $550ca672a3f483a3$var$max(dt);
-                lm = $550ca672a3f483a3$var$hMap(lt, lbt, 1);
-                dm = $550ca672a3f483a3$var$hMap(dt, dbt, 1);
-            } else throw "invalid block type";
-            if (pos > tbts) {
-                if (noSt) throw "unexpected EOF";
-                break;
-            }
-        }
-        // Make sure the buffer can hold this + the largest possible addition
-        // Maximum chunk size (practically, theoretically infinite) is 2^17;
-        if (noBuf) cbuf(bt + 131072);
-        var lms = (1 << lbt) - 1, dms = (1 << dbt) - 1;
-        var lpos = pos;
-        for(;; lpos = pos){
-            // bits read, code
-            var c = lm[$550ca672a3f483a3$var$bits16(dat, pos) & lms], sym = c >>> 4;
-            pos += c & 15;
-            if (pos > tbts) {
-                if (noSt) throw "unexpected EOF";
-                break;
-            }
-            if (!c) throw "invalid length/literal";
-            if (sym < 256) buf[bt++] = sym;
-            else if (sym == 256) {
-                lpos = pos, lm = null;
-                break;
-            } else {
-                var add = sym - 254;
-                // no extra bits needed if less
-                if (sym > 264) {
-                    // index
-                    var i = sym - 257, b = $550ca672a3f483a3$var$fleb[i];
-                    add = $550ca672a3f483a3$var$bits(dat, pos, (1 << b) - 1) + $550ca672a3f483a3$var$fl[i];
-                    pos += b;
-                }
-                // dist
-                var d = dm[$550ca672a3f483a3$var$bits16(dat, pos) & dms], dsym = d >>> 4;
-                if (!d) throw "invalid distance";
-                pos += d & 15;
-                var dt = $550ca672a3f483a3$var$fd[dsym];
-                if (dsym > 3) {
-                    var b = $550ca672a3f483a3$var$fdeb[dsym];
-                    dt += $550ca672a3f483a3$var$bits16(dat, pos) & (1 << b) - 1, pos += b;
-                }
-                if (pos > tbts) {
-                    if (noSt) throw "unexpected EOF";
-                    break;
-                }
-                if (noBuf) cbuf(bt + 131072);
-                var end = bt + add;
-                for(; bt < end; bt += 4){
-                    buf[bt] = buf[bt - dt];
-                    buf[bt + 1] = buf[bt + 1 - dt];
-                    buf[bt + 2] = buf[bt + 2 - dt];
-                    buf[bt + 3] = buf[bt + 3 - dt];
-                }
-                bt = end;
-            }
-        }
-        st.l = lm, st.p = lpos, st.b = bt;
-        if (lm) final = 1, st.m = lbt, st.d = dm, st.n = dbt;
-    }while (!final);
-    return bt == buf.length ? buf : $550ca672a3f483a3$var$slc(buf, 0, bt);
-};
-// starting at p, write the minimum number of bits that can hold v to d
-var $550ca672a3f483a3$var$wbits = function(d, p, v) {
-    v <<= p & 7;
-    var o = p / 8 | 0;
-    d[o] |= v;
-    d[o + 1] |= v >>> 8;
-};
-// starting at p, write the minimum number of bits (>8) that can hold v to d
-var $550ca672a3f483a3$var$wbits16 = function(d, p, v) {
-    v <<= p & 7;
-    var o = p / 8 | 0;
-    d[o] |= v;
-    d[o + 1] |= v >>> 8;
-    d[o + 2] |= v >>> 16;
-};
-// creates code lengths from a frequency table
-var $550ca672a3f483a3$var$hTree = function(d, mb) {
-    // Need extra info to make a tree
-    var t = [];
-    for(var i = 0; i < d.length; ++i)if (d[i]) t.push({
-        s: i,
-        f: d[i]
-    });
-    var s = t.length;
-    var t2 = t.slice();
-    if (!s) return [
-        $550ca672a3f483a3$var$et,
-        0
-    ];
-    if (s == 1) {
-        var v = new $550ca672a3f483a3$var$u8(t[0].s + 1);
-        v[t[0].s] = 1;
-        return [
-            v,
-            1
-        ];
-    }
-    t.sort(function(a, b) {
-        return a.f - b.f;
-    });
-    // after i2 reaches last ind, will be stopped
-    // freq must be greater than largest possible number of symbols
-    t.push({
-        s: -1,
-        f: 25001
-    });
-    var l = t[0], r = t[1], i0 = 0, i1 = 1, i2 = 2;
-    t[0] = {
-        s: -1,
-        f: l.f + r.f,
-        l: l,
-        r: r
-    };
-    // efficient algorithm from UZIP.js
-    // i0 is lookbehind, i2 is lookahead - after processing two low-freq
-    // symbols that combined have high freq, will start processing i2 (high-freq,
-    // non-composite) symbols instead
-    // see https://reddit.com/r/photopea/comments/ikekht/uzipjs_questions/
-    while(i1 != s - 1){
-        l = t[t[i0].f < t[i2].f ? i0++ : i2++];
-        r = t[i0 != i1 && t[i0].f < t[i2].f ? i0++ : i2++];
-        t[i1++] = {
-            s: -1,
-            f: l.f + r.f,
-            l: l,
-            r: r
-        };
-    }
-    var maxSym = t2[0].s;
-    for(var i = 1; i < s; ++i)if (t2[i].s > maxSym) maxSym = t2[i].s;
-    // code lengths
-    var tr = new $550ca672a3f483a3$var$u16(maxSym + 1);
-    // max bits in tree
-    var mbt = $550ca672a3f483a3$var$ln(t[i1 - 1], tr, 0);
-    if (mbt > mb) {
-        // more algorithms from UZIP.js
-        // TODO: find out how this code works (debt)
-        //  ind    debt
-        var i = 0, dt = 0;
-        //    left            cost
-        var lft = mbt - mb, cst = 1 << lft;
-        t2.sort(function(a, b) {
-            return tr[b.s] - tr[a.s] || a.f - b.f;
-        });
-        for(; i < s; ++i){
-            var i2_1 = t2[i].s;
-            if (tr[i2_1] > mb) {
-                dt += cst - (1 << mbt - tr[i2_1]);
-                tr[i2_1] = mb;
-            } else break;
-        }
-        dt >>>= lft;
-        while(dt > 0){
-            var i2_2 = t2[i].s;
-            if (tr[i2_2] < mb) dt -= 1 << mb - tr[i2_2]++ - 1;
-            else ++i;
-        }
-        for(; i >= 0 && dt; --i){
-            var i2_3 = t2[i].s;
-            if (tr[i2_3] == mb) {
-                --tr[i2_3];
-                ++dt;
-            }
-        }
-        mbt = mb;
-    }
-    return [
-        new $550ca672a3f483a3$var$u8(tr),
-        mbt
-    ];
-};
-// get the max length and assign length codes
-var $550ca672a3f483a3$var$ln = function(n, l, d) {
-    return n.s == -1 ? Math.max($550ca672a3f483a3$var$ln(n.l, l, d + 1), $550ca672a3f483a3$var$ln(n.r, l, d + 1)) : l[n.s] = d;
-};
-// length codes generation
-var $550ca672a3f483a3$var$lc = function(c) {
-    var s = c.length;
-    // Note that the semicolon was intentional
-    while(s && !c[--s]);
-    var cl = new $550ca672a3f483a3$var$u16(++s);
-    //  ind      num         streak
-    var cli = 0, cln = c[0], cls = 1;
-    var w = function(v) {
-        cl[cli++] = v;
-    };
-    for(var i = 1; i <= s; ++i)if (c[i] == cln && i != s) ++cls;
-    else {
-        if (!cln && cls > 2) {
-            for(; cls > 138; cls -= 138)w(32754);
-            if (cls > 2) {
-                w(cls > 10 ? cls - 11 << 5 | 28690 : cls - 3 << 5 | 12305);
-                cls = 0;
-            }
-        } else if (cls > 3) {
-            w(cln), --cls;
-            for(; cls > 6; cls -= 6)w(8304);
-            if (cls > 2) w(cls - 3 << 5 | 8208), cls = 0;
-        }
-        while(cls--)w(cln);
-        cls = 1;
-        cln = c[i];
-    }
-    return [
-        cl.subarray(0, cli),
-        s
-    ];
-};
-// calculate the length of output from tree, code lengths
-var $550ca672a3f483a3$var$clen = function(cf, cl) {
-    var l = 0;
-    for(var i = 0; i < cl.length; ++i)l += cf[i] * cl[i];
-    return l;
-};
-// writes a fixed block
-// returns the new bit pos
-var $550ca672a3f483a3$var$wfblk = function(out, pos, dat) {
-    // no need to write 00 as type: TypedArray defaults to 0
-    var s = dat.length;
-    var o = $550ca672a3f483a3$var$shft(pos + 2);
-    out[o] = s & 255;
-    out[o + 1] = s >>> 8;
-    out[o + 2] = out[o] ^ 255;
-    out[o + 3] = out[o + 1] ^ 255;
-    for(var i = 0; i < s; ++i)out[o + i + 4] = dat[i];
-    return (o + 4 + s) * 8;
-};
-// writes a block
-var $550ca672a3f483a3$var$wblk = function(dat, out, final, syms, lf, df, eb, li, bs, bl, p) {
-    $550ca672a3f483a3$var$wbits(out, p++, final);
-    ++lf[256];
-    var _a = $550ca672a3f483a3$var$hTree(lf, 15), dlt = _a[0], mlb = _a[1];
-    var _b = $550ca672a3f483a3$var$hTree(df, 15), ddt = _b[0], mdb = _b[1];
-    var _c = $550ca672a3f483a3$var$lc(dlt), lclt = _c[0], nlc = _c[1];
-    var _d = $550ca672a3f483a3$var$lc(ddt), lcdt = _d[0], ndc = _d[1];
-    var lcfreq = new $550ca672a3f483a3$var$u16(19);
-    for(var i = 0; i < lclt.length; ++i)lcfreq[lclt[i] & 31]++;
-    for(var i = 0; i < lcdt.length; ++i)lcfreq[lcdt[i] & 31]++;
-    var _e = $550ca672a3f483a3$var$hTree(lcfreq, 7), lct = _e[0], mlcb = _e[1];
-    var nlcc = 19;
-    for(; nlcc > 4 && !lct[$550ca672a3f483a3$var$clim[nlcc - 1]]; --nlcc);
-    var flen = bl + 5 << 3;
-    var ftlen = $550ca672a3f483a3$var$clen(lf, $550ca672a3f483a3$var$flt) + $550ca672a3f483a3$var$clen(df, $550ca672a3f483a3$var$fdt) + eb;
-    var dtlen = $550ca672a3f483a3$var$clen(lf, dlt) + $550ca672a3f483a3$var$clen(df, ddt) + eb + 14 + 3 * nlcc + $550ca672a3f483a3$var$clen(lcfreq, lct) + (2 * lcfreq[16] + 3 * lcfreq[17] + 7 * lcfreq[18]);
-    if (flen <= ftlen && flen <= dtlen) return $550ca672a3f483a3$var$wfblk(out, p, dat.subarray(bs, bs + bl));
-    var lm, ll, dm, dl;
-    $550ca672a3f483a3$var$wbits(out, p, 1 + (dtlen < ftlen)), p += 2;
-    if (dtlen < ftlen) {
-        lm = $550ca672a3f483a3$var$hMap(dlt, mlb, 0), ll = dlt, dm = $550ca672a3f483a3$var$hMap(ddt, mdb, 0), dl = ddt;
-        var llm = $550ca672a3f483a3$var$hMap(lct, mlcb, 0);
-        $550ca672a3f483a3$var$wbits(out, p, nlc - 257);
-        $550ca672a3f483a3$var$wbits(out, p + 5, ndc - 1);
-        $550ca672a3f483a3$var$wbits(out, p + 10, nlcc - 4);
-        p += 14;
-        for(var i = 0; i < nlcc; ++i)$550ca672a3f483a3$var$wbits(out, p + 3 * i, lct[$550ca672a3f483a3$var$clim[i]]);
-        p += 3 * nlcc;
-        var lcts = [
-            lclt,
-            lcdt
-        ];
-        for(var it = 0; it < 2; ++it){
-            var clct = lcts[it];
-            for(var i = 0; i < clct.length; ++i){
-                var len = clct[i] & 31;
-                $550ca672a3f483a3$var$wbits(out, p, llm[len]), p += lct[len];
-                if (len > 15) $550ca672a3f483a3$var$wbits(out, p, clct[i] >>> 5 & 127), p += clct[i] >>> 12;
-            }
-        }
-    } else lm = $550ca672a3f483a3$var$flm, ll = $550ca672a3f483a3$var$flt, dm = $550ca672a3f483a3$var$fdm, dl = $550ca672a3f483a3$var$fdt;
-    for(var i = 0; i < li; ++i)if (syms[i] > 255) {
-        var len = syms[i] >>> 18 & 31;
-        $550ca672a3f483a3$var$wbits16(out, p, lm[len + 257]), p += ll[len + 257];
-        if (len > 7) $550ca672a3f483a3$var$wbits(out, p, syms[i] >>> 23 & 31), p += $550ca672a3f483a3$var$fleb[len];
-        var dst = syms[i] & 31;
-        $550ca672a3f483a3$var$wbits16(out, p, dm[dst]), p += dl[dst];
-        if (dst > 3) $550ca672a3f483a3$var$wbits16(out, p, syms[i] >>> 5 & 8191), p += $550ca672a3f483a3$var$fdeb[dst];
-    } else $550ca672a3f483a3$var$wbits16(out, p, lm[syms[i]]), p += ll[syms[i]];
-    $550ca672a3f483a3$var$wbits16(out, p, lm[256]);
-    return p + ll[256];
-};
-// deflate options (nice << 13) | chain
-var $550ca672a3f483a3$var$deo = /*#__PURE__*/ new $550ca672a3f483a3$var$u32([
-    65540,
-    131080,
-    131088,
-    131104,
-    262176,
-    1048704,
-    1048832,
-    2114560,
-    2117632
-]);
-// empty
-var $550ca672a3f483a3$var$et = /*#__PURE__*/ new $550ca672a3f483a3$var$u8(0);
-// compresses data into a raw DEFLATE buffer
-var $550ca672a3f483a3$var$dflt = function(dat, lvl, plvl, pre, post, lst) {
-    var s = dat.length;
-    var o = new $550ca672a3f483a3$var$u8(pre + s + 5 * (1 + Math.ceil(s / 7000)) + post);
-    // writing to this writes to the output buffer
-    var w = o.subarray(pre, o.length - post);
-    var pos = 0;
-    if (!lvl || s < 8) for(var i = 0; i <= s; i += 65535){
-        // end
-        var e = i + 65535;
-        if (e < s) // write full block
-        pos = $550ca672a3f483a3$var$wfblk(w, pos, dat.subarray(i, e));
-        else {
-            // write final block
-            w[i] = lst;
-            pos = $550ca672a3f483a3$var$wfblk(w, pos, dat.subarray(i, s));
-        }
-    }
-    else {
-        var opt = $550ca672a3f483a3$var$deo[lvl - 1];
-        var n = opt >>> 13, c = opt & 8191;
-        var msk_1 = (1 << plvl) - 1;
-        //    prev 2-byte val map    curr 2-byte val map
-        var prev = new $550ca672a3f483a3$var$u16(32768), head = new $550ca672a3f483a3$var$u16(msk_1 + 1);
-        var bs1_1 = Math.ceil(plvl / 3), bs2_1 = 2 * bs1_1;
-        var hsh = function(i) {
-            return (dat[i] ^ dat[i + 1] << bs1_1 ^ dat[i + 2] << bs2_1) & msk_1;
-        };
-        // 24576 is an arbitrary number of maximum symbols per block
-        // 424 buffer for last block
-        var syms = new $550ca672a3f483a3$var$u32(25000);
-        // length/literal freq   distance freq
-        var lf = new $550ca672a3f483a3$var$u16(288), df = new $550ca672a3f483a3$var$u16(32);
-        //  l/lcnt  exbits  index  l/lind  waitdx  bitpos
-        var lc_1 = 0, eb = 0, i = 0, li = 0, wi = 0, bs = 0;
-        for(; i < s; ++i){
-            // hash value
-            // deopt when i > s - 3 - at end, deopt acceptable
-            var hv = hsh(i);
-            // index mod 32768    previous index mod
-            var imod = i & 32767, pimod = head[hv];
-            prev[imod] = pimod;
-            head[hv] = imod;
-            // We always should modify head and prev, but only add symbols if
-            // this data is not yet processed ("wait" for wait index)
-            if (wi <= i) {
-                // bytes remaining
-                var rem = s - i;
-                if ((lc_1 > 7000 || li > 24576) && rem > 423) {
-                    pos = $550ca672a3f483a3$var$wblk(dat, w, 0, syms, lf, df, eb, li, bs, i - bs, pos);
-                    li = lc_1 = eb = 0, bs = i;
-                    for(var j = 0; j < 286; ++j)lf[j] = 0;
-                    for(var j = 0; j < 30; ++j)df[j] = 0;
-                }
-                //  len    dist   chain
-                var l = 2, d = 0, ch_1 = c, dif = imod - pimod & 32767;
-                if (rem > 2 && hv == hsh(i - dif)) {
-                    var maxn = Math.min(n, rem) - 1;
-                    var maxd = Math.min(32767, i);
-                    // max possible length
-                    // not capped at dif because decompressors implement "rolling" index population
-                    var ml = Math.min(258, rem);
-                    while(dif <= maxd && --ch_1 && imod != pimod){
-                        if (dat[i + l] == dat[i + l - dif]) {
-                            var nl = 0;
-                            for(; nl < ml && dat[i + nl] == dat[i + nl - dif]; ++nl);
-                            if (nl > l) {
-                                l = nl, d = dif;
-                                // break out early when we reach "nice" (we are satisfied enough)
-                                if (nl > maxn) break;
-                                // now, find the rarest 2-byte sequence within this
-                                // length of literals and search for that instead.
-                                // Much faster than just using the start
-                                var mmd = Math.min(dif, nl - 2);
-                                var md = 0;
-                                for(var j = 0; j < mmd; ++j){
-                                    var ti = i - dif + j + 32768 & 32767;
-                                    var pti = prev[ti];
-                                    var cd = ti - pti + 32768 & 32767;
-                                    if (cd > md) md = cd, pimod = ti;
-                                }
-                            }
-                        }
-                        // check the previous match
-                        imod = pimod, pimod = prev[imod];
-                        dif += imod - pimod + 32768 & 32767;
-                    }
-                }
-                // d will be nonzero only when a match was found
-                if (d) {
-                    // store both dist and len data in one Uint32
-                    // Make sure this is recognized as a len/dist with 28th bit (2^28)
-                    syms[li++] = 268435456 | $550ca672a3f483a3$var$revfl[l] << 18 | $550ca672a3f483a3$var$revfd[d];
-                    var lin = $550ca672a3f483a3$var$revfl[l] & 31, din = $550ca672a3f483a3$var$revfd[d] & 31;
-                    eb += $550ca672a3f483a3$var$fleb[lin] + $550ca672a3f483a3$var$fdeb[din];
-                    ++lf[257 + lin];
-                    ++df[din];
-                    wi = i + l;
-                    ++lc_1;
-                } else {
-                    syms[li++] = dat[i];
-                    ++lf[dat[i]];
-                }
-            }
-        }
-        pos = $550ca672a3f483a3$var$wblk(dat, w, lst, syms, lf, df, eb, li, bs, i - bs, pos);
-        // this is the easiest way to avoid needing to maintain state
-        if (!lst && pos & 7) pos = $550ca672a3f483a3$var$wfblk(w, pos + 1, $550ca672a3f483a3$var$et);
-    }
-    return $550ca672a3f483a3$var$slc(o, 0, pre + $550ca672a3f483a3$var$shft(pos) + post);
-};
-// CRC32 table
-var $550ca672a3f483a3$var$crct = /*#__PURE__*/ function() {
-    var t = new $550ca672a3f483a3$var$u32(256);
-    for(var i = 0; i < 256; ++i){
-        var c = i, k = 9;
-        while(--k)c = (c & 1 && 0xEDB88320) ^ c >>> 1;
-        t[i] = c;
-    }
-    return t;
-}();
-// CRC32
-var $550ca672a3f483a3$var$crc = function() {
-    var c = -1;
-    return {
-        p: function(d) {
-            // closures have awful performance
-            var cr = c;
-            for(var i = 0; i < d.length; ++i)cr = $550ca672a3f483a3$var$crct[cr & 255 ^ d[i]] ^ cr >>> 8;
-            c = cr;
-        },
-        d: function() {
-            return ~c;
-        }
-    };
-};
-// Alder32
-var $550ca672a3f483a3$var$adler = function() {
-    var a = 1, b = 0;
-    return {
-        p: function(d) {
-            // closures have awful performance
-            var n = a, m = b;
-            var l = d.length;
-            for(var i = 0; i != l;){
-                var e = Math.min(i + 2655, l);
-                for(; i < e; ++i)m += n += d[i];
-                n = (n & 65535) + 15 * (n >> 16), m = (m & 65535) + 15 * (m >> 16);
-            }
-            a = n, b = m;
-        },
-        d: function() {
-            a %= 65521, b %= 65521;
-            return (a & 255) << 24 | a >>> 8 << 16 | (b & 255) << 8 | b >>> 8;
-        }
-    };
-};
-// deflate with opts
-var $550ca672a3f483a3$var$dopt = function(dat, opt, pre, post, st) {
-    return $550ca672a3f483a3$var$dflt(dat, opt.level == null ? 6 : opt.level, opt.mem == null ? Math.ceil(Math.max(8, Math.min(13, Math.log(dat.length))) * 1.5) : 12 + opt.mem, pre, post, !st);
-};
-// Walmart object spread
-var $550ca672a3f483a3$var$mrg = function(a, b) {
-    var o = {};
-    for(var k in a)o[k] = a[k];
-    for(var k in b)o[k] = b[k];
-    return o;
-};
-// worker clone
-// This is possibly the craziest part of the entire codebase, despite how simple it may seem.
-// The only parameter to this function is a closure that returns an array of variables outside of the function scope.
-// We're going to try to figure out the variable names used in the closure as strings because that is crucial for workerization.
-// We will return an object mapping of true variable name to value (basically, the current scope as a JS object).
-// The reason we can't just use the original variable names is minifiers mangling the toplevel scope.
-// This took me three weeks to figure out how to do.
-var $550ca672a3f483a3$var$wcln = function(fn, fnStr, td) {
-    var dt = fn();
-    var st = fn.toString();
-    var ks = st.slice(st.indexOf("[") + 1, st.lastIndexOf("]")).replace(/ /g, "").split(",");
-    for(var i = 0; i < dt.length; ++i){
-        var v = dt[i], k = ks[i];
-        if (typeof v == "function") {
-            fnStr += ";" + k + "=";
-            var st_1 = v.toString();
-            if (v.prototype) {
-                // for global objects
-                if (st_1.indexOf("[native code]") != -1) {
-                    var spInd = st_1.indexOf(" ", 8) + 1;
-                    fnStr += st_1.slice(spInd, st_1.indexOf("(", spInd));
-                } else {
-                    fnStr += st_1;
-                    for(var t in v.prototype)fnStr += ";" + k + ".prototype." + t + "=" + v.prototype[t].toString();
-                }
-            } else fnStr += st_1;
-        } else td[k] = v;
-    }
-    return [
-        fnStr,
-        td
-    ];
-};
-var $550ca672a3f483a3$var$ch = [];
-// clone bufs
-var $550ca672a3f483a3$var$cbfs = function(v) {
-    var tl = [];
-    for(var k in v)if (v[k] instanceof $550ca672a3f483a3$var$u8 || v[k] instanceof $550ca672a3f483a3$var$u16 || v[k] instanceof $550ca672a3f483a3$var$u32) tl.push((v[k] = new v[k].constructor(v[k])).buffer);
-    return tl;
-};
-// use a worker to execute code
-var $550ca672a3f483a3$var$wrkr = function(fns, init, id, cb) {
-    var _a;
-    if (!$550ca672a3f483a3$var$ch[id]) {
-        var fnStr = "", td_1 = {}, m = fns.length - 1;
-        for(var i = 0; i < m; ++i)_a = $550ca672a3f483a3$var$wcln(fns[i], fnStr, td_1), fnStr = _a[0], td_1 = _a[1];
-        $550ca672a3f483a3$var$ch[id] = $550ca672a3f483a3$var$wcln(fns[m], fnStr, td_1);
-    }
-    var td = $550ca672a3f483a3$var$mrg({}, $550ca672a3f483a3$var$ch[id][1]);
-    return $550ca672a3f483a3$var$wk($550ca672a3f483a3$var$ch[id][0] + ";onmessage=function(e){for(var k in e.data)self[k]=e.data[k];onmessage=" + init.toString() + "}", id, td, $550ca672a3f483a3$var$cbfs(td), cb);
-};
-// base async inflate fn
-var $550ca672a3f483a3$var$bInflt = function() {
-    return [
-        $550ca672a3f483a3$var$u8,
-        $550ca672a3f483a3$var$u16,
-        $550ca672a3f483a3$var$u32,
-        $550ca672a3f483a3$var$fleb,
-        $550ca672a3f483a3$var$fdeb,
-        $550ca672a3f483a3$var$clim,
-        $550ca672a3f483a3$var$fl,
-        $550ca672a3f483a3$var$fd,
-        $550ca672a3f483a3$var$flrm,
-        $550ca672a3f483a3$var$fdrm,
-        $550ca672a3f483a3$var$rev,
-        $550ca672a3f483a3$var$hMap,
-        $550ca672a3f483a3$var$max,
-        $550ca672a3f483a3$var$bits,
-        $550ca672a3f483a3$var$bits16,
-        $550ca672a3f483a3$var$shft,
-        $550ca672a3f483a3$var$slc,
-        $550ca672a3f483a3$var$inflt,
-        $550ca672a3f483a3$export$90366d8b308ba94a,
-        $550ca672a3f483a3$var$pbf,
-        $550ca672a3f483a3$var$gu8
-    ];
-};
-var $550ca672a3f483a3$var$bDflt = function() {
-    return [
-        $550ca672a3f483a3$var$u8,
-        $550ca672a3f483a3$var$u16,
-        $550ca672a3f483a3$var$u32,
-        $550ca672a3f483a3$var$fleb,
-        $550ca672a3f483a3$var$fdeb,
-        $550ca672a3f483a3$var$clim,
-        $550ca672a3f483a3$var$revfl,
-        $550ca672a3f483a3$var$revfd,
-        $550ca672a3f483a3$var$flm,
-        $550ca672a3f483a3$var$flt,
-        $550ca672a3f483a3$var$fdm,
-        $550ca672a3f483a3$var$fdt,
-        $550ca672a3f483a3$var$rev,
-        $550ca672a3f483a3$var$deo,
-        $550ca672a3f483a3$var$et,
-        $550ca672a3f483a3$var$hMap,
-        $550ca672a3f483a3$var$wbits,
-        $550ca672a3f483a3$var$wbits16,
-        $550ca672a3f483a3$var$hTree,
-        $550ca672a3f483a3$var$ln,
-        $550ca672a3f483a3$var$lc,
-        $550ca672a3f483a3$var$clen,
-        $550ca672a3f483a3$var$wfblk,
-        $550ca672a3f483a3$var$wblk,
-        $550ca672a3f483a3$var$shft,
-        $550ca672a3f483a3$var$slc,
-        $550ca672a3f483a3$var$dflt,
-        $550ca672a3f483a3$var$dopt,
-        $550ca672a3f483a3$export$21533ff51b8a0b4a,
-        $550ca672a3f483a3$var$pbf
-    ];
-};
-// gzip extra
-var $550ca672a3f483a3$var$gze = function() {
-    return [
-        $550ca672a3f483a3$var$gzh,
-        $550ca672a3f483a3$var$gzhl,
-        $550ca672a3f483a3$var$wbytes,
-        $550ca672a3f483a3$var$crc,
-        $550ca672a3f483a3$var$crct
-    ];
-};
-// gunzip extra
-var $550ca672a3f483a3$var$guze = function() {
-    return [
-        $550ca672a3f483a3$var$gzs,
-        $550ca672a3f483a3$var$gzl
-    ];
-};
-// zlib extra
-var $550ca672a3f483a3$var$zle = function() {
-    return [
-        $550ca672a3f483a3$var$zlh,
-        $550ca672a3f483a3$var$wbytes,
-        $550ca672a3f483a3$var$adler
-    ];
-};
-// unzlib extra
-var $550ca672a3f483a3$var$zule = function() {
-    return [
-        $550ca672a3f483a3$var$zlv
-    ];
-};
-// post buf
-var $550ca672a3f483a3$var$pbf = function(msg) {
-    return postMessage(msg, [
-        msg.buffer
-    ]);
-};
-// get u8
-var $550ca672a3f483a3$var$gu8 = function(o) {
-    return o && o.size && new $550ca672a3f483a3$var$u8(o.size);
-};
-// async helper
-var $550ca672a3f483a3$var$cbify = function(dat, opts, fns, init, id, cb) {
-    var w = $550ca672a3f483a3$var$wrkr(fns, init, id, function(err, dat) {
-        w.terminate();
-        cb(err, dat);
-    });
-    w.postMessage([
-        dat,
-        opts
-    ], opts.consume ? [
-        dat.buffer
-    ] : []);
-    return function() {
-        w.terminate();
-    };
-};
-// auto stream
-var $550ca672a3f483a3$var$astrm = function(strm) {
-    strm.ondata = function(dat, final) {
-        return postMessage([
-            dat,
-            final
-        ], [
-            dat.buffer
-        ]);
-    };
-    return function(ev) {
-        return strm.push(ev.data[0], ev.data[1]);
-    };
-};
-// async stream attach
-var $550ca672a3f483a3$var$astrmify = function(fns, strm, opts, init, id) {
-    var t;
-    var w = $550ca672a3f483a3$var$wrkr(fns, init, id, function(err, dat) {
-        if (err) w.terminate(), strm.ondata.call(strm, err);
-        else {
-            if (dat[1]) w.terminate();
-            strm.ondata.call(strm, err, dat[0], dat[1]);
-        }
-    });
-    w.postMessage(opts);
-    strm.push = function(d, f) {
-        if (t) throw "stream finished";
-        if (!strm.ondata) throw "no stream handler";
-        w.postMessage([
-            d,
-            t = f
-        ], [
-            d.buffer
-        ]);
-    };
-    strm.terminate = function() {
-        w.terminate();
-    };
-};
-// read 2 bytes
-var $550ca672a3f483a3$var$b2 = function(d, b) {
-    return d[b] | d[b + 1] << 8;
-};
-// read 4 bytes
-var $550ca672a3f483a3$var$b4 = function(d, b) {
-    return (d[b] | d[b + 1] << 8 | d[b + 2] << 16 | d[b + 3] << 24) >>> 0;
-};
-var $550ca672a3f483a3$var$b8 = function(d, b) {
-    return $550ca672a3f483a3$var$b4(d, b) + $550ca672a3f483a3$var$b4(d, b + 4) * 4294967296;
-};
-// write bytes
-var $550ca672a3f483a3$var$wbytes = function(d, b, v) {
-    for(; v; ++b)d[b] = v, v >>>= 8;
-};
-// gzip header
-var $550ca672a3f483a3$var$gzh = function(c, o) {
-    var fn = o.filename;
-    c[0] = 31, c[1] = 139, c[2] = 8, c[8] = o.level < 2 ? 4 : o.level == 9 ? 2 : 0, c[9] = 3; // assume Unix
-    if (o.mtime != 0) $550ca672a3f483a3$var$wbytes(c, 4, Math.floor(new Date(o.mtime || Date.now()) / 1000));
-    if (fn) {
-        c[3] = 8;
-        for(var i = 0; i <= fn.length; ++i)c[i + 10] = fn.charCodeAt(i);
-    }
-};
-// gzip footer: -8 to -4 = CRC, -4 to -0 is length
-// gzip start
-var $550ca672a3f483a3$var$gzs = function(d) {
-    if (d[0] != 31 || d[1] != 139 || d[2] != 8) throw "invalid gzip data";
-    var flg = d[3];
-    var st = 10;
-    if (flg & 4) st += d[10] | (d[11] << 8) + 2;
-    for(var zs = (flg >> 3 & 1) + (flg >> 4 & 1); zs > 0; zs -= !d[st++]);
-    return st + (flg & 2);
-};
-// gzip length
-var $550ca672a3f483a3$var$gzl = function(d) {
-    var l = d.length;
-    return (d[l - 4] | d[l - 3] << 8 | d[l - 2] << 16 | d[l - 1] << 24) >>> 0;
-};
-// gzip header length
-var $550ca672a3f483a3$var$gzhl = function(o) {
-    return 10 + (o.filename && o.filename.length + 1 || 0);
-};
-// zlib header
-var $550ca672a3f483a3$var$zlh = function(c, o) {
-    var lv = o.level, fl = lv == 0 ? 0 : lv < 6 ? 1 : lv == 9 ? 3 : 2;
-    c[0] = 120, c[1] = fl << 6 | (fl ? 32 - 2 * fl : 1);
-};
-// zlib valid
-var $550ca672a3f483a3$var$zlv = function(d) {
-    if ((d[0] & 15) != 8 || d[0] >>> 4 > 7 || (d[0] << 8 | d[1]) % 31) throw "invalid zlib data";
-    if (d[1] & 32) throw "invalid zlib data: preset dictionaries not supported";
-};
-function $550ca672a3f483a3$var$AsyncCmpStrm(opts, cb) {
-    if (!cb && typeof opts == "function") cb = opts, opts = {};
-    this.ondata = cb;
-    return opts;
-}
-// zlib footer: -4 to -0 is Adler32
-/**
- * Streaming DEFLATE compression
- */ var $550ca672a3f483a3$export$ae157b6234afe138 = /*#__PURE__*/ function() {
-    function Deflate(opts, cb) {
-        if (!cb && typeof opts == "function") cb = opts, opts = {};
-        this.ondata = cb;
-        this.o = opts || {};
-    }
-    Deflate.prototype.p = function(c, f) {
-        this.ondata($550ca672a3f483a3$var$dopt(c, this.o, 0, 0, !f), f);
-    };
-    /**
-     * Pushes a chunk to be deflated
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ Deflate.prototype.push = function(chunk, final) {
-        if (this.d) throw "stream finished";
-        if (!this.ondata) throw "no stream handler";
-        this.d = final;
-        this.p(chunk, final || false);
-    };
-    return Deflate;
-}();
-/**
- * Asynchronous streaming DEFLATE compression
- */ var $550ca672a3f483a3$export$84e526fabcba03e3 = /*#__PURE__*/ function() {
-    function AsyncDeflate(opts, cb) {
-        $550ca672a3f483a3$var$astrmify([
-            $550ca672a3f483a3$var$bDflt,
-            function() {
-                return [
-                    $550ca672a3f483a3$var$astrm,
-                    $550ca672a3f483a3$export$ae157b6234afe138
-                ];
-            }
-        ], this, $550ca672a3f483a3$var$AsyncCmpStrm.call(this, opts, cb), function(ev) {
-            var strm = new $550ca672a3f483a3$export$ae157b6234afe138(ev.data);
-            onmessage = $550ca672a3f483a3$var$astrm(strm);
-        }, 6);
-    }
-    return AsyncDeflate;
-}();
-function $550ca672a3f483a3$export$2316623ecd1285ab(data, opts, cb) {
-    if (!cb) cb = opts, opts = {};
-    if (typeof cb != "function") throw "no callback";
-    return $550ca672a3f483a3$var$cbify(data, opts, [
-        $550ca672a3f483a3$var$bDflt
-    ], function(ev) {
-        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$21533ff51b8a0b4a(ev.data[0], ev.data[1]));
-    }, 0, cb);
-}
-function $550ca672a3f483a3$export$21533ff51b8a0b4a(data, opts) {
-    return $550ca672a3f483a3$var$dopt(data, opts || {}, 0, 0);
-}
-/**
- * Streaming DEFLATE decompression
- */ var $550ca672a3f483a3$export$d1de70a877d6e43c = /*#__PURE__*/ function() {
-    /**
-     * Creates an inflation stream
-     * @param cb The callback to call whenever data is inflated
-     */ function Inflate(cb) {
-        this.s = {};
-        this.p = new $550ca672a3f483a3$var$u8(0);
-        this.ondata = cb;
-    }
-    Inflate.prototype.e = function(c) {
-        if (this.d) throw "stream finished";
-        if (!this.ondata) throw "no stream handler";
-        var l = this.p.length;
-        var n = new $550ca672a3f483a3$var$u8(l + c.length);
-        n.set(this.p), n.set(c, l), this.p = n;
-    };
-    Inflate.prototype.c = function(final) {
-        this.d = this.s.i = final || false;
-        var bts = this.s.b;
-        var dt = $550ca672a3f483a3$var$inflt(this.p, this.o, this.s);
-        this.ondata($550ca672a3f483a3$var$slc(dt, bts, this.s.b), this.d);
-        this.o = $550ca672a3f483a3$var$slc(dt, this.s.b - 32768), this.s.b = this.o.length;
-        this.p = $550ca672a3f483a3$var$slc(this.p, this.s.p / 8 | 0), this.s.p &= 7;
-    };
-    /**
-     * Pushes a chunk to be inflated
-     * @param chunk The chunk to push
-     * @param final Whether this is the final chunk
-     */ Inflate.prototype.push = function(chunk, final) {
-        this.e(chunk), this.c(final);
-    };
-    return Inflate;
-}();
-/**
- * Asynchronous streaming DEFLATE decompression
- */ var $550ca672a3f483a3$export$fff8358d6dbaa9cc = /*#__PURE__*/ function() {
-    /**
-     * Creates an asynchronous inflation stream
-     * @param cb The callback to call whenever data is deflated
-     */ function AsyncInflate(cb) {
-        this.ondata = cb;
-        $550ca672a3f483a3$var$astrmify([
-            $550ca672a3f483a3$var$bInflt,
-            function() {
-                return [
-                    $550ca672a3f483a3$var$astrm,
-                    $550ca672a3f483a3$export$d1de70a877d6e43c
-                ];
-            }
-        ], this, 0, function() {
-            var strm = new $550ca672a3f483a3$export$d1de70a877d6e43c();
-            onmessage = $550ca672a3f483a3$var$astrm(strm);
-        }, 7);
-    }
-    return AsyncInflate;
-}();
-function $550ca672a3f483a3$export$cae1ce83fe4a1782(data, opts, cb) {
-    if (!cb) cb = opts, opts = {};
-    if (typeof cb != "function") throw "no callback";
-    return $550ca672a3f483a3$var$cbify(data, opts, [
-        $550ca672a3f483a3$var$bInflt
-    ], function(ev) {
-        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$90366d8b308ba94a(ev.data[0], $550ca672a3f483a3$var$gu8(ev.data[1])));
-    }, 1, cb);
-}
-function $550ca672a3f483a3$export$90366d8b308ba94a(data, out) {
-    return $550ca672a3f483a3$var$inflt(data, out);
-}
-// before you yell at me for not just using extends, my reason is that TS inheritance is hard to workerize.
-/**
- * Streaming GZIP compression
- */ var $550ca672a3f483a3$export$8e4b66d280bf8342 = /*#__PURE__*/ function() {
-    function Gzip(opts, cb) {
-        this.c = $550ca672a3f483a3$var$crc();
-        this.l = 0;
-        this.v = 1;
-        $550ca672a3f483a3$export$ae157b6234afe138.call(this, opts, cb);
-    }
-    /**
-     * Pushes a chunk to be GZIPped
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ Gzip.prototype.push = function(chunk, final) {
-        $550ca672a3f483a3$export$ae157b6234afe138.prototype.push.call(this, chunk, final);
-    };
-    Gzip.prototype.p = function(c, f) {
-        this.c.p(c);
-        this.l += c.length;
-        var raw = $550ca672a3f483a3$var$dopt(c, this.o, this.v && $550ca672a3f483a3$var$gzhl(this.o), f && 8, !f);
-        if (this.v) $550ca672a3f483a3$var$gzh(raw, this.o), this.v = 0;
-        if (f) $550ca672a3f483a3$var$wbytes(raw, raw.length - 8, this.c.d()), $550ca672a3f483a3$var$wbytes(raw, raw.length - 4, this.l);
-        this.ondata(raw, f);
-    };
-    return Gzip;
-}();
-/**
- * Asynchronous streaming GZIP compression
- */ var $550ca672a3f483a3$export$b4c75ae96cdf708b = /*#__PURE__*/ function() {
-    function AsyncGzip(opts, cb) {
-        $550ca672a3f483a3$var$astrmify([
-            $550ca672a3f483a3$var$bDflt,
-            $550ca672a3f483a3$var$gze,
-            function() {
-                return [
-                    $550ca672a3f483a3$var$astrm,
-                    $550ca672a3f483a3$export$ae157b6234afe138,
-                    $550ca672a3f483a3$export$8e4b66d280bf8342
-                ];
-            }
-        ], this, $550ca672a3f483a3$var$AsyncCmpStrm.call(this, opts, cb), function(ev) {
-            var strm = new $550ca672a3f483a3$export$8e4b66d280bf8342(ev.data);
-            onmessage = $550ca672a3f483a3$var$astrm(strm);
-        }, 8);
-    }
-    return AsyncGzip;
-}();
-function $550ca672a3f483a3$export$69f0ea7cf3a331a8(data, opts, cb) {
-    if (!cb) cb = opts, opts = {};
-    if (typeof cb != "function") throw "no callback";
-    return $550ca672a3f483a3$var$cbify(data, opts, [
-        $550ca672a3f483a3$var$bDflt,
-        $550ca672a3f483a3$var$gze,
-        function() {
-            return [
-                $550ca672a3f483a3$export$3d616c3fb3e15483
-            ];
-        }
-    ], function(ev) {
-        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$3d616c3fb3e15483(ev.data[0], ev.data[1]));
-    }, 2, cb);
-}
-function $550ca672a3f483a3$export$3d616c3fb3e15483(data, opts) {
-    if (!opts) opts = {};
-    var c = $550ca672a3f483a3$var$crc(), l = data.length;
-    c.p(data);
-    var d = $550ca672a3f483a3$var$dopt(data, opts, $550ca672a3f483a3$var$gzhl(opts), 8), s = d.length;
-    return $550ca672a3f483a3$var$gzh(d, opts), $550ca672a3f483a3$var$wbytes(d, s - 8, c.d()), $550ca672a3f483a3$var$wbytes(d, s - 4, l), d;
-}
-/**
- * Streaming GZIP decompression
- */ var $550ca672a3f483a3$export$4cb607de6db70415 = /*#__PURE__*/ function() {
-    /**
-     * Creates a GUNZIP stream
-     * @param cb The callback to call whenever data is inflated
-     */ function Gunzip(cb) {
-        this.v = 1;
-        $550ca672a3f483a3$export$d1de70a877d6e43c.call(this, cb);
-    }
-    /**
-     * Pushes a chunk to be GUNZIPped
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ Gunzip.prototype.push = function(chunk, final) {
-        $550ca672a3f483a3$export$d1de70a877d6e43c.prototype.e.call(this, chunk);
-        if (this.v) {
-            var s = this.p.length > 3 ? $550ca672a3f483a3$var$gzs(this.p) : 4;
-            if (s >= this.p.length && !final) return;
-            this.p = this.p.subarray(s), this.v = 0;
-        }
-        if (final) {
-            if (this.p.length < 8) throw "invalid gzip stream";
-            this.p = this.p.subarray(0, -8);
-        }
-        // necessary to prevent TS from using the closure value
-        // This allows for workerization to function correctly
-        $550ca672a3f483a3$export$d1de70a877d6e43c.prototype.c.call(this, final);
-    };
-    return Gunzip;
-}();
-/**
- * Asynchronous streaming GZIP decompression
- */ var $550ca672a3f483a3$export$d5adcdd968132151 = /*#__PURE__*/ function() {
-    /**
-     * Creates an asynchronous GUNZIP stream
-     * @param cb The callback to call whenever data is deflated
-     */ function AsyncGunzip(cb) {
-        this.ondata = cb;
-        $550ca672a3f483a3$var$astrmify([
-            $550ca672a3f483a3$var$bInflt,
-            $550ca672a3f483a3$var$guze,
-            function() {
-                return [
-                    $550ca672a3f483a3$var$astrm,
-                    $550ca672a3f483a3$export$d1de70a877d6e43c,
-                    $550ca672a3f483a3$export$4cb607de6db70415
-                ];
-            }
-        ], this, 0, function() {
-            var strm = new $550ca672a3f483a3$export$4cb607de6db70415();
-            onmessage = $550ca672a3f483a3$var$astrm(strm);
-        }, 9);
-    }
-    return AsyncGunzip;
-}();
-function $550ca672a3f483a3$export$b6df3e950734d697(data, opts, cb) {
-    if (!cb) cb = opts, opts = {};
-    if (typeof cb != "function") throw "no callback";
-    return $550ca672a3f483a3$var$cbify(data, opts, [
-        $550ca672a3f483a3$var$bInflt,
-        $550ca672a3f483a3$var$guze,
-        function() {
-            return [
-                $550ca672a3f483a3$export$c80456f7aaba691c
-            ];
-        }
-    ], function(ev) {
-        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$c80456f7aaba691c(ev.data[0]));
-    }, 3, cb);
-}
-function $550ca672a3f483a3$export$c80456f7aaba691c(data, out) {
-    return $550ca672a3f483a3$var$inflt(data.subarray($550ca672a3f483a3$var$gzs(data), -8), out || new $550ca672a3f483a3$var$u8($550ca672a3f483a3$var$gzl(data)));
-}
-/**
- * Streaming Zlib compression
- */ var $550ca672a3f483a3$export$4187ccf2467013b9 = /*#__PURE__*/ function() {
-    function Zlib(opts, cb) {
-        this.c = $550ca672a3f483a3$var$adler();
-        this.v = 1;
-        $550ca672a3f483a3$export$ae157b6234afe138.call(this, opts, cb);
-    }
-    /**
-     * Pushes a chunk to be zlibbed
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ Zlib.prototype.push = function(chunk, final) {
-        $550ca672a3f483a3$export$ae157b6234afe138.prototype.push.call(this, chunk, final);
-    };
-    Zlib.prototype.p = function(c, f) {
-        this.c.p(c);
-        var raw = $550ca672a3f483a3$var$dopt(c, this.o, this.v && 2, f && 4, !f);
-        if (this.v) $550ca672a3f483a3$var$zlh(raw, this.o), this.v = 0;
-        if (f) $550ca672a3f483a3$var$wbytes(raw, raw.length - 4, this.c.d());
-        this.ondata(raw, f);
-    };
-    return Zlib;
-}();
-/**
- * Asynchronous streaming Zlib compression
- */ var $550ca672a3f483a3$export$bedbe3a2c2136490 = /*#__PURE__*/ function() {
-    function AsyncZlib(opts, cb) {
-        $550ca672a3f483a3$var$astrmify([
-            $550ca672a3f483a3$var$bDflt,
-            $550ca672a3f483a3$var$zle,
-            function() {
-                return [
-                    $550ca672a3f483a3$var$astrm,
-                    $550ca672a3f483a3$export$ae157b6234afe138,
-                    $550ca672a3f483a3$export$4187ccf2467013b9
-                ];
-            }
-        ], this, $550ca672a3f483a3$var$AsyncCmpStrm.call(this, opts, cb), function(ev) {
-            var strm = new $550ca672a3f483a3$export$4187ccf2467013b9(ev.data);
-            onmessage = $550ca672a3f483a3$var$astrm(strm);
-        }, 10);
-    }
-    return AsyncZlib;
-}();
-function $550ca672a3f483a3$export$925212de7058410b(data, opts, cb) {
-    if (!cb) cb = opts, opts = {};
-    if (typeof cb != "function") throw "no callback";
-    return $550ca672a3f483a3$var$cbify(data, opts, [
-        $550ca672a3f483a3$var$bDflt,
-        $550ca672a3f483a3$var$zle,
-        function() {
-            return [
-                $550ca672a3f483a3$export$f87121a6d50aff25
-            ];
-        }
-    ], function(ev) {
-        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$f87121a6d50aff25(ev.data[0], ev.data[1]));
-    }, 4, cb);
-}
-function $550ca672a3f483a3$export$f87121a6d50aff25(data, opts) {
-    if (!opts) opts = {};
-    var a = $550ca672a3f483a3$var$adler();
-    a.p(data);
-    var d = $550ca672a3f483a3$var$dopt(data, opts, 2, 4);
-    return $550ca672a3f483a3$var$zlh(d, opts), $550ca672a3f483a3$var$wbytes(d, d.length - 4, a.d()), d;
-}
-/**
- * Streaming Zlib decompression
- */ var $550ca672a3f483a3$export$af2424f875ff1b17 = /*#__PURE__*/ function() {
-    /**
-     * Creates a Zlib decompression stream
-     * @param cb The callback to call whenever data is inflated
-     */ function Unzlib(cb) {
-        this.v = 1;
-        $550ca672a3f483a3$export$d1de70a877d6e43c.call(this, cb);
-    }
-    /**
-     * Pushes a chunk to be unzlibbed
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ Unzlib.prototype.push = function(chunk, final) {
-        $550ca672a3f483a3$export$d1de70a877d6e43c.prototype.e.call(this, chunk);
-        if (this.v) {
-            if (this.p.length < 2 && !final) return;
-            this.p = this.p.subarray(2), this.v = 0;
-        }
-        if (final) {
-            if (this.p.length < 4) throw "invalid zlib stream";
-            this.p = this.p.subarray(0, -4);
-        }
-        // necessary to prevent TS from using the closure value
-        // This allows for workerization to function correctly
-        $550ca672a3f483a3$export$d1de70a877d6e43c.prototype.c.call(this, final);
-    };
-    return Unzlib;
-}();
-/**
- * Asynchronous streaming Zlib decompression
- */ var $550ca672a3f483a3$export$cf6668790220dcad = /*#__PURE__*/ function() {
-    /**
-     * Creates an asynchronous Zlib decompression stream
-     * @param cb The callback to call whenever data is deflated
-     */ function AsyncUnzlib(cb) {
-        this.ondata = cb;
-        $550ca672a3f483a3$var$astrmify([
-            $550ca672a3f483a3$var$bInflt,
-            $550ca672a3f483a3$var$zule,
-            function() {
-                return [
-                    $550ca672a3f483a3$var$astrm,
-                    $550ca672a3f483a3$export$d1de70a877d6e43c,
-                    $550ca672a3f483a3$export$af2424f875ff1b17
-                ];
-            }
-        ], this, 0, function() {
-            var strm = new $550ca672a3f483a3$export$af2424f875ff1b17();
-            onmessage = $550ca672a3f483a3$var$astrm(strm);
-        }, 11);
-    }
-    return AsyncUnzlib;
-}();
-function $550ca672a3f483a3$export$ca7cbb494e731274(data, opts, cb) {
-    if (!cb) cb = opts, opts = {};
-    if (typeof cb != "function") throw "no callback";
-    return $550ca672a3f483a3$var$cbify(data, opts, [
-        $550ca672a3f483a3$var$bInflt,
-        $550ca672a3f483a3$var$zule,
-        function() {
-            return [
-                $550ca672a3f483a3$export$9ec8134f0f1b9fc6
-            ];
-        }
-    ], function(ev) {
-        return $550ca672a3f483a3$var$pbf($550ca672a3f483a3$export$9ec8134f0f1b9fc6(ev.data[0], $550ca672a3f483a3$var$gu8(ev.data[1])));
-    }, 5, cb);
-}
-function $550ca672a3f483a3$export$9ec8134f0f1b9fc6(data, out) {
-    return $550ca672a3f483a3$var$inflt(($550ca672a3f483a3$var$zlv(data), data.subarray(2, -4)), out);
-}
-/**
- * Streaming GZIP, Zlib, or raw DEFLATE decompression
- */ var $550ca672a3f483a3$export$578fe199ef655b76 = /*#__PURE__*/ function() {
-    /**
-     * Creates a decompression stream
-     * @param cb The callback to call whenever data is decompressed
-     */ function Decompress(cb) {
-        this.G = $550ca672a3f483a3$export$4cb607de6db70415;
-        this.I = $550ca672a3f483a3$export$d1de70a877d6e43c;
-        this.Z = $550ca672a3f483a3$export$af2424f875ff1b17;
-        this.ondata = cb;
-    }
-    /**
-     * Pushes a chunk to be decompressed
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ Decompress.prototype.push = function(chunk, final) {
-        if (!this.ondata) throw "no stream handler";
-        if (!this.s) {
-            if (this.p && this.p.length) {
-                var n = new $550ca672a3f483a3$var$u8(this.p.length + chunk.length);
-                n.set(this.p), n.set(chunk, this.p.length);
-            } else this.p = chunk;
-            if (this.p.length > 2) {
-                var _this_1 = this;
-                var cb = function() {
-                    _this_1.ondata.apply(_this_1, arguments);
-                };
-                this.s = this.p[0] == 31 && this.p[1] == 139 && this.p[2] == 8 ? new this.G(cb) : (this.p[0] & 15) != 8 || this.p[0] >> 4 > 7 || (this.p[0] << 8 | this.p[1]) % 31 ? new this.I(cb) : new this.Z(cb);
-                this.s.push(this.p, final);
-                this.p = null;
-            }
-        } else this.s.push(chunk, final);
-    };
-    return Decompress;
-}();
-/**
- * Asynchronous streaming GZIP, Zlib, or raw DEFLATE decompression
- */ var $550ca672a3f483a3$export$ae2c1d81988d4b43 = /*#__PURE__*/ function() {
-    /**
-   * Creates an asynchronous decompression stream
-   * @param cb The callback to call whenever data is decompressed
-   */ function AsyncDecompress(cb) {
-        this.G = $550ca672a3f483a3$export$d5adcdd968132151;
-        this.I = $550ca672a3f483a3$export$fff8358d6dbaa9cc;
-        this.Z = $550ca672a3f483a3$export$cf6668790220dcad;
-        this.ondata = cb;
-    }
-    /**
-     * Pushes a chunk to be decompressed
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ AsyncDecompress.prototype.push = function(chunk, final) {
-        $550ca672a3f483a3$export$578fe199ef655b76.prototype.push.call(this, chunk, final);
-    };
-    return AsyncDecompress;
-}();
-function $550ca672a3f483a3$export$678d868aab8fb3c7(data, opts, cb) {
-    if (!cb) cb = opts, opts = {};
-    if (typeof cb != "function") throw "no callback";
-    return data[0] == 31 && data[1] == 139 && data[2] == 8 ? $550ca672a3f483a3$export$b6df3e950734d697(data, opts, cb) : (data[0] & 15) != 8 || data[0] >> 4 > 7 || (data[0] << 8 | data[1]) % 31 ? $550ca672a3f483a3$export$cae1ce83fe4a1782(data, opts, cb) : $550ca672a3f483a3$export$ca7cbb494e731274(data, opts, cb);
-}
-function $550ca672a3f483a3$export$c4bdbbbc9a4faabe(data, out) {
-    return data[0] == 31 && data[1] == 139 && data[2] == 8 ? $550ca672a3f483a3$export$c80456f7aaba691c(data, out) : (data[0] & 15) != 8 || data[0] >> 4 > 7 || (data[0] << 8 | data[1]) % 31 ? $550ca672a3f483a3$export$90366d8b308ba94a(data, out) : $550ca672a3f483a3$export$9ec8134f0f1b9fc6(data, out);
-}
-// flatten a directory structure
-var $550ca672a3f483a3$var$fltn = function(d, p, t, o) {
-    for(var k in d){
-        var val = d[k], n = p + k;
-        if (val instanceof $550ca672a3f483a3$var$u8) t[n] = [
-            val,
-            o
-        ];
-        else if (Array.isArray(val)) t[n] = [
-            val[0],
-            $550ca672a3f483a3$var$mrg(o, val[1])
-        ];
-        else $550ca672a3f483a3$var$fltn(val, n + "/", t, o);
-    }
-};
-// text encoder
-var $550ca672a3f483a3$var$te = typeof TextEncoder != "undefined" && /*#__PURE__*/ new TextEncoder();
-// text decoder
-var $550ca672a3f483a3$var$td = typeof TextDecoder != "undefined" && /*#__PURE__*/ new TextDecoder();
-// text decoder stream
-var $550ca672a3f483a3$var$tds = 0;
-try {
-    $550ca672a3f483a3$var$td.decode($550ca672a3f483a3$var$et, {
-        stream: true
-    });
-    $550ca672a3f483a3$var$tds = 1;
-} catch (e) {}
-// decode UTF8
-var $550ca672a3f483a3$var$dutf8 = function(d) {
-    for(var r = "", i = 0;;){
-        var c = d[i++];
-        var eb = (c > 127) + (c > 223) + (c > 239);
-        if (i + eb > d.length) return [
-            r,
-            $550ca672a3f483a3$var$slc(d, i - 1)
-        ];
-        if (!eb) r += String.fromCharCode(c);
-        else if (eb == 3) c = ((c & 15) << 18 | (d[i++] & 63) << 12 | (d[i++] & 63) << 6 | d[i++] & 63) - 65536, r += String.fromCharCode(55296 | c >> 10, 56320 | c & 1023);
-        else if (eb & 1) r += String.fromCharCode((c & 31) << 6 | d[i++] & 63);
-        else r += String.fromCharCode((c & 15) << 12 | (d[i++] & 63) << 6 | d[i++] & 63);
-    }
-};
-/**
- * Streaming UTF-8 decoding
- */ var $550ca672a3f483a3$export$ba46860a31c72e94 = /*#__PURE__*/ function() {
-    /**
-     * Creates a UTF-8 decoding stream
-     * @param cb The callback to call whenever data is decoded
-     */ function DecodeUTF8(cb) {
-        this.ondata = cb;
-        if ($550ca672a3f483a3$var$tds) this.t = new TextDecoder();
-        else this.p = $550ca672a3f483a3$var$et;
-    }
-    /**
-     * Pushes a chunk to be decoded from UTF-8 binary
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ DecodeUTF8.prototype.push = function(chunk, final) {
-        if (!this.ondata) throw "no callback";
-        final = !!final;
-        if (this.t) {
-            this.ondata(this.t.decode(chunk, {
-                stream: true
-            }), final);
-            if (final) {
-                if (this.t.decode().length) throw "invalid utf-8 data";
-                this.t = null;
-            }
-            return;
-        }
-        if (!this.p) throw "stream finished";
-        var dat = new $550ca672a3f483a3$var$u8(this.p.length + chunk.length);
-        dat.set(this.p);
-        dat.set(chunk, this.p.length);
-        var _a = $550ca672a3f483a3$var$dutf8(dat), ch = _a[0], np = _a[1];
-        if (final) {
-            if (np.length) throw "invalid utf-8 data";
-            this.p = null;
-        } else this.p = np;
-        this.ondata(ch, final);
-    };
-    return DecodeUTF8;
-}();
-/**
- * Streaming UTF-8 encoding
- */ var $550ca672a3f483a3$export$283f13d12b1b210e = /*#__PURE__*/ function() {
-    /**
-     * Creates a UTF-8 decoding stream
-     * @param cb The callback to call whenever data is encoded
-     */ function EncodeUTF8(cb) {
-        this.ondata = cb;
-    }
-    /**
-     * Pushes a chunk to be encoded to UTF-8
-     * @param chunk The string data to push
-     * @param final Whether this is the last chunk
-     */ EncodeUTF8.prototype.push = function(chunk, final) {
-        if (!this.ondata) throw "no callback";
-        if (this.d) throw "stream finished";
-        this.ondata($550ca672a3f483a3$export$366b39a6daa8ed7a(chunk), this.d = final || false);
-    };
-    return EncodeUTF8;
-}();
-function $550ca672a3f483a3$export$366b39a6daa8ed7a(str, latin1) {
-    if (latin1) {
-        var ar_1 = new $550ca672a3f483a3$var$u8(str.length);
-        for(var i = 0; i < str.length; ++i)ar_1[i] = str.charCodeAt(i);
-        return ar_1;
-    }
-    if ($550ca672a3f483a3$var$te) return $550ca672a3f483a3$var$te.encode(str);
-    var l = str.length;
-    var ar = new $550ca672a3f483a3$var$u8(str.length + (str.length >> 1));
-    var ai = 0;
-    var w = function(v) {
-        ar[ai++] = v;
-    };
-    for(var i = 0; i < l; ++i){
-        if (ai + 5 > ar.length) {
-            var n = new $550ca672a3f483a3$var$u8(ai + 8 + (l - i << 1));
-            n.set(ar);
-            ar = n;
-        }
-        var c = str.charCodeAt(i);
-        if (c < 128 || latin1) w(c);
-        else if (c < 2048) w(192 | c >> 6), w(128 | c & 63);
-        else if (c > 55295 && c < 57344) c = 65536 + (c & 1047552) | str.charCodeAt(++i) & 1023, w(240 | c >> 18), w(128 | c >> 12 & 63), w(128 | c >> 6 & 63), w(128 | c & 63);
-        else w(224 | c >> 12), w(128 | c >> 6 & 63), w(128 | c & 63);
-    }
-    return $550ca672a3f483a3$var$slc(ar, 0, ai);
-}
-function $550ca672a3f483a3$export$adb211f8cb999894(dat, latin1) {
-    if (latin1) {
-        var r = "";
-        for(var i = 0; i < dat.length; i += 16384)r += String.fromCharCode.apply(null, dat.subarray(i, i + 16384));
-        return r;
-    } else if ($550ca672a3f483a3$var$td) return $550ca672a3f483a3$var$td.decode(dat);
-    else {
-        var _a = $550ca672a3f483a3$var$dutf8(dat), out = _a[0], ext = _a[1];
-        if (ext.length) throw "invalid utf-8 data";
-        return out;
-    }
-}
-// deflate bit flag
-var $550ca672a3f483a3$var$dbf = function(l) {
-    return l == 1 ? 3 : l < 6 ? 2 : l == 9 ? 1 : 0;
-};
-// skip local zip header
-var $550ca672a3f483a3$var$slzh = function(d, b) {
-    return b + 30 + $550ca672a3f483a3$var$b2(d, b + 26) + $550ca672a3f483a3$var$b2(d, b + 28);
-};
-// read zip header
-var $550ca672a3f483a3$var$zh = function(d, b, z) {
-    var fnl = $550ca672a3f483a3$var$b2(d, b + 28), fn = $550ca672a3f483a3$export$adb211f8cb999894(d.subarray(b + 46, b + 46 + fnl), !($550ca672a3f483a3$var$b2(d, b + 8) & 2048)), es = b + 46 + fnl, bs = $550ca672a3f483a3$var$b4(d, b + 20);
-    var _a = z && bs == 4294967295 ? $550ca672a3f483a3$var$z64e(d, es) : [
-        bs,
-        $550ca672a3f483a3$var$b4(d, b + 24),
-        $550ca672a3f483a3$var$b4(d, b + 42)
-    ], sc = _a[0], su = _a[1], off = _a[2];
-    return [
-        $550ca672a3f483a3$var$b2(d, b + 10),
-        sc,
-        su,
-        fn,
-        es + $550ca672a3f483a3$var$b2(d, b + 30) + $550ca672a3f483a3$var$b2(d, b + 32),
-        off
-    ];
-};
-// read zip64 extra field
-var $550ca672a3f483a3$var$z64e = function(d, b) {
-    for(; $550ca672a3f483a3$var$b2(d, b) != 1; b += 4 + $550ca672a3f483a3$var$b2(d, b + 2));
-    return [
-        $550ca672a3f483a3$var$b8(d, b + 12),
-        $550ca672a3f483a3$var$b8(d, b + 4),
-        $550ca672a3f483a3$var$b8(d, b + 20)
-    ];
-};
-// extra field length
-var $550ca672a3f483a3$var$exfl = function(ex) {
-    var le = 0;
-    if (ex) for(var k in ex){
-        var l = ex[k].length;
-        if (l > 65535) throw "extra field too long";
-        le += l + 4;
-    }
-    return le;
-};
-// write zip header
-var $550ca672a3f483a3$var$wzh = function(d, b, f, fn, u, c, ce, co) {
-    var fl = fn.length, ex = f.extra, col = co && co.length;
-    var exl = $550ca672a3f483a3$var$exfl(ex);
-    $550ca672a3f483a3$var$wbytes(d, b, ce != null ? 0x2014B50 : 0x4034B50), b += 4;
-    if (ce != null) d[b++] = 20, d[b++] = f.os;
-    d[b] = 20, b += 2; // spec compliance? what's that?
-    d[b++] = f.flag << 1 | (c == null && 8), d[b++] = u && 8;
-    d[b++] = f.compression & 255, d[b++] = f.compression >> 8;
-    var dt = new Date(f.mtime == null ? Date.now() : f.mtime), y = dt.getFullYear() - 1980;
-    if (y < 0 || y > 119) throw "date not in range 1980-2099";
-    $550ca672a3f483a3$var$wbytes(d, b, y << 25 | dt.getMonth() + 1 << 21 | dt.getDate() << 16 | dt.getHours() << 11 | dt.getMinutes() << 5 | dt.getSeconds() >>> 1), b += 4;
-    if (c != null) {
-        $550ca672a3f483a3$var$wbytes(d, b, f.crc);
-        $550ca672a3f483a3$var$wbytes(d, b + 4, c);
-        $550ca672a3f483a3$var$wbytes(d, b + 8, f.size);
-    }
-    $550ca672a3f483a3$var$wbytes(d, b + 12, fl);
-    $550ca672a3f483a3$var$wbytes(d, b + 14, exl), b += 16;
-    if (ce != null) {
-        $550ca672a3f483a3$var$wbytes(d, b, col);
-        $550ca672a3f483a3$var$wbytes(d, b + 6, f.attrs);
-        $550ca672a3f483a3$var$wbytes(d, b + 10, ce), b += 14;
-    }
-    d.set(fn, b);
-    b += fl;
-    if (exl) for(var k in ex){
-        var exf = ex[k], l = exf.length;
-        $550ca672a3f483a3$var$wbytes(d, b, +k);
-        $550ca672a3f483a3$var$wbytes(d, b + 2, l);
-        d.set(exf, b + 4), b += 4 + l;
-    }
-    if (col) d.set(co, b), b += col;
-    return b;
-};
-// write zip footer (end of central directory)
-var $550ca672a3f483a3$var$wzf = function(o, b, c, d, e) {
-    $550ca672a3f483a3$var$wbytes(o, b, 0x6054B50); // skip disk
-    $550ca672a3f483a3$var$wbytes(o, b + 8, c);
-    $550ca672a3f483a3$var$wbytes(o, b + 10, c);
-    $550ca672a3f483a3$var$wbytes(o, b + 12, d);
-    $550ca672a3f483a3$var$wbytes(o, b + 16, e);
-};
-/**
- * A pass-through stream to keep data uncompressed in a ZIP archive.
- */ var $550ca672a3f483a3$export$2b25194e1767ea06 = /*#__PURE__*/ function() {
-    /**
-     * Creates a pass-through stream that can be added to ZIP archives
-     * @param filename The filename to associate with this data stream
-     */ function ZipPassThrough(filename) {
-        this.filename = filename;
-        this.c = $550ca672a3f483a3$var$crc();
-        this.size = 0;
-        this.compression = 0;
-    }
-    /**
-     * Processes a chunk and pushes to the output stream. You can override this
-     * method in a subclass for custom behavior, but by default this passes
-     * the data through. You must call this.ondata(err, chunk, final) at some
-     * point in this method.
-     * @param chunk The chunk to process
-     * @param final Whether this is the last chunk
-     */ ZipPassThrough.prototype.process = function(chunk, final) {
-        this.ondata(null, chunk, final);
-    };
-    /**
-     * Pushes a chunk to be added. If you are subclassing this with a custom
-     * compression algorithm, note that you must push data from the source
-     * file only, pre-compression.
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ ZipPassThrough.prototype.push = function(chunk, final) {
-        if (!this.ondata) throw "no callback - add to ZIP archive before pushing";
-        this.c.p(chunk);
-        this.size += chunk.length;
-        if (final) this.crc = this.c.d();
-        this.process(chunk, final || false);
-    };
-    return ZipPassThrough;
-}();
-// I don't extend because TypeScript extension adds 1kB of runtime bloat
-/**
- * Streaming DEFLATE compression for ZIP archives. Prefer using AsyncZipDeflate
- * for better performance
- */ var $550ca672a3f483a3$export$f7e481ca646388b6 = /*#__PURE__*/ function() {
-    /**
-     * Creates a DEFLATE stream that can be added to ZIP archives
-     * @param filename The filename to associate with this data stream
-     * @param opts The compression options
-     */ function ZipDeflate(filename, opts) {
-        var _this_1 = this;
-        if (!opts) opts = {};
-        $550ca672a3f483a3$export$2b25194e1767ea06.call(this, filename);
-        this.d = new $550ca672a3f483a3$export$ae157b6234afe138(opts, function(dat, final) {
-            _this_1.ondata(null, dat, final);
-        });
-        this.compression = 8;
-        this.flag = $550ca672a3f483a3$var$dbf(opts.level);
-    }
-    ZipDeflate.prototype.process = function(chunk, final) {
-        try {
-            this.d.push(chunk, final);
-        } catch (e) {
-            this.ondata(e, null, final);
-        }
-    };
-    /**
-     * Pushes a chunk to be deflated
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ ZipDeflate.prototype.push = function(chunk, final) {
-        $550ca672a3f483a3$export$2b25194e1767ea06.prototype.push.call(this, chunk, final);
-    };
-    return ZipDeflate;
-}();
-/**
- * Asynchronous streaming DEFLATE compression for ZIP archives
- */ var $550ca672a3f483a3$export$ffb5e59e179924b2 = /*#__PURE__*/ function() {
-    /**
-     * Creates a DEFLATE stream that can be added to ZIP archives
-     * @param filename The filename to associate with this data stream
-     * @param opts The compression options
-     */ function AsyncZipDeflate(filename, opts) {
-        var _this_1 = this;
-        if (!opts) opts = {};
-        $550ca672a3f483a3$export$2b25194e1767ea06.call(this, filename);
-        this.d = new $550ca672a3f483a3$export$84e526fabcba03e3(opts, function(err, dat, final) {
-            _this_1.ondata(err, dat, final);
-        });
-        this.compression = 8;
-        this.flag = $550ca672a3f483a3$var$dbf(opts.level);
-        this.terminate = this.d.terminate;
-    }
-    AsyncZipDeflate.prototype.process = function(chunk, final) {
-        this.d.push(chunk, final);
-    };
-    /**
-     * Pushes a chunk to be deflated
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ AsyncZipDeflate.prototype.push = function(chunk, final) {
-        $550ca672a3f483a3$export$2b25194e1767ea06.prototype.push.call(this, chunk, final);
-    };
-    return AsyncZipDeflate;
-}();
-// TODO: Better tree shaking
-/**
- * A zippable archive to which files can incrementally be added
- */ var $550ca672a3f483a3$export$9a4d4a7c32a75d2f = /*#__PURE__*/ function() {
-    /**
-     * Creates an empty ZIP archive to which files can be added
-     * @param cb The callback to call whenever data for the generated ZIP archive
-     *           is available
-     */ function Zip(cb) {
-        this.ondata = cb;
-        this.u = [];
-        this.d = 1;
-    }
-    /**
-     * Adds a file to the ZIP archive
-     * @param file The file stream to add
-     */ Zip.prototype.add = function(file) {
-        var _this_1 = this;
-        if (this.d & 2) throw "stream finished";
-        var f = $550ca672a3f483a3$export$366b39a6daa8ed7a(file.filename), fl = f.length;
-        var com = file.comment, o = com && $550ca672a3f483a3$export$366b39a6daa8ed7a(com);
-        var u = fl != file.filename.length || o && com.length != o.length;
-        var hl = fl + $550ca672a3f483a3$var$exfl(file.extra) + 30;
-        if (fl > 65535) throw "filename too long";
-        var header = new $550ca672a3f483a3$var$u8(hl);
-        $550ca672a3f483a3$var$wzh(header, 0, file, f, u);
-        var chks = [
-            header
-        ];
-        var pAll = function() {
-            for(var _i = 0, chks_1 = chks; _i < chks_1.length; _i++){
-                var chk = chks_1[_i];
-                _this_1.ondata(null, chk, false);
-            }
-            chks = [];
-        };
-        var tr = this.d;
-        this.d = 0;
-        var ind = this.u.length;
-        var uf = $550ca672a3f483a3$var$mrg(file, {
-            f: f,
-            u: u,
-            o: o,
-            t: function() {
-                if (file.terminate) file.terminate();
-            },
-            r: function() {
-                pAll();
-                if (tr) {
-                    var nxt = _this_1.u[ind + 1];
-                    if (nxt) nxt.r();
-                    else _this_1.d = 1;
-                }
-                tr = 1;
-            }
-        });
-        var cl = 0;
-        file.ondata = function(err, dat, final) {
-            if (err) {
-                _this_1.ondata(err, dat, final);
-                _this_1.terminate();
-            } else {
-                cl += dat.length;
-                chks.push(dat);
-                if (final) {
-                    var dd = new $550ca672a3f483a3$var$u8(16);
-                    $550ca672a3f483a3$var$wbytes(dd, 0, 0x8074B50);
-                    $550ca672a3f483a3$var$wbytes(dd, 4, file.crc);
-                    $550ca672a3f483a3$var$wbytes(dd, 8, cl);
-                    $550ca672a3f483a3$var$wbytes(dd, 12, file.size);
-                    chks.push(dd);
-                    uf.c = cl, uf.b = hl + cl + 16, uf.crc = file.crc, uf.size = file.size;
-                    if (tr) uf.r();
-                    tr = 1;
-                } else if (tr) pAll();
-            }
-        };
-        this.u.push(uf);
-    };
-    /**
-     * Ends the process of adding files and prepares to emit the final chunks.
-     * This *must* be called after adding all desired files for the resulting
-     * ZIP file to work properly.
-     */ Zip.prototype.end = function() {
-        var _this_1 = this;
-        if (this.d & 2) {
-            if (this.d & 1) throw "stream finishing";
-            throw "stream finished";
-        }
-        if (this.d) this.e();
-        else this.u.push({
-            r: function() {
-                if (!(_this_1.d & 1)) return;
-                _this_1.u.splice(-1, 1);
-                _this_1.e();
-            },
-            t: function() {}
-        });
-        this.d = 3;
-    };
-    Zip.prototype.e = function() {
-        var bt = 0, l = 0, tl = 0;
-        for(var _i = 0, _a = this.u; _i < _a.length; _i++){
-            var f = _a[_i];
-            tl += 46 + f.f.length + $550ca672a3f483a3$var$exfl(f.extra) + (f.o ? f.o.length : 0);
-        }
-        var out = new $550ca672a3f483a3$var$u8(tl + 22);
-        for(var _b = 0, _c = this.u; _b < _c.length; _b++){
-            var f = _c[_b];
-            $550ca672a3f483a3$var$wzh(out, bt, f, f.f, f.u, f.c, l, f.o);
-            bt += 46 + f.f.length + $550ca672a3f483a3$var$exfl(f.extra) + (f.o ? f.o.length : 0), l += f.b;
-        }
-        $550ca672a3f483a3$var$wzf(out, bt, this.u.length, tl, l);
-        this.ondata(null, out, true);
-        this.d = 2;
-    };
-    /**
-     * A method to terminate any internal workers used by the stream. Subsequent
-     * calls to add() will fail.
-     */ Zip.prototype.terminate = function() {
-        for(var _i = 0, _a = this.u; _i < _a.length; _i++){
-            var f = _a[_i];
-            f.t();
-        }
-        this.d = 2;
-    };
-    return Zip;
-}();
-function $550ca672a3f483a3$export$8901015135f2fb22(data, opts, cb) {
-    if (!cb) cb = opts, opts = {};
-    if (typeof cb != "function") throw "no callback";
-    var r = {};
-    $550ca672a3f483a3$var$fltn(data, "", r, opts);
-    var k = Object.keys(r);
-    var lft = k.length, o = 0, tot = 0;
-    var slft = lft, files = new Array(lft);
-    var term = [];
-    var tAll = function() {
-        for(var i = 0; i < term.length; ++i)term[i]();
-    };
-    var cbf = function() {
-        var out = new $550ca672a3f483a3$var$u8(tot + 22), oe = o, cdl = tot - o;
-        tot = 0;
-        for(var i = 0; i < slft; ++i){
-            var f = files[i];
-            try {
-                var l = f.c.length;
-                $550ca672a3f483a3$var$wzh(out, tot, f, f.f, f.u, l);
-                var badd = 30 + f.f.length + $550ca672a3f483a3$var$exfl(f.extra);
-                var loc = tot + badd;
-                out.set(f.c, loc);
-                $550ca672a3f483a3$var$wzh(out, o, f, f.f, f.u, l, tot, f.m), o += 16 + badd + (f.m ? f.m.length : 0), tot = loc + l;
-            } catch (e) {
-                return cb(e, null);
-            }
-        }
-        $550ca672a3f483a3$var$wzf(out, o, files.length, cdl, oe);
-        cb(null, out);
-    };
-    if (!lft) cbf();
-    var _loop_1 = function(i) {
-        var fn = k[i];
-        var _a = r[fn], file = _a[0], p = _a[1];
-        var c = $550ca672a3f483a3$var$crc(), size = file.length;
-        c.p(file);
-        var f = $550ca672a3f483a3$export$366b39a6daa8ed7a(fn), s = f.length;
-        var com = p.comment, m = com && $550ca672a3f483a3$export$366b39a6daa8ed7a(com), ms = m && m.length;
-        var exl = $550ca672a3f483a3$var$exfl(p.extra);
-        var compression = p.level == 0 ? 0 : 8;
-        var cbl = function(e, d) {
-            if (e) {
-                tAll();
-                cb(e, null);
-            } else {
-                var l = d.length;
-                files[i] = $550ca672a3f483a3$var$mrg(p, {
-                    size: size,
-                    crc: c.d(),
-                    c: d,
-                    f: f,
-                    m: m,
-                    u: s != fn.length || m && com.length != ms,
-                    compression: compression
-                });
-                o += 30 + s + exl + l;
-                tot += 76 + 2 * (s + exl) + (ms || 0) + l;
-                if (!--lft) cbf();
-            }
-        };
-        if (s > 65535) cbl("filename too long", null);
-        if (!compression) cbl(null, file);
-        else if (size < 160000) try {
-            cbl(null, $550ca672a3f483a3$export$21533ff51b8a0b4a(file, p));
-        } catch (e) {
-            cbl(e, null);
-        }
-        else term.push($550ca672a3f483a3$export$2316623ecd1285ab(file, p, cbl));
-    };
-    // Cannot use lft because it can decrease
-    for(var i = 0; i < slft; ++i)_loop_1(i);
-    return tAll;
-}
-function $550ca672a3f483a3$export$eb1654f146d54eb3(data, opts) {
-    if (!opts) opts = {};
-    var r = {};
-    var files = [];
-    $550ca672a3f483a3$var$fltn(data, "", r, opts);
-    var o = 0;
-    var tot = 0;
-    for(var fn in r){
-        var _a = r[fn], file = _a[0], p = _a[1];
-        var compression = p.level == 0 ? 0 : 8;
-        var f = $550ca672a3f483a3$export$366b39a6daa8ed7a(fn), s = f.length;
-        var com = p.comment, m = com && $550ca672a3f483a3$export$366b39a6daa8ed7a(com), ms = m && m.length;
-        var exl = $550ca672a3f483a3$var$exfl(p.extra);
-        if (s > 65535) throw "filename too long";
-        var d = compression ? $550ca672a3f483a3$export$21533ff51b8a0b4a(file, p) : file, l = d.length;
-        var c = $550ca672a3f483a3$var$crc();
-        c.p(file);
-        files.push($550ca672a3f483a3$var$mrg(p, {
-            size: file.length,
-            crc: c.d(),
-            c: d,
-            f: f,
-            m: m,
-            u: s != fn.length || m && com.length != ms,
-            o: o,
-            compression: compression
-        }));
-        o += 30 + s + exl + l;
-        tot += 76 + 2 * (s + exl) + (ms || 0) + l;
-    }
-    var out = new $550ca672a3f483a3$var$u8(tot + 22), oe = o, cdl = tot - o;
-    for(var i = 0; i < files.length; ++i){
-        var f = files[i];
-        $550ca672a3f483a3$var$wzh(out, f.o, f, f.f, f.u, f.c.length);
-        var badd = 30 + f.f.length + $550ca672a3f483a3$var$exfl(f.extra);
-        out.set(f.c, f.o + badd);
-        $550ca672a3f483a3$var$wzh(out, o, f, f.f, f.u, f.c.length, f.o, f.m), o += 16 + badd + (f.m ? f.m.length : 0);
-    }
-    $550ca672a3f483a3$var$wzf(out, o, files.length, cdl, oe);
-    return out;
-}
-/**
- * Streaming pass-through decompression for ZIP archives
- */ var $550ca672a3f483a3$export$93f81d5bbbb7c6bf = /*#__PURE__*/ function() {
-    function UnzipPassThrough() {}
-    UnzipPassThrough.prototype.push = function(data, final) {
-        this.ondata(null, data, final);
-    };
-    UnzipPassThrough.compression = 0;
-    return UnzipPassThrough;
-}();
-/**
- * Streaming DEFLATE decompression for ZIP archives. Prefer AsyncZipInflate for
- * better performance.
- */ var $550ca672a3f483a3$export$eb188945cc39e642 = /*#__PURE__*/ function() {
-    /**
-     * Creates a DEFLATE decompression that can be used in ZIP archives
-     */ function UnzipInflate() {
-        var _this_1 = this;
-        this.i = new $550ca672a3f483a3$export$d1de70a877d6e43c(function(dat, final) {
-            _this_1.ondata(null, dat, final);
-        });
-    }
-    UnzipInflate.prototype.push = function(data, final) {
-        try {
-            this.i.push(data, final);
-        } catch (e) {
-            this.ondata(e, data, final);
-        }
-    };
-    UnzipInflate.compression = 8;
-    return UnzipInflate;
-}();
-/**
- * Asynchronous streaming DEFLATE decompression for ZIP archives
- */ var $550ca672a3f483a3$export$6235d84645dad4f9 = /*#__PURE__*/ function() {
-    /**
-     * Creates a DEFLATE decompression that can be used in ZIP archives
-     */ function AsyncUnzipInflate(_, sz) {
-        var _this_1 = this;
-        if (sz < 320000) this.i = new $550ca672a3f483a3$export$d1de70a877d6e43c(function(dat, final) {
-            _this_1.ondata(null, dat, final);
-        });
-        else {
-            this.i = new $550ca672a3f483a3$export$fff8358d6dbaa9cc(function(err, dat, final) {
-                _this_1.ondata(err, dat, final);
-            });
-            this.terminate = this.i.terminate;
-        }
-    }
-    AsyncUnzipInflate.prototype.push = function(data, final) {
-        if (this.i.terminate) data = $550ca672a3f483a3$var$slc(data, 0);
-        this.i.push(data, final);
-    };
-    AsyncUnzipInflate.compression = 8;
-    return AsyncUnzipInflate;
-}();
-/**
- * A ZIP archive decompression stream that emits files as they are discovered
- */ var $550ca672a3f483a3$export$9b7485f84cbaaa56 = /*#__PURE__*/ function() {
-    /**
-     * Creates a ZIP decompression stream
-     * @param cb The callback to call whenever a file in the ZIP archive is found
-     */ function Unzip(cb) {
-        this.onfile = cb;
-        this.k = [];
-        this.o = {
-            0: $550ca672a3f483a3$export$93f81d5bbbb7c6bf
-        };
-        this.p = $550ca672a3f483a3$var$et;
-    }
-    /**
-     * Pushes a chunk to be unzipped
-     * @param chunk The chunk to push
-     * @param final Whether this is the last chunk
-     */ Unzip.prototype.push = function(chunk, final) {
-        var _this_1 = this;
-        if (!this.onfile) throw "no callback";
-        if (!this.p) throw "stream finished";
-        if (this.c > 0) {
-            var len = Math.min(this.c, chunk.length);
-            var toAdd = chunk.subarray(0, len);
-            this.c -= len;
-            if (this.d) this.d.push(toAdd, !this.c);
-            else this.k[0].push(toAdd);
-            chunk = chunk.subarray(len);
-            if (chunk.length) return this.push(chunk, final);
-        } else {
-            var f = 0, i = 0, is = void 0, buf = void 0;
-            if (!this.p.length) buf = chunk;
-            else if (!chunk.length) buf = this.p;
-            else {
-                buf = new $550ca672a3f483a3$var$u8(this.p.length + chunk.length);
-                buf.set(this.p), buf.set(chunk, this.p.length);
-            }
-            var l = buf.length, oc = this.c, add = oc && this.d;
-            var _loop_2 = function() {
-                var _a;
-                var sig = $550ca672a3f483a3$var$b4(buf, i);
-                if (sig == 0x4034B50) {
-                    f = 1, is = i;
-                    this_1.d = null;
-                    this_1.c = 0;
-                    var bf = $550ca672a3f483a3$var$b2(buf, i + 6), cmp_1 = $550ca672a3f483a3$var$b2(buf, i + 8), u = bf & 2048, dd = bf & 8, fnl = $550ca672a3f483a3$var$b2(buf, i + 26), es = $550ca672a3f483a3$var$b2(buf, i + 28);
-                    if (l > i + 30 + fnl + es) {
-                        var chks_2 = [];
-                        this_1.k.unshift(chks_2);
-                        f = 2;
-                        var sc_1 = $550ca672a3f483a3$var$b4(buf, i + 18), su_1 = $550ca672a3f483a3$var$b4(buf, i + 22);
-                        var fn_1 = $550ca672a3f483a3$export$adb211f8cb999894(buf.subarray(i + 30, i += 30 + fnl), !u);
-                        if (sc_1 == 4294967295) _a = dd ? [
-                            -2
-                        ] : $550ca672a3f483a3$var$z64e(buf, i), sc_1 = _a[0], su_1 = _a[1];
-                        else if (dd) sc_1 = -1;
-                        i += es;
-                        this_1.c = sc_1;
-                        var d_1;
-                        var file_1 = {
-                            name: fn_1,
-                            compression: cmp_1,
-                            start: function() {
-                                if (!file_1.ondata) throw "no callback";
-                                if (!sc_1) file_1.ondata(null, $550ca672a3f483a3$var$et, true);
-                                else {
-                                    var ctr = _this_1.o[cmp_1];
-                                    if (!ctr) throw "unknown compression type " + cmp_1;
-                                    d_1 = sc_1 < 0 ? new ctr(fn_1) : new ctr(fn_1, sc_1, su_1);
-                                    d_1.ondata = function(err, dat, final) {
-                                        file_1.ondata(err, dat, final);
-                                    };
-                                    for(var _i = 0, chks_3 = chks_2; _i < chks_3.length; _i++){
-                                        var dat = chks_3[_i];
-                                        d_1.push(dat, false);
-                                    }
-                                    if (_this_1.k[0] == chks_2 && _this_1.c) _this_1.d = d_1;
-                                    else d_1.push($550ca672a3f483a3$var$et, true);
-                                }
-                            },
-                            terminate: function() {
-                                if (d_1 && d_1.terminate) d_1.terminate();
-                            }
-                        };
-                        if (sc_1 >= 0) file_1.size = sc_1, file_1.originalSize = su_1;
-                        this_1.onfile(file_1);
-                    }
-                    return "break";
-                } else if (oc) {
-                    if (sig == 0x8074B50) {
-                        is = i += 12 + (oc == -2 && 8), f = 3, this_1.c = 0;
-                        return "break";
-                    } else if (sig == 0x2014B50) {
-                        is = i -= 4, f = 3, this_1.c = 0;
-                        return "break";
-                    }
-                }
-            };
-            var this_1 = this;
-            for(; i < l - 4; ++i){
-                var state_1 = _loop_2();
-                if (state_1 === "break") break;
-            }
-            this.p = $550ca672a3f483a3$var$et;
-            if (oc < 0) {
-                var dat = f ? buf.subarray(0, is - 12 - (oc == -2 && 8) - ($550ca672a3f483a3$var$b4(buf, is - 16) == 0x8074B50 && 4)) : buf.subarray(0, i);
-                if (add) add.push(dat, !!f);
-                else this.k[+(f == 2)].push(dat);
-            }
-            if (f & 2) return this.push(buf.subarray(i), final);
-            this.p = buf.subarray(i);
-        }
-        if (final) {
-            if (this.c) throw "invalid zip file";
-            this.p = null;
-        }
-    };
-    /**
-     * Registers a decoder with the stream, allowing for files compressed with
-     * the compression type provided to be expanded correctly
-     * @param decoder The decoder constructor
-     */ Unzip.prototype.register = function(decoder) {
-        this.o[decoder.compression] = decoder;
-    };
-    return Unzip;
-}();
-function $550ca672a3f483a3$export$23c8d3f8757cab88(data, cb) {
-    if (typeof cb != "function") throw "no callback";
-    var term = [];
-    var tAll = function() {
-        for(var i = 0; i < term.length; ++i)term[i]();
-    };
-    var files = {};
-    var e = data.length - 22;
-    for(; $550ca672a3f483a3$var$b4(data, e) != 0x6054B50; --e)if (!e || data.length - e > 65558) {
-        cb("invalid zip file", null);
-        return;
-    }
-    var lft = $550ca672a3f483a3$var$b2(data, e + 8);
-    if (!lft) cb(null, {});
-    var c = lft;
-    var o = $550ca672a3f483a3$var$b4(data, e + 16);
-    var z = o == 4294967295;
-    if (z) {
-        e = $550ca672a3f483a3$var$b4(data, e - 12);
-        if ($550ca672a3f483a3$var$b4(data, e) != 0x6064B50) {
-            cb("invalid zip file", null);
-            return;
-        }
-        c = lft = $550ca672a3f483a3$var$b4(data, e + 32);
-        o = $550ca672a3f483a3$var$b4(data, e + 48);
-    }
-    var _loop_3 = function(i) {
-        var _a = $550ca672a3f483a3$var$zh(data, o, z), c_1 = _a[0], sc = _a[1], su = _a[2], fn = _a[3], no = _a[4], off = _a[5], b = $550ca672a3f483a3$var$slzh(data, off);
-        o = no;
-        var cbl = function(e, d) {
-            if (e) {
-                tAll();
-                cb(e, null);
-            } else {
-                files[fn] = d;
-                if (!--lft) cb(null, files);
-            }
-        };
-        if (!c_1) cbl(null, $550ca672a3f483a3$var$slc(data, b, b + sc));
-        else if (c_1 == 8) {
-            var infl = data.subarray(b, b + sc);
-            if (sc < 320000) try {
-                cbl(null, $550ca672a3f483a3$export$90366d8b308ba94a(infl, new $550ca672a3f483a3$var$u8(su)));
-            } catch (e) {
-                cbl(e, null);
-            }
-            else term.push($550ca672a3f483a3$export$cae1ce83fe4a1782(infl, {
-                size: su
-            }, cbl));
-        } else cbl("unknown compression type " + c_1, null);
-    };
-    for(var i = 0; i < c; ++i)_loop_3(i);
-    return tAll;
-}
-function $550ca672a3f483a3$export$c757709326bb5901(data) {
-    var files = {};
-    var e = data.length - 22;
-    for(; $550ca672a3f483a3$var$b4(data, e) != 0x6054B50; --e){
-        if (!e || data.length - e > 65558) throw "invalid zip file";
-    }
-    var c = $550ca672a3f483a3$var$b2(data, e + 8);
-    if (!c) return {};
-    var o = $550ca672a3f483a3$var$b4(data, e + 16);
-    var z = o == 4294967295;
-    if (z) {
-        e = $550ca672a3f483a3$var$b4(data, e - 12);
-        if ($550ca672a3f483a3$var$b4(data, e) != 0x6064B50) throw "invalid zip file";
-        c = $550ca672a3f483a3$var$b4(data, e + 32);
-        o = $550ca672a3f483a3$var$b4(data, e + 48);
-    }
-    for(var i = 0; i < c; ++i){
-        var _a = $550ca672a3f483a3$var$zh(data, o, z), c_2 = _a[0], sc = _a[1], su = _a[2], fn = _a[3], no = _a[4], off = _a[5], b = $550ca672a3f483a3$var$slzh(data, off);
-        o = no;
-        if (!c_2) files[fn] = $550ca672a3f483a3$var$slc(data, b, b + sc);
-        else if (c_2 == 8) files[fn] = $550ca672a3f483a3$export$90366d8b308ba94a(data.subarray(b, b + sc), new $550ca672a3f483a3$var$u8(su));
-        else throw "unknown compression type " + c_2;
-    }
-    return files;
-}
-
 
 
 // Adapted from initial TiltLoader implementation in three.js r128
@@ -42439,6 +45556,10 @@ function $7a53d4f4e33d695e$export$fc22e28a11679cb8(cameraControls) {
 
 const $a970d3af3e0e453f$var$FS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; const float environmentStrength = 1.5; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; uniform vec3 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform mat4 u_modelMatrix; uniform sampler2D u_reflectionCube; uniform sampler2D u_reflectionCubeBlur; const float u_noiseIntensity = 0.015; const float colorNoiseAmount = 0.015; const float noiseScale = 700.0; uniform vec3 cameraPosition; // Noise functions from https://github.com/ashima/webgl-noise // Used under the MIT license - license text in MITLICENSE // Copyright (C) 2011 by Ashima Arts (Simplex noise) // Copyright (C) 2011-2016 by Stefan Gustavson (Classic noise and others) vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); } vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; } float snoise(vec3 v, out vec3 gradient) { const vec2 C = vec2(1.0/6.0, 1.0/3.0) ; const vec4 D = vec4(0.0, 0.5, 1.0, 2.0); // First corner vec3 i = floor(v + dot(v, C.yyy) ); vec3 x0 = v - i + dot(i, C.xxx) ; // Other corners vec3 g = step(x0.yzx, x0.xyz); vec3 l = 1.0 - g; vec3 i1 = min( g.xyz, l.zxy ); vec3 i2 = max( g.xyz, l.zxy ); // x0 = x0 - 0.0 + 0.0 * C.xxx; // x1 = x0 - i1 + 1.0 * C.xxx; // x2 = x0 - i2 + 2.0 * C.xxx; // x3 = x0 - 1.0 + 3.0 * C.xxx; vec3 x1 = x0 - i1 + C.xxx; vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y vec3 x3 = x0 - D.yyy; // -1.0+3.0*C.x = -0.5 = -D.y // Permutations i = mod289(i); vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 )); // Gradients: 7x7 points over a square, mapped onto an octahedron. // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294) float n_ = 0.142857142857; // 1.0/7.0 vec3 ns = n_ * D.wyz - D.xzx; vec4 j = p - 49.0 * floor(p * ns.z * ns.z); // mod(p,7*7) vec4 x_ = floor(j * ns.z); vec4 y_ = floor(j - 7.0 * x_ ); // mod(j,N) vec4 x = x_ *ns.x + ns.yyyy; vec4 y = y_ *ns.x + ns.yyyy; vec4 h = 1.0 - abs(x) - abs(y); vec4 b0 = vec4( x.xy, y.xy ); vec4 b1 = vec4( x.zw, y.zw ); //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0; //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0; vec4 s0 = floor(b0)*2.0 + 1.0; vec4 s1 = floor(b1)*2.0 + 1.0; vec4 sh = -step(h, vec4(0.0)); vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ; vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ; vec3 p0 = vec3(a0.xy,h.x); vec3 p1 = vec3(a0.zw,h.y); vec3 p2 = vec3(a1.xy,h.z); vec3 p3 = vec3(a1.zw,h.w); //Normalise gradients vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3))); p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w; // Mix final noise value vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0); vec4 m2 = m * m; vec4 m4 = m2 * m2; vec4 pdotx = vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)); // Determine noise gradient vec4 temp = m2 * m * pdotx; gradient = -8.0 * (temp.x * x0 + temp.y * x1 + temp.z * x2 + temp.w * x3); gradient += m4.x * p0 + m4.y * p1 + m4.z * p2 + m4.w * p3; gradient *= 42.0; return 42.0 * dot(m4, pdotx); } // End of noise code float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void generatePapercraftColorNormal(vec3 normal, vec3 tangent, vec3 binormal, vec3 noisePos, inout vec4 outColorMult, inout vec3 outNormal) { mat3 tangentToObject; tangentToObject[0] = vec3(tangent.x, tangent.y, tangent.z); tangentToObject[1] = vec3(binormal.x, binormal.y, binormal.z); tangentToObject[2] = vec3(normal.x, normal.y, normal.z); mat3 objectToTangent = transpose(tangentToObject); vec3 intensificator = vec3(u_noiseIntensity, u_noiseIntensity, 1.0); vec3 tangentPos = objectToTangent * noisePos; vec3 gradient = vec3(0.0); float noiseOut = snoise(tangentPos * noiseScale, gradient); vec3 tangentSpaceNormal = normalize(intensificator * vec3(gradient.xy, 1.0)); outNormal = tangentToObject * tangentSpaceNormal; outColorMult = vec4(vec3(1.0 + noiseOut * colorNoiseAmount), 1.0); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; generatePapercraftColorNormal(v_normal, v_tangent, v_binormal, v_position, outColorMult, normalisedNormal); setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor * outColorMult.rgb, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = (1.0 - u_metallic) * materialColor * outColorMult.rgb * 0.0; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor * outColorMult.rgb, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.7); evaluatePBRLight(materialColor * outColorMult.rgb, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.25); gl_FragColor = vec4(specular + diffuse * materialColor, 1.0); }";
 const $a970d3af3e0e453f$var$VS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; void main() { vec3 objPosition = a_position; vec4 worldPosition = vec4(objPosition, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; // Looking for an arbitrary vector that isn't parallel to the normal. Avoiding axis directions should improve our chances. vec3 arbitraryVector = normalize(vec3(0.42, -0.21, 0.15)); vec3 alternateArbitraryVector = normalize(vec3(0.43, 1.5, 0.15)); // If arbitrary vector is parallel to the normal, choose a different one. v_tangent = normalize(abs(dot(v_normal, arbitraryVector)) < 1.0 ? cross(v_normal, arbitraryVector) : cross(v_normal, alternateArbitraryVector)); v_binormal = normalize(cross(v_normal, v_tangent)); gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(objPosition, 1.0); }";
+const $a970d3af3e0e453f$var$GEMFS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; const float _Metallic = 0.5; const float environmentStrength = 1.5; varying vec3 v_normal; varying vec3 v_position; varying float v_fresnel; uniform sampler2D u_gem; uniform vec4 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform vec3 cameraPosition; float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color.rgb; vec3 normalisedNormal = v_normal; vec3 normalisedView = cameraPosition - v_position; float nDotV; setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = materialColor * 0.3; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = reflect(normalisedView, normalisedNormal); vec4 color = vec4(texture2D( u_gem, vec2(0.5*(INV_PI*atan(R.x, R.z)+1.0),0.5*(R.y+1.0)) ).rgb, u_color.a); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.5); evaluatePBRLight(materialColor, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.25); gl_FragColor = vec4(ambient + specular + diffuse * color.rgb, 1.0); } ";
+const $a970d3af3e0e453f$var$GEMVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; void main() { vec4 worldPosition = vec4(a_position, 1.0); v_normal = a_normal; v_position = worldPosition.xyz; gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0); } ";
+const $a970d3af3e0e453f$var$GLASSFS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; // Always default to Olive Oil. const float _Metallic = 0.5; const float environmentStrength = 1.0; varying vec3 v_normal; varying vec3 v_position; uniform vec4 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform vec3 cameraPosition; // camera position world float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color.rgb; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = materialColor * 0.3; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.5); evaluatePBRLight(materialColor, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.2); gl_FragColor = vec4(ambient + specular + diffuse * materialColor, u_color.a); } ";
+const $a970d3af3e0e453f$var$GLASSVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; void main() { vec4 worldPosition = vec4(a_position, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0); } ";
 class $a970d3af3e0e453f$export$9559c3115faeb0b0 extends (0, $ea01ff4a5048cd08$export$3b0d6d7590275603) {
     load(url, onLoad, onProgress, onError) {
         var scope = this;
@@ -42941,7 +46062,12 @@ class $a970d3af3e0e453f$var$GLTFParser {
                     // Common google urls to save pointless requests
                     if (shader.uri === "https://vr.google.com/shaders/w/fs.glsl") return $a970d3af3e0e453f$var$FS_GLSL;
                     if (shader.uri === "https://vr.google.com/shaders/w/vs.glsl") return $a970d3af3e0e453f$var$VS_GLSL;
+                    if (shader.uri === "https://vr.google.com/shaders/w/glassVS.glsl") return $a970d3af3e0e453f$var$GLASSVS_GLSL;
+                    if (shader.uri === "https://vr.google.com/shaders/w/glassFS.glsl") return $a970d3af3e0e453f$var$GLASSFS_GLSL;
+                    if (shader.uri === "https://vr.google.com/shaders/w/gemVS.glsl") return $a970d3af3e0e453f$var$GEMVS_GLSL;
+                    if (shader.uri === "https://vr.google.com/shaders/w/gemFS.glsl") return $a970d3af3e0e453f$var$GEMFS_GLSL;
                     // Catch anything else - it would give a CORS error in any case
+                    // let url = shader.uri.replace("https://vr.google.com/shaders/w/", "https://icosa-foundation.github.io/icosa-sketch-assets/shaders");
                     let url = shader.uri.replace("https://vr.google.com/shaders/w/", "");
                     loader.load($a970d3af3e0e453f$var$resolveURL(url, options.path), function(shaderText) {
                         resolve(shaderText);
@@ -43030,6 +46156,7 @@ class $a970d3af3e0e453f$var$GLTFParser {
                     var textureLoader = options.manager.getHandler(sourceUri);
                     if (textureLoader === null) textureLoader = new (0, $ea01ff4a5048cd08$export$fd1bfc71f64c538c)(options.manager);
                     textureLoader.setCrossOrigin(options.crossOrigin);
+                    sourceUri = sourceUri.replace("https://vr.google.com/shaders/w/", "");
                     textureLoader.load($a970d3af3e0e453f$var$resolveURL(sourceUri, options.path), function(_texture) {
                         if (isObjectURL) URL.revokeObjectURL(sourceUri);
                         _texture.flipY = false;
@@ -43256,16 +46383,20 @@ class $a970d3af3e0e453f$var$GLTFParser {
     }
     loadMeshes() {
         var json = this.json;
+        console.log("loadmeshes1");
         return this._withDependencies([
             "accessors",
             "materials"
         ]).then(function(dependencies) {
+            console.log("loadmeshes2");
             return $a970d3af3e0e453f$var$_each(json.meshes, function(mesh) {
+                console.log("loadmeshes3");
                 var group = new (0, $ea01ff4a5048cd08$export$eb2fcfdbd7ba97d4)();
                 if (mesh.name !== undefined) group.name = mesh.name;
                 if (mesh.extras) group.userData = mesh.extras;
                 var primitives = mesh.primitives || [];
                 for(var name in primitives){
+                    console.log("primitive: " + name);
                     var primitive = primitives[name];
                     if (primitive.mode === $a970d3af3e0e453f$var$WEBGL_CONSTANTS.TRIANGLES || primitive.mode === undefined) {
                         var geometry = new (0, $ea01ff4a5048cd08$export$b7be63a67df8959)();
@@ -44473,6 +47604,8 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.texturePath = new URL("textures/", assetBaseUrl);
         this.tiltLoader = new (0, $55489216125af3e6$export$36ca96fcead4fad7)(manager);
         this.tiltLoader.setBrushPath(this.brushPath.toString());
+        this.objLoader = new (0, $21fa36e3a39b221c$export$7ae31604ad04b4a7)(manager);
+        this.fbxLoader = new (0, $4299b50047f4476c$export$60c52e42bb04b96)(manager);
         this.gltfLegacyLoader = new (0, $a970d3af3e0e453f$export$9559c3115faeb0b0)(manager);
         this.gltfLoader = new (0, $b4376e703aa0850c$export$aa93f11e7884f0f4)(manager);
         this.gltfLoader.register((parser)=>new (0, $5a163a5102e7cfa5$export$2b011a5b12963d65)(parser, this.brushPath.toString()));
@@ -45936,6 +49069,16 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.loadedModel = tiltData;
         this.initializeScene();
     }
+    async loadObj(url) {
+        const objData = await this.objLoader.loadAsync(url);
+        this.loadedModel = objData;
+        this.initializeScene();
+    }
+    async loadFbx(url) {
+        const fbxData = await this.fbxLoader.loadAsync(url);
+        this.loadedModel = fbxData;
+        this.initializeScene();
+    }
     async assignEnvironment(scene) {
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
@@ -45995,8 +49138,12 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             const deg2rad = Math.PI / 180;
             return new $ea01ff4a5048cd08$exports.Euler($ea01ff4a5048cd08$exports.MathUtils.degToRad(rot.x), $ea01ff4a5048cd08$exports.MathUtils.degToRad(rot.y), $ea01ff4a5048cd08$exports.MathUtils.degToRad(rot.z));
         }
-        if (this.sketchMetadata == undefined || this.sketchMetadata == null) // Default lighting
-        return;
+        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+            const light = new $ea01ff4a5048cd08$exports.DirectionalLight(0xffffff, 1);
+            light.position.set(10, 10, 10).normalize();
+            this.loadedModel.add(light);
+            return;
+        }
         let l0 = new $ea01ff4a5048cd08$exports.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         let l1 = new $ea01ff4a5048cd08$exports.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         l0.setRotationFromEuler(convertTBEuler(this.sketchMetadata.SceneLight0Rotation));
