@@ -34690,6 +34690,316 @@ class $21fa36e3a39b221c$export$7ae31604ad04b4a7 extends (0, $ea01ff4a5048cd08$ex
 
 
 
+/**
+ * Loads a Wavefront .mtl file specifying materials
+ */ class $ce7bc923ffd72333$export$2a0ca4746a43f1f8 extends (0, $ea01ff4a5048cd08$export$3b0d6d7590275603) {
+    constructor(manager){
+        super(manager);
+    }
+    /**
+	 * Loads and parses a MTL asset from a URL.
+	 *
+	 * @param {String} url - URL to the MTL file.
+	 * @param {Function} [onLoad] - Callback invoked with the loaded object.
+	 * @param {Function} [onProgress] - Callback for download progress.
+	 * @param {Function} [onError] - Callback for download errors.
+	 *
+	 * @see setPath setResourcePath
+	 *
+	 * @note In order for relative texture references to resolve correctly
+	 * you must call setResourcePath() explicitly prior to load.
+	 */ load(url, onLoad, onProgress, onError) {
+        const scope = this;
+        const path = this.path === "" ? (0, $ea01ff4a5048cd08$export$b5d2dc08d867e41a).extractUrlBase(url) : this.path;
+        const loader = new (0, $ea01ff4a5048cd08$export$98435a25b5cf7b2b)(this.manager);
+        loader.setPath(this.path);
+        loader.setRequestHeader(this.requestHeader);
+        loader.setWithCredentials(this.withCredentials);
+        loader.load(url, function(text) {
+            try {
+                onLoad(scope.parse(text, path));
+            } catch (e) {
+                if (onError) onError(e);
+                else console.error(e);
+                scope.manager.itemError(url);
+            }
+        }, onProgress, onError);
+    }
+    setMaterialOptions(value) {
+        this.materialOptions = value;
+        return this;
+    }
+    /**
+	 * Parses a MTL file.
+	 *
+	 * @param {String} text - Content of MTL file
+	 * @return {MaterialCreator}
+	 *
+	 * @see setPath setResourcePath
+	 *
+	 * @note In order for relative texture references to resolve correctly
+	 * you must call setResourcePath() explicitly prior to parse.
+	 */ parse(text, path) {
+        const lines = text.split("\n");
+        let info = {};
+        const delimiter_pattern = /\s+/;
+        const materialsInfo = {};
+        for(let i = 0; i < lines.length; i++){
+            let line = lines[i];
+            line = line.trim();
+            if (line.length === 0 || line.charAt(0) === "#") continue;
+            const pos = line.indexOf(" ");
+            let key = pos >= 0 ? line.substring(0, pos) : line;
+            key = key.toLowerCase();
+            let value = pos >= 0 ? line.substring(pos + 1) : "";
+            value = value.trim();
+            if (key === "newmtl") {
+                // New material
+                info = {
+                    name: value
+                };
+                materialsInfo[value] = info;
+            } else if (key === "ka" || key === "kd" || key === "ks" || key === "ke") {
+                const ss = value.split(delimiter_pattern, 3);
+                info[key] = [
+                    parseFloat(ss[0]),
+                    parseFloat(ss[1]),
+                    parseFloat(ss[2])
+                ];
+            } else info[key] = value;
+        }
+        const materialCreator = new $ce7bc923ffd72333$var$MaterialCreator(this.resourcePath || path, this.materialOptions);
+        materialCreator.setCrossOrigin(this.crossOrigin);
+        materialCreator.setManager(this.manager);
+        materialCreator.setMaterials(materialsInfo);
+        return materialCreator;
+    }
+}
+/**
+ * Create a new MTLLoader.MaterialCreator
+ * @param baseUrl - Url relative to which textures are loaded
+ * @param options - Set of options on how to construct the materials
+ *                  side: Which side to apply the material
+ *                        FrontSide (default), THREE.BackSide, THREE.DoubleSide
+ *                  wrap: What type of wrapping to apply for textures
+ *                        RepeatWrapping (default), THREE.ClampToEdgeWrapping, THREE.MirroredRepeatWrapping
+ *                  normalizeRGB: RGBs need to be normalized to 0-1 from 0-255
+ *                                Default: false, assumed to be already normalized
+ *                  ignoreZeroRGBs: Ignore values of RGBs (Ka,Kd,Ks) that are all 0's
+ *                                  Default: false
+ * @constructor
+ */ class $ce7bc923ffd72333$var$MaterialCreator {
+    constructor(baseUrl = "", options = {}){
+        this.baseUrl = baseUrl;
+        this.options = options;
+        this.materialsInfo = {};
+        this.materials = {};
+        this.materialsArray = [];
+        this.nameLookup = {};
+        this.crossOrigin = "anonymous";
+        this.side = this.options.side !== undefined ? this.options.side : (0, $ea01ff4a5048cd08$export$2ede184fc2998901);
+        this.wrap = this.options.wrap !== undefined ? this.options.wrap : (0, $ea01ff4a5048cd08$export$533346c8e8dac0f5);
+    }
+    setCrossOrigin(value) {
+        this.crossOrigin = value;
+        return this;
+    }
+    setManager(value) {
+        this.manager = value;
+    }
+    setMaterials(materialsInfo) {
+        this.materialsInfo = this.convert(materialsInfo);
+        this.materials = {};
+        this.materialsArray = [];
+        this.nameLookup = {};
+    }
+    convert(materialsInfo) {
+        if (!this.options) return materialsInfo;
+        const converted = {};
+        for(const mn in materialsInfo){
+            // Convert materials info into normalized form based on options
+            const mat = materialsInfo[mn];
+            const covmat = {};
+            converted[mn] = covmat;
+            for(const prop in mat){
+                let save = true;
+                let value = mat[prop];
+                const lprop = prop.toLowerCase();
+                switch(lprop){
+                    case "kd":
+                    case "ka":
+                    case "ks":
+                        // Diffuse color (color under white light) using RGB values
+                        if (this.options && this.options.normalizeRGB) value = [
+                            value[0] / 255,
+                            value[1] / 255,
+                            value[2] / 255
+                        ];
+                        if (this.options && this.options.ignoreZeroRGBs) {
+                            if (value[0] === 0 && value[1] === 0 && value[2] === 0) // ignore
+                            save = false;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                if (save) covmat[lprop] = value;
+            }
+        }
+        return converted;
+    }
+    preload() {
+        for(const mn in this.materialsInfo)this.create(mn);
+    }
+    getIndex(materialName) {
+        return this.nameLookup[materialName];
+    }
+    getAsArray() {
+        let index = 0;
+        for(const mn in this.materialsInfo){
+            this.materialsArray[index] = this.create(mn);
+            this.nameLookup[mn] = index;
+            index++;
+        }
+        return this.materialsArray;
+    }
+    create(materialName) {
+        if (this.materials[materialName] === undefined) this.createMaterial_(materialName);
+        return this.materials[materialName];
+    }
+    createMaterial_(materialName) {
+        // Create material
+        const scope = this;
+        const mat = this.materialsInfo[materialName];
+        const params = {
+            name: materialName,
+            side: this.side
+        };
+        function resolveURL(baseUrl, url) {
+            if (typeof url !== "string" || url === "") return "";
+            // Absolute URL
+            if (/^https?:\/\//i.test(url)) return url;
+            return baseUrl + url;
+        }
+        function setMapForType(mapType, value) {
+            if (params[mapType]) return; // Keep the first encountered texture
+            const texParams = scope.getTextureParams(value, params);
+            const map = scope.loadTexture(resolveURL(scope.baseUrl, texParams.url));
+            map.repeat.copy(texParams.scale);
+            map.offset.copy(texParams.offset);
+            map.wrapS = scope.wrap;
+            map.wrapT = scope.wrap;
+            if (mapType === "map" || mapType === "emissiveMap") map.encoding = (0, $ea01ff4a5048cd08$export$f32388edbb32674);
+            params[mapType] = map;
+        }
+        for(const prop in mat){
+            const value = mat[prop];
+            let n;
+            if (value === "") continue;
+            switch(prop.toLowerCase()){
+                // Ns is material specular exponent
+                case "kd":
+                    // Diffuse color (color under white light) using RGB values
+                    params.color = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(value).convertSRGBToLinear();
+                    break;
+                case "ks":
+                    // Specular color (color when light is reflected from shiny surface) using RGB values
+                    params.specular = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(value).convertSRGBToLinear();
+                    break;
+                case "ke":
+                    // Emissive using RGB values
+                    params.emissive = new (0, $ea01ff4a5048cd08$export$892596cec99bc70e)().fromArray(value).convertSRGBToLinear();
+                    break;
+                case "map_kd":
+                    // Diffuse texture map
+                    setMapForType("map", value);
+                    break;
+                case "map_ks":
+                    // Specular map
+                    setMapForType("specularMap", value);
+                    break;
+                case "map_ke":
+                    // Emissive map
+                    setMapForType("emissiveMap", value);
+                    break;
+                case "norm":
+                    setMapForType("normalMap", value);
+                    break;
+                case "map_bump":
+                case "bump":
+                    // Bump texture map
+                    setMapForType("bumpMap", value);
+                    break;
+                case "map_d":
+                    // Alpha map
+                    setMapForType("alphaMap", value);
+                    params.transparent = true;
+                    break;
+                case "ns":
+                    // The specular exponent (defines the focus of the specular highlight)
+                    // A high exponent results in a tight, concentrated highlight. Ns values normally range from 0 to 1000.
+                    params.shininess = parseFloat(value);
+                    break;
+                case "d":
+                    n = parseFloat(value);
+                    if (n < 1) {
+                        params.opacity = n;
+                        params.transparent = true;
+                    }
+                    break;
+                case "tr":
+                    n = parseFloat(value);
+                    if (this.options && this.options.invertTrProperty) n = 1 - n;
+                    if (n > 0) {
+                        params.opacity = 1 - n;
+                        params.transparent = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        this.materials[materialName] = new (0, $ea01ff4a5048cd08$export$24c72f71cbaf0678)(params);
+        return this.materials[materialName];
+    }
+    getTextureParams(value, matParams) {
+        const texParams = {
+            scale: new (0, $ea01ff4a5048cd08$export$c977b3e384af9ae1)(1, 1),
+            offset: new (0, $ea01ff4a5048cd08$export$c977b3e384af9ae1)(0, 0)
+        };
+        const items = value.split(/\s+/);
+        let pos;
+        pos = items.indexOf("-bm");
+        if (pos >= 0) {
+            matParams.bumpScale = parseFloat(items[pos + 1]);
+            items.splice(pos, 2);
+        }
+        pos = items.indexOf("-s");
+        if (pos >= 0) {
+            texParams.scale.set(parseFloat(items[pos + 1]), parseFloat(items[pos + 2]));
+            items.splice(pos, 4); // we expect 3 parameters here!
+        }
+        pos = items.indexOf("-o");
+        if (pos >= 0) {
+            texParams.offset.set(parseFloat(items[pos + 1]), parseFloat(items[pos + 2]));
+            items.splice(pos, 4); // we expect 3 parameters here!
+        }
+        texParams.url = items.join(" ").trim();
+        return texParams;
+    }
+    loadTexture(url, mapping, onLoad, onProgress, onError) {
+        const manager = this.manager !== undefined ? this.manager : (0, $ea01ff4a5048cd08$export$b033c3f9a95c6a16);
+        let loader = manager.getHandler(url);
+        if (loader === null) loader = new (0, $ea01ff4a5048cd08$export$fd1bfc71f64c538c)(manager);
+        if (loader.setCrossOrigin) loader.setCrossOrigin(this.crossOrigin);
+        const texture = loader.load(url, onLoad, onProgress, onError);
+        if (mapping !== undefined) texture.mapping = mapping;
+        return texture;
+    }
+}
+
+
+
 var $550ca672a3f483a3$exports = {};
 
 $parcel$export($550ca672a3f483a3$exports, "inflateSync", () => $550ca672a3f483a3$export$90366d8b308ba94a);
@@ -46067,7 +46377,6 @@ class $a970d3af3e0e453f$var$GLTFParser {
                     if (shader.uri === "https://vr.google.com/shaders/w/gemVS.glsl") return $a970d3af3e0e453f$var$GEMVS_GLSL;
                     if (shader.uri === "https://vr.google.com/shaders/w/gemFS.glsl") return $a970d3af3e0e453f$var$GEMFS_GLSL;
                     // Catch anything else - it would give a CORS error in any case
-                    // let url = shader.uri.replace("https://vr.google.com/shaders/w/", "https://icosa-foundation.github.io/icosa-sketch-assets/shaders");
                     let url = shader.uri.replace("https://vr.google.com/shaders/w/", "");
                     loader.load($a970d3af3e0e453f$var$resolveURL(url, options.path), function(shaderText) {
                         resolve(shaderText);
@@ -46156,7 +46465,6 @@ class $a970d3af3e0e453f$var$GLTFParser {
                     var textureLoader = options.manager.getHandler(sourceUri);
                     if (textureLoader === null) textureLoader = new (0, $ea01ff4a5048cd08$export$fd1bfc71f64c538c)(options.manager);
                     textureLoader.setCrossOrigin(options.crossOrigin);
-                    sourceUri = sourceUri.replace("https://vr.google.com/shaders/w/", "");
                     textureLoader.load($a970d3af3e0e453f$var$resolveURL(sourceUri, options.path), function(_texture) {
                         if (isObjectURL) URL.revokeObjectURL(sourceUri);
                         _texture.flipY = false;
@@ -46383,20 +46691,16 @@ class $a970d3af3e0e453f$var$GLTFParser {
     }
     loadMeshes() {
         var json = this.json;
-        console.log("loadmeshes1");
         return this._withDependencies([
             "accessors",
             "materials"
         ]).then(function(dependencies) {
-            console.log("loadmeshes2");
             return $a970d3af3e0e453f$var$_each(json.meshes, function(mesh) {
-                console.log("loadmeshes3");
                 var group = new (0, $ea01ff4a5048cd08$export$eb2fcfdbd7ba97d4)();
                 if (mesh.name !== undefined) group.name = mesh.name;
                 if (mesh.extras) group.userData = mesh.extras;
                 var primitives = mesh.primitives || [];
                 for(var name in primitives){
-                    console.log("primitive: " + name);
                     var primitive = primitives[name];
                     if (primitive.mode === $a970d3af3e0e453f$var$WEBGL_CONSTANTS.TRIANGLES || primitive.mode === undefined) {
                         var geometry = new (0, $ea01ff4a5048cd08$export$b7be63a67df8959)();
@@ -47605,6 +47909,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.tiltLoader = new (0, $55489216125af3e6$export$36ca96fcead4fad7)(manager);
         this.tiltLoader.setBrushPath(this.brushPath.toString());
         this.objLoader = new (0, $21fa36e3a39b221c$export$7ae31604ad04b4a7)(manager);
+        this.mtlLoader = new (0, $ce7bc923ffd72333$export$2a0ca4746a43f1f8)(manager);
         this.fbxLoader = new (0, $4299b50047f4476c$export$60c52e42bb04b96)(manager);
         this.gltfLegacyLoader = new (0, $a970d3af3e0e453f$export$9559c3115faeb0b0)(manager);
         this.gltfLoader = new (0, $b4376e703aa0850c$export$aa93f11e7884f0f4)(manager);
@@ -49069,10 +49374,36 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.loadedModel = tiltData;
         this.initializeScene();
     }
-    async loadObj(url) {
-        const objData = await this.objLoader.loadAsync(url);
-        this.loadedModel = objData;
-        this.initializeScene();
+    setAllVertexColors(model) {
+        model.traverse((node)=>{
+            if (node.material) {
+                if (Array.isArray(node.material)) node.material.forEach((material)=>material.vertexColors = true);
+                else node.material.vertexColors = true;
+            }
+        });
+    }
+    // Defaults to assuming materials are vertex colored
+    async loadObj(url, withVertexColors, defaultBackground) {
+        this.objLoader.loadAsync(url).then((objData)=>{
+            this.loadedModel = objData;
+            if (!defaultBackground) defaultBackground = "#000000";
+            this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackground);
+            if (withVertexColors) this.setAllVertexColors(this.loadedModel);
+            this.initializeScene();
+        });
+    }
+    async loadObjWithMtl(objUrl, mtlUrl, withVertexColors, defaultBackground) {
+        this.mtlLoader.loadAsync(mtlUrl).then((materials)=>{
+            materials.preload();
+            this.objLoader.setMaterials(materials);
+            this.objLoader.loadAsync(objUrl).then((objData)=>{
+                this.loadedModel = objData;
+                if (!defaultBackground) defaultBackground = "#000000";
+                this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackground);
+                if (withVertexColors) this.setAllVertexColors(this.loadedModel);
+                this.initializeScene();
+            });
+        });
     }
     async loadFbx(url) {
         const fbxData = await this.fbxLoader.loadAsync(url);
@@ -49161,12 +49492,17 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.scene.fog = new $ea01ff4a5048cd08$exports.FogExp2(this.sketchMetadata.FogColor, this.sketchMetadata.FogDensity);
     }
     initSceneBackground() {
-        if (this.sketchMetadata == undefined || this.sketchMetadata == null) return;
+        // OBJ and FBX models don't have metadata
+        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+            this.scene.background = this.defaultBackgroundColor;
+            return;
+        }
         let sky = null;
         if (this.sketchMetadata.UseGradient) sky = this.generateGradientSky(this.sketchMetadata.SkyColorA, this.sketchMetadata.SkyColorB, this.sketchMetadata.SkyGradientDirection);
         else if (this.sketchMetadata.SkyTexture) sky = this.generateTextureSky(this.sketchMetadata.SkyTexture);
         if (sky !== null) this.loadedModel?.add(sky);
-        else this.scene.background = this.defaultBackgroundColor;
+        else // Use the default background color if there's no sky
+        this.scene.background = this.defaultBackgroundColor;
     }
 }
 

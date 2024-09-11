@@ -18,6 +18,7 @@ import * as THREE from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
+import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
@@ -188,6 +189,7 @@ export class Viewer {
     public gltfLegacyLoader: LegacyGLTFLoader;
     public objLoader: OBJLoader;
     public fbxLoader: FBXLoader;
+    public mtlLoader: MTLLoader;
     public three : any;
 
     private icosa_frame? : HTMLElement | null;
@@ -303,6 +305,7 @@ export class Viewer {
         this.tiltLoader.setBrushPath(this.brushPath.toString());
 
         this.objLoader = new OBJLoader(manager);
+        this.mtlLoader = new MTLLoader(manager);
         this.fbxLoader = new FBXLoader(manager);
 
         this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
@@ -1816,10 +1819,56 @@ export class Viewer {
         this.initializeScene();
     }
 
-    public async loadObj(url: string) {
-        const objData = await this.objLoader.loadAsync(url);
-        this.loadedModel = objData;
-        this.initializeScene();
+    private setAllVertexColors(model : Object3D<THREE.Object3DEventMap>) {
+        model.traverse(node => {
+            if (node.material) {
+                if (Array.isArray(node.material)) {
+                    node.material.forEach(material => material.vertexColors = true);
+                } else {
+                    node.material.vertexColors = true;
+                }
+            }
+        });
+    }
+
+    // Defaults to assuming materials are vertex colored
+    public async loadObj(
+        url: string,
+        withVertexColors: boolean,
+        defaultBackground : string) {
+        this.objLoader.loadAsync(url).then((objData) => {
+            this.loadedModel = objData;
+            if (!defaultBackground) {
+                defaultBackground = "#000000";
+            }
+            this.defaultBackgroundColor = new THREE.Color(defaultBackground);
+            if (withVertexColors) {
+                this.setAllVertexColors(this.loadedModel);
+            }
+            this.initializeScene();
+        });
+    }
+
+    public async loadObjWithMtl(
+        objUrl: string,
+        mtlUrl: string,
+        withVertexColors: boolean,
+        defaultBackground : string) {
+        this.mtlLoader.loadAsync(mtlUrl).then((materials) => {
+            materials.preload();
+            this.objLoader.setMaterials(materials);
+            this.objLoader.loadAsync(objUrl).then((objData) => {
+                this.loadedModel = objData;
+                if (!defaultBackground) {
+                    defaultBackground = "#000000";
+                }
+                this.defaultBackgroundColor = new THREE.Color(defaultBackground);
+                if (withVertexColors) {
+                    this.setAllVertexColors(this.loadedModel);
+                }
+                this.initializeScene();
+            });
+        });
     }
 
     public async loadFbx(url: string) {
@@ -1934,13 +1983,17 @@ export class Viewer {
 
     private initSceneBackground() {
 
-        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {return}
+        // OBJ and FBX models don't have metadata
+        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+            this.scene.background = this.defaultBackgroundColor;
+            return;
+        }
 
         let sky : Object3D<THREE.Object3DEventMap> | null = null;
 
         if (this.sketchMetadata.UseGradient) {
             sky = this.generateGradientSky(
-                this.sketchMetadata.SkyColorA,
+       e         this.sketchMetadata.SkyColorA,
                 this.sketchMetadata.SkyColorB,
                 this.sketchMetadata.SkyGradientDirection
             );
@@ -1952,6 +2005,7 @@ export class Viewer {
         if (sky !== null) {
             this.loadedModel?.add(sky as Object3D<THREE.Object3DEventMap>);
         } else {
+            // Use the default background color if there's no sky
             this.scene.background = this.defaultBackgroundColor;
         }
     }
