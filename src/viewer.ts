@@ -377,7 +377,7 @@ export class Viewer {
                 antialias: true,
                 preserveDrawingBuffer: true // Important to allow toDataURL to work
             });
-            thumbnailRenderer.setSize(thumbnailWidth, thumbnailHeight);
+            thumbnailRenderer.setSize(width, height);
             thumbnailRenderer.setPixelRatio(window.devicePixelRatio);
 
             // If your scene requires specific renderer settings (e.g., tone mapping, shadow map), apply them here

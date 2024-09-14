@@ -47961,7 +47961,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                 antialias: true,
                 preserveDrawingBuffer: true // Important to allow toDataURL to work
             });
-            thumbnailRenderer.setSize(thumbnailWidth, thumbnailHeight);
+            thumbnailRenderer.setSize(width, height);
             thumbnailRenderer.setPixelRatio(window.devicePixelRatio);
             // If your scene requires specific renderer settings (e.g., tone mapping, shadow map), apply them here
             // Example:
