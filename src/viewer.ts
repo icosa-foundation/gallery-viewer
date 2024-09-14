@@ -191,6 +191,8 @@ export class Viewer {
     public fbxLoader: FBXLoader;
     public mtlLoader: MTLLoader;
     public three : any;
+    public captureThumbnail : () => string;
+    public dataURLtoBlob : (dataURL : string) => Blob;
 
     private icosa_frame? : HTMLElement | null;
     private brushPath: URL;
@@ -249,7 +251,11 @@ export class Viewer {
         canvas.onmousedown = () => { canvas.classList.add('grabbed'); }
         canvas.onmouseup = () => { canvas.classList.remove('grabbed'); }
 
-        const renderer = new THREE.WebGLRenderer({canvas : canvas});
+        const renderer = new THREE.WebGLRenderer({
+            canvas : canvas,
+            antialias: true
+        });
+
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -345,6 +351,58 @@ export class Viewer {
 
             renderer.render(viewer.scene, viewer.sceneCamera);
         }
+
+        // this.captureThumbnail = () => {
+        //     renderer.render(this.scene, this.sceneCamera);
+        //     let dataUrl = renderer.domElement.toDataURL('image/png');
+        //     return dataUrl;
+        // }
+
+        this.dataURLtoBlob = (dataURL : string) => {
+            let arr = dataURL.split(',');
+            let mimeMatch = arr[0].match(/:(.*?);/);
+            let mime = mimeMatch ? mimeMatch[1] : 'image/png';
+            let bstr = atob(arr[1]);
+            let n = bstr.length;
+            let u8arr = new Uint8Array(n);
+
+            while(n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+            return new Blob([u8arr], { type: mime });
+        }
+
+        this.captureThumbnail = () => {
+
+            const thumbnailWidth = 512;
+            const thumbnailHeight = 384;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = thumbnailWidth;
+            canvas.height = thumbnailHeight;
+
+            const thumbnailRenderer = new THREE.WebGLRenderer({
+                canvas: canvas,
+                antialias: true,
+                preserveDrawingBuffer: true // Important to allow toDataURL to work
+            });
+            thumbnailRenderer.setSize(thumbnailWidth, thumbnailHeight);
+            thumbnailRenderer.setPixelRatio(window.devicePixelRatio);
+
+            // If your scene requires specific renderer settings (e.g., tone mapping, shadow map), apply them here
+            // Example:
+            // thumbnailRenderer.toneMapping = renderer.toneMapping;
+            // thumbnailRenderer.shadowMap.enabled = renderer.shadowMap.enabled;
+
+            thumbnailRenderer.render(this.scene, this.sceneCamera);
+            const dataUrl = canvas.toDataURL('image/png');
+
+            thumbnailRenderer.dispose();
+            canvas.width = canvas.height = 0;
+
+            return dataUrl;
+        };
+
 
         animate();
     }
@@ -1993,7 +2051,7 @@ export class Viewer {
 
         if (this.sketchMetadata.UseGradient) {
             sky = this.generateGradientSky(
-       e         this.sketchMetadata.SkyColorA,
+                this.sketchMetadata.SkyColorA,
                 this.sketchMetadata.SkyColorB,
                 this.sketchMetadata.SkyGradientDirection
             );

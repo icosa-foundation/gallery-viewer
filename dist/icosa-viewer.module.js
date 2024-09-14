@@ -47866,7 +47866,8 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             canvas.classList.remove("grabbed");
         };
         const renderer = new $ea01ff4a5048cd08$exports.WebGLRenderer({
-            canvas: canvas
+            canvas: canvas,
+            antialias: true
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.outputColorSpace = $ea01ff4a5048cd08$exports.SRGBColorSpace;
@@ -47937,6 +47938,48 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             }
             renderer.render(viewer.scene, viewer.sceneCamera);
         }
+        // this.captureThumbnail = () => {
+        //     renderer.render(this.scene, this.sceneCamera);
+        //     let dataUrl = renderer.domElement.toDataURL('image/png');
+        //     return dataUrl;
+        // }
+        this.dataURLtoBlob = (dataURL)=>{
+            let arr = dataURL.split(",");
+            let mimeMatch = arr[0].match(/:(.*?);/);
+            let mime = mimeMatch ? mimeMatch[1] : "image/png";
+            let bstr = atob(arr[1]);
+            let n = bstr.length;
+            let u8arr = new Uint8Array(n);
+            while(n--)u8arr[n] = bstr.charCodeAt(n);
+            return new Blob([
+                u8arr
+            ], {
+                type: mime
+            });
+        };
+        this.captureThumbnail = ()=>{
+            const thumbnailWidth = 512;
+            const thumbnailHeight = 384;
+            const canvas = document.createElement("canvas");
+            canvas.width = thumbnailWidth;
+            canvas.height = thumbnailHeight;
+            const thumbnailRenderer = new $ea01ff4a5048cd08$exports.WebGLRenderer({
+                canvas: canvas,
+                antialias: true,
+                preserveDrawingBuffer: true // Important to allow toDataURL to work
+            });
+            thumbnailRenderer.setSize(thumbnailWidth, thumbnailHeight);
+            thumbnailRenderer.setPixelRatio(window.devicePixelRatio);
+            // If your scene requires specific renderer settings (e.g., tone mapping, shadow map), apply them here
+            // Example:
+            // thumbnailRenderer.toneMapping = renderer.toneMapping;
+            // thumbnailRenderer.shadowMap.enabled = renderer.shadowMap.enabled;
+            thumbnailRenderer.render(this.scene, this.sceneCamera);
+            const dataUrl = canvas.toDataURL("image/png");
+            thumbnailRenderer.dispose();
+            canvas.width = canvas.height = 0;
+            return dataUrl;
+        };
         animate();
     }
     toggleFullscreen(controlButton) {
