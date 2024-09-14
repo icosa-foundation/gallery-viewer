@@ -47938,11 +47938,6 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             }
             renderer.render(viewer.scene, viewer.sceneCamera);
         }
-        // this.captureThumbnail = () => {
-        //     renderer.render(this.scene, this.sceneCamera);
-        //     let dataUrl = renderer.domElement.toDataURL('image/png');
-        //     return dataUrl;
-        // }
         this.dataURLtoBlob = (dataURL)=>{
             let arr = dataURL.split(",");
             let mimeMatch = arr[0].match(/:(.*?);/);
@@ -47957,12 +47952,10 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                 type: mime
             });
         };
-        this.captureThumbnail = ()=>{
-            const thumbnailWidth = 512;
-            const thumbnailHeight = 384;
+        this.captureThumbnail = (width, height)=>{
             const canvas = document.createElement("canvas");
-            canvas.width = thumbnailWidth;
-            canvas.height = thumbnailHeight;
+            canvas.width = width;
+            canvas.height = height;
             const thumbnailRenderer = new $ea01ff4a5048cd08$exports.WebGLRenderer({
                 canvas: canvas,
                 antialias: true,

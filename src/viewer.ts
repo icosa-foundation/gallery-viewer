@@ -191,7 +191,7 @@ export class Viewer {
     public fbxLoader: FBXLoader;
     public mtlLoader: MTLLoader;
     public three : any;
-    public captureThumbnail : () => string;
+    public captureThumbnail : (width : number, height : number) => string;
     public dataURLtoBlob : (dataURL : string) => Blob;
 
     private icosa_frame? : HTMLElement | null;
@@ -352,12 +352,6 @@ export class Viewer {
             renderer.render(viewer.scene, viewer.sceneCamera);
         }
 
-        // this.captureThumbnail = () => {
-        //     renderer.render(this.scene, this.sceneCamera);
-        //     let dataUrl = renderer.domElement.toDataURL('image/png');
-        //     return dataUrl;
-        // }
-
         this.dataURLtoBlob = (dataURL : string) => {
             let arr = dataURL.split(',');
             let mimeMatch = arr[0].match(/:(.*?);/);
@@ -372,14 +366,11 @@ export class Viewer {
             return new Blob([u8arr], { type: mime });
         }
 
-        this.captureThumbnail = () => {
-
-            const thumbnailWidth = 512;
-            const thumbnailHeight = 384;
+        this.captureThumbnail = (width: number, height : number) => {
 
             const canvas = document.createElement('canvas');
-            canvas.width = thumbnailWidth;
-            canvas.height = thumbnailHeight;
+            canvas.width = width;
+            canvas.height = height;
 
             const thumbnailRenderer = new THREE.WebGLRenderer({
                 canvas: canvas,
