@@ -20,7 +20,7 @@ import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
-import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+import { ARButton } from 'three/examples/jsm/webxr/ARButton.js';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
 import * as holdEvent from "hold-event";
@@ -260,7 +260,7 @@ export class Viewer {
         renderer.outputColorSpace = THREE.SRGBColorSpace;
 
         renderer.xr.enabled = true;
-        this.icosa_frame.appendChild( VRButton.createButton( renderer ) );
+        this.icosa_frame.appendChild( ARButton.createButton( renderer ) );
         
         const clock = new THREE.Clock();
         
@@ -1819,7 +1819,7 @@ export class Viewer {
 
     public async loadGltf1(
             url : string, loadEnvironment : boolean,
-            defaultBackground : string,
+            overrides : any,
             tiltUrl: string) {
 
         const sceneGltf : GLTF = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
@@ -1832,16 +1832,17 @@ export class Viewer {
             this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         }
         this.loadedModel = sceneGltf.scene;
-        if (!defaultBackground) {
-            defaultBackground = "#000000";
+        let defaultBackgroundColor : string = overrides["defaultBackgroundColor"];
+        if (!defaultBackgroundColor) {
+            defaultBackgroundColor = "#000000";
         }
-        this.defaultBackgroundColor = new THREE.Color(defaultBackground);
+        this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
         this.initializeScene();
     }
 
     public async loadGltf(
             url: string, loadEnvironment : boolean,
-            defaultBackground : string,
+            overrides : any,
             tiltUrl: string) {
 
         const sceneGltf : GLTF = await this.gltfLoader.loadAsync(url);
@@ -1855,10 +1856,11 @@ export class Viewer {
             // this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         }
         this.loadedModel = sceneGltf.scene;
-        if (!defaultBackground) {
-            defaultBackground = "#000000";
+        let defaultBackgroundColor = overrides["defaultBackgroundColor"];
+        if (!defaultBackgroundColor) {
+            defaultBackgroundColor = "#000000";
         }
-        this.defaultBackgroundColor = new THREE.Color(defaultBackground);
+        this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
         this.initializeScene();
     }
 
@@ -1883,14 +1885,19 @@ export class Viewer {
     // Defaults to assuming materials are vertex colored
     public async loadObj(
         url: string,
-        withVertexColors: boolean,
-        defaultBackground : string) {
+        overrides: any
+    ) {
         this.objLoader.loadAsync(url).then((objData) => {
+
             this.loadedModel = objData;
-            if (!defaultBackground) {
-                defaultBackground = "#000000";
+
+            let defaultBackgroundColor = overrides["defaultBackgroundColor"];
+            if (!defaultBackgroundColor) {
+                defaultBackgroundColor = "#000000";
             }
-            this.defaultBackgroundColor = new THREE.Color(defaultBackground);
+            this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
+
+            let withVertexColors = overrides["withVertexColors"];
             if (withVertexColors) {
                 this.setAllVertexColors(this.loadedModel);
             }
@@ -1901,17 +1908,20 @@ export class Viewer {
     public async loadObjWithMtl(
         objUrl: string,
         mtlUrl: string,
-        withVertexColors: boolean,
-        defaultBackground : string) {
+        overrides: any) {
         this.mtlLoader.loadAsync(mtlUrl).then((materials) => {
             materials.preload();
             this.objLoader.setMaterials(materials);
             this.objLoader.loadAsync(objUrl).then((objData) => {
                 this.loadedModel = objData;
-                if (!defaultBackground) {
-                    defaultBackground = "#000000";
+
+                let defaultBackgroundColor = overrides["defaultBackgroundColor"];
+                if (!defaultBackgroundColor) {
+                    defaultBackgroundColor = "#000000";
                 }
-                this.defaultBackgroundColor = new THREE.Color(defaultBackground);
+                this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
+
+                let withVertexColors = overrides["withVertexColors"];
                 if (withVertexColors) {
                     this.setAllVertexColors(this.loadedModel);
                 }
