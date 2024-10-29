@@ -52675,7 +52675,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         if (loadEnvironment) await this.assignEnvironment(sceneGltf.scene);
         if (tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         this.loadedModel = sceneGltf.scene;
-        let defaultBackgroundColor = overrides["defaultBackgroundColor"];
+        let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
         this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
         this.initializeScene();
@@ -52690,7 +52690,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         // this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         }
         this.loadedModel = sceneGltf.scene;
-        let defaultBackgroundColor = overrides["defaultBackgroundColor"];
+        let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
         this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
         this.initializeScene();
@@ -52712,10 +52712,10 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     async loadObj(url, overrides) {
         this.objLoader.loadAsync(url).then((objData)=>{
             this.loadedModel = objData;
-            let defaultBackgroundColor = overrides["defaultBackgroundColor"];
+            let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
             if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
             this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
-            let withVertexColors = overrides["withVertexColors"];
+            let withVertexColors = overrides?.["withVertexColors"];
             if (withVertexColors) this.setAllVertexColors(this.loadedModel);
             this.initializeScene();
         });
@@ -52726,10 +52726,10 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             this.objLoader.setMaterials(materials);
             this.objLoader.loadAsync(objUrl).then((objData)=>{
                 this.loadedModel = objData;
-                let defaultBackgroundColor = overrides["defaultBackgroundColor"];
+                let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
                 if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
                 this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
-                let withVertexColors = overrides["withVertexColors"];
+                let withVertexColors = overrides?.["withVertexColors"];
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                 this.initializeScene();
             });
