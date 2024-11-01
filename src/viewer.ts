@@ -203,6 +203,7 @@ export class Viewer {
     private sceneCamera: THREE.PerspectiveCamera;
     private cameraControls: CameraControls;
     private loadedModel?: THREE.Object3D;
+    private sceneGltf?: GLTF;
     private sketchBoundingBox?: THREE.Box3;
     private sketchMetadata?: SketchMetadata;
     private defaultBackgroundColor: Color; // Used if no environment sky is set
@@ -263,29 +264,6 @@ export class Viewer {
         this.icosa_frame.appendChild( ARButton.createButton( renderer ) );
         
         const clock = new THREE.Clock();
-        
-        const fov = 75;
-        const aspect = 2;  
-        const near = 0.1;
-        const far = 1000;
-        const flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        flatCamera.position.set(10, 10, 10);
-
-        CameraControls.install({ THREE: THREE });
-        this.cameraControls = new CameraControls(flatCamera, canvas);
-        this.cameraControls.dampingFactor = 0.1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
-        this.cameraControls.setTarget(0, 0, 0);
-        this.cameraControls.dollyTo(3, true);
-
-        flatCamera.updateProjectionMatrix();
-
-        this.sceneCamera = flatCamera;
-
-        const xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        xrCamera.updateProjectionMatrix();
-
-        setupNavigation(this.cameraControls);
 
         this.scene = new THREE.Scene();
         this.three = THREE;
@@ -329,6 +307,31 @@ export class Viewer {
             // requestAnimationFrame( animate );
             // composer.render();
         }
+
+        const fov = 75;
+        const aspect = 2;
+        const near = 0.1;
+        const far = 1000;
+        const flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        flatCamera.position.set(10, 10, 10);
+
+        CameraControls.install({ THREE: THREE });
+        this.cameraControls = new CameraControls(flatCamera, canvas);
+        this.cameraControls.dampingFactor = 0.1;
+        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+        this.cameraControls.setTarget(0, 0, 0);
+        this.cameraControls.dollyTo(3, true);
+
+        flatCamera.updateProjectionMatrix();
+
+        this.sceneCamera = flatCamera;
+
+        const xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        xrCamera.updateProjectionMatrix();
+
+        setupNavigation(this.cameraControls);
+
+
 
         function render() {
 
@@ -428,6 +431,7 @@ export class Viewer {
         this.initSceneBackground();
         this.initFog();
         this.initSceneLights();
+        this.initSceneCameras();
 
         this.scene.add(this.loadedModel);
 
@@ -1850,12 +1854,16 @@ export class Viewer {
         if (loadEnvironment) {
             await this.assignEnvironment(sceneGltf.scene);
         }
+
+        // TODO
         if (tiltUrl) {
             console.log(tiltUrl);
             console.log(this.tiltLoader.loadAsync(tiltUrl));
             // this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         }
+
         this.loadedModel = sceneGltf.scene;
+        this.sceneGltf = sceneGltf;
         let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) {
             defaultBackgroundColor = "#000000";
@@ -1987,6 +1995,10 @@ export class Viewer {
         let sketchMetaData = new SketchMetadata(model);
         this.sketchBoundingBox = new THREE.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
+    }
+
+    private initSceneCameras() {
+        console.log(this);
     }
 
     private initSceneLights() {
