@@ -47865,7 +47865,7 @@ class $5a163a5102e7cfa5$export$2b011a5b12963d65 {
     afterRoot(glTF) {
         const parser = this.parser;
         const json = parser.json;
-        // if (!json.extensionsUsed || !json.extensionsUsed.includes(this.name)) return null;
+        if (!json.extensionsUsed || !json.extensionsUsed.includes(this.name)) return null;
         const shaderResolves = [];
         //const extensionDef = json.exensions[this.name];
         for (const scene of glTF.scenes)scene.traverse(async (object)=>{
@@ -47875,7 +47875,6 @@ class $5a163a5102e7cfa5$export$2b011a5b12963d65 {
             mesh.primitives.forEach((prim)=>{
                 if (!prim.material) return;
                 const mat = json.materials[prim.material];
-                console.log(json.materials[prim.material]);
                 if (!mat.extensions || !mat.extensions[this.name]) return;
                 const guid = mat.extensions.GOOGLE_tilt_brush_material.guid;
                 shaderResolves.push(this.replaceMaterial(object, guid));
@@ -49664,8 +49663,11 @@ class $a970d3af3e0e453f$var$GLTFParser {
                     if (shader.uri === "https://vr.google.com/shaders/w/glassFS.glsl") return $a970d3af3e0e453f$var$GLASSFS_GLSL;
                     if (shader.uri === "https://vr.google.com/shaders/w/gemVS.glsl") return $a970d3af3e0e453f$var$GEMVS_GLSL;
                     if (shader.uri === "https://vr.google.com/shaders/w/gemFS.glsl") return $a970d3af3e0e453f$var$GEMFS_GLSL;
+                    let shaderPath = "https://icosa-foundation.github.io/icosa-sketch-assets/";
                     // Catch anything else - it would give a CORS error in any case
-                    let url = shader.uri.replace("https://vr.google.com/shaders/w/", "");
+                    let url = shader.uri.replace("https://vr.google.com/shaders/w/", shaderPath);
+                    url = url.replace(/https:\/\/web\.archive\.org\/web\/\d+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
+                    url = url.replace("https://www.tiltbrush.com/shaders/", shaderPath);
                     loader.load($a970d3af3e0e453f$var$resolveURL(url, options.path), function(shaderText) {
                         resolve(shaderText);
                     });
@@ -49737,7 +49739,8 @@ class $a970d3af3e0e453f$var$GLTFParser {
             return $a970d3af3e0e453f$var$_each(json.textures, function(texture) {
                 if (texture.source) return new Promise(function(resolve) {
                     var source = json.images[texture.source];
-                    var sourceUri = source.uri;
+                    // TODO Make this configurable
+                    var sourceUri = source.uri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
                     var isObjectURL = false;
                     if (source.extensions && source.extensions[$a970d3af3e0e453f$var$EXTENSIONS.KHR_BINARY_GLTF]) {
                         var metadata = source.extensions[$a970d3af3e0e453f$var$EXTENSIONS.KHR_BINARY_GLTF];
@@ -51162,25 +51165,6 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         renderer.xr.enabled = true;
         this.icosa_frame.appendChild((0, $b7721239befbfb57$export$bceabe50fbd2cfb6).createButton(renderer));
         const clock = new $ea01ff4a5048cd08$exports.Clock();
-        const fov = 75;
-        const aspect = 2;
-        const near = 0.1;
-        const far = 1000;
-        const flatCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
-        flatCamera.position.set(10, 10, 10);
-        (0, $21a563bed1f3e202$export$2e2bcd8739ae039).install({
-            THREE: $ea01ff4a5048cd08$exports
-        });
-        this.cameraControls = new (0, $21a563bed1f3e202$export$2e2bcd8739ae039)(flatCamera, canvas);
-        this.cameraControls.dampingFactor = 0.1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
-        this.cameraControls.setTarget(0, 0, 0);
-        this.cameraControls.dollyTo(3, true);
-        flatCamera.updateProjectionMatrix();
-        this.sceneCamera = flatCamera;
-        const xrCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
-        xrCamera.updateProjectionMatrix();
-        (0, $7a53d4f4e33d695e$export$fc22e28a11679cb8)(this.cameraControls);
         this.scene = new $ea01ff4a5048cd08$exports.Scene();
         this.three = $ea01ff4a5048cd08$exports;
         const viewer = this;
@@ -51211,6 +51195,25 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         // requestAnimationFrame( animate );
         // composer.render();
         }
+        const fov = 75;
+        const aspect = 2;
+        const near = 0.1;
+        const far = 1000;
+        const flatCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
+        flatCamera.position.set(10, 10, 10);
+        (0, $21a563bed1f3e202$export$2e2bcd8739ae039).install({
+            THREE: $ea01ff4a5048cd08$exports
+        });
+        this.cameraControls = new (0, $21a563bed1f3e202$export$2e2bcd8739ae039)(flatCamera, canvas);
+        this.cameraControls.dampingFactor = 0.1;
+        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+        this.cameraControls.setTarget(0, 0, 0);
+        this.cameraControls.dollyTo(3, true);
+        flatCamera.updateProjectionMatrix();
+        this.sceneCamera = flatCamera;
+        const xrCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
+        xrCamera.updateProjectionMatrix();
+        (0, $7a53d4f4e33d695e$export$fc22e28a11679cb8)(this.cameraControls);
         function render() {
             const delta = clock.getDelta();
             if (renderer.xr.isPresenting) viewer.sceneCamera = xrCamera;
@@ -51285,6 +51288,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.initSceneBackground();
         this.initFog();
         this.initSceneLights();
+        this.initSceneCameras();
         this.scene.add(this.loadedModel);
         // Setup camera to center model
         const box = this.sketchBoundingBox;
@@ -52684,12 +52688,14 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         const sceneGltf = await this.gltfLoader.loadAsync(url);
         this.setupSketchMetaData(sceneGltf.scene);
         if (loadEnvironment) await this.assignEnvironment(sceneGltf.scene);
+        // TODO
         if (tiltUrl) {
             console.log(tiltUrl);
             console.log(this.tiltLoader.loadAsync(tiltUrl));
         // this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         }
         this.loadedModel = sceneGltf.scene;
+        this.sceneGltf = sceneGltf;
         let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
         this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
@@ -52787,6 +52793,9 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         let sketchMetaData = new $3c43f222267ed54b$var$SketchMetadata(model);
         this.sketchBoundingBox = new $ea01ff4a5048cd08$exports.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
+    }
+    initSceneCameras() {
+        console.log(this);
     }
     initSceneLights() {
         // Logic for scene light creation:
