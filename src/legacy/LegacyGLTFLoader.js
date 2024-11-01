@@ -976,8 +976,11 @@ class GLTFParser {
                     if (shader.uri === 'https://vr.google.com/shaders/w/gemVS.glsl') {return GEMVS_GLSL}
                     if (shader.uri === 'https://vr.google.com/shaders/w/gemFS.glsl') {return GEMFS_GLSL}
 
+                    let shaderPath = "https://icosa-foundation.github.io/icosa-sketch-assets/"
                     // Catch anything else - it would give a CORS error in any case
-                    let url = shader.uri.replace("https://vr.google.com/shaders/w/", "");
+                    let url = shader.uri.replace("https://vr.google.com/shaders/w/", shaderPath);
+                    url = url.replace(/https:\/\/web\.archive\.org\/web\/\d+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
+                    url = url.replace('https://www.tiltbrush.com/shaders/', shaderPath);
 
                     loader.load( resolveURL( url, options.path ), function ( shaderText ) {
 
@@ -1118,7 +1121,10 @@ class GLTFParser {
                     return new Promise( function ( resolve ) {
 
                         var source = json.images[ texture.source ];
-                        var sourceUri = source.uri;
+
+                        // TODO Make this configurable
+                        var sourceUri = source.uri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
+
                         var isObjectURL = false;
 
                         if ( source.extensions && source.extensions[ EXTENSIONS.KHR_BINARY_GLTF ] ) {
