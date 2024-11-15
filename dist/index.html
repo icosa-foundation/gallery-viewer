@@ -44,11 +44,14 @@
                 let formats = json.formats;
                 for (const format of formats) {
                     if (format.formatType === "GLTF2") {
+                        console.log(`Loading GLTF2 ${format.root.url}`);
                         await viewer.loadGltf(format.root.url, true, overrides);
+                        break;
                     } else if (format.formatType === "GLTF") {
+                        console.log(`Loading GLTF1 ${format.root.url}`);
                         await viewer.loadGltf1(format.root.url, true, overrides);
+                        break;
                     }
-                    break;
                 }
             } else {
                 await viewer.loadGltf1("https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/0F3ek3idOaX/sketch.gltf", true, overrides);
