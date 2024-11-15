@@ -21,6 +21,8 @@ import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 import { ARButton } from 'three/examples/jsm/webxr/ARButton.js';
+import { XRButton } from 'three/examples/jsm/webxr/XRButton.js';
+import { GLTFGoogleTiltBrushTechniquesExtension } from 'three-icosa';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
 import * as holdEvent from "hold-event";
@@ -199,11 +201,16 @@ export class Viewer {
     private texturePath: URL;
     private environmentPath: URL;
     private scene : THREE.Scene;
+    private canvas : HTMLCanvasElement;
 
-    private sceneCamera: THREE.PerspectiveCamera;
+    private activeCamera: THREE.PerspectiveCamera;
+    private flatCamera: THREE.PerspectiveCamera;
+    private xrCamera: THREE.PerspectiveCamera;
     private cameraControls: CameraControls;
     private loadedModel?: THREE.Object3D;
     private sceneGltf?: GLTF;
+    public environmentObject?: Object3D;
+    public skyObject?: Object3D;
     private sketchBoundingBox?: THREE.Box3;
     private sketchMetadata?: SketchMetadata;
     private defaultBackgroundColor: Color; // Used if no environment sky is set
@@ -246,23 +253,6 @@ export class Viewer {
             }
         });
 
-        const canvas = document.createElement('canvas') as HTMLCanvasElement;
-        canvas.id = 'c';
-        this.icosa_frame.appendChild(canvas);
-        canvas.onmousedown = () => { canvas.classList.add('grabbed'); }
-        canvas.onmouseup = () => { canvas.classList.remove('grabbed'); }
-
-        const renderer = new THREE.WebGLRenderer({
-            canvas : canvas,
-            antialias: true
-        });
-
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-        renderer.xr.enabled = true;
-        this.icosa_frame.appendChild( ARButton.createButton( renderer ) );
-        
         const clock = new THREE.Clock();
 
         this.scene = new THREE.Scene();
@@ -294,13 +284,148 @@ export class Viewer {
 
         this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
-        this.gltfLoader.register(
-            parser => new GLTFGoogleTiltBrushMaterialExtension(parser, this.brushPath.toString())
-        );
+        // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
+        this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, this.brushPath.toString()));
 
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
         this.gltfLoader.setDRACOLoader(dracoLoader);
+
+        this.canvas = document.createElement('canvas') as HTMLCanvasElement;
+        this.canvas.id = 'c';
+        this.icosa_frame.appendChild(this.canvas);
+        this.canvas.onmousedown = () => { this.canvas.classList.add('grabbed'); }
+        this.canvas.onmouseup = () => { this.canvas.classList.remove('grabbed'); }
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas : this.canvas,
+            antialias: true
+        });
+
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // TODO linear/gamma selection
+        if (false) {
+            renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+        } else {
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+        }
+
+        renderer.xr.enabled = true;
+
+        // TODO - custom AR/XR button
+
+        // let xrArButton = document.createElement("button");
+        // xrArButton.innerHTML = "Enter AR/VR";
+        // this.icosa_frame.appendChild(xrArButton);
+        //
+        // xrArButton.style.cursor = "pointer";
+        // xrArButton.style.position = "absolute";
+        // xrArButton.style.bottom = "20px";
+        // xrArButton.style.padding = "12px 6px";
+        // xrArButton.style.border = "1px solid rgb(255, 255, 255)";
+        // xrArButton.style.borderRadius = "4px";
+        // xrArButton.style.background = "rgba(0, 0, 0, 0.1)";
+        // xrArButton.style.color = "rgb(255, 255, 255)";
+        // xrArButton.style.font = "13px sans-serif";
+        // xrArButton.style.textAlign = "center";
+        // xrArButton.style.opacity = "0.5";
+        // xrArButton.style.outline = "none";
+        // xrArButton.style.zIndex = "999";
+        // xrArButton.style.cursor = "auto";
+        // xrArButton.style.left = "calc(50% - 75px)";
+        // xrArButton.style.width = "150px";
+        //
+        // let supportsAR = false;
+        // let supportsVR = false;
+        //
+        // if (navigator.xr && navigator.xr.isSessionSupported) {
+        //     navigator.xr.isSessionSupported('immersive-ar').then((arSupported) => {
+        //         supportsAR = arSupported;
+        //         updateButtonText();
+        //     });
+        //     navigator.xr.isSessionSupported('immersive-vr').then((vrSupported) => {
+        //         supportsVR = vrSupported;
+        //         updateButtonText();
+        //     });
+        // } else {
+        //     xrArButton.innerHTML = "WebXR not available";
+        // }
+        //
+        // function updateButtonText() {
+        //     xrArButton.disabled = false;
+        //     if (supportsAR && supportsVR) {
+        //         xrArButton.innerHTML = "Enter AR/VR";
+        //     } else if (supportsAR) {
+        //         xrArButton.innerHTML = "Enter AR";
+        //     } else if (supportsVR) {
+        //         xrArButton.innerHTML = "Enter VR";
+        //     } else {
+        //         xrArButton.innerHTML = "AR/VR not supported";
+        //         // xrArButton.disabled = true;
+        //     }
+        // }
+        //
+        // xrArButton.addEventListener("mouseover", function () {
+        //     xrArButton.style.background = "rgba(0, 0, 0, 0.2)";
+        //     xrArButton.style.opacity = "1";
+        //     xrArButton.style.cursor = "pointer";
+        // });
+        //
+        // xrArButton.addEventListener("mouseout", function () {
+        //     xrArButton.style.background = "rgba(0, 0, 0, 0.1)";
+        //     xrArButton.style.opacity = "0.8";
+        // });
+        //
+        // xrArButton.addEventListener("mousedown", function () {
+        //     xrArButton.style.transform = "scale(0.95)"; // Scale down slightly
+        //     xrArButton.style.background = "rgba(0, 0, 0, 0.3)"; // Darker background
+        // });
+        //
+        // xrArButton.addEventListener("mouseup", function () {
+        //     xrArButton.style.transform = "scale(1)"; // Reset scale
+        //     xrArButton.style.background = "rgba(0, 0, 0, 0.2)"; // Reset to hover background
+        // });
+        //
+        // xrArButton.addEventListener("click", () => {
+        //
+        //     console.log("XR button clicked");
+        //
+        //     const sessionOptions : XRSessionInit = {
+        //         optionalFeatures: [
+        //             'local-floor',
+        //             'bounded-floor',
+        //             'layers'
+        //         ],
+        //     };
+        //
+        //     if (navigator.xr && navigator.xr.isSessionSupported) {
+        //         navigator.xr.isSessionSupported('immersive-ar').then((supportsAR) => {
+        //             navigator.xr.isSessionSupported('immersive-vr').then((supportsVR) => {
+        //                 if (supportsAR) {
+        //                     ARButton.createButton(renderer);
+        //                     navigator.xr.requestSession( "immersive-ar", sessionOptions )
+        //                 } else if (supportsVR) {
+        //                     XRButton.createButton(renderer);
+        //                     navigator.xr.requestSession( "immersive-vr", sessionOptions )
+        //                 } else {
+        //                     console.log("AR/VR not supported on this device");
+        //                 }
+        //             });
+        //         });
+        //     } else {
+        //         console.log("WebXR not available");
+        //     }
+        // });
+
+        let xrButton = XRButton.createButton( renderer );
+        this.icosa_frame.appendChild(xrButton);
+        // xrButton.style.left = `${parseInt(window.getComputedStyle(xrButton).left, 10) - 150}px`;
+
+        // let arButton = ARButton.createButton( renderer );
+        // this.icosa_frame.appendChild( arButton );
+        // arButton.style.left = `${parseInt(window.getComputedStyle(arButton).left, 10) + 150}px`;
+
 
         function animate() {
             renderer.setAnimationLoop(render);
@@ -308,51 +433,26 @@ export class Viewer {
             // composer.render();
         }
 
-        const fov = 75;
-        const aspect = 2;
-        const near = 0.1;
-        const far = 1000;
-        const flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        flatCamera.position.set(10, 10, 10);
-
-        CameraControls.install({ THREE: THREE });
-        this.cameraControls = new CameraControls(flatCamera, canvas);
-        this.cameraControls.dampingFactor = 0.1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
-        this.cameraControls.setTarget(0, 0, 0);
-        this.cameraControls.dollyTo(3, true);
-
-        flatCamera.updateProjectionMatrix();
-
-        this.sceneCamera = flatCamera;
-
-        const xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        xrCamera.updateProjectionMatrix();
-
-        setupNavigation(this.cameraControls);
-
-
-
         function render() {
 
             const delta = clock.getDelta();
             
-            if(renderer.xr.isPresenting) {
-                viewer.sceneCamera = xrCamera;
+            if (renderer.xr.isPresenting) {
+                viewer.activeCamera = viewer?.xrCamera;
             } else {
-                viewer.sceneCamera = flatCamera;
-
-                const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
-                if (needResize) {
-                    renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-                    flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
-                    flatCamera.updateProjectionMatrix();
+                viewer.activeCamera = viewer?.flatCamera;
+                const needResize = viewer.canvas.width !== viewer.canvas.clientWidth || viewer.canvas.height !== viewer.canvas.clientHeight;
+                if (needResize && viewer?.flatCamera) {
+                    renderer.setSize(viewer.canvas.clientWidth, viewer.canvas.clientHeight, false);
+                    viewer.flatCamera.aspect = viewer.canvas.clientWidth / viewer.canvas.clientHeight;
+                    viewer.flatCamera.updateProjectionMatrix();
                 }
-
-                viewer.cameraControls.update(delta);
+                if (viewer?.cameraControls) viewer.cameraControls.update(delta);
             }
 
-            renderer.render(viewer.scene, viewer.sceneCamera);
+            if (viewer?.activeCamera) {
+                renderer.render(viewer.scene, viewer.activeCamera);
+            }
         }
 
         this.dataURLtoBlob = (dataURL : string) => {
@@ -388,7 +488,7 @@ export class Viewer {
             // thumbnailRenderer.toneMapping = renderer.toneMapping;
             // thumbnailRenderer.shadowMap.enabled = renderer.shadowMap.enabled;
 
-            thumbnailRenderer.render(this.scene, this.sceneCamera);
+            thumbnailRenderer.render(this.scene, this.activeCamera);
             const dataUrl = canvas.toDataURL('image/png');
 
             thumbnailRenderer.dispose();
@@ -396,7 +496,6 @@ export class Viewer {
 
             return dataUrl;
         };
-
 
         animate();
     }
@@ -422,7 +521,11 @@ export class Viewer {
         }
     }
 
-    private initializeScene() {
+    private initializeScene(overrides : any) {
+
+        let defaultBackgroundColor : string = overrides?.["defaultBackgroundColor"];
+        if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
+        this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
 
         if(!this.loadedModel)
             return;
@@ -430,25 +533,9 @@ export class Viewer {
         this.scene.clear();
         this.initSceneBackground();
         this.initFog();
-        this.initSceneLights();
-        this.initSceneCameras();
-
+        this.initLights();
+        this.initCameras(overrides?.camera);
         this.scene.add(this.loadedModel);
-
-        // Setup camera to center model
-        const box = this.sketchBoundingBox;
-        if (box != undefined && box != null) {
-            const boxSize = box.getSize(new THREE.Vector3()).length();
-            const boxCenter = box.getCenter(new THREE.Vector3());
-
-            this.cameraControls.minDistance = boxSize * 0.01;
-            this.cameraControls.maxDistance = boxSize * 10;
-
-            const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
-            this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-            this.cameraControls.dollyTo(midDistance, true);
-            this.cameraControls.saveState();
-        }
     }
 
     static lookupEnvironment(guid : string) {
@@ -1821,61 +1908,35 @@ export class Viewer {
         }[guid];
     }
 
-    public async loadGltf1(
-            url : string, loadEnvironment : boolean,
-            overrides : any,
-            tiltUrl: string) {
-
-        const sceneGltf : GLTF = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
-        await replaceBrushMaterials(this.brushPath.toString(), <Object3D>sceneGltf.scene);
-        this.setupSketchMetaData(sceneGltf.scene);
-        if (loadEnvironment) {
-            await this.assignEnvironment(sceneGltf.scene);
-        }
-        if (tiltUrl) {
-            this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
-        }
-        this.loadedModel = sceneGltf.scene;
-        let defaultBackgroundColor : string = overrides?.["defaultBackgroundColor"];
-        if (!defaultBackgroundColor) {
-            defaultBackgroundColor = "#000000";
-        }
-        this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
-        this.initializeScene();
+    public async loadGltf1(url : string, loadEnvironment : boolean, overrides : any) {
+        await this._loadGltf(url, loadEnvironment, overrides, true);
     }
 
-    public async loadGltf(
-            url: string, loadEnvironment : boolean,
-            overrides : any,
-            tiltUrl: string) {
+    public async loadGltf(url : string, loadEnvironment : boolean, overrides : any) {
+        await this._loadGltf(url, loadEnvironment, overrides, false);
+    }
 
-        const sceneGltf : GLTF = await this.gltfLoader.loadAsync(url);
+    private async _loadGltf(url : string, loadEnvironment : boolean, overrides : any, isV1: boolean) {
+        let sceneGltf : GLTF;
+        if (isV1) {
+            sceneGltf = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
+            replaceBrushMaterials(this.brushPath.toString(), <Object3D>sceneGltf.scene);
+        } else {
+            sceneGltf = <GLTF>await this.gltfLoader.loadAsync(url);
+        }
+
         this.setupSketchMetaData(sceneGltf.scene);
-        if (loadEnvironment) {
-            await this.assignEnvironment(sceneGltf.scene);
-        }
-
-        // TODO
-        if (tiltUrl) {
-            console.log(tiltUrl);
-            console.log(this.tiltLoader.loadAsync(tiltUrl));
-            // this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
-        }
-
+        if (loadEnvironment) {await this.assignEnvironment(sceneGltf.scene);}
+        if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
-        let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-        if (!defaultBackgroundColor) {
-            defaultBackgroundColor = "#000000";
-        }
-        this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
-        this.initializeScene();
+        this.initializeScene(overrides);
     }
 
-    public async loadTilt(url: string) {
+    public async loadTilt(url: string, overrides : any) {
         const tiltData = await this.tiltLoader.loadAsync(url);
         this.loadedModel = tiltData;
-        this.initializeScene();
+        this.initializeScene(overrides);
     }
 
     private setAllVertexColors(model : Object3D<THREE.Object3DEventMap>) {
@@ -1891,32 +1952,25 @@ export class Viewer {
     }
 
     // Defaults to assuming materials are vertex colored
-    public async loadObj(
-        url: string,
-        overrides: any
-    ) {
+    public async loadObj(url: string, overrides: any) {
+
         this.objLoader.loadAsync(url).then((objData) => {
 
             this.loadedModel = objData;
 
             let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-            if (!defaultBackgroundColor) {
-                defaultBackgroundColor = "#000000";
-            }
+            if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
             this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
 
             let withVertexColors = overrides?.["withVertexColors"];
             if (withVertexColors) {
                 this.setAllVertexColors(this.loadedModel);
             }
-            this.initializeScene();
+            this.initializeScene(overrides);
         });
     }
 
-    public async loadObjWithMtl(
-        objUrl: string,
-        mtlUrl: string,
-        overrides: any) {
+    public async loadObjWithMtl(objUrl: string, mtlUrl: string, overrides: any) {
         this.mtlLoader.loadAsync(mtlUrl).then((materials) => {
             materials.preload();
             this.objLoader.setMaterials(materials);
@@ -1924,24 +1978,22 @@ export class Viewer {
                 this.loadedModel = objData;
 
                 let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-                if (!defaultBackgroundColor) {
-                    defaultBackgroundColor = "#000000";
-                }
+                if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
                 this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
 
                 let withVertexColors = overrides?.["withVertexColors"];
                 if (withVertexColors) {
                     this.setAllVertexColors(this.loadedModel);
                 }
-                this.initializeScene();
+                this.initializeScene(overrides);
             });
         });
     }
 
-    public async loadFbx(url: string) {
+    public async loadFbx(url: string, overrides : any) {
         const fbxData = await this.fbxLoader.loadAsync(url);
         this.loadedModel = fbxData;
-        this.initializeScene();
+        this.initializeScene(overrides);
     }
 
     private async assignEnvironment(scene : Object3D<THREE.Object3DEventMap>) {
@@ -1952,21 +2004,23 @@ export class Viewer {
             envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
             envGltf.scene.scale.set(.1, .1, .1);
             scene.attach(envGltf.scene);
+            this.environmentObject = envGltf.scene;
         }
     }
 
     public generateGradientSky(colorA: THREE.Color, colorB: THREE.Color, direction : THREE.Vector3) : THREE.Mesh
     {
         const canvas = document.createElement('canvas');
-        canvas.width = 2;
-        canvas.height = 512;
+        canvas.id = "skyCanvas";
+        canvas.width = 1;
+        canvas.height = 256;
         const context = canvas.getContext('2d');
 
-        const gradient = context.createLinearGradient(0, 0, 0, 512);
-        gradient.addColorStop(0, colorA.getStyle());
-        gradient.addColorStop(1, colorB.getStyle());
+        const gradient = context.createLinearGradient(0, 0, 0, 256);
+        gradient.addColorStop(0, colorB.convertSRGBToLinear().getStyle());
+        gradient.addColorStop(1, colorA.convertSRGBToLinear().getStyle());
         context.fillStyle = gradient;
-        context.fillRect(0, 0, 2, 512);
+        context.fillRect(0, 0, 1, 256);
 
         const texture = new THREE.CanvasTexture(canvas);
         texture.wrapS = THREE.RepeatWrapping;
@@ -1981,8 +2035,11 @@ export class Viewer {
     }
 
     public generateSkyGeometry(texture: THREE.Texture, direction: THREE.Vector3) : THREE.Mesh {
+        texture.colorSpace = THREE.SRGBColorSpace;
         const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
-        const geometry = new THREE.SphereGeometry(500, 64, 64);
+        material.fog = false;
+        material.toneMapped = false;
+        const geometry = new THREE.SphereGeometry(200, 64, 64);
         const skysphere = new THREE.Mesh(geometry, material);
         skysphere.name = "sky"
         const defaultUp = new THREE.Vector3(0, 1, 0);
@@ -1997,11 +2054,56 @@ export class Viewer {
         this.sketchMetadata = sketchMetaData;
     }
 
-    private initSceneCameras() {
-        console.log(this);
+    private initCameras(cameraOverrides : any) {
+
+        let hasCameraMetadata = cameraOverrides?.GOOGLE_camera_settings?.pivot;
+        let cameraTarget = hasCameraMetadata || [0, 0, 0];
+        // let hasCameraMetadata = (cameraOverrides && Object.keys(cameraOverrides).length > 0);
+
+        const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
+        const aspect = 2;
+        const near = cameraOverrides?.perspective?.znear || 0.1;
+        const far = 1000;
+        this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+        let pos = cameraOverrides?.translation || [1, 1, 1];
+        this.flatCamera.position.set(pos[0], pos[1], pos[2]);
+
+        CameraControls.install({THREE: THREE});
+        this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
+        this.cameraControls.dampingFactor = 0.1;
+        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+
+        this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2]);
+
+        this.flatCamera.updateProjectionMatrix();
+        this.activeCamera = this.flatCamera;
+
+        this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        this.xrCamera.updateProjectionMatrix();
+
+        setupNavigation(this.cameraControls);
+
+        if (!hasCameraMetadata) {
+
+            // Setup camera to center model
+            const box = this.sketchBoundingBox;
+            if (box != undefined && box != null) {
+                const boxSize = box.getSize(new THREE.Vector3()).length();
+                const boxCenter = box.getCenter(new THREE.Vector3());
+
+                this.cameraControls.minDistance = boxSize * 0.01;
+                this.cameraControls.maxDistance = boxSize * 10;
+
+                const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
+                this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+                this.cameraControls.dollyTo(midDistance, true);
+                this.cameraControls.saveState();
+            }
+        }
     }
 
-    private initSceneLights() {
+    private initLights() {
         // Logic for scene light creation:
         // 1. Are there explicit GLTF scene lights? If so use them and skip the rest
         // 2. Are there dummy transforms in the GLTF that represent scene lights? If so use them in preference.
@@ -2073,8 +2175,10 @@ export class Viewer {
                 this.sketchMetadata.SkyTexture
             );
         }
+
         if (sky !== null) {
             this.loadedModel?.add(sky as Object3D<THREE.Object3DEventMap>);
+            this.skyObject = sky;
         } else {
             // Use the default background color if there's no sky
             this.scene.background = this.defaultBackgroundColor;
