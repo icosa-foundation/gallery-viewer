@@ -38,6 +38,7 @@
 
             // grab the asset id from the location url parameters
             let urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has("asset")) {
             const gui = new GUI( );
 
             const settings = {
