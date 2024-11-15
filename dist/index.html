@@ -40,6 +40,7 @@
             let urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has("asset")) {
                 let assetId = urlParams.get("asset");
+                let metadataJson = await fetch(`https://api.icosa.gallery/v1/assets/${assetId}`);
             const gui = new GUI( );
 
             const settings = {
