@@ -32,8 +32,8 @@ export async function replaceBrushMaterials(brushPath: string, model: Object3D):
         if(object.type === "Mesh") {
             const mesh = <Mesh> object;
             var shader : RawShaderMaterial;
-            const targetFilter = "brush_" + mesh.name.split('_')[1];
-
+            let targetFilter = mesh.name.split('_')[1];
+            targetFilter = "brush_" + targetFilter.split('-')[0];
             switch(targetFilter) {
                 case "brush_BlocksBasic":
                     mesh.geometry.name = "geometry_BlocksBasic";

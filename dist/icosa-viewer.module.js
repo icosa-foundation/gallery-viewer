@@ -50329,7 +50329,8 @@ async function $fcb47f08b3ea937b$export$d51cb1093e099859(brushPath, model) {
         if (object.type === "Mesh") {
             const mesh = object;
             var shader;
-            const targetFilter = "brush_" + mesh.name.split("_")[1];
+            let targetFilter = mesh.name.split("_")[1];
+            targetFilter = "brush_" + targetFilter.split("-")[0];
             switch(targetFilter){
                 case "brush_BlocksBasic":
                     mesh.geometry.name = "geometry_BlocksBasic";
