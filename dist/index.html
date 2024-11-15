@@ -30,7 +30,6 @@
             window.viewer = viewer;
             window.THREE = three;
 
-                "camera": presentationParams.camera
             };
 
             let urlParams = new URLSearchParams(window.location.search);
@@ -55,6 +54,7 @@
             } else {
                 // Just some arbitrary values - not matching the actual asset
                 let presentationParams = {"camera": {"type": "perspective", "rotation": [-0.1462917120878683, 0.2306854792441933, 0.03510497024615985, 0.9613275121956582], "perspective": {"yfov": 0, "znear": 0.1}, "translation": [1.586311936378479, 2.004192590713501, 3.153336048126221], "GOOGLE_camera_settings": null}, "colorSpace": "GAMMA", "backgroundColor": "#000000", "GOOGLE_hemi_light": null, "orientingRotation": {"w": 1}, "GOOGLE_backgrounds": {"color": [0, 0, 0]}, "GOOGLE_lighting_rig": null, "GOOGLE_geometry_data": null, "GOOGLE_scene_rotation": null, "GOOGLE_lights_image_based": null, "GOOGLE_real_world_transform": {"scaling_factor": 1}, "GOOGLE_initial_camera_motion": null};
+                await viewer.loadGltf1("https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/0F3ek3idOaX/sketch.gltf", true, {"camera": presentationParams.camera});
             }
             const gui = new GUI( );
 
