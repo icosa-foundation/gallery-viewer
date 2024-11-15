@@ -43294,49 +43294,20 @@ function $4299b50047f4476c$var$slice(a, b, from, to) {
 }
 
 
-class $b7721239befbfb57$export$bceabe50fbd2cfb6 {
+class $19bbca7b906db3b1$export$d1c1e163c7960c6 {
     static createButton(renderer, sessionInit = {}) {
         const button = document.createElement("button");
-        function showStartAR() {
-            if (sessionInit.domOverlay === undefined) {
-                const overlay = document.createElement("div");
-                overlay.style.display = "none";
-                document.body.appendChild(overlay);
-                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                svg.setAttribute("width", 38);
-                svg.setAttribute("height", 38);
-                svg.style.position = "absolute";
-                svg.style.right = "20px";
-                svg.style.top = "20px";
-                svg.addEventListener("click", function() {
-                    currentSession.end();
-                });
-                overlay.appendChild(svg);
-                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttribute("d", "M 12,12 L 28,28 M 28,12 12,28");
-                path.setAttribute("stroke", "#fff");
-                path.setAttribute("stroke-width", 2);
-                svg.appendChild(path);
-                if (sessionInit.optionalFeatures === undefined) sessionInit.optionalFeatures = [];
-                sessionInit.optionalFeatures.push("dom-overlay");
-                sessionInit.domOverlay = {
-                    root: overlay
-                };
-            }
-            //
+        function showStartXR(mode) {
             let currentSession = null;
             async function onSessionStarted(session) {
                 session.addEventListener("end", onSessionEnded);
-                renderer.xr.setReferenceSpaceType("local");
                 await renderer.xr.setSession(session);
-                button.textContent = "STOP AR";
-                sessionInit.domOverlay.root.style.display = "";
+                button.textContent = "STOP XR";
                 currentSession = session;
             }
             function onSessionEnded() {
                 currentSession.removeEventListener("end", onSessionEnded);
-                button.textContent = "START AR";
-                sessionInit.domOverlay.root.style.display = "none";
+                button.textContent = "START XR";
                 currentSession = null;
             }
             //
@@ -43344,7 +43315,16 @@ class $b7721239befbfb57$export$bceabe50fbd2cfb6 {
             button.style.cursor = "pointer";
             button.style.left = "calc(50% - 50px)";
             button.style.width = "100px";
-            button.textContent = "START AR";
+            button.textContent = "START XR";
+            const sessionOptions = {
+                ...sessionInit,
+                optionalFeatures: [
+                    "local-floor",
+                    "bounded-floor",
+                    "layers",
+                    ...sessionInit.optionalFeatures || []
+                ]
+            };
             button.onmouseenter = function() {
                 button.style.opacity = "1.0";
             };
@@ -43352,15 +43332,15 @@ class $b7721239befbfb57$export$bceabe50fbd2cfb6 {
                 button.style.opacity = "0.5";
             };
             button.onclick = function() {
-                if (currentSession === null) navigator.xr.requestSession("immersive-ar", sessionInit).then(onSessionStarted);
+                if (currentSession === null) navigator.xr.requestSession(mode, sessionOptions).then(onSessionStarted);
                 else {
                     currentSession.end();
-                    if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession("immersive-ar", sessionInit).then(onSessionStarted).catch((err)=>{
+                    if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
                         console.warn(err);
                     });
                 }
             };
-            if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession("immersive-ar", sessionInit).then(onSessionStarted).catch((err)=>{
+            if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
                 console.warn(err);
             });
         }
@@ -43373,14 +43353,14 @@ class $b7721239befbfb57$export$bceabe50fbd2cfb6 {
             button.onmouseleave = null;
             button.onclick = null;
         }
-        function showARNotSupported() {
+        function showXRNotSupported() {
             disableButton();
-            button.textContent = "AR NOT SUPPORTED";
+            button.textContent = "XR NOT SUPPORTED";
         }
-        function showARNotAllowed(exception) {
+        function showXRNotAllowed(exception) {
             disableButton();
             console.warn("Exception when trying to call xr.isSessionSupported", exception);
-            button.textContent = "AR NOT ALLOWED";
+            button.textContent = "XR NOT ALLOWED";
         }
         function stylizeElement(element) {
             element.style.position = "absolute";
@@ -43397,12 +43377,16 @@ class $b7721239befbfb57$export$bceabe50fbd2cfb6 {
             element.style.zIndex = "999";
         }
         if ("xr" in navigator) {
-            button.id = "ARButton";
+            button.id = "XRButton";
             button.style.display = "none";
             stylizeElement(button);
             navigator.xr.isSessionSupported("immersive-ar").then(function(supported) {
-                supported ? showStartAR() : showARNotSupported();
-            }).catch(showARNotAllowed);
+                if (supported) showStartXR("immersive-ar");
+                else navigator.xr.isSessionSupported("immersive-vr").then(function(supported) {
+                    if (supported) showStartXR("immersive-vr");
+                    else showXRNotSupported();
+                }).catch(showXRNotAllowed);
+            }).catch(showXRNotAllowed);
             return button;
         } else {
             const message = document.createElement("a");
@@ -51147,27 +51131,10 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             const opacity = window.getComputedStyle(loadscreen).opacity;
             if (parseFloat(opacity) < 0.2) loadscreen.classList.add("loaded");
         });
-        const canvas = document.createElement("canvas");
-        canvas.id = "c";
-        this.icosa_frame.appendChild(canvas);
-        canvas.onmousedown = ()=>{
-            canvas.classList.add("grabbed");
-        };
-        canvas.onmouseup = ()=>{
-            canvas.classList.remove("grabbed");
-        };
-        const renderer = new $ea01ff4a5048cd08$exports.WebGLRenderer({
-            canvas: canvas,
-            antialias: true
-        });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.outputColorSpace = $ea01ff4a5048cd08$exports.SRGBColorSpace;
-        renderer.xr.enabled = true;
-        this.icosa_frame.appendChild((0, $b7721239befbfb57$export$bceabe50fbd2cfb6).createButton(renderer));
         const clock = new $ea01ff4a5048cd08$exports.Clock();
         this.scene = new $ea01ff4a5048cd08$exports.Scene();
         this.three = $ea01ff4a5048cd08$exports;
-        const viewer = this;
+        const viewer1 = this;
         const manager = new $ea01ff4a5048cd08$exports.LoadingManager();
         manager.onStart = function() {
             document.getElementById("loadscreen")?.classList.remove("fade-out");
@@ -51186,48 +51153,155 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.fbxLoader = new (0, $4299b50047f4476c$export$60c52e42bb04b96)(manager);
         this.gltfLegacyLoader = new (0, $a970d3af3e0e453f$export$9559c3115faeb0b0)(manager);
         this.gltfLoader = new (0, $b4376e703aa0850c$export$aa93f11e7884f0f4)(manager);
+        // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
         this.gltfLoader.register((parser)=>new (0, $5a163a5102e7cfa5$export$2b011a5b12963d65)(parser, this.brushPath.toString()));
         const dracoLoader = new (0, $f955691db66a79db$export$45c25de53be259ac)();
         dracoLoader.setDecoderPath("https://www.gstatic.com/draco/v1/decoders/");
         this.gltfLoader.setDRACOLoader(dracoLoader);
+        this.canvas = document.createElement("canvas");
+        this.canvas.id = "c";
+        this.icosa_frame.appendChild(this.canvas);
+        this.canvas.onmousedown = ()=>{
+            this.canvas.classList.add("grabbed");
+        };
+        this.canvas.onmouseup = ()=>{
+            this.canvas.classList.remove("grabbed");
+        };
+        const renderer = new $ea01ff4a5048cd08$exports.WebGLRenderer({
+            canvas: this.canvas,
+            antialias: true
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.outputColorSpace = $ea01ff4a5048cd08$exports.SRGBColorSpace;
+        renderer.xr.enabled = true;
+        // TODO - custom AR/XR button
+        // let xrArButton = document.createElement("button");
+        // xrArButton.innerHTML = "Enter AR/VR";
+        // this.icosa_frame.appendChild(xrArButton);
+        //
+        // xrArButton.style.cursor = "pointer";
+        // xrArButton.style.position = "absolute";
+        // xrArButton.style.bottom = "20px";
+        // xrArButton.style.padding = "12px 6px";
+        // xrArButton.style.border = "1px solid rgb(255, 255, 255)";
+        // xrArButton.style.borderRadius = "4px";
+        // xrArButton.style.background = "rgba(0, 0, 0, 0.1)";
+        // xrArButton.style.color = "rgb(255, 255, 255)";
+        // xrArButton.style.font = "13px sans-serif";
+        // xrArButton.style.textAlign = "center";
+        // xrArButton.style.opacity = "0.5";
+        // xrArButton.style.outline = "none";
+        // xrArButton.style.zIndex = "999";
+        // xrArButton.style.cursor = "auto";
+        // xrArButton.style.left = "calc(50% - 75px)";
+        // xrArButton.style.width = "150px";
+        //
+        // let supportsAR = false;
+        // let supportsVR = false;
+        //
+        // if (navigator.xr && navigator.xr.isSessionSupported) {
+        //     navigator.xr.isSessionSupported('immersive-ar').then((arSupported) => {
+        //         supportsAR = arSupported;
+        //         updateButtonText();
+        //     });
+        //     navigator.xr.isSessionSupported('immersive-vr').then((vrSupported) => {
+        //         supportsVR = vrSupported;
+        //         updateButtonText();
+        //     });
+        // } else {
+        //     xrArButton.innerHTML = "WebXR not available";
+        // }
+        //
+        // function updateButtonText() {
+        //     xrArButton.disabled = false;
+        //     if (supportsAR && supportsVR) {
+        //         xrArButton.innerHTML = "Enter AR/VR";
+        //     } else if (supportsAR) {
+        //         xrArButton.innerHTML = "Enter AR";
+        //     } else if (supportsVR) {
+        //         xrArButton.innerHTML = "Enter VR";
+        //     } else {
+        //         xrArButton.innerHTML = "AR/VR not supported";
+        //         // xrArButton.disabled = true;
+        //     }
+        // }
+        //
+        // xrArButton.addEventListener("mouseover", function () {
+        //     xrArButton.style.background = "rgba(0, 0, 0, 0.2)";
+        //     xrArButton.style.opacity = "1";
+        //     xrArButton.style.cursor = "pointer";
+        // });
+        //
+        // xrArButton.addEventListener("mouseout", function () {
+        //     xrArButton.style.background = "rgba(0, 0, 0, 0.1)";
+        //     xrArButton.style.opacity = "0.8";
+        // });
+        //
+        // xrArButton.addEventListener("mousedown", function () {
+        //     xrArButton.style.transform = "scale(0.95)"; // Scale down slightly
+        //     xrArButton.style.background = "rgba(0, 0, 0, 0.3)"; // Darker background
+        // });
+        //
+        // xrArButton.addEventListener("mouseup", function () {
+        //     xrArButton.style.transform = "scale(1)"; // Reset scale
+        //     xrArButton.style.background = "rgba(0, 0, 0, 0.2)"; // Reset to hover background
+        // });
+        //
+        // xrArButton.addEventListener("click", () => {
+        //
+        //     console.log("XR button clicked");
+        //
+        //     const sessionOptions : XRSessionInit = {
+        //         optionalFeatures: [
+        //             'local-floor',
+        //             'bounded-floor',
+        //             'layers'
+        //         ],
+        //     };
+        //
+        //     if (navigator.xr && navigator.xr.isSessionSupported) {
+        //         navigator.xr.isSessionSupported('immersive-ar').then((supportsAR) => {
+        //             navigator.xr.isSessionSupported('immersive-vr').then((supportsVR) => {
+        //                 if (supportsAR) {
+        //                     ARButton.createButton(renderer);
+        //                     navigator.xr.requestSession( "immersive-ar", sessionOptions )
+        //                 } else if (supportsVR) {
+        //                     XRButton.createButton(renderer);
+        //                     navigator.xr.requestSession( "immersive-vr", sessionOptions )
+        //                 } else {
+        //                     console.log("AR/VR not supported on this device");
+        //                 }
+        //             });
+        //         });
+        //     } else {
+        //         console.log("WebXR not available");
+        //     }
+        // });
+        let xrButton = (0, $19bbca7b906db3b1$export$d1c1e163c7960c6).createButton(renderer);
+        this.icosa_frame.appendChild(xrButton);
+        // xrButton.style.left = `${parseInt(window.getComputedStyle(xrButton).left, 10) - 150}px`;
+        // let arButton = ARButton.createButton( renderer );
+        // this.icosa_frame.appendChild( arButton );
+        // arButton.style.left = `${parseInt(window.getComputedStyle(arButton).left, 10) + 150}px`;
         function animate() {
             renderer.setAnimationLoop(render);
         // requestAnimationFrame( animate );
         // composer.render();
         }
-        const fov = 75;
-        const aspect = 2;
-        const near = 0.1;
-        const far = 1000;
-        const flatCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
-        flatCamera.position.set(10, 10, 10);
-        (0, $21a563bed1f3e202$export$2e2bcd8739ae039).install({
-            THREE: $ea01ff4a5048cd08$exports
-        });
-        this.cameraControls = new (0, $21a563bed1f3e202$export$2e2bcd8739ae039)(flatCamera, canvas);
-        this.cameraControls.dampingFactor = 0.1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
-        this.cameraControls.setTarget(0, 0, 0);
-        this.cameraControls.dollyTo(3, true);
-        flatCamera.updateProjectionMatrix();
-        this.sceneCamera = flatCamera;
-        const xrCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
-        xrCamera.updateProjectionMatrix();
-        (0, $7a53d4f4e33d695e$export$fc22e28a11679cb8)(this.cameraControls);
         function render() {
             const delta = clock.getDelta();
-            if (renderer.xr.isPresenting) viewer.sceneCamera = xrCamera;
+            if (renderer.xr.isPresenting) viewer1.activeCamera = viewer1?.xrCamera;
             else {
-                viewer.sceneCamera = flatCamera;
-                const needResize = canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight;
-                if (needResize) {
-                    renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
-                    flatCamera.aspect = canvas.clientWidth / canvas.clientHeight;
-                    flatCamera.updateProjectionMatrix();
+                viewer1.activeCamera = viewer1?.flatCamera;
+                const needResize = viewer1.canvas.width !== viewer1.canvas.clientWidth || viewer1.canvas.height !== viewer1.canvas.clientHeight;
+                if (needResize && viewer1?.flatCamera) {
+                    renderer.setSize(viewer1.canvas.clientWidth, viewer1.canvas.clientHeight, false);
+                    viewer1.flatCamera.aspect = viewer1.canvas.clientWidth / viewer1.canvas.clientHeight;
+                    viewer1.flatCamera.updateProjectionMatrix();
                 }
-                viewer.cameraControls.update(delta);
+                if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
             }
-            renderer.render(viewer.scene, viewer.sceneCamera);
+            if (viewer1?.activeCamera) renderer.render(viewer1.scene, viewer1.activeCamera);
         }
         this.dataURLtoBlob = (dataURL)=>{
             let arr = dataURL.split(",");
@@ -51258,7 +51332,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             // Example:
             // thumbnailRenderer.toneMapping = renderer.toneMapping;
             // thumbnailRenderer.shadowMap.enabled = renderer.shadowMap.enabled;
-            thumbnailRenderer.render(this.scene, this.sceneCamera);
+            thumbnailRenderer.render(this.scene, this.activeCamera);
             const dataUrl = canvas.toDataURL("image/png");
             thumbnailRenderer.dispose();
             canvas.width = canvas.height = 0;
@@ -51282,26 +51356,17 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             }
         };
     }
-    initializeScene() {
+    initializeScene(overrides) {
+        let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
+        if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
+        this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
         if (!this.loadedModel) return;
         this.scene.clear();
         this.initSceneBackground();
         this.initFog();
-        this.initSceneLights();
-        this.initSceneCameras();
+        this.initLights();
+        this.initCameras(overrides?.camera);
         this.scene.add(this.loadedModel);
-        // Setup camera to center model
-        const box = this.sketchBoundingBox;
-        if (box != undefined && box != null) {
-            const boxSize = box.getSize(new $ea01ff4a5048cd08$exports.Vector3()).length();
-            const boxCenter = box.getCenter(new $ea01ff4a5048cd08$exports.Vector3());
-            this.cameraControls.minDistance = boxSize * 0.01;
-            this.cameraControls.maxDistance = boxSize * 10;
-            const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
-            this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-            this.cameraControls.dollyTo(midDistance, true);
-            this.cameraControls.saveState();
-        }
     }
     static lookupEnvironment(guid) {
         return ({
@@ -52672,39 +52737,29 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             }
         })[guid];
     }
-    async loadGltf1(url, loadEnvironment, overrides, tiltUrl) {
-        const sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
-        await (0, $fcb47f08b3ea937b$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene);
-        this.setupSketchMetaData(sceneGltf.scene);
-        if (loadEnvironment) await this.assignEnvironment(sceneGltf.scene);
-        if (tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
-        this.loadedModel = sceneGltf.scene;
-        let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-        if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-        this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
-        this.initializeScene();
+    async loadGltf1(url, loadEnvironment, overrides) {
+        await this._loadGltf(url, loadEnvironment, overrides, true);
     }
-    async loadGltf(url, loadEnvironment, overrides, tiltUrl) {
-        const sceneGltf = await this.gltfLoader.loadAsync(url);
+    async loadGltf(url, loadEnvironment, overrides) {
+        await this._loadGltf(url, loadEnvironment, overrides, false);
+    }
+    async _loadGltf(url, loadEnvironment, overrides, isV1) {
+        let sceneGltf;
+        if (isV1) {
+            sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
+            (0, $fcb47f08b3ea937b$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene);
+        } else sceneGltf = await this.gltfLoader.loadAsync(url);
         this.setupSketchMetaData(sceneGltf.scene);
         if (loadEnvironment) await this.assignEnvironment(sceneGltf.scene);
-        // TODO
-        if (tiltUrl) {
-            console.log(tiltUrl);
-            console.log(this.tiltLoader.loadAsync(tiltUrl));
-        // this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
-        }
+        if (overrides?.tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
-        let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-        if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-        this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
-        this.initializeScene();
+        this.initializeScene(overrides);
     }
-    async loadTilt(url) {
+    async loadTilt(url, overrides) {
         const tiltData = await this.tiltLoader.loadAsync(url);
         this.loadedModel = tiltData;
-        this.initializeScene();
+        this.initializeScene(overrides);
     }
     setAllVertexColors(model) {
         model.traverse((node)=>{
@@ -52723,7 +52778,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
             let withVertexColors = overrides?.["withVertexColors"];
             if (withVertexColors) this.setAllVertexColors(this.loadedModel);
-            this.initializeScene();
+            this.initializeScene(overrides);
         });
     }
     async loadObjWithMtl(objUrl, mtlUrl, overrides) {
@@ -52737,14 +52792,14 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                 this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
                 let withVertexColors = overrides?.["withVertexColors"];
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
-                this.initializeScene();
+                this.initializeScene(overrides);
             });
         });
     }
-    async loadFbx(url) {
+    async loadFbx(url, overrides) {
         const fbxData = await this.fbxLoader.loadAsync(url);
         this.loadedModel = fbxData;
-        this.initializeScene();
+        this.initializeScene(overrides);
     }
     async assignEnvironment(scene) {
         const guid = this.sketchMetadata?.EnvironmentGuid;
@@ -52754,18 +52809,20 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             envGltf.scene.setRotationFromEuler(new $ea01ff4a5048cd08$exports.Euler(0, Math.PI, 0));
             envGltf.scene.scale.set(.1, .1, .1);
             scene.attach(envGltf.scene);
+            this.environmentObject = envGltf.scene;
         }
     }
     generateGradientSky(colorA, colorB, direction) {
         const canvas = document.createElement("canvas");
-        canvas.width = 2;
-        canvas.height = 512;
+        canvas.id = "skyCanvas";
+        canvas.width = 1;
+        canvas.height = 256;
         const context = canvas.getContext("2d");
-        const gradient = context.createLinearGradient(0, 0, 0, 512);
-        gradient.addColorStop(0, colorA.getStyle());
-        gradient.addColorStop(1, colorB.getStyle());
+        const gradient = context.createLinearGradient(0, 0, 0, 256);
+        gradient.addColorStop(0, colorB.convertSRGBToLinear().getStyle());
+        gradient.addColorStop(1, colorA.convertSRGBToLinear().getStyle());
         context.fillStyle = gradient;
-        context.fillRect(0, 0, 2, 512);
+        context.fillRect(0, 0, 1, 256);
         const texture = new $ea01ff4a5048cd08$exports.CanvasTexture(canvas);
         texture.wrapS = $ea01ff4a5048cd08$exports.RepeatWrapping;
         texture.wrapT = $ea01ff4a5048cd08$exports.ClampToEdgeWrapping;
@@ -52777,11 +52834,14 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         return this.generateSkyGeometry(texture, new $ea01ff4a5048cd08$exports.Vector3(0, 1, 0));
     }
     generateSkyGeometry(texture, direction) {
+        texture.colorSpace = $ea01ff4a5048cd08$exports.SRGBColorSpace;
         const material = new $ea01ff4a5048cd08$exports.MeshBasicMaterial({
             map: texture,
             side: $ea01ff4a5048cd08$exports.BackSide
         });
-        const geometry = new $ea01ff4a5048cd08$exports.SphereGeometry(500, 64, 64);
+        material.fog = false;
+        material.toneMapped = false;
+        const geometry = new $ea01ff4a5048cd08$exports.SphereGeometry(200, 64, 64);
         const skysphere = new $ea01ff4a5048cd08$exports.Mesh(geometry, material);
         skysphere.name = "sky";
         const defaultUp = new $ea01ff4a5048cd08$exports.Vector3(0, 1, 0);
@@ -52794,10 +52854,53 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.sketchBoundingBox = new $ea01ff4a5048cd08$exports.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
-    initSceneCameras() {
-        console.log(this);
+    initCameras(cameraOverrides) {
+        let hasCameraMetadata = cameraOverrides?.GOOGLE_camera_settings?.pivot;
+        let cameraTarget = hasCameraMetadata || [
+            0,
+            0,
+            0
+        ];
+        // let hasCameraMetadata = (cameraOverrides && Object.keys(cameraOverrides).length > 0);
+        const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 75;
+        const aspect = 2;
+        const near = cameraOverrides?.perspective?.znear || 0.1;
+        const far = 1000;
+        this.flatCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
+        let pos = cameraOverrides?.translation || [
+            1,
+            1,
+            1
+        ];
+        this.flatCamera.position.set(pos[0], pos[1], pos[2]);
+        (0, $21a563bed1f3e202$export$2e2bcd8739ae039).install({
+            THREE: $ea01ff4a5048cd08$exports
+        });
+        this.cameraControls = new (0, $21a563bed1f3e202$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
+        this.cameraControls.dampingFactor = 0.1;
+        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+        this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2]);
+        this.flatCamera.updateProjectionMatrix();
+        this.activeCamera = this.flatCamera;
+        this.xrCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
+        this.xrCamera.updateProjectionMatrix();
+        (0, $7a53d4f4e33d695e$export$fc22e28a11679cb8)(this.cameraControls);
+        if (!hasCameraMetadata) {
+            // Setup camera to center model
+            const box = this.sketchBoundingBox;
+            if (box != undefined && box != null) {
+                const boxSize = box.getSize(new $ea01ff4a5048cd08$exports.Vector3()).length();
+                const boxCenter = box.getCenter(new $ea01ff4a5048cd08$exports.Vector3());
+                this.cameraControls.minDistance = boxSize * 0.01;
+                this.cameraControls.maxDistance = boxSize * 10;
+                const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
+                this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+                this.cameraControls.dollyTo(midDistance, true);
+                this.cameraControls.saveState();
+            }
+        }
     }
-    initSceneLights() {
+    initLights() {
         // Logic for scene light creation:
         // 1. Are there explicit GLTF scene lights? If so use them and skip the rest
         // 2. Are there dummy transforms in the GLTF that represent scene lights? If so use them in preference.
@@ -52839,8 +52942,10 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         let sky = null;
         if (this.sketchMetadata.UseGradient) sky = this.generateGradientSky(this.sketchMetadata.SkyColorA, this.sketchMetadata.SkyColorB, this.sketchMetadata.SkyGradientDirection);
         else if (this.sketchMetadata.SkyTexture) sky = this.generateTextureSky(this.sketchMetadata.SkyTexture);
-        if (sky !== null) this.loadedModel?.add(sky);
-        else // Use the default background color if there's no sky
+        if (sky !== null) {
+            this.loadedModel?.add(sky);
+            this.skyObject = sky;
+        } else // Use the default background color if there's no sky
         this.scene.background = this.defaultBackgroundColor;
     }
 }
