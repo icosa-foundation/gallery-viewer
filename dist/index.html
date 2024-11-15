@@ -13,7 +13,6 @@
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
-                    "three": "https://cdn.jsdelivr.net/npm/three@0.164.0/build/three.module.js",
                     "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/jsm/",
                     "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.164.0/examples/"
                 }
@@ -27,39 +26,42 @@
             import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
             let viewer = new Viewer("https://icosa-foundation.github.io/icosa-sketch-assets/");
+            let three = viewer.three;
+            window.viewer = viewer;
+            window.THREE = three;
 
-            // await viewer.loadGltf("formats/gltf2/gradient.gltf", true);
-            // await viewer.loadGltf("formats/gltf2/snowman.gltf", true);
-            // await viewer.loadGltf("formats/gltf2/old-story.gltf", true);
-            // await viewer.loadGltf("formats/gltf2/all_brushes.glb", true);
-            await viewer.loadGltf1("formats/gltf1/all_brushes.gltf", true);
+            var presentationParams = {"camera": {"type": "perspective", "rotation": [-0.1462917120878683, 0.2306854792441933, 0.03510497024615985, 0.9613275121956582], "perspective": {"yfov": 0, "znear": 0.1}, "translation": [1.586311936378479, 2.004192590713501, 3.153336048126221], "GOOGLE_camera_settings": null}, "colorSpace": "GAMMA", "backgroundColor": "#000000", "GOOGLE_hemi_light": null, "orientingRotation": {"w": 1}, "GOOGLE_backgrounds": {"color": [0, 0, 0]}, "GOOGLE_lighting_rig": null, "GOOGLE_geometry_data": null, "GOOGLE_scene_rotation": null, "GOOGLE_lights_image_based": null, "GOOGLE_real_world_transform": {"scaling_factor": 1}, "GOOGLE_initial_camera_motion": null};
 
+            let overrides = {
+                "camera": presentationParams.camera
+            };
+
+            await viewer.loadGltf1("https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/0F3ek3idOaX/sketch.gltf", true, overrides);
             const gui = new GUI( );
 
             const settings = {
-                backgroundColor: 'rgb(0, 0, 0)',
-                fogColor: 'rgb(170, 0, 255)',
-                fogDensity: 0.5,
                 showEnvironment: true,
+                showSky: true,
+                readCam: () => {
+                    let cameras = [];
+                    viewer.scene.traverse((child) => {
+                        if (child instanceof THREE.Camera) {
+                            cameras.push(child);
+                        }
+                    });
+                    console.log(cameras);
+                }
             };
 
-            gui.addColor( settings, 'backgroundColor' ).onChange( update );
-            gui.addColor( settings, 'fogColor' ).onChange( update );
-            gui.add( settings, 'fogDensity', 0, 1 ).onChange( update );
-            // gui.add( settings, 'showEnvironment' ); // TODO
-            // update();
+            gui.add( settings, 'showEnvironment' );
+            gui.add( settings, 'showSky' );
+            gui.add( settings, 'readCam').name("Read Camera");
+            gui.onChange( update );
+            update();
 
             function update() {
-                if (settings.fogDensity > 0) {
-                    let fogBgColor = new three.Color(settings.fogColor);
-                    fogBgColor.multiplyScalar(settings.fogDensity);
-                    fogBgColor.add(new three.Color(settings.backgroundColor)); // Is this correct?
-                    viewer.scene.background = fogBgColor;
-                    viewer.scene.fog = new three.FogExp2(settings.fogColor, settings.fogDensity);
-                }
-                else {
-                    viewer.scene.background = new three.Color(settings.backgroundColor);
-                }
+                viewer.environmentObject?.visible && (viewer.environmentObject.visible = settings.showEnvironment);
+                viewer.skyObject?.visible && (viewer.skyObject.visible = settings.showSky);
             }
         </script>
         <div id="icosa-viewer"></div>
