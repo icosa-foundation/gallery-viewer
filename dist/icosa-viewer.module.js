@@ -51034,13 +51034,15 @@ class $3c43f222267ed54b$var$SketchMetadata {
         this.EnvironmentGuid = userData["TB_EnvironmentGuid"] ?? "";
         this.Environment = userData["TB_Environment"] ?? "(None)";
         this.EnvironmentPreset = new $3c43f222267ed54b$var$EnvironmentPreset($3c43f222267ed54b$export$2ec4afd9b3c16a85.lookupEnvironment(this.EnvironmentGuid));
-        if (typeof userData["TB_UseGradient"] === "undefined") this.UseGradient = this.EnvironmentPreset.SkyTexture != null;
+        console.log(userData["TB_UseGradient"]);
+        console.log(this.EnvironmentPreset.SkyTexture);
+        if (userData && userData["TB_UseGradient"] === undefined) this.UseGradient = this.EnvironmentPreset.SkyTexture == null;
         else this.UseGradient = JSON.parse(userData["TB_UseGradient"].toLowerCase());
-        this.SkyColorA = this.parseTBColor(userData["TB_SkyColorA"], this.EnvironmentPreset.SkyColorA);
-        this.SkyColorB = this.parseTBColor(userData["TB_SkyColorB"], this.EnvironmentPreset.SkyColorB);
+        this.SkyColorA = this.parseTBColorString(userData["TB_SkyColorA"], this.EnvironmentPreset.SkyColorA);
+        this.SkyColorB = this.parseTBColorString(userData["TB_SkyColorB"], this.EnvironmentPreset.SkyColorB);
         this.SkyGradientDirection = this.parseTBVector3(userData["TB_SkyGradientDirection"], new $ea01ff4a5048cd08$exports.Vector3(0, 1, 0));
-        this.AmbientLightColor = this.parseTBColor(userData["TB_AmbientLightColor"], this.EnvironmentPreset.AmbientLightColor);
-        this.FogColor = this.parseTBColor(userData["TB_FogColor"], this.EnvironmentPreset.FogColor);
+        this.AmbientLightColor = this.parseTBColorString(userData["TB_AmbientLightColor"], this.EnvironmentPreset.AmbientLightColor);
+        this.FogColor = this.parseTBColorString(userData["TB_FogColor"], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData["TB_FogDensity"] ?? this.EnvironmentPreset.FogDensity;
         this.SkyTexture = userData["TB_SkyTexture"] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData["TB_ReflectionTexture"] ?? this.EnvironmentPreset.ReflectionTexture;
@@ -51054,10 +51056,12 @@ class $3c43f222267ed54b$var$SketchMetadata {
         }
         let light0rot = sceneLights.length == 1 ? radToDeg3(sceneLights[0].rotation) : null;
         let light1rot = sceneLights.length == 2 ? radToDeg3(sceneLights[1].rotation) : null;
-        this.SceneLight0Color = userData["TB_SceneLight0Color"] ?? this.EnvironmentPreset.SceneLight0Color;
         this.SceneLight0Rotation = userData["TB_SceneLight0Rotation"] ?? light0rot ?? this.EnvironmentPreset.SceneLight0Rotation;
-        this.SceneLight1Color = userData["TB_SceneLight1Color"] ?? this.EnvironmentPreset.SceneLight1Color;
         this.SceneLight1Rotation = userData["TB_SceneLight1Rotation"] ?? light1rot ?? this.EnvironmentPreset.SceneLight1Rotation;
+        let light0col = userData["TB_SceneLight0Color"] ?? this.EnvironmentPreset.SceneLight0Color;
+        let light1col = userData["TB_SceneLight1Color"] ?? this.EnvironmentPreset.SceneLight1Color;
+        this.SceneLight0Color = new $ea01ff4a5048cd08$exports.Color(light0col.r, light0col.g, light0col.b);
+        this.SceneLight1Color = new $ea01ff4a5048cd08$exports.Color(light1col.r, light1col.g, light1col.b);
         this.PoseTranslation = this.parseTBVector3(userData["TB_PoseTranslation"]);
         this.PoseRotation = this.parseTBRotation(userData["TB_PoseRotation"]);
         this.PoseScale = userData["TB_PoseScale"] ?? 1;
@@ -51072,7 +51076,7 @@ class $3c43f222267ed54b$var$SketchMetadata {
         let [x, y, z] = vectorString.split(",").map(parseFloat);
         return new $ea01ff4a5048cd08$exports.Vector3(x, y, z);
     }
-    parseTBColor(colorString, defaultValue) {
+    parseTBColorString(colorString, defaultValue) {
         let r, g, b;
         if (colorString) {
             [r, g, b] = colorString.split(",").map(parseFloat);
@@ -51366,7 +51370,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.initSceneBackground();
         this.initFog();
         this.initLights();
-        this.initCameras(overrides?.camera);
+        this.initCameras(overrides?.camera, overrides?.geometryData?.visualCenterPoint);
         this.scene.add(this.loadedModel);
     }
     static lookupEnvironment(guid) {
@@ -52855,38 +52859,45 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.sketchBoundingBox = new $ea01ff4a5048cd08$exports.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
-    initCameras(cameraOverrides) {
-        let hasCameraMetadata = cameraOverrides?.GOOGLE_camera_settings?.pivot;
-        let cameraTarget = hasCameraMetadata || [
+    initCameras(cameraOverrides, visualCenterPoint) {
+        let cameraPos = cameraOverrides?.translation || [
+            0,
+            1,
+            -1
+        ];
+        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || [
+            cameraPos[0],
+            cameraPos[1],
+            cameraPos[2] - 1
+        ];
+        let cameraRot = cameraOverrides?.rotation || [
+            1,
             0,
             0,
             0
         ];
-        // let hasCameraMetadata = (cameraOverrides && Object.keys(cameraOverrides).length > 0);
         const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 75;
         const aspect = 2;
         const near = cameraOverrides?.perspective?.znear || 0.1;
         const far = 1000;
         this.flatCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
-        let pos = cameraOverrides?.translation || [
-            1,
-            1,
-            1
-        ];
-        this.flatCamera.position.set(pos[0], pos[1], pos[2]);
+        this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+        this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
+        this.flatCamera.updateProjectionMatrix();
+        this.activeCamera = this.flatCamera;
+        this.xrCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
+        this.xrCamera.updateProjectionMatrix();
         (0, $21a563bed1f3e202$export$2e2bcd8739ae039).install({
             THREE: $ea01ff4a5048cd08$exports
         });
         this.cameraControls = new (0, $21a563bed1f3e202$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
         this.cameraControls.dampingFactor = 0.1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
-        this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2]);
-        this.flatCamera.updateProjectionMatrix();
-        this.activeCamera = this.flatCamera;
-        this.xrCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
-        this.xrCamera.updateProjectionMatrix();
+        this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+        if (cameraTarget) this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2], false);
         (0, $7a53d4f4e33d695e$export$fc22e28a11679cb8)(this.cameraControls);
-        if (!hasCameraMetadata) {
+        let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
+        if (noOverrides) {
             // Setup camera to center model
             const box = this.sketchBoundingBox;
             if (box != undefined && box != null) {
