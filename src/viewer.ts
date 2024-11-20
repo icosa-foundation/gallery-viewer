@@ -106,10 +106,13 @@ class SketchMetadata {
 
         let light0rot = sceneLights.length == 1 ? radToDeg3(sceneLights[0].rotation) : null;
         let light1rot = sceneLights.length == 2 ? radToDeg3(sceneLights[1].rotation) : null;
-        this.SceneLight0Color = userData['TB_SceneLight0Color'] ?? this.EnvironmentPreset.SceneLight0Color;
         this.SceneLight0Rotation = userData['TB_SceneLight0Rotation'] ?? light0rot ?? this.EnvironmentPreset.SceneLight0Rotation;
-        this.SceneLight1Color = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
         this.SceneLight1Rotation = userData['TB_SceneLight1Rotation'] ?? light1rot ?? this.EnvironmentPreset.SceneLight1Rotation;
+
+        let light0col = userData['TB_SceneLight0Color'] ?? this.EnvironmentPreset.SceneLight0Color;
+        let light1col = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
+        this.SceneLight0Color = new THREE.Color(light0col.r, light0col.g, light0col.b);
+        this.SceneLight1Color = new THREE.Color(light1col.r, light1col.g, light1col.b);
 
         this.PoseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
         this.PoseRotation = this.parseTBRotation(userData['TB_PoseRotation']);
