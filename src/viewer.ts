@@ -86,11 +86,11 @@ class SketchMetadata {
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
-        this.SkyColorA = this.parseTBColor(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
-        this.SkyColorB = this.parseTBColor(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
+        this.SkyColorA = this.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
+        this.SkyColorB = this.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
         this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
-        this.AmbientLightColor = this.parseTBColor(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
-        this.FogColor = this.parseTBColor(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
+        this.AmbientLightColor = this.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
+        this.FogColor = this.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
         this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
@@ -128,7 +128,7 @@ class SketchMetadata {
         return new THREE.Vector3(x, y, z);
     }
 
-    private parseTBColor(colorString: string, defaultValue: THREE.Color) {
+    private parseTBColorString(colorString: string, defaultValue: THREE.Color) {
         let r : number, g : number, b : number;
         if (colorString) {
             [r, g, b] = colorString.split(',').map(parseFloat);
