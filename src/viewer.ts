@@ -2084,7 +2084,8 @@ export class Viewer {
 
         setupNavigation(this.cameraControls);
 
-        if (!hasCameraMetadata) {
+        let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
+        if (noOverrides) {
 
             // Setup camera to center model
             const box = this.sketchBoundingBox;
