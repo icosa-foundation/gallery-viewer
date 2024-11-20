@@ -81,8 +81,8 @@ class SketchMetadata {
         this.EnvironmentPreset = new EnvironmentPreset(Viewer.lookupEnvironment(this.EnvironmentGuid));
 
 
-            this.UseGradient = this.EnvironmentPreset.SkyTexture != null;
         if (userData && userData['TB_UseGradient'] === undefined) {
+            this.UseGradient = this.EnvironmentPreset.SkyTexture == null;
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
