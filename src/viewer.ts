@@ -534,7 +534,7 @@ export class Viewer {
         this.initSceneBackground();
         this.initFog();
         this.initLights();
-        this.initCameras(overrides?.camera);
+        this.initCameras(overrides?.camera, overrides?.geometryData?.visualCenterPoint);
         this.scene.add(this.loadedModel);
     }
 
@@ -2054,11 +2054,11 @@ export class Viewer {
         this.sketchMetadata = sketchMetaData;
     }
 
-    private initCameras(cameraOverrides : any) {
+    private initCameras(cameraOverrides : any, visualCenterPoint : any) {
 
-        let hasCameraMetadata = cameraOverrides?.GOOGLE_camera_settings?.pivot;
-        let cameraTarget = hasCameraMetadata || [0, 0, 0];
-        // let hasCameraMetadata = (cameraOverrides && Object.keys(cameraOverrides).length > 0);
+        let cameraPos = cameraOverrides?.translation || [0, 1, -1];
+        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || [cameraPos[0], cameraPos[1], cameraPos[2] - 1];
+        let cameraRot = cameraOverrides?.rotation || [1, 0, 0, 0];
 
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
         const aspect = 2;
@@ -2066,22 +2066,22 @@ export class Viewer {
         const far = 1000;
         this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-        let pos = cameraOverrides?.translation || [1, 1, 1];
-        this.flatCamera.position.set(pos[0], pos[1], pos[2]);
+        this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+        this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
+        this.flatCamera.updateProjectionMatrix();
+        this.activeCamera = this.flatCamera;
+        this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        this.xrCamera.updateProjectionMatrix();
 
         CameraControls.install({THREE: THREE});
         this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
         this.cameraControls.dampingFactor = 0.1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
 
-        this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2]);
-
-        this.flatCamera.updateProjectionMatrix();
-        this.activeCamera = this.flatCamera;
-
-        this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.xrCamera.updateProjectionMatrix();
-
+        this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+        if (cameraTarget) {
+            this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2], false);
+        }
         setupNavigation(this.cameraControls);
 
         let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
