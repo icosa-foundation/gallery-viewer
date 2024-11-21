@@ -82,7 +82,10 @@ class SketchMetadata {
 
 
         if (userData && userData['TB_UseGradient'] === undefined) {
-            this.UseGradient = this.EnvironmentPreset.SkyTexture == null;
+            // The sketch metadata doesn't specify whether to use a gradient or not,
+            // so we'll use the environment preset value (assuming it's not a null preset)
+            let isValidEnvironmentPreset = this.EnvironmentPreset.Guid !== null;
+            this.UseGradient = isValidEnvironmentPreset && this.EnvironmentPreset.UseGradient;
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
@@ -2060,7 +2063,7 @@ export class Viewer {
     private initCameras(cameraOverrides : any, visualCenterPoint : any) {
 
         let cameraPos = cameraOverrides?.translation || [0, 1, -1];
-        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || [cameraPos[0], cameraPos[1], cameraPos[2] - 1];
+        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || [cameraPos[0], cameraPos[1], cameraPos[2] + 1];
         let cameraRot = cameraOverrides?.rotation || [1, 0, 0, 0];
 
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
@@ -2089,21 +2092,7 @@ export class Viewer {
 
         let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
         if (noOverrides) {
-
-            // Setup camera to center model
-            const box = this.sketchBoundingBox;
-            if (box != undefined && box != null) {
-                const boxSize = box.getSize(new THREE.Vector3()).length();
-                const boxCenter = box.getCenter(new THREE.Vector3());
-
-                this.cameraControls.minDistance = boxSize * 0.01;
-                this.cameraControls.maxDistance = boxSize * 10;
-
-                const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
-                this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-                this.cameraControls.dollyTo(midDistance, true);
-                this.cameraControls.saveState();
-            }
+            this.centerCamera();
         }
     }
 
@@ -2161,13 +2150,11 @@ export class Viewer {
     private initSceneBackground() {
 
         // OBJ and FBX models don't have metadata
-        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+        if (!this.sketchMetadata == undefined) {
             this.scene.background = this.defaultBackgroundColor;
             return;
         }
-
         let sky : Object3D<THREE.Object3DEventMap> | null = null;
-
         if (this.sketchMetadata.UseGradient) {
             sky = this.generateGradientSky(
                 this.sketchMetadata.SkyColorA,
@@ -2181,11 +2168,28 @@ export class Viewer {
         }
 
         if (sky !== null) {
-            this.loadedModel?.add(sky as Object3D<THREE.Object3DEventMap>);
+            this.scene?.add(sky as Object3D<THREE.Object3DEventMap>);
             this.skyObject = sky;
         } else {
             // Use the default background color if there's no sky
             this.scene.background = this.defaultBackgroundColor;
+        }
+    }
+
+    public centerCamera() {
+        // Setup camera to center model
+        const box = this.sketchBoundingBox;
+        if (box != undefined) {
+            const boxSize = box.getSize(new THREE.Vector3()).length();
+            const boxCenter = box.getCenter(new THREE.Vector3());
+
+            this.cameraControls.minDistance = boxSize * 0.01;
+            this.cameraControls.maxDistance = boxSize * 10;
+
+            const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
+            this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+            this.cameraControls.dollyTo(midDistance, true);
+            this.cameraControls.saveState();
         }
     }
 }

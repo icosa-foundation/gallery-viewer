@@ -51034,8 +51034,12 @@ class $3c43f222267ed54b$var$SketchMetadata {
         this.EnvironmentGuid = userData["TB_EnvironmentGuid"] ?? "";
         this.Environment = userData["TB_Environment"] ?? "(None)";
         this.EnvironmentPreset = new $3c43f222267ed54b$var$EnvironmentPreset($3c43f222267ed54b$export$2ec4afd9b3c16a85.lookupEnvironment(this.EnvironmentGuid));
-        if (userData && userData["TB_UseGradient"] === undefined) this.UseGradient = this.EnvironmentPreset.SkyTexture == null;
-        else this.UseGradient = JSON.parse(userData["TB_UseGradient"].toLowerCase());
+        if (userData && userData["TB_UseGradient"] === undefined) {
+            // The sketch metadata doesn't specify whether to use a gradient or not,
+            // so we'll use the environment preset value (assuming it's not a null preset)
+            let isValidEnvironmentPreset = this.EnvironmentPreset.Guid !== null;
+            this.UseGradient = isValidEnvironmentPreset && this.EnvironmentPreset.UseGradient;
+        } else this.UseGradient = JSON.parse(userData["TB_UseGradient"].toLowerCase());
         this.SkyColorA = this.parseTBColorString(userData["TB_SkyColorA"], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColorString(userData["TB_SkyColorB"], this.EnvironmentPreset.SkyColorB);
         this.SkyGradientDirection = this.parseTBVector3(userData["TB_SkyGradientDirection"], new $ea01ff4a5048cd08$exports.Vector3(0, 1, 0));
@@ -52895,8 +52899,6 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         if (cameraTarget) this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2], false);
         (0, $7a53d4f4e33d695e$export$fc22e28a11679cb8)(this.cameraControls);
         let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
-        console.log(cameraOverrides);
-        console.log(visualCenterPoint);
         if (noOverrides) this.centerCamera();
     }
     initLights() {
@@ -52934,7 +52936,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     }
     initSceneBackground() {
         // OBJ and FBX models don't have metadata
-        if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+        if (!this.sketchMetadata == undefined) {
             this.scene.background = this.defaultBackgroundColor;
             return;
         }

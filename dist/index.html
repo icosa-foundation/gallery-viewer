@@ -26,24 +26,40 @@
             import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 
             let viewer = new Viewer("https://icosa-foundation.github.io/icosa-sketch-assets/");
-            let three = viewer.three;
+            // viewer.crossOrigin = "no-cors";
+            let THREE = viewer.three;
             window.viewer = viewer;
-            window.THREE = three;
+            window.THREE = THREE;
 
             let urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has("asset")) {
                 let assetId = urlParams.get("asset");
                 let metadataJson = await fetch(`https://api.icosa.gallery/v1/assets/${assetId}`);
                 let json = await metadataJson.json();
-                let formats = json.formats;
+                let formats = json.formats || [];
                 let presentationParams = json.presentationParams;
-                let overrides = {"camera": presentationParams.camera};
+                let overrides = {
+                    'defaultBackgroundColor': presentationParams?.backgroundColor || "#000000",
+                    'camera': presentationParams?.camera,
+                    'geometryData': presentationParams?.GOOGLE_geometry_data,
+                    'colorSpace': presentationParams?.colorSpace,
+                };
+
+                console.log(presentationParams);
+                console.log(overrides);
+                let hasTilt = false;
                 for (const format of formats) {
-                    if (format.formatType === "GLTF2") {
+                    if (format?.formatType.includes("TILT")) {
+                        hasTilt = true;
+                        break;
+                    }
+                }
+                for (const format of formats) {
+                    if (format?.formatType === "GLTF2") {
                         console.log(`Loading GLTF2 ${format.root.url}`);
                         await viewer.loadGltf(format.root.url, true, overrides);
                         break;
-                    } else if (format.formatType === "GLTF") {
+                    } else if (format?.formatType === "GLTF") {
                         console.log(`Loading GLTF1 ${format.root.url}`);
                         await viewer.loadGltf1(format.root.url, true, overrides);
                         break;
@@ -52,34 +68,110 @@
             } else {
                 // Just some arbitrary values - not matching the actual asset
                 let presentationParams = {"camera": {"type": "perspective", "rotation": [-0.1462917120878683, 0.2306854792441933, 0.03510497024615985, 0.9613275121956582], "perspective": {"yfov": 0, "znear": 0.1}, "translation": [1.586311936378479, 2.004192590713501, 3.153336048126221], "GOOGLE_camera_settings": null}, "colorSpace": "GAMMA", "backgroundColor": "#000000", "GOOGLE_hemi_light": null, "orientingRotation": {"w": 1}, "GOOGLE_backgrounds": {"color": [0, 0, 0]}, "GOOGLE_lighting_rig": null, "GOOGLE_geometry_data": null, "GOOGLE_scene_rotation": null, "GOOGLE_lights_image_based": null, "GOOGLE_real_world_transform": {"scaling_factor": 1}, "GOOGLE_initial_camera_motion": null};
-                await viewer.loadGltf1("https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/0F3ek3idOaX/sketch.gltf", true, {"camera": presentationParams.camera});
+                let overrides = {
+                    'defaultBackgroundColor': presentationParams?.backgroundColor || "#000000",
+                    'camera': presentationParams.camera,
+                    'geometryData': presentationParams.GOOGLE_geometry_data,
+                    'colorSpace': presentationParams.colorSpace,
+                };
+
+                // await viewer.loadGltf1("https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/0F3ek3idOaX/sketch.gltf", true, {"camera": presentationParams.camera});
+                // await viewer.loadGltf("formats/gltf2/monster-updatedgltf/model.gltf", true, {"camera": presentationParams.camera});
+                // await viewer.loadGltf("formats/gltf2/mimic-updated-gltf/sketch.gltf", true, {"camera": presentationParams.camera});
+                // await viewer.loadGltf("formats/gltf2/mimic-unknown-glb-b/sketch.glb", true, {"camera": presentationParams.camera});
+                await viewer.loadGltf1("formats/gltf1/mimic-polygone-gltf/sketch.gltf", true, overrides);
             }
             const gui = new GUI( );
 
-            const settings = {
-                showEnvironment: true,
-                showSky: true,
-                readCam: () => {
+            const guiParams = {
+                backgroundColor: '#000000',
+                fogColor: '#000000',
+                fogDensity: 0,
+                toggleEnvironment: () => viewer.environmentObject && (viewer.environmentObject.visible = !viewer.environmentObject.visible),
+                toggleSky: () => viewer.skyObject && (viewer.skyObject.visible = !viewer.skyObject.visible),
+                fogBackground: () => {
+                    if (viewer.skyObject && viewer.skyObject.visible) {
+                        viewer.skyObject.material.color = new THREE.Color(guiParams.fogColor).multiplyScalar(guiParams.fogDensity);
+                        viewer.skyObject.material.fog = true;
+                    } else {
+                        let bgCol = new THREE.Color(guiParams.backgroundColor);
+                        let fogColor = new THREE.Color(guiParams.fogColor).multiplyScalar(guiParams.fogDensity);
+                        let foggedBgCol = bgCol.add(fogColor); // Is this correct?
+                        viewer.scene.background = foggedBgCol;
+                    }
+                },
+                listCameras: () => {
                     let cameras = [];
                     viewer.scene.traverse((child) => {
                         if (child instanceof THREE.Camera) {
                             cameras.push(child);
                         }
                     });
-                    console.log(cameras);
-                }
+                    window.cameras = cameras;
+                    doLogging(cameras);
+                },
+                listLights: () => {
+                    let lights = [];
+                    viewer.scene.traverse((child) => {
+                        if (child instanceof THREE.Light) {
+                            lights.push(child);
+                        }
+                    });
+                    window.lights = lights;
+                    doLogging(lights);
+                },
+                centerCamera: () => {
+                    viewer.centerCamera();
+                },
+                wireframe: () => {
+                    viewer.scene.traverse((child) => {
+                        if (child instanceof THREE.Mesh && child !== viewer.skyObject) {
+                            child.material.wireframe = !child.material.wireframe;
+                        }
+                    });
+                },
+                logInfo: ""
             };
 
-            gui.add( settings, 'showEnvironment' );
-            gui.add( settings, 'showSky' );
-            gui.add( settings, 'readCam').name("Read Camera");
-            gui.onChange( update );
-            update();
+            const backgroundColorControl = gui.addColor(guiParams, 'backgroundColor').onChange(() => viewer.scene.background = new THREE.Color(guiParams.backgroundColor));
+            const fogColorControl = gui.addColor(guiParams, 'fogColor').onChange(() => viewer.scene.fog.color = new THREE.Color(guiParams.fogColor));
+            const fogDensityControl = gui.add(guiParams, 'fogDensity', 0, 1).onChange(() => viewer.scene.fog.density = guiParams.fogDensity);
+            const fogBackgroundControl = gui.add(guiParams, "fogBackground", ).name("Fog Background");
+            const toggleEnvironmentControl = gui.add(guiParams, 'toggleEnvironment').name("Toggle Environment");
+            const toggleSkyControl = gui.add(guiParams, 'toggleSky').name("Toggle Sky");
+            const listCamerasControl = gui.add(guiParams, 'listCameras').name("List Cameras");
+            const listLightsControl = gui.add(guiParams, 'listLights').name("List Lights");
+            const centerCameraControl = gui.add(guiParams, 'centerCamera').name("Center Camera");
+            const wireframeControl = gui.add(guiParams, 'wireframe').name("Toggle Wireframe");
+            const logInfoControl = gui.add(guiParams, 'logInfo').name('Log Window');
+            window.logInfoControl = logInfoControl;
+            logInfoControl.domElement.getElementsByClassName("name")[0].style.display = "none";
+            let widget = logInfoControl.domElement.getElementsByClassName("widget")[0];
+            const logContainer = document.createElement('textarea');
+            logContainer.rows = 16;
+            logContainer.style.width = "100%";
+            logContainer.style.padding = "3px";
+            logContainer.style.fontFamily = "monospace";
+            logContainer.style.backgroundColor = "black";
+            logContainer.style.color = "white";
+            logContainer.style.fontSize = "9px";
+            logContainer.style.whiteSpace = "pre-wrap";
+            logContainer.style.wordWrap = "break-word";
+            widget.replaceChild(logContainer, widget.getElementsByTagName("input")[0]);
 
-            function update() {
-                viewer.environmentObject?.visible && (viewer.environmentObject.visible = settings.showEnvironment);
-                viewer.skyObject?.visible && (viewer.skyObject.visible = settings.showSky);
+            function doLogging(data) {
+                // Convert arbitrary data to readable text
+                logContainer.value = JSON.stringify(data, null, 2);
+                console.log(data);
             }
+
+            guiParams.backgroundColor = "#" + (viewer.scene.background?.color.getHexString() || "000000");
+            guiParams.fogColor = "#" + (viewer.scene.fog?.color?.getHexString() || "ffffff");
+            guiParams.fogDensity = viewer.scene.fog.density;
+
+            if (!viewer.environmentObject) toggleEnvironmentControl.disable();
+            if (!viewer.skyObject) toggleSkyControl.disable();
+
         </script>
         <div id="icosa-viewer"></div>
     </body>
