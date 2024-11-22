@@ -20,7 +20,15 @@
         </script>
         <link rel="stylesheet" href="css/style.css">
     </head>
-    <body>
+    <style>
+        .lil-gui {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+    <body style="margin: 0; background-color: black; display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <div id="icosa-viewer" style="position: relative; width: 80%; height: 80%;"></div>
         <script type="module">
             import { Viewer } from "./icosa-viewer.module.js";
             import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
@@ -38,15 +46,13 @@
                 let json = await metadataJson.json();
                 let formats = json.formats || [];
                 let presentationParams = json.presentationParams;
-                let overrides = {
+                var overrides = {
                     'defaultBackgroundColor': presentationParams?.backgroundColor || "#000000",
                     'camera': presentationParams?.camera,
                     'geometryData': presentationParams?.GOOGLE_geometry_data,
                     'colorSpace': presentationParams?.colorSpace,
                 };
 
-                console.log(presentationParams);
-                console.log(overrides);
                 let hasTilt = false;
                 for (const format of formats) {
                     if (format?.formatType.includes("TILT")) {
@@ -55,7 +61,17 @@
                     }
                 }
                 for (const format of formats) {
-                    if (format?.formatType === "GLTF2") {
+                    // Skip Internet Archive URLs because they just give CORS errors
+                    if (format.root.url.startsWith("https://web.archive.org/")) continue;
+                    // Weird special case specific to Icosa Gallery
+                    // Our non-Tilt files are currently broken GLTF v1 files but we have an alternate url that does work
+                    if (!hasTilt && format?.formatType === "GLTF") {
+                        console.log(`Loading Updated variant of GLTF2 ${format.root.url}`);
+                        let url = format.root.url.replace(".gltf", "_%28GLTFupdated%29.gltf");
+                        await viewer.loadGltf(url, true, overrides);
+                        break;
+
+                    } else if (format?.formatType === "GLTF2") {
                         console.log(`Loading GLTF2 ${format.root.url}`);
                         await viewer.loadGltf(format.root.url, true, overrides);
                         break;
@@ -81,7 +97,11 @@
                 // await viewer.loadGltf("formats/gltf2/mimic-unknown-glb-b/sketch.glb", true, {"camera": presentationParams.camera});
                 await viewer.loadGltf1("formats/gltf1/mimic-polygone-gltf/sketch.gltf", true, overrides);
             }
-            const gui = new GUI( );
+
+            const gui = new GUI({ autoPlace: false });
+            const parentDiv = document.getElementById('icosa-viewer');
+            parentDiv.appendChild(gui.domElement);
+            gui.close();
 
             const guiParams = {
                 backgroundColor: '#000000',
@@ -120,6 +140,9 @@
                     window.lights = lights;
                     doLogging(lights);
                 },
+                listOverrides: () => {
+                    doLogging(overrides);
+                },
                 centerCamera: () => {
                     viewer.centerCamera();
                 },
@@ -141,6 +164,7 @@
             const toggleSkyControl = gui.add(guiParams, 'toggleSky').name("Toggle Sky");
             const listCamerasControl = gui.add(guiParams, 'listCameras').name("List Cameras");
             const listLightsControl = gui.add(guiParams, 'listLights').name("List Lights");
+            const listOverridesControl = gui.add(guiParams, 'listOverrides').name("List Overrides");
             const centerCameraControl = gui.add(guiParams, 'centerCamera').name("Center Camera");
             const wireframeControl = gui.add(guiParams, 'wireframe').name("Toggle Wireframe");
             const logInfoControl = gui.add(guiParams, 'logInfo').name('Log Window');
@@ -161,11 +185,11 @@
 
             function doLogging(data) {
                 // Convert arbitrary data to readable text
-                logContainer.value = JSON.stringify(data, null, 2);
                 console.log(data);
+                logContainer.value = JSON.stringify(data, null, 2);
             }
 
-            guiParams.backgroundColor = "#" + (viewer.scene.background?.color.getHexString() || "000000");
+            guiParams.backgroundColor = "#" + (viewer.scene.background?.color?.getHexString() || "000000");
             guiParams.fogColor = "#" + (viewer.scene.fog?.color?.getHexString() || "ffffff");
             guiParams.fogDensity = viewer.scene.fog.density;
 
@@ -173,6 +197,5 @@
             if (!viewer.skyObject) toggleSkyControl.disable();
 
         </script>
-        <div id="icosa-viewer"></div>
     </body>
 </html>
