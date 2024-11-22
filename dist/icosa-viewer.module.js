@@ -51103,7 +51103,7 @@ class $3c43f222267ed54b$var$EnvironmentPreset {
         this.SceneLight1Color = preset?.lights[1].color ?? defaultColor;
         this.SceneLight1Rotation = preset?.lights[1].rotation ?? defaultRotation;
         this.SkyTexture = preset?.renderSettings.skyboxCubemap ?? null;
-        this.UseGradient = false;
+        this.UseGradient = this.SkyTexture === null;
         this.ReflectionTexture = preset?.renderSettings.reflectionCubemap ?? null;
         this.ReflectionIntensity = preset?.renderSettings.reflectionIntensity ?? 1;
     }
@@ -52848,9 +52848,9 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         });
         material.fog = false;
         material.toneMapped = false;
-        const geometry = new $ea01ff4a5048cd08$exports.SphereGeometry(200, 64, 64);
+        const geometry = new $ea01ff4a5048cd08$exports.SphereGeometry(1000, 64, 64);
         const skysphere = new $ea01ff4a5048cd08$exports.Mesh(geometry, material);
-        skysphere.name = "sky";
+        skysphere.name = "environmentSky";
         const defaultUp = new $ea01ff4a5048cd08$exports.Vector3(0, 1, 0);
         const quaternion = new $ea01ff4a5048cd08$exports.Quaternion().setFromUnitVectors(defaultUp, direction);
         skysphere.applyQuaternion(quaternion);
@@ -52867,10 +52867,12 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             1,
             -1
         ];
+        // TODO [cameraPos[0], cameraPos[1], cameraPos[2] + 1] (or -1) worked well for some scenes
+        // but I haven't figured out how to decide whether it is minus or plus
         let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || [
-            cameraPos[0],
-            cameraPos[1],
-            cameraPos[2] + 1
+            0,
+            0,
+            0
         ];
         let cameraRot = cameraOverrides?.rotation || [
             1,
