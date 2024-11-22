@@ -52867,13 +52867,22 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             1,
             -1
         ];
-        // TODO [cameraPos[0], cameraPos[1], cameraPos[2] + 1] (or -1) worked well for some scenes
-        // but I haven't figured out how to decide whether it is minus or plus
-        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || [
+        let fallbackTarget = [
             0,
             0,
             0
         ];
+        const box = this.sketchBoundingBox;
+        if (box != undefined) {
+            const boxSize = box.getSize(new $ea01ff4a5048cd08$exports.Vector3()).length();
+            const boxCenter = box.getCenter(new $ea01ff4a5048cd08$exports.Vector3());
+            fallbackTarget = [
+                boxCenter.x,
+                boxCenter.y,
+                boxCenter.z
+            ];
+        }
+        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || fallbackTarget;
         let cameraRot = cameraOverrides?.rotation || [
             1,
             0,

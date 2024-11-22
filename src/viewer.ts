@@ -75,11 +75,9 @@ class SketchMetadata {
             }
             return true; // Continue traversal
         });
-
         this.EnvironmentGuid = userData['TB_EnvironmentGuid'] ?? '';
         this.Environment = userData['TB_Environment'] ?? '(None)';
         this.EnvironmentPreset = new EnvironmentPreset(Viewer.lookupEnvironment(this.EnvironmentGuid));
-
 
         if (userData && userData['TB_UseGradient'] === undefined) {
             // The sketch metadata doesn't specify whether to use a gradient or not,
@@ -185,7 +183,7 @@ class EnvironmentPreset {
         this.SceneLight1Color = preset?.lights[1].color ?? defaultColor;
         this.SceneLight1Rotation = preset?.lights[1].rotation ?? defaultRotation;
         this.SkyTexture = preset?.renderSettings.skyboxCubemap ?? null;
-        this.UseGradient = false;
+        this.UseGradient = this.SkyTexture === null;
         this.ReflectionTexture = preset?.renderSettings.reflectionCubemap ?? null;
         this.ReflectionIntensity = preset?.renderSettings.reflectionIntensity ?? 1;
     }
@@ -2045,9 +2043,9 @@ export class Viewer {
         const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
         material.fog = false;
         material.toneMapped = false;
-        const geometry = new THREE.SphereGeometry(200, 64, 64);
+        const geometry = new THREE.SphereGeometry(1000, 64, 64);
         const skysphere = new THREE.Mesh(geometry, material);
-        skysphere.name = "sky"
+        skysphere.name = "environmentSky"
         const defaultUp = new THREE.Vector3(0, 1, 0);
         const quaternion = new THREE.Quaternion().setFromUnitVectors(defaultUp, direction);
         skysphere.applyQuaternion(quaternion);
@@ -2063,7 +2061,14 @@ export class Viewer {
     private initCameras(cameraOverrides : any, visualCenterPoint : any) {
 
         let cameraPos = cameraOverrides?.translation || [0, 1, -1];
-        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || [cameraPos[0], cameraPos[1], cameraPos[2] + 1];
+        let fallbackTarget = [0, 0, 0];
+        const box = this.sketchBoundingBox;
+        if (box != undefined) {
+            const boxSize = box.getSize(new THREE.Vector3()).length();
+            const boxCenter = box.getCenter(new THREE.Vector3());
+            fallbackTarget = [boxCenter.x, boxCenter.y, boxCenter.z];
+        }
+        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || fallbackTarget;
         let cameraRot = cameraOverrides?.rotation || [1, 0, 0, 0];
 
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
