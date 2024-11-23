@@ -2067,7 +2067,6 @@ export class Viewer {
         let fallbackTarget = [0, 0, 0];
         const box = this.sketchBoundingBox;
         if (box != undefined) {
-            const boxSize = box.getSize(new THREE.Vector3()).length();
             const boxCenter = box.getCenter(new THREE.Vector3());
             fallbackTarget = [boxCenter.x, boxCenter.y, boxCenter.z];
         }
