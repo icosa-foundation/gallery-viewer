@@ -51017,8 +51017,6 @@ async function $fcb47f08b3ea937b$export$d51cb1093e099859(brushPath, model) {
 }
 
 
-// import { GlitchPass } from 'three/addons';
-// import { OutputPass } from 'three/addons';
 class $3c43f222267ed54b$var$SketchMetadata {
     constructor(scene){
         let userData = scene?.userData ?? {};
@@ -51307,6 +51305,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                     viewer1.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
+                if (viewer1?.trackballControls) viewer1.trackballControls.update();
             }
             if (viewer1?.activeCamera) renderer.render(viewer1.scene, viewer1.activeCamera);
         }
@@ -52752,6 +52751,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     }
     async _loadGltf(url, loadEnvironment, overrides, isV1) {
         let sceneGltf;
+        this.overrides = overrides;
         if (isV1) {
             sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
             (0, $fcb47f08b3ea937b$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene);
@@ -52858,7 +52858,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     }
     setupSketchMetaData(model) {
         let sketchMetaData = new $3c43f222267ed54b$var$SketchMetadata(model);
-        this.sketchBoundingBox = new $ea01ff4a5048cd08$exports.Box3().setFromObject(model);
+        this.modelBoundingBox = new $ea01ff4a5048cd08$exports.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
     initCameras(cameraOverrides, visualCenterPoint) {
@@ -52872,9 +52872,8 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             0,
             0
         ];
-        const box = this.sketchBoundingBox;
+        const box = this.modelBoundingBox;
         if (box != undefined) {
-            const boxSize = box.getSize(new $ea01ff4a5048cd08$exports.Vector3()).length();
             const boxCenter = box.getCenter(new $ea01ff4a5048cd08$exports.Vector3());
             fallbackTarget = [
                 boxCenter.x,
@@ -52892,7 +52891,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 75;
         const aspect = 2;
         const near = cameraOverrides?.perspective?.znear || 0.1;
-        const far = 1000;
+        const far = 5000;
         this.flatCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
         this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
         this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
@@ -52900,6 +52899,11 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.activeCamera = this.flatCamera;
         this.xrCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
         this.xrCamera.updateProjectionMatrix();
+        // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
+        // this.trackballControls.target = cameraTarget;
+        // this.trackballControls.rotateSpeed = 1.0;
+        // this.trackballControls.zoomSpeed = 1.2;
+        // this.trackballControls.panSpeed = 0.8;
         (0, $21a563bed1f3e202$export$2e2bcd8739ae039).install({
             THREE: $ea01ff4a5048cd08$exports
         });
@@ -52910,7 +52914,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         if (cameraTarget) this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2], false);
         (0, $7a53d4f4e33d695e$export$fc22e28a11679cb8)(this.cameraControls);
         let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
-        if (noOverrides) this.centerCamera();
+        if (noOverrides) this.frameScene();
     }
     initLights() {
         // Logic for scene light creation:
@@ -52960,9 +52964,9 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         } else // Use the default background color if there's no sky
         this.scene.background = this.defaultBackgroundColor;
     }
-    centerCamera() {
+    frameScene() {
         // Setup camera to center model
-        const box = this.sketchBoundingBox;
+        const box = this.modelBoundingBox;
         if (box != undefined) {
             const boxSize = box.getSize(new $ea01ff4a5048cd08$exports.Vector3()).length();
             const boxCenter = box.getCenter(new $ea01ff4a5048cd08$exports.Vector3());
@@ -52970,9 +52974,23 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             this.cameraControls.maxDistance = boxSize * 10;
             const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
             this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-            this.cameraControls.dollyTo(midDistance, true);
+            let sphere = new $ea01ff4a5048cd08$exports.Sphere();
+            box.getBoundingSphere(sphere);
+            let fullDistance = sphere.radius * 1.75;
+            this.cameraControls.dollyTo(fullDistance, true);
             this.cameraControls.saveState();
         }
+    }
+    levelCamera() {
+        // Sets the camera target so that the camera is looking forward and level
+        let cameraPos = new $ea01ff4a5048cd08$exports.Vector3();
+        this.cameraControls.getPosition(cameraPos);
+        let cameraDir = new $ea01ff4a5048cd08$exports.Vector3();
+        this.cameraControls.camera.getWorldDirection(cameraDir);
+        cameraDir.y = 0; // Ensure the direction is level
+        cameraDir.normalize();
+        let newTarget = cameraPos.clone().add(cameraDir);
+        this.cameraControls.setTarget(newTarget.x, newTarget.y, newTarget.z, true);
     }
 }
 
