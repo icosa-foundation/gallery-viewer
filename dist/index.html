@@ -101,7 +101,6 @@
             const gui = new GUI({ autoPlace: false });
             const parentDiv = document.getElementById('icosa-viewer');
             parentDiv.appendChild(gui.domElement);
-            gui.close();
 
             const guiParams = {
                 backgroundColor: '#000000',
@@ -143,8 +142,41 @@
                 listOverrides: () => {
                     doLogging(viewer.overrides);
                 },
-                centerCamera: () => {
-                    viewer.centerCamera();
+                frameScene: () => {
+                    viewer.frameScene();
+                },
+                levelCamera: () => {
+                    viewer.levelCamera();
+                },
+                logTargetPoint: () => {
+                    let t = viewer.cameraControls.getTarget();
+                    doLogging(t);
+                },
+                targetVisualCenterY: () => {
+                    let t = viewer.overrides?.geometryData?.visualCenterPoint;
+                    var pos = viewer.cameraControls.camera.getWorldPosition(new THREE.Vector3());
+                    doLogging([t, pos]);
+                    if (t) {viewer.cameraControls.setTarget(t[0], pos.y, t[2])}
+                },
+                targetVisualCenter: () => {
+                    let t = viewer.overrides?.geometryData?.visualCenterPoint;
+                    doLogging(t);
+                    if (t) {viewer.cameraControls.setTarget(t[0], t[1], t[2])}
+                },
+                targetBoundingBoxCenter: () => {
+                    let t = viewer.modelBoundingBox.getCenter(new THREE.Vector3());
+                    doLogging(t);
+                    if (t) {viewer.cameraControls.setTarget(t.x, t.y, t.z)}
+                },
+                targetPivot: () => {
+                    let t = viewer.overrides?.camera.GOOGLE_camera_settings?.pivot;
+                    doLogging(t);
+                    if (t) {viewer.cameraControls.setTarget(t[0], t[1], t[2])}
+                },
+                targetOrigin: () => {
+                    let t = [0, 0, 0];
+                    doLogging(t);
+                    viewer.cameraControls.setTarget(t[0], t[1], t[2]);
                 },
                 wireframe: () => {
                     viewer.scene.traverse((child) => {
@@ -162,11 +194,23 @@
             const fogBackgroundControl = gui.add(guiParams, "fogBackground", ).name("Fog Background");
             const toggleEnvironmentControl = gui.add(guiParams, 'toggleEnvironment').name("Toggle Environment");
             const toggleSkyControl = gui.add(guiParams, 'toggleSky').name("Toggle Sky");
+            const wireframeControl = gui.add(guiParams, 'wireframe').name("Toggle Wireframe");
             const listCamerasControl = gui.add(guiParams, 'listCameras').name("List Cameras");
             const listLightsControl = gui.add(guiParams, 'listLights').name("List Lights");
             const listOverridesControl = gui.add(guiParams, 'listOverrides').name("List Overrides");
-            const centerCameraControl = gui.add(guiParams, 'centerCamera').name("Center Camera");
-            const wireframeControl = gui.add(guiParams, 'wireframe').name("Toggle Wireframe");
+
+            const folder1 = gui.addFolder( 'Camera' );
+            const levelCameraControl = folder1.add(guiParams, 'levelCamera').name("Level Camera");
+            const frameSceneControl = folder1.add(guiParams, 'frameScene').name("Frame Scene");
+            const logTargetPointControl = folder1.add(guiParams, 'logTargetPoint').name("Log Target Point");
+
+            const folder2 = gui.addFolder( 'Camera Target' );
+            const targetPivotControl = folder2.add(guiParams, 'targetPivot').name("Target Pivot");
+            const targetVisualCenterControl = folder2.add(guiParams, 'targetVisualCenter').name("Target visualCenterPoint");
+            const targetVisualCenterYControl = folder2.add(guiParams, 'targetVisualCenterY').name("Target visualCenterPoint Y");
+            const targetBoundingBoxCenterControl = folder2.add(guiParams, 'targetBoundingBoxCenter').name("Target Bounding Box Center");
+            const targetOriginControl = folder2.add(guiParams, 'targetOrigin').name("Target Origin");
+
             const logInfoControl = gui.add(guiParams, 'logInfo').name('Log Window');
             window.logInfoControl = logInfoControl;
             logInfoControl.domElement.getElementsByClassName("name")[0].style.display = "none";
@@ -195,6 +239,9 @@
 
             if (!viewer.environmentObject) toggleEnvironmentControl.disable();
             if (!viewer.skyObject) toggleSkyControl.disable();
+            if (!viewer.overrides?.geometryData?.visualCenterPoint) targetVisualCenterControl.disable();
+            if (!viewer.overrides?.geometryData?.visualCenterPoint) targetVisualCenterYControl.disable();
+            if (!viewer.overrides?.camera.GOOGLE_camera_settings?.pivot) targetPivotControl.disable();
 
         </script>
     </body>
