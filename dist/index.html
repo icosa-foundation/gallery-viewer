@@ -142,6 +142,9 @@
                 listOverrides: () => {
                     doLogging(viewer.overrides);
                 },
+                listSketchMetadata: () => {
+                    doLogging(viewer.sketchMetadata);
+                },
                 frameScene: () => {
                     viewer.frameScene();
                 },
@@ -198,6 +201,7 @@
             const listCamerasControl = gui.add(guiParams, 'listCameras').name("List Cameras");
             const listLightsControl = gui.add(guiParams, 'listLights').name("List Lights");
             const listOverridesControl = gui.add(guiParams, 'listOverrides').name("List Overrides");
+            const listSketchMetadataControl = gui.add(guiParams, 'listSketchMetadata').name("List Sketch MetaData");
 
             const folder1 = gui.addFolder( 'Camera' );
             const levelCameraControl = folder1.add(guiParams, 'levelCamera').name("Level Camera");

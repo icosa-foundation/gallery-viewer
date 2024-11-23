@@ -218,7 +218,7 @@ export class Viewer {
     private sceneGltf?: GLTF;
     public environmentObject?: Object3D;
     public skyObject?: Object3D;
-    private sketchMetadata?: SketchMetadata;
+    public sketchMetadata?: SketchMetadata;
     private defaultBackgroundColor: Color; // Used if no environment sky is set
     private overrides: any;
 
