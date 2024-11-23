@@ -2107,7 +2107,7 @@ export class Viewer {
 
         let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
         if (noOverrides) {
-            this.centerCamera();
+            this.frameScene();
         }
     }
 
@@ -2191,7 +2191,7 @@ export class Viewer {
         }
     }
 
-    public centerCamera() {
+    public frameScene() {
         // Setup camera to center model
         const box = this.modelBoundingBox;
         if (box != undefined) {
@@ -2203,7 +2203,10 @@ export class Viewer {
 
             const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
             this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-            this.cameraControls.dollyTo(midDistance, true);
+            let sphere = new THREE.Sphere();
+            box.getBoundingSphere(sphere);
+            let fullDistance = sphere.radius * 1.75;
+            this.cameraControls.dollyTo(fullDistance, true);
             this.cameraControls.saveState();
         }
     }
