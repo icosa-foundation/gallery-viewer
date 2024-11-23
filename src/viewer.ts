@@ -35,6 +35,7 @@ import { replaceBrushMaterials } from './legacy/ReplaceLegacyMaterials.js';
 import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 
 class SketchMetadata {
     public EnvironmentGuid : string;
@@ -211,6 +212,7 @@ export class Viewer {
     private flatCamera: THREE.PerspectiveCamera;
     private xrCamera: THREE.PerspectiveCamera;
     private cameraControls: CameraControls;
+    private trackballControls: TrackballControls;
     private loadedModel?: THREE.Object3D;
     private sceneGltf?: GLTF;
     public environmentObject?: Object3D;
@@ -452,6 +454,7 @@ export class Viewer {
                     viewer.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer?.cameraControls) viewer.cameraControls.update(delta);
+                if (viewer?.trackballControls) viewer.trackballControls.update();
             }
 
             if (viewer?.activeCamera) {
@@ -2083,6 +2086,12 @@ export class Viewer {
         this.activeCamera = this.flatCamera;
         this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this.xrCamera.updateProjectionMatrix();
+
+        // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
+        // this.trackballControls.target = cameraTarget;
+        // this.trackballControls.rotateSpeed = 1.0;
+        // this.trackballControls.zoomSpeed = 1.2;
+        // this.trackballControls.panSpeed = 0.8;
 
         CameraControls.install({THREE: THREE});
         this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
