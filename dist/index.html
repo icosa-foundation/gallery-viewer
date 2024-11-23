@@ -46,7 +46,7 @@
                 let json = await metadataJson.json();
                 let formats = json.formats || [];
                 let presentationParams = json.presentationParams;
-                var overrides = {
+                let overrides = {
                     'defaultBackgroundColor': presentationParams?.backgroundColor || "#000000",
                     'camera': presentationParams?.camera,
                     'geometryData': presentationParams?.GOOGLE_geometry_data,
@@ -141,7 +141,7 @@
                     doLogging(lights);
                 },
                 listOverrides: () => {
-                    doLogging(overrides);
+                    doLogging(viewer.overrides);
                 },
                 centerCamera: () => {
                     viewer.centerCamera();
