@@ -200,6 +200,7 @@ export class Viewer {
     public three : any;
     public captureThumbnail : (width : number, height : number) => string;
     public dataURLtoBlob : (dataURL : string) => Blob;
+    public modelBoundingBox?: THREE.Box3;
 
     private icosa_frame? : HTMLElement | null;
     private brushPath: URL;
@@ -217,7 +218,6 @@ export class Viewer {
     private sceneGltf?: GLTF;
     public environmentObject?: Object3D;
     public skyObject?: Object3D;
-    private sketchBoundingBox?: THREE.Box3;
     private sketchMetadata?: SketchMetadata;
     private defaultBackgroundColor: Color; // Used if no environment sky is set
 
@@ -2057,7 +2057,7 @@ export class Viewer {
 
     private setupSketchMetaData(model: Object3D<THREE.Object3DEventMap>) {
         let sketchMetaData = new SketchMetadata(model);
-        this.sketchBoundingBox = new THREE.Box3().setFromObject(model);
+        this.modelBoundingBox = new THREE.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
 
@@ -2065,7 +2065,7 @@ export class Viewer {
 
         let cameraPos = cameraOverrides?.translation || [0, 1, -1];
         let fallbackTarget = [0, 0, 0];
-        const box = this.sketchBoundingBox;
+        const box = this.modelBoundingBox;
         if (box != undefined) {
             const boxCenter = box.getCenter(new THREE.Vector3());
             fallbackTarget = [boxCenter.x, boxCenter.y, boxCenter.z];
@@ -2191,7 +2191,7 @@ export class Viewer {
 
     public centerCamera() {
         // Setup camera to center model
-        const box = this.sketchBoundingBox;
+        const box = this.modelBoundingBox;
         if (box != undefined) {
             const boxSize = box.getSize(new THREE.Vector3()).length();
             const boxCenter = box.getCenter(new THREE.Vector3());
