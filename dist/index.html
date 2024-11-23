@@ -191,7 +191,7 @@
 
             guiParams.backgroundColor = "#" + (viewer.scene.background?.color?.getHexString() || "000000");
             guiParams.fogColor = "#" + (viewer.scene.fog?.color?.getHexString() || "ffffff");
-            guiParams.fogDensity = viewer.scene.fog.density;
+            guiParams.fogDensity = viewer.scene.fog?.density;
 
             if (!viewer.environmentObject) toggleEnvironmentControl.disable();
             if (!viewer.skyObject) toggleSkyControl.disable();
