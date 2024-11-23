@@ -2077,7 +2077,7 @@ export class Viewer {
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
         const aspect = 2;
         const near = cameraOverrides?.perspective?.znear || 0.1;
-        const far = 1000;
+        const far = 5000;
         this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
         this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
