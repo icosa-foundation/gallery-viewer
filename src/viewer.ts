@@ -542,7 +542,7 @@ export class Viewer {
         this.initSceneBackground();
         this.initFog();
         this.initLights();
-        this.initCameras(overrides?.camera, overrides?.geometryData?.visualCenterPoint);
+        this.initCameras();
         this.scene.add(this.loadedModel);
     }
 
@@ -2063,30 +2063,54 @@ export class Viewer {
         this.sketchMetadata = sketchMetaData;
     }
 
-    private initCameras(cameraOverrides : any, visualCenterPoint : any) {
+    private initCameras() {
 
+        let cameraOverrides = this.overrides?.camera;
         let cameraPos = cameraOverrides?.translation || [0, 1, -1];
-        let fallbackTarget = [0, 0, 0];
-        const box = this.modelBoundingBox;
-        if (box != undefined) {
-            const boxCenter = box.getCenter(new THREE.Vector3());
-            fallbackTarget = [boxCenter.x, boxCenter.y, boxCenter.z];
-        }
-        let cameraTarget = cameraOverrides?.GOOGLE_camera_settings?.pivot || visualCenterPoint || fallbackTarget;
         let cameraRot = cameraOverrides?.rotation || [1, 0, 0, 0];
 
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
         const aspect = 2;
         const near = cameraOverrides?.perspective?.znear || 0.1;
         const far = 5000;
-        this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
+        this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
         this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
         this.flatCamera.updateProjectionMatrix();
-        this.activeCamera = this.flatCamera;
+
         this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        this.xrCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+        this.xrCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
         this.xrCamera.updateProjectionMatrix();
+
+        this.activeCamera = this.flatCamera;
+
+        let cameraTarget;
+        let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot
+        if (pivot) {
+            cameraTarget = new THREE.Vector3(pivot[0], pivot[1], pivot[2]);
+        } else {
+            let vp =  this.overrides?.geometryData?.visualCenterPoint;
+            if (!vp) {
+                const box = this.modelBoundingBox;
+                if (box != undefined) {
+                    const boxCenter = box.getCenter(new THREE.Vector3());
+                    vp = [boxCenter.x, boxCenter.y, boxCenter.z];
+                }
+            }
+            let visualCenterPoint = new THREE.Vector3(vp[0], vp[1], vp[2]);
+            cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
+            cameraTarget = cameraTarget || visualCenterPoint;
+        }
+
+        CameraControls.install({THREE: THREE});
+        this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
+        this.cameraControls.dampingFactor = 0.1;
+        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+        this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+        this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
+        setupNavigation(this.cameraControls);
 
         // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
         // this.trackballControls.target = cameraTarget;
@@ -2094,20 +2118,31 @@ export class Viewer {
         // this.trackballControls.zoomSpeed = 1.2;
         // this.trackballControls.panSpeed = 0.8;
 
-        CameraControls.install({THREE: THREE});
-        this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
-        this.cameraControls.dampingFactor = 0.1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+        // let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
+        // if (noOverrides) {
+        //     this.frameScene();
+        // }
+    }
 
-        this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
-        if (cameraTarget) {
-            this.cameraControls.setTarget(cameraTarget[0], cameraTarget[1], cameraTarget[2], false);
-        }
-        setupNavigation(this.cameraControls);
+    private calculatePivot(camera : THREE.Camera, centroid : THREE.Vector3) {
+        // 1. Get the camera's forward vector
+        const forward = new THREE.Vector3();
+        camera.getWorldDirection(forward); // This gives the forward vector in world space.
 
-        let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
-        if (noOverrides) {
-            this.frameScene();
+        // 2. Define a plane based on the centroid and facing the camera
+        const planeNormal = forward.clone().negate(); // Plane facing the camera
+        const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(planeNormal, centroid);
+
+        // 3. Calculate the intersection point of the forward vector with the plane
+        const cameraPosition = camera.position.clone();
+        const ray = new THREE.Ray(cameraPosition, forward);
+        const intersectionPoint = new THREE.Vector3();
+
+        if (ray.intersectPlane(plane, intersectionPoint)) {
+            return intersectionPoint; // This is your calculated pivot point.
+        } else {
+            console.error("No intersection between camera forward vector and plane.");
+            return null; // Handle the error case gracefully.
         }
     }
 
