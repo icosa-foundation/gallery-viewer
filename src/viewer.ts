@@ -220,6 +220,7 @@ export class Viewer {
     public skyObject?: Object3D;
     private sketchMetadata?: SketchMetadata;
     private defaultBackgroundColor: Color; // Used if no environment sky is set
+    private overrides: any;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -1925,6 +1926,7 @@ export class Viewer {
 
     private async _loadGltf(url : string, loadEnvironment : boolean, overrides : any, isV1: boolean) {
         let sceneGltf : GLTF;
+        this.overrides = overrides;
         if (isV1) {
             sceneGltf = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
             replaceBrushMaterials(this.brushPath.toString(), <Object3D>sceneGltf.scene);
