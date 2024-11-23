@@ -2197,4 +2197,16 @@ export class Viewer {
             this.cameraControls.saveState();
         }
     }
+
+    public levelCamera() {
+        // Sets the camera target so that the camera is looking forward and level
+        let cameraPos = new THREE.Vector3();
+        this.cameraControls.getPosition(cameraPos);
+        let cameraDir = new THREE.Vector3();
+        this.cameraControls.camera.getWorldDirection(cameraDir);
+        cameraDir.y = 0; // Ensure the direction is level
+        cameraDir.normalize();
+        let newTarget = cameraPos.clone().add(cameraDir);
+        this.cameraControls.setTarget(newTarget.x, newTarget.y, newTarget.z, true);
+    }
 }
