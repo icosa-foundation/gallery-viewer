@@ -50331,6 +50331,7 @@ async function $fcb47f08b3ea937b$export$d51cb1093e099859(brushPath, model) {
             var shader;
             let targetFilter = mesh.name.split("_")[1];
             targetFilter = "brush_" + targetFilter.split("-")[0];
+            let isRawShader = true;
             switch(targetFilter){
                 case "brush_BlocksBasic":
                     mesh.geometry.name = "geometry_BlocksBasic";
@@ -51002,8 +51003,18 @@ async function $fcb47f08b3ea937b$export$d51cb1093e099859(brushPath, model) {
                     mesh.material = shader;
                     mesh.material.name = "material_Wire";
                     break;
+                default:
+                    // Should only catch imported meshes - hopefully from Blocks
+                    // This assumes we only hit ReplaceLegacyMaterials for old Tilt Brush files
+                    // and not any arbitrary glTF v1 file
+                    isRawShader = false;
+                    mesh.material = new (0, $ea01ff4a5048cd08$export$55cbcc9b622fe1f5)({
+                        vertexColors: true,
+                        color: 0x333333
+                    });
+                    break;
             }
-            mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group)=>{
+            if (isRawShader) mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group)=>{
                 if (material.uniforms["u_time"]) {
                     const elapsedTime = clock.getElapsedTime();
                     // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html

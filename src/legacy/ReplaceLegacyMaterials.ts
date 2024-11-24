@@ -15,6 +15,7 @@
 import { 
     Object3D,
     Mesh,
+    MeshBasicMaterial,
     RawShaderMaterial,
     Vector4,
     Clock,
@@ -34,6 +35,7 @@ export async function replaceBrushMaterials(brushPath: string, model: Object3D):
             var shader : RawShaderMaterial;
             let targetFilter = mesh.name.split('_')[1];
             targetFilter = "brush_" + targetFilter.split('-')[0];
+            let isRawShader = true;
             switch(targetFilter) {
                 case "brush_BlocksBasic":
                     mesh.geometry.name = "geometry_BlocksBasic";
@@ -824,19 +826,29 @@ export async function replaceBrushMaterials(brushPath: string, model: Object3D):
                     mesh.material = shader;
                     mesh.material.name = "material_Wire";
                     break;
+
+                default:
+                    // Should only catch imported meshes - hopefully from Blocks
+                    // This assumes we only hit ReplaceLegacyMaterials for old Tilt Brush files
+                    // and not any arbitrary glTF v1 file
+                    isRawShader = false;
+                    mesh.material = new MeshBasicMaterial({ vertexColors: true, color: 0x333333 });
+                    break;
             }
 
-            mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
-                if ((<RawShaderMaterial>material).uniforms["u_time"]) {
-                    const elapsedTime = clock.getElapsedTime();
-                    // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
-                    const time = new Vector4(elapsedTime/20, elapsedTime, elapsedTime*2, elapsedTime*3);
-    
-                    (<RawShaderMaterial>material).uniforms["u_time"].value = time;
-                }
-    
-                if ((<RawShaderMaterial>material).uniforms["cameraPosition"]) {
-                    (<RawShaderMaterial>material).uniforms["cameraPosition"].value = camera.position;
+            if (isRawShader) {
+                mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
+                    if ((<RawShaderMaterial>material).uniforms["u_time"]) {
+                        const elapsedTime = clock.getElapsedTime();
+                        // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
+                        const time = new Vector4(elapsedTime / 20, elapsedTime, elapsedTime * 2, elapsedTime * 3);
+
+                        (<RawShaderMaterial>material).uniforms["u_time"].value = time;
+                    }
+
+                    if ((<RawShaderMaterial>material).uniforms["cameraPosition"]) {
+                        (<RawShaderMaterial>material).uniforms["cameraPosition"].value = camera.position;
+                    }
                 }
             }
         }
