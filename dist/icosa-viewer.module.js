@@ -43294,20 +43294,20 @@ function $4299b50047f4476c$var$slice(a, b, from, to) {
 }
 
 
-class $19bbca7b906db3b1$export$d1c1e163c7960c6 {
+class $9b4178cdd40d138c$export$da3cdac99155b982 {
     static createButton(renderer, sessionInit = {}) {
         const button = document.createElement("button");
-        function showStartXR(mode) {
+        function showEnterVR() {
             let currentSession = null;
             async function onSessionStarted(session) {
                 session.addEventListener("end", onSessionEnded);
                 await renderer.xr.setSession(session);
-                button.textContent = "STOP XR";
+                button.textContent = "EXIT VR";
                 currentSession = session;
             }
             function onSessionEnded() {
                 currentSession.removeEventListener("end", onSessionEnded);
-                button.textContent = "START XR";
+                button.textContent = "ENTER VR";
                 currentSession = null;
             }
             //
@@ -43315,7 +43315,13 @@ class $19bbca7b906db3b1$export$d1c1e163c7960c6 {
             button.style.cursor = "pointer";
             button.style.left = "calc(50% - 50px)";
             button.style.width = "100px";
-            button.textContent = "START XR";
+            button.textContent = "ENTER VR";
+            // WebXR's requestReferenceSpace only works if the corresponding feature
+            // was requested at session creation time. For simplicity, just ask for
+            // the interesting ones as optional features, but be aware that the
+            // requestReferenceSpace call will fail if it turns out to be unavailable.
+            // ('local' is always available for immersive sessions and doesn't need to
+            // be requested separately.)
             const sessionOptions = {
                 ...sessionInit,
                 optionalFeatures: [
@@ -43332,15 +43338,15 @@ class $19bbca7b906db3b1$export$d1c1e163c7960c6 {
                 button.style.opacity = "0.5";
             };
             button.onclick = function() {
-                if (currentSession === null) navigator.xr.requestSession(mode, sessionOptions).then(onSessionStarted);
+                if (currentSession === null) navigator.xr.requestSession("immersive-vr", sessionOptions).then(onSessionStarted);
                 else {
                     currentSession.end();
-                    if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
+                    if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession("immersive-vr", sessionOptions).then(onSessionStarted).catch((err)=>{
                         console.warn(err);
                     });
                 }
             };
-            if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
+            if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession("immersive-vr", sessionOptions).then(onSessionStarted).catch((err)=>{
                 console.warn(err);
             });
         }
@@ -43353,14 +43359,14 @@ class $19bbca7b906db3b1$export$d1c1e163c7960c6 {
             button.onmouseleave = null;
             button.onclick = null;
         }
-        function showXRNotSupported() {
+        function showWebXRNotFound() {
             disableButton();
-            button.textContent = "XR NOT SUPPORTED";
+            button.textContent = "VR NOT SUPPORTED";
         }
-        function showXRNotAllowed(exception) {
+        function showVRNotAllowed(exception) {
             disableButton();
             console.warn("Exception when trying to call xr.isSessionSupported", exception);
-            button.textContent = "XR NOT ALLOWED";
+            button.textContent = "VR NOT ALLOWED";
         }
         function stylizeElement(element) {
             element.style.position = "absolute";
@@ -43377,16 +43383,13 @@ class $19bbca7b906db3b1$export$d1c1e163c7960c6 {
             element.style.zIndex = "999";
         }
         if ("xr" in navigator) {
-            button.id = "XRButton";
+            button.id = "VRButton";
             button.style.display = "none";
             stylizeElement(button);
-            navigator.xr.isSessionSupported("immersive-ar").then(function(supported) {
-                if (supported) showStartXR("immersive-ar");
-                else navigator.xr.isSessionSupported("immersive-vr").then(function(supported) {
-                    if (supported) showStartXR("immersive-vr");
-                    else showXRNotSupported();
-                }).catch(showXRNotAllowed);
-            }).catch(showXRNotAllowed);
+            navigator.xr.isSessionSupported("immersive-vr").then(function(supported) {
+                supported ? showEnterVR() : showWebXRNotFound();
+                if (supported && $9b4178cdd40d138c$export$da3cdac99155b982.xrSessionIsGranted) button.click();
+            }).catch(showVRNotAllowed);
             return button;
         } else {
             const message = document.createElement("a");
@@ -43404,7 +43407,19 @@ class $19bbca7b906db3b1$export$d1c1e163c7960c6 {
             return message;
         }
     }
+    static registerSessionGrantedListener() {
+        if (typeof navigator !== "undefined" && "xr" in navigator) {
+            // WebXRViewer (based on Firefox) has a bug where addEventListener
+            // throws a silent exception and aborts execution entirely.
+            if (/WebXRViewer\//i.test(navigator.userAgent)) return;
+            navigator.xr.addEventListener("sessiongranted", ()=>{
+                $9b4178cdd40d138c$export$da3cdac99155b982.xrSessionIsGranted = true;
+            });
+        }
+    }
 }
+$9b4178cdd40d138c$export$da3cdac99155b982.xrSessionIsGranted = false;
+$9b4178cdd40d138c$export$da3cdac99155b982.registerSessionGrantedListener();
 
 
 
@@ -51127,6 +51142,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             this.icosa_frame = document.createElement("div");
             this.icosa_frame.id = "icosa-viewer";
         }
+        initCustomUi(this.icosa_frame);
         const controlPanel = document.createElement("div");
         controlPanel.classList.add("control-panel");
         const fullscreenButton = document.createElement("button");
@@ -51293,12 +51309,45 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         //         console.log("WebXR not available");
         //     }
         // });
-        let xrButton = (0, $19bbca7b906db3b1$export$d1c1e163c7960c6).createButton(renderer);
-        this.icosa_frame.appendChild(xrButton);
+        let vrButton = (0, $9b4178cdd40d138c$export$da3cdac99155b982).createButton(renderer);
+        this.icosa_frame.appendChild(vrButton);
+        // let xrButton = XRButton.createButton( renderer );
+        // this.icosa_frame.appendChild(xrButton);
         // xrButton.style.left = `${parseInt(window.getComputedStyle(xrButton).left, 10) - 150}px`;
         // let arButton = ARButton.createButton( renderer );
         // this.icosa_frame.appendChild( arButton );
         // arButton.style.left = `${parseInt(window.getComputedStyle(arButton).left, 10) + 150}px`;
+        function initCustomUi(viewerContainer) {
+            const button = document.createElement("button");
+            button.innerHTML = `<?xml version="1.0" encoding="utf-8"?>
+<svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 7.5L11.6078 3.22062C11.7509 3.14014 11.8224 3.09991 11.8982 3.08414C11.9654 3.07019 12.0346 3.07019 12.1018 3.08414C12.1776 3.09991 12.2491 3.14014 12.3922 3.22062L20 7.5M4 7.5V16.0321C4 16.2025 4 16.2876 4.02499 16.3637C4.04711 16.431 4.08326 16.4928 4.13106 16.545C4.1851 16.6041 4.25933 16.6459 4.40779 16.7294L12 21M4 7.5L12 11.5M12 21L19.5922 16.7294C19.7407 16.6459 19.8149 16.6041 19.8689 16.545C19.9167 16.4928 19.9529 16.431 19.975 16.3637C20 16.2876 20 16.2025 20 16.0321V7.5M12 21V11.5M20 7.5L12 11.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+            // button.style.fontSize = '24px';
+            // button.style.color = 'white';
+            button.style.backgroundColor = "black";
+            button.style.position = "absolute";
+            button.style.bottom = "10px";
+            button.style.left = "10px";
+            button.style.padding = "0px 2px";
+            button.style.border = "none";
+            button.style.color = "white";
+            button.style.cursor = "pointer";
+            button.style.zIndex = "1000"; // Ensure it's above the canvas
+            button.title = "Fit Scene to View";
+            viewerContainer.appendChild(button);
+            button.addEventListener("click", ()=>{
+                console.log("Button clicked!");
+                viewer1.frameScene();
+            });
+            // Hover effects
+            button.addEventListener("mouseover", ()=>{
+                button.style.backgroundColor = "rgba(255, 255, 255, 0.5)";
+            });
+            button.addEventListener("mouseout", ()=>{
+                button.style.backgroundColor = "black";
+            });
+        }
         function animate() {
             renderer.setAnimationLoop(render);
         // requestAnimationFrame( animate );
