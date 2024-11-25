@@ -22,6 +22,7 @@ import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 import { ARButton } from 'three/examples/jsm/webxr/ARButton.js';
 import { XRButton } from 'three/examples/jsm/webxr/XRButton.js';
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { GLTFGoogleTiltBrushTechniquesExtension } from 'three-icosa';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
@@ -427,8 +428,11 @@ export class Viewer {
         //     }
         // });
 
-        let xrButton = XRButton.createButton( renderer );
-        this.icosa_frame.appendChild(xrButton);
+        let vrButton = VRButton.createButton( renderer );
+        this.icosa_frame.appendChild(vrButton);
+
+        // let xrButton = XRButton.createButton( renderer );
+        // this.icosa_frame.appendChild(xrButton);
         // xrButton.style.left = `${parseInt(window.getComputedStyle(xrButton).left, 10) - 150}px`;
 
         // let arButton = ARButton.createButton( renderer );
