@@ -20,9 +20,7 @@ import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
-import { ARButton } from 'three/examples/jsm/webxr/ARButton.js';
-import { XRButton } from 'three/examples/jsm/webxr/XRButton.js';
-import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
+import { XRButton } from './IcosaXRButton.js';
 import { GLTFGoogleTiltBrushTechniquesExtension } from 'three-icosa';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
@@ -37,6 +35,7 @@ import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
+import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 
 class SketchMetadata {
     public EnvironmentGuid : string;
@@ -222,6 +221,7 @@ export class Viewer {
     public sketchMetadata?: SketchMetadata;
     private defaultBackgroundColor: Color; // Used if no environment sky is set
     private overrides: any;
+    private cameraRig: any;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -323,121 +323,41 @@ export class Viewer {
 
         renderer.xr.enabled = true;
 
-        // TODO - custom AR/XR button
+        function handleController(inputSource: XRInputSource) {
+            const gamepad = inputSource.gamepad;
+            if (gamepad) {
+                return {
+                    axes: gamepad.axes,
+                    buttons: gamepad.buttons
+                };
+            }
+            return null;
+        }
 
-        // let xrArButton = document.createElement("button");
-        // xrArButton.innerHTML = "Enter AR/VR";
-        // this.icosa_frame.appendChild(xrArButton);
-        //
-        // xrArButton.style.cursor = "pointer";
-        // xrArButton.style.position = "absolute";
-        // xrArButton.style.bottom = "20px";
-        // xrArButton.style.padding = "12px 6px";
-        // xrArButton.style.border = "1px solid rgb(255, 255, 255)";
-        // xrArButton.style.borderRadius = "4px";
-        // xrArButton.style.background = "rgba(0, 0, 0, 0.1)";
-        // xrArButton.style.color = "rgb(255, 255, 255)";
-        // xrArButton.style.font = "13px sans-serif";
-        // xrArButton.style.textAlign = "center";
-        // xrArButton.style.opacity = "0.5";
-        // xrArButton.style.outline = "none";
-        // xrArButton.style.zIndex = "999";
-        // xrArButton.style.cursor = "auto";
-        // xrArButton.style.left = "calc(50% - 75px)";
-        // xrArButton.style.width = "150px";
-        //
-        // let supportsAR = false;
-        // let supportsVR = false;
-        //
-        // if (navigator.xr && navigator.xr.isSessionSupported) {
-        //     navigator.xr.isSessionSupported('immersive-ar').then((arSupported) => {
-        //         supportsAR = arSupported;
-        //         updateButtonText();
-        //     });
-        //     navigator.xr.isSessionSupported('immersive-vr').then((vrSupported) => {
-        //         supportsVR = vrSupported;
-        //         updateButtonText();
-        //     });
-        // } else {
-        //     xrArButton.innerHTML = "WebXR not available";
-        // }
-        //
-        // function updateButtonText() {
-        //     xrArButton.disabled = false;
-        //     if (supportsAR && supportsVR) {
-        //         xrArButton.innerHTML = "Enter AR/VR";
-        //     } else if (supportsAR) {
-        //         xrArButton.innerHTML = "Enter AR";
-        //     } else if (supportsVR) {
-        //         xrArButton.innerHTML = "Enter VR";
-        //     } else {
-        //         xrArButton.innerHTML = "AR/VR not supported";
-        //         // xrArButton.disabled = true;
-        //     }
-        // }
-        //
-        // xrArButton.addEventListener("mouseover", function () {
-        //     xrArButton.style.background = "rgba(0, 0, 0, 0.2)";
-        //     xrArButton.style.opacity = "1";
-        //     xrArButton.style.cursor = "pointer";
-        // });
-        //
-        // xrArButton.addEventListener("mouseout", function () {
-        //     xrArButton.style.background = "rgba(0, 0, 0, 0.1)";
-        //     xrArButton.style.opacity = "0.8";
-        // });
-        //
-        // xrArButton.addEventListener("mousedown", function () {
-        //     xrArButton.style.transform = "scale(0.95)"; // Scale down slightly
-        //     xrArButton.style.background = "rgba(0, 0, 0, 0.3)"; // Darker background
-        // });
-        //
-        // xrArButton.addEventListener("mouseup", function () {
-        //     xrArButton.style.transform = "scale(1)"; // Reset scale
-        //     xrArButton.style.background = "rgba(0, 0, 0, 0.2)"; // Reset to hover background
-        // });
-        //
-        // xrArButton.addEventListener("click", () => {
-        //
-        //     console.log("XR button clicked");
-        //
-        //     const sessionOptions : XRSessionInit = {
-        //         optionalFeatures: [
-        //             'local-floor',
-        //             'bounded-floor',
-        //             'layers'
-        //         ],
-        //     };
-        //
-        //     if (navigator.xr && navigator.xr.isSessionSupported) {
-        //         navigator.xr.isSessionSupported('immersive-ar').then((supportsAR) => {
-        //             navigator.xr.isSessionSupported('immersive-vr').then((supportsVR) => {
-        //                 if (supportsAR) {
-        //                     ARButton.createButton(renderer);
-        //                     navigator.xr.requestSession( "immersive-ar", sessionOptions )
-        //                 } else if (supportsVR) {
-        //                     XRButton.createButton(renderer);
-        //                     navigator.xr.requestSession( "immersive-vr", sessionOptions )
-        //                 } else {
-        //                     console.log("AR/VR not supported on this device");
-        //                 }
-        //             });
-        //         });
-        //     } else {
-        //         console.log("WebXR not available");
-        //     }
-        // });
+        let controller0: THREE.Group;
+        let controller1: THREE.Group;
+        let controllerGrip0;
+        let controllerGrip1;
 
-        let vrButton = VRButton.createButton( renderer );
-        this.icosa_frame.appendChild(vrButton);
+        controller0 = renderer.xr.getController(0);
+        this.scene.add(controller0);
 
-        // let xrButton = XRButton.createButton( renderer );
-        // this.icosa_frame.appendChild(xrButton);
-        // xrButton.style.left = `${parseInt(window.getComputedStyle(xrButton).left, 10) - 150}px`;
 
-        // let arButton = ARButton.createButton( renderer );
-        // this.icosa_frame.appendChild( arButton );
-        // arButton.style.left = `${parseInt(window.getComputedStyle(arButton).left, 10) + 150}px`;
+        controller1 = renderer.xr.getController(1);
+        this.scene.add(controller1);
+
+        const controllerModelFactory = new XRControllerModelFactory();
+
+        controllerGrip0 = renderer.xr.getControllerGrip(0);
+        controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
+        this.scene.add(controllerGrip0);
+
+        controllerGrip1 = renderer.xr.getControllerGrip(1);
+        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+        this.scene.add(controllerGrip1);
+
+        let xrButton = XRButton.createButton( renderer );
+        this.icosa_frame.appendChild(xrButton);
 
         function initCustomUi(viewerContainer : HTMLElement) {
 
@@ -480,9 +400,34 @@ export class Viewer {
         function render() {
 
             const delta = clock.getDelta();
-            
+
             if (renderer.xr.isPresenting) {
+                let session : XRSession = <XRSession>renderer.xr.getSession();
                 viewer.activeCamera = viewer?.xrCamera;
+                const inputSources = Array.from(session.inputSources);
+                const moveSpeed = 0.05;
+                const rotationSpeed = 0.05;
+
+                inputSources.forEach((inputSource) => {
+                    const controllerData = handleController(inputSource);
+                    if (controllerData) {
+                        const axes = controllerData.axes;
+
+                        // Rotation (left thumbstick)
+                        if (Math.abs(axes[0]) > 0.1) {
+                            viewer.cameraRig.rotation.y -= axes[0] * rotationSpeed;
+                        }
+
+                        // Movement (right thumbstick)
+                        if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
+                            const moveX = axes[2] * moveSpeed;
+                            const moveZ = -axes[3] * moveSpeed;
+                            const movement = new THREE.Vector3(moveX, 0, moveZ);
+                            movement.applyQuaternion(viewer.cameraRig.quaternion);
+                            viewer.cameraRig.position.add(movement);
+                        }
+                    }
+                });
             } else {
                 viewer.activeCamera = viewer?.flatCamera;
                 const needResize = viewer.canvas.width !== viewer.canvas.clientWidth || viewer.canvas.height !== viewer.canvas.clientHeight;
@@ -2117,8 +2062,11 @@ export class Viewer {
         this.flatCamera.updateProjectionMatrix();
 
         this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        this.xrCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
-        this.xrCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
+        this.cameraRig = new THREE.Group();
+        this.scene.add(this.cameraRig);
+        this.cameraRig.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+        this.cameraRig.rotation.y = this.flatCamera.rotation.y;
+        this.cameraRig.add(this.xrCamera);
         this.xrCamera.updateProjectionMatrix();
 
         this.activeCamera = this.flatCamera;

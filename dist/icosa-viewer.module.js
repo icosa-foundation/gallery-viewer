@@ -43294,20 +43294,20 @@ function $4299b50047f4476c$var$slice(a, b, from, to) {
 }
 
 
-class $9b4178cdd40d138c$export$da3cdac99155b982 {
+class $2700ada9f878d4f8$export$d1c1e163c7960c6 {
     static createButton(renderer, sessionInit = {}) {
         const button = document.createElement("button");
-        function showEnterVR() {
+        function showStartXR(mode) {
             let currentSession = null;
             async function onSessionStarted(session) {
                 session.addEventListener("end", onSessionEnded);
                 await renderer.xr.setSession(session);
-                button.textContent = "EXIT VR";
+                button.textContent = "STOP XR";
                 currentSession = session;
             }
             function onSessionEnded() {
                 currentSession.removeEventListener("end", onSessionEnded);
-                button.textContent = "ENTER VR";
+                button.textContent = "START XR";
                 currentSession = null;
             }
             //
@@ -43315,19 +43315,12 @@ class $9b4178cdd40d138c$export$da3cdac99155b982 {
             button.style.cursor = "pointer";
             button.style.left = "calc(50% - 50px)";
             button.style.width = "100px";
-            button.textContent = "ENTER VR";
-            // WebXR's requestReferenceSpace only works if the corresponding feature
-            // was requested at session creation time. For simplicity, just ask for
-            // the interesting ones as optional features, but be aware that the
-            // requestReferenceSpace call will fail if it turns out to be unavailable.
-            // ('local' is always available for immersive sessions and doesn't need to
-            // be requested separately.)
+            button.textContent = "START XR";
             const sessionOptions = {
                 ...sessionInit,
                 optionalFeatures: [
                     "local-floor",
                     "bounded-floor",
-                    "layers",
                     ...sessionInit.optionalFeatures || []
                 ]
             };
@@ -43338,15 +43331,15 @@ class $9b4178cdd40d138c$export$da3cdac99155b982 {
                 button.style.opacity = "0.5";
             };
             button.onclick = function() {
-                if (currentSession === null) navigator.xr.requestSession("immersive-vr", sessionOptions).then(onSessionStarted);
+                if (currentSession === null) navigator.xr.requestSession(mode, sessionOptions).then(onSessionStarted);
                 else {
                     currentSession.end();
-                    if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession("immersive-vr", sessionOptions).then(onSessionStarted).catch((err)=>{
+                    if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
                         console.warn(err);
                     });
                 }
             };
-            if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession("immersive-vr", sessionOptions).then(onSessionStarted).catch((err)=>{
+            if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
                 console.warn(err);
             });
         }
@@ -43359,14 +43352,15 @@ class $9b4178cdd40d138c$export$da3cdac99155b982 {
             button.onmouseleave = null;
             button.onclick = null;
         }
-        function showWebXRNotFound() {
+        function showXRNotSupported() {
             disableButton();
-            button.textContent = "VR NOT SUPPORTED";
+            button.textContent = "No headset found";
+            button.style.display = "none";
         }
-        function showVRNotAllowed(exception) {
+        function showXRNotAllowed(exception) {
             disableButton();
             console.warn("Exception when trying to call xr.isSessionSupported", exception);
-            button.textContent = "VR NOT ALLOWED";
+            button.textContent = "XR NOT ALLOWED";
         }
         function stylizeElement(element) {
             element.style.position = "absolute";
@@ -43383,13 +43377,16 @@ class $9b4178cdd40d138c$export$da3cdac99155b982 {
             element.style.zIndex = "999";
         }
         if ("xr" in navigator) {
-            button.id = "VRButton";
+            button.id = "XRButton";
             button.style.display = "none";
             stylizeElement(button);
-            navigator.xr.isSessionSupported("immersive-vr").then(function(supported) {
-                supported ? showEnterVR() : showWebXRNotFound();
-                if (supported && $9b4178cdd40d138c$export$da3cdac99155b982.xrSessionIsGranted) button.click();
-            }).catch(showVRNotAllowed);
+            navigator.xr.isSessionSupported("immersive-ar").then(function(supported) {
+                if (supported) showStartXR("immersive-ar");
+                else navigator.xr.isSessionSupported("immersive-vr").then(function(supported) {
+                    if (supported) showStartXR("immersive-vr");
+                    else showXRNotSupported();
+                }).catch(showXRNotAllowed);
+            }).catch(showXRNotAllowed);
             return button;
         } else {
             const message = document.createElement("a");
@@ -43407,19 +43404,7 @@ class $9b4178cdd40d138c$export$da3cdac99155b982 {
             return message;
         }
     }
-    static registerSessionGrantedListener() {
-        if (typeof navigator !== "undefined" && "xr" in navigator) {
-            // WebXRViewer (based on Firefox) has a bug where addEventListener
-            // throws a silent exception and aborts execution entirely.
-            if (/WebXRViewer\//i.test(navigator.userAgent)) return;
-            navigator.xr.addEventListener("sessiongranted", ()=>{
-                $9b4178cdd40d138c$export$da3cdac99155b982.xrSessionIsGranted = true;
-            });
-        }
-    }
 }
-$9b4178cdd40d138c$export$da3cdac99155b982.xrSessionIsGranted = false;
-$9b4178cdd40d138c$export$da3cdac99155b982.registerSessionGrantedListener();
 
 
 
@@ -51043,6 +51028,449 @@ async function $fcb47f08b3ea937b$export$d51cb1093e099859(brushPath, model) {
 }
 
 
+
+
+/**
+ * @webxr-input-profiles/motion-controllers 1.0.0 https://github.com/immersive-web/webxr-input-profiles
+ */ const $9693dce9b2f91688$export$a002182e51710d39 = {
+    Handedness: Object.freeze({
+        NONE: "none",
+        LEFT: "left",
+        RIGHT: "right"
+    }),
+    ComponentState: Object.freeze({
+        DEFAULT: "default",
+        TOUCHED: "touched",
+        PRESSED: "pressed"
+    }),
+    ComponentProperty: Object.freeze({
+        BUTTON: "button",
+        X_AXIS: "xAxis",
+        Y_AXIS: "yAxis",
+        STATE: "state"
+    }),
+    ComponentType: Object.freeze({
+        TRIGGER: "trigger",
+        SQUEEZE: "squeeze",
+        TOUCHPAD: "touchpad",
+        THUMBSTICK: "thumbstick",
+        BUTTON: "button"
+    }),
+    ButtonTouchThreshold: 0.05,
+    AxisTouchThreshold: 0.1,
+    VisualResponseProperty: Object.freeze({
+        TRANSFORM: "transform",
+        VISIBILITY: "visibility"
+    })
+};
+/**
+ * @description Static helper function to fetch a JSON file and turn it into a JS object
+ * @param {string} path - Path to JSON file to be fetched
+ */ async function $9693dce9b2f91688$var$fetchJsonFile(path) {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(response.statusText);
+    else return response.json();
+}
+async function $9693dce9b2f91688$export$cdc669b4504544b3(basePath) {
+    if (!basePath) throw new Error("No basePath supplied");
+    const profileListFileName = "profilesList.json";
+    const profilesList = await $9693dce9b2f91688$var$fetchJsonFile(`${basePath}/${profileListFileName}`);
+    return profilesList;
+}
+async function $9693dce9b2f91688$export$665d336fd546fbed(xrInputSource, basePath, defaultProfile = null, getAssetPath = true) {
+    if (!xrInputSource) throw new Error("No xrInputSource supplied");
+    if (!basePath) throw new Error("No basePath supplied");
+    // Get the list of profiles
+    const supportedProfilesList = await $9693dce9b2f91688$export$cdc669b4504544b3(basePath);
+    // Find the relative path to the first requested profile that is recognized
+    let match;
+    xrInputSource.profiles.some((profileId)=>{
+        const supportedProfile = supportedProfilesList[profileId];
+        if (supportedProfile) match = {
+            profileId: profileId,
+            profilePath: `${basePath}/${supportedProfile.path}`,
+            deprecated: !!supportedProfile.deprecated
+        };
+        return !!match;
+    });
+    if (!match) {
+        if (!defaultProfile) throw new Error("No matching profile name found");
+        const supportedProfile = supportedProfilesList[defaultProfile];
+        if (!supportedProfile) throw new Error(`No matching profile name found and default profile "${defaultProfile}" missing.`);
+        match = {
+            profileId: defaultProfile,
+            profilePath: `${basePath}/${supportedProfile.path}`,
+            deprecated: !!supportedProfile.deprecated
+        };
+    }
+    const profile = await $9693dce9b2f91688$var$fetchJsonFile(match.profilePath);
+    let assetPath;
+    if (getAssetPath) {
+        let layout;
+        if (xrInputSource.handedness === "any") layout = profile.layouts[Object.keys(profile.layouts)[0]];
+        else layout = profile.layouts[xrInputSource.handedness];
+        if (!layout) throw new Error(`No matching handedness, ${xrInputSource.handedness}, in profile ${match.profileId}`);
+        if (layout.assetPath) assetPath = match.profilePath.replace("profile.json", layout.assetPath);
+    }
+    return {
+        profile: profile,
+        assetPath: assetPath
+    };
+}
+/** @constant {Object} */ const $9693dce9b2f91688$var$defaultComponentValues = {
+    xAxis: 0,
+    yAxis: 0,
+    button: 0,
+    state: $9693dce9b2f91688$export$a002182e51710d39.ComponentState.DEFAULT
+};
+/**
+ * @description Converts an X, Y coordinate from the range -1 to 1 (as reported by the Gamepad
+ * API) to the range 0 to 1 (for interpolation). Also caps the X, Y values to be bounded within
+ * a circle. This ensures that thumbsticks are not animated outside the bounds of their physical
+ * range of motion and touchpads do not report touch locations off their physical bounds.
+ * @param {number} x The original x coordinate in the range -1 to 1
+ * @param {number} y The original y coordinate in the range -1 to 1
+ */ function $9693dce9b2f91688$var$normalizeAxes(x = 0, y = 0) {
+    let xAxis = x;
+    let yAxis = y;
+    // Determine if the point is outside the bounds of the circle
+    // and, if so, place it on the edge of the circle
+    const hypotenuse = Math.sqrt(x * x + y * y);
+    if (hypotenuse > 1) {
+        const theta = Math.atan2(y, x);
+        xAxis = Math.cos(theta);
+        yAxis = Math.sin(theta);
+    }
+    // Scale and move the circle so values are in the interpolation range.  The circle's origin moves
+    // from (0, 0) to (0.5, 0.5). The circle's radius scales from 1 to be 0.5.
+    const result = {
+        normalizedXAxis: xAxis * 0.5 + 0.5,
+        normalizedYAxis: yAxis * 0.5 + 0.5
+    };
+    return result;
+}
+/**
+ * Contains the description of how the 3D model should visually respond to a specific user input.
+ * This is accomplished by initializing the object with the name of a node in the 3D model and
+ * property that need to be modified in response to user input, the name of the nodes representing
+ * the allowable range of motion, and the name of the input which triggers the change. In response
+ * to the named input changing, this object computes the appropriate weighting to use for
+ * interpolating between the range of motion nodes.
+ */ class $9693dce9b2f91688$var$VisualResponse {
+    constructor(visualResponseDescription){
+        this.componentProperty = visualResponseDescription.componentProperty;
+        this.states = visualResponseDescription.states;
+        this.valueNodeName = visualResponseDescription.valueNodeName;
+        this.valueNodeProperty = visualResponseDescription.valueNodeProperty;
+        if (this.valueNodeProperty === $9693dce9b2f91688$export$a002182e51710d39.VisualResponseProperty.TRANSFORM) {
+            this.minNodeName = visualResponseDescription.minNodeName;
+            this.maxNodeName = visualResponseDescription.maxNodeName;
+        }
+        // Initializes the response's current value based on default data
+        this.value = 0;
+        this.updateFromComponent($9693dce9b2f91688$var$defaultComponentValues);
+    }
+    /**
+   * Computes the visual response's interpolation weight based on component state
+   * @param {Object} componentValues - The component from which to update
+   * @param {number} xAxis - The reported X axis value of the component
+   * @param {number} yAxis - The reported Y axis value of the component
+   * @param {number} button - The reported value of the component's button
+   * @param {string} state - The component's active state
+   */ updateFromComponent({ xAxis: xAxis, yAxis: yAxis, button: button, state: state }) {
+        const { normalizedXAxis: normalizedXAxis, normalizedYAxis: normalizedYAxis } = $9693dce9b2f91688$var$normalizeAxes(xAxis, yAxis);
+        switch(this.componentProperty){
+            case $9693dce9b2f91688$export$a002182e51710d39.ComponentProperty.X_AXIS:
+                this.value = this.states.includes(state) ? normalizedXAxis : 0.5;
+                break;
+            case $9693dce9b2f91688$export$a002182e51710d39.ComponentProperty.Y_AXIS:
+                this.value = this.states.includes(state) ? normalizedYAxis : 0.5;
+                break;
+            case $9693dce9b2f91688$export$a002182e51710d39.ComponentProperty.BUTTON:
+                this.value = this.states.includes(state) ? button : 0;
+                break;
+            case $9693dce9b2f91688$export$a002182e51710d39.ComponentProperty.STATE:
+                if (this.valueNodeProperty === $9693dce9b2f91688$export$a002182e51710d39.VisualResponseProperty.VISIBILITY) this.value = this.states.includes(state);
+                else this.value = this.states.includes(state) ? 1.0 : 0.0;
+                break;
+            default:
+                throw new Error(`Unexpected visualResponse componentProperty ${this.componentProperty}`);
+        }
+    }
+}
+class $9693dce9b2f91688$var$Component {
+    /**
+   * @param {Object} componentId - Id of the component
+   * @param {Object} componentDescription - Description of the component to be created
+   */ constructor(componentId, componentDescription){
+        if (!componentId || !componentDescription || !componentDescription.visualResponses || !componentDescription.gamepadIndices || Object.keys(componentDescription.gamepadIndices).length === 0) throw new Error("Invalid arguments supplied");
+        this.id = componentId;
+        this.type = componentDescription.type;
+        this.rootNodeName = componentDescription.rootNodeName;
+        this.touchPointNodeName = componentDescription.touchPointNodeName;
+        // Build all the visual responses for this component
+        this.visualResponses = {};
+        Object.keys(componentDescription.visualResponses).forEach((responseName)=>{
+            const visualResponse = new $9693dce9b2f91688$var$VisualResponse(componentDescription.visualResponses[responseName]);
+            this.visualResponses[responseName] = visualResponse;
+        });
+        // Set default values
+        this.gamepadIndices = Object.assign({}, componentDescription.gamepadIndices);
+        this.values = {
+            state: $9693dce9b2f91688$export$a002182e51710d39.ComponentState.DEFAULT,
+            button: this.gamepadIndices.button !== undefined ? 0 : undefined,
+            xAxis: this.gamepadIndices.xAxis !== undefined ? 0 : undefined,
+            yAxis: this.gamepadIndices.yAxis !== undefined ? 0 : undefined
+        };
+    }
+    get data() {
+        const data = {
+            id: this.id,
+            ...this.values
+        };
+        return data;
+    }
+    /**
+   * @description Poll for updated data based on current gamepad state
+   * @param {Object} gamepad - The gamepad object from which the component data should be polled
+   */ updateFromGamepad(gamepad) {
+        // Set the state to default before processing other data sources
+        this.values.state = $9693dce9b2f91688$export$a002182e51710d39.ComponentState.DEFAULT;
+        // Get and normalize button
+        if (this.gamepadIndices.button !== undefined && gamepad.buttons.length > this.gamepadIndices.button) {
+            const gamepadButton = gamepad.buttons[this.gamepadIndices.button];
+            this.values.button = gamepadButton.value;
+            this.values.button = this.values.button < 0 ? 0 : this.values.button;
+            this.values.button = this.values.button > 1 ? 1 : this.values.button;
+            // Set the state based on the button
+            if (gamepadButton.pressed || this.values.button === 1) this.values.state = $9693dce9b2f91688$export$a002182e51710d39.ComponentState.PRESSED;
+            else if (gamepadButton.touched || this.values.button > $9693dce9b2f91688$export$a002182e51710d39.ButtonTouchThreshold) this.values.state = $9693dce9b2f91688$export$a002182e51710d39.ComponentState.TOUCHED;
+        }
+        // Get and normalize x axis value
+        if (this.gamepadIndices.xAxis !== undefined && gamepad.axes.length > this.gamepadIndices.xAxis) {
+            this.values.xAxis = gamepad.axes[this.gamepadIndices.xAxis];
+            this.values.xAxis = this.values.xAxis < -1 ? -1 : this.values.xAxis;
+            this.values.xAxis = this.values.xAxis > 1 ? 1 : this.values.xAxis;
+            // If the state is still default, check if the xAxis makes it touched
+            if (this.values.state === $9693dce9b2f91688$export$a002182e51710d39.ComponentState.DEFAULT && Math.abs(this.values.xAxis) > $9693dce9b2f91688$export$a002182e51710d39.AxisTouchThreshold) this.values.state = $9693dce9b2f91688$export$a002182e51710d39.ComponentState.TOUCHED;
+        }
+        // Get and normalize Y axis value
+        if (this.gamepadIndices.yAxis !== undefined && gamepad.axes.length > this.gamepadIndices.yAxis) {
+            this.values.yAxis = gamepad.axes[this.gamepadIndices.yAxis];
+            this.values.yAxis = this.values.yAxis < -1 ? -1 : this.values.yAxis;
+            this.values.yAxis = this.values.yAxis > 1 ? 1 : this.values.yAxis;
+            // If the state is still default, check if the yAxis makes it touched
+            if (this.values.state === $9693dce9b2f91688$export$a002182e51710d39.ComponentState.DEFAULT && Math.abs(this.values.yAxis) > $9693dce9b2f91688$export$a002182e51710d39.AxisTouchThreshold) this.values.state = $9693dce9b2f91688$export$a002182e51710d39.ComponentState.TOUCHED;
+        }
+        // Update the visual response weights based on the current component data
+        Object.values(this.visualResponses).forEach((visualResponse)=>{
+            visualResponse.updateFromComponent(this.values);
+        });
+    }
+}
+/**
+  * @description Builds a motion controller with components and visual responses based on the
+  * supplied profile description. Data is polled from the xrInputSource's gamepad.
+  * @author Nell Waliczek / https://github.com/NellWaliczek
+*/ class $9693dce9b2f91688$export$d04f314260fc930a {
+    /**
+   * @param {Object} xrInputSource - The XRInputSource to build the MotionController around
+   * @param {Object} profile - The best matched profile description for the supplied xrInputSource
+   * @param {Object} assetUrl
+   */ constructor(xrInputSource, profile, assetUrl){
+        if (!xrInputSource) throw new Error("No xrInputSource supplied");
+        if (!profile) throw new Error("No profile supplied");
+        this.xrInputSource = xrInputSource;
+        this.assetUrl = assetUrl;
+        this.id = profile.profileId;
+        // Build child components as described in the profile description
+        this.layoutDescription = profile.layouts[xrInputSource.handedness];
+        this.components = {};
+        Object.keys(this.layoutDescription.components).forEach((componentId)=>{
+            const componentDescription = this.layoutDescription.components[componentId];
+            this.components[componentId] = new $9693dce9b2f91688$var$Component(componentId, componentDescription);
+        });
+        // Initialize components based on current gamepad state
+        this.updateFromGamepad();
+    }
+    get gripSpace() {
+        return this.xrInputSource.gripSpace;
+    }
+    get targetRaySpace() {
+        return this.xrInputSource.targetRaySpace;
+    }
+    /**
+   * @description Returns a subset of component data for simplified debugging
+   */ get data() {
+        const data = [];
+        Object.values(this.components).forEach((component)=>{
+            data.push(component.data);
+        });
+        return data;
+    }
+    /**
+   * @description Poll for updated data based on current gamepad state
+   */ updateFromGamepad() {
+        Object.values(this.components).forEach((component)=>{
+            component.updateFromGamepad(this.xrInputSource.gamepad);
+        });
+    }
+}
+
+
+const $66472e2cd73a5392$var$DEFAULT_PROFILES_PATH = "https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles";
+const $66472e2cd73a5392$var$DEFAULT_PROFILE = "generic-trigger";
+class $66472e2cd73a5392$var$XRControllerModel extends (0, $ea01ff4a5048cd08$export$e4dd07dff30cc924) {
+    constructor(){
+        super();
+        this.motionController = null;
+        this.envMap = null;
+    }
+    setEnvironmentMap(envMap) {
+        if (this.envMap == envMap) return this;
+        this.envMap = envMap;
+        this.traverse((child)=>{
+            if (child.isMesh) {
+                child.material.envMap = this.envMap;
+                child.material.needsUpdate = true;
+            }
+        });
+        return this;
+    }
+    /**
+	 * Polls data from the XRInputSource and updates the model's components to match
+	 * the real world data
+	 */ updateMatrixWorld(force) {
+        super.updateMatrixWorld(force);
+        if (!this.motionController) return;
+        // Cause the MotionController to poll the Gamepad for data
+        this.motionController.updateFromGamepad();
+        // Update the 3D model to reflect the button, thumbstick, and touchpad state
+        Object.values(this.motionController.components).forEach((component)=>{
+            // Update node data based on the visual responses' current states
+            Object.values(component.visualResponses).forEach((visualResponse)=>{
+                const { valueNode: valueNode, minNode: minNode, maxNode: maxNode, value: value, valueNodeProperty: valueNodeProperty } = visualResponse;
+                // Skip if the visual response node is not found. No error is needed,
+                // because it will have been reported at load time.
+                if (!valueNode) return;
+                // Calculate the new properties based on the weight supplied
+                if (valueNodeProperty === (0, $9693dce9b2f91688$export$a002182e51710d39).VisualResponseProperty.VISIBILITY) valueNode.visible = value;
+                else if (valueNodeProperty === (0, $9693dce9b2f91688$export$a002182e51710d39).VisualResponseProperty.TRANSFORM) {
+                    valueNode.quaternion.slerpQuaternions(minNode.quaternion, maxNode.quaternion, value);
+                    valueNode.position.lerpVectors(minNode.position, maxNode.position, value);
+                }
+            });
+        });
+    }
+}
+/**
+ * Walks the model's tree to find the nodes needed to animate the components and
+ * saves them to the motionContoller components for use in the frame loop. When
+ * touchpads are found, attaches a touch dot to them.
+ */ function $66472e2cd73a5392$var$findNodes(motionController, scene) {
+    // Loop through the components and find the nodes needed for each components' visual responses
+    Object.values(motionController.components).forEach((component)=>{
+        const { type: type, touchPointNodeName: touchPointNodeName, visualResponses: visualResponses } = component;
+        if (type === (0, $9693dce9b2f91688$export$a002182e51710d39).ComponentType.TOUCHPAD) {
+            component.touchPointNode = scene.getObjectByName(touchPointNodeName);
+            if (component.touchPointNode) {
+                // Attach a touch dot to the touchpad.
+                const sphereGeometry = new (0, $ea01ff4a5048cd08$export$1b417fc3b307a251)(0.001);
+                const material = new (0, $ea01ff4a5048cd08$export$55cbcc9b622fe1f5)({
+                    color: 0x0000FF
+                });
+                const sphere = new (0, $ea01ff4a5048cd08$export$e176487c05830cc5)(sphereGeometry, material);
+                component.touchPointNode.add(sphere);
+            } else console.warn(`Could not find touch dot, ${component.touchPointNodeName}, in touchpad component ${component.id}`);
+        }
+        // Loop through all the visual responses to be applied to this component
+        Object.values(visualResponses).forEach((visualResponse)=>{
+            const { valueNodeName: valueNodeName, minNodeName: minNodeName, maxNodeName: maxNodeName, valueNodeProperty: valueNodeProperty } = visualResponse;
+            // If animating a transform, find the two nodes to be interpolated between.
+            if (valueNodeProperty === (0, $9693dce9b2f91688$export$a002182e51710d39).VisualResponseProperty.TRANSFORM) {
+                visualResponse.minNode = scene.getObjectByName(minNodeName);
+                visualResponse.maxNode = scene.getObjectByName(maxNodeName);
+                // If the extents cannot be found, skip this animation
+                if (!visualResponse.minNode) {
+                    console.warn(`Could not find ${minNodeName} in the model`);
+                    return;
+                }
+                if (!visualResponse.maxNode) {
+                    console.warn(`Could not find ${maxNodeName} in the model`);
+                    return;
+                }
+            }
+            // If the target node cannot be found, skip this animation
+            visualResponse.valueNode = scene.getObjectByName(valueNodeName);
+            if (!visualResponse.valueNode) console.warn(`Could not find ${valueNodeName} in the model`);
+        });
+    });
+}
+function $66472e2cd73a5392$var$addAssetSceneToControllerModel(controllerModel, scene) {
+    // Find the nodes needed for animation and cache them on the motionController.
+    $66472e2cd73a5392$var$findNodes(controllerModel.motionController, scene);
+    // Apply any environment map that the mesh already has set.
+    if (controllerModel.envMap) scene.traverse((child)=>{
+        if (child.isMesh) {
+            child.material.envMap = controllerModel.envMap;
+            child.material.needsUpdate = true;
+        }
+    });
+    // Add the glTF scene to the controllerModel.
+    controllerModel.add(scene);
+}
+class $66472e2cd73a5392$export$100331f925a5e0de {
+    constructor(gltfLoader = null, onLoad = null){
+        this.gltfLoader = gltfLoader;
+        this.path = $66472e2cd73a5392$var$DEFAULT_PROFILES_PATH;
+        this._assetCache = {};
+        this.onLoad = onLoad;
+        // If a GLTFLoader wasn't supplied to the constructor create a new one.
+        if (!this.gltfLoader) this.gltfLoader = new (0, $b4376e703aa0850c$export$aa93f11e7884f0f4)();
+    }
+    setPath(path) {
+        this.path = path;
+        return this;
+    }
+    createControllerModel(controller) {
+        const controllerModel = new $66472e2cd73a5392$var$XRControllerModel();
+        let scene = null;
+        controller.addEventListener("connected", (event)=>{
+            const xrInputSource = event.data;
+            if (xrInputSource.targetRayMode !== "tracked-pointer" || !xrInputSource.gamepad) return;
+            (0, $9693dce9b2f91688$export$665d336fd546fbed)(xrInputSource, this.path, $66472e2cd73a5392$var$DEFAULT_PROFILE).then(({ profile: profile, assetPath: assetPath })=>{
+                controllerModel.motionController = new (0, $9693dce9b2f91688$export$d04f314260fc930a)(xrInputSource, profile, assetPath);
+                const cachedAsset = this._assetCache[controllerModel.motionController.assetUrl];
+                if (cachedAsset) {
+                    scene = cachedAsset.scene.clone();
+                    $66472e2cd73a5392$var$addAssetSceneToControllerModel(controllerModel, scene);
+                    if (this.onLoad) this.onLoad(scene);
+                } else {
+                    if (!this.gltfLoader) throw new Error("GLTFLoader not set.");
+                    this.gltfLoader.setPath("");
+                    this.gltfLoader.load(controllerModel.motionController.assetUrl, (asset)=>{
+                        this._assetCache[controllerModel.motionController.assetUrl] = asset;
+                        scene = asset.scene.clone();
+                        $66472e2cd73a5392$var$addAssetSceneToControllerModel(controllerModel, scene);
+                        if (this.onLoad) this.onLoad(scene);
+                    }, null, ()=>{
+                        throw new Error(`Asset ${controllerModel.motionController.assetUrl} missing or malformed.`);
+                    });
+                }
+            }).catch((err)=>{
+                console.warn(err);
+            });
+        });
+        controller.addEventListener("disconnected", ()=>{
+            controllerModel.motionController = null;
+            controllerModel.remove(scene);
+            scene = null;
+        });
+        return controllerModel;
+    }
+}
+
+
 class $3c43f222267ed54b$var$SketchMetadata {
     constructor(scene){
         let userData = scene?.userData ?? {};
@@ -51206,117 +51634,31 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.outputColorSpace = $ea01ff4a5048cd08$exports.SRGBColorSpace;
         renderer.xr.enabled = true;
-        // TODO - custom AR/XR button
-        // let xrArButton = document.createElement("button");
-        // xrArButton.innerHTML = "Enter AR/VR";
-        // this.icosa_frame.appendChild(xrArButton);
-        //
-        // xrArButton.style.cursor = "pointer";
-        // xrArButton.style.position = "absolute";
-        // xrArButton.style.bottom = "20px";
-        // xrArButton.style.padding = "12px 6px";
-        // xrArButton.style.border = "1px solid rgb(255, 255, 255)";
-        // xrArButton.style.borderRadius = "4px";
-        // xrArButton.style.background = "rgba(0, 0, 0, 0.1)";
-        // xrArButton.style.color = "rgb(255, 255, 255)";
-        // xrArButton.style.font = "13px sans-serif";
-        // xrArButton.style.textAlign = "center";
-        // xrArButton.style.opacity = "0.5";
-        // xrArButton.style.outline = "none";
-        // xrArButton.style.zIndex = "999";
-        // xrArButton.style.cursor = "auto";
-        // xrArButton.style.left = "calc(50% - 75px)";
-        // xrArButton.style.width = "150px";
-        //
-        // let supportsAR = false;
-        // let supportsVR = false;
-        //
-        // if (navigator.xr && navigator.xr.isSessionSupported) {
-        //     navigator.xr.isSessionSupported('immersive-ar').then((arSupported) => {
-        //         supportsAR = arSupported;
-        //         updateButtonText();
-        //     });
-        //     navigator.xr.isSessionSupported('immersive-vr').then((vrSupported) => {
-        //         supportsVR = vrSupported;
-        //         updateButtonText();
-        //     });
-        // } else {
-        //     xrArButton.innerHTML = "WebXR not available";
-        // }
-        //
-        // function updateButtonText() {
-        //     xrArButton.disabled = false;
-        //     if (supportsAR && supportsVR) {
-        //         xrArButton.innerHTML = "Enter AR/VR";
-        //     } else if (supportsAR) {
-        //         xrArButton.innerHTML = "Enter AR";
-        //     } else if (supportsVR) {
-        //         xrArButton.innerHTML = "Enter VR";
-        //     } else {
-        //         xrArButton.innerHTML = "AR/VR not supported";
-        //         // xrArButton.disabled = true;
-        //     }
-        // }
-        //
-        // xrArButton.addEventListener("mouseover", function () {
-        //     xrArButton.style.background = "rgba(0, 0, 0, 0.2)";
-        //     xrArButton.style.opacity = "1";
-        //     xrArButton.style.cursor = "pointer";
-        // });
-        //
-        // xrArButton.addEventListener("mouseout", function () {
-        //     xrArButton.style.background = "rgba(0, 0, 0, 0.1)";
-        //     xrArButton.style.opacity = "0.8";
-        // });
-        //
-        // xrArButton.addEventListener("mousedown", function () {
-        //     xrArButton.style.transform = "scale(0.95)"; // Scale down slightly
-        //     xrArButton.style.background = "rgba(0, 0, 0, 0.3)"; // Darker background
-        // });
-        //
-        // xrArButton.addEventListener("mouseup", function () {
-        //     xrArButton.style.transform = "scale(1)"; // Reset scale
-        //     xrArButton.style.background = "rgba(0, 0, 0, 0.2)"; // Reset to hover background
-        // });
-        //
-        // xrArButton.addEventListener("click", () => {
-        //
-        //     console.log("XR button clicked");
-        //
-        //     const sessionOptions : XRSessionInit = {
-        //         optionalFeatures: [
-        //             'local-floor',
-        //             'bounded-floor',
-        //             'layers'
-        //         ],
-        //     };
-        //
-        //     if (navigator.xr && navigator.xr.isSessionSupported) {
-        //         navigator.xr.isSessionSupported('immersive-ar').then((supportsAR) => {
-        //             navigator.xr.isSessionSupported('immersive-vr').then((supportsVR) => {
-        //                 if (supportsAR) {
-        //                     ARButton.createButton(renderer);
-        //                     navigator.xr.requestSession( "immersive-ar", sessionOptions )
-        //                 } else if (supportsVR) {
-        //                     XRButton.createButton(renderer);
-        //                     navigator.xr.requestSession( "immersive-vr", sessionOptions )
-        //                 } else {
-        //                     console.log("AR/VR not supported on this device");
-        //                 }
-        //             });
-        //         });
-        //     } else {
-        //         console.log("WebXR not available");
-        //     }
-        // });
-        let vrButton = (0, $9b4178cdd40d138c$export$da3cdac99155b982).createButton(renderer);
-        this.icosa_frame.appendChild(vrButton);
-        // let xrButton = XRButton.createButton( renderer );
-        // this.icosa_frame.appendChild(xrButton);
-        // xrButton.style.left = `${parseInt(window.getComputedStyle(xrButton).left, 10) - 150}px`;
-        // let arButton = ARButton.createButton( renderer );
-        // this.icosa_frame.appendChild( arButton );
-        // arButton.style.left = `${parseInt(window.getComputedStyle(arButton).left, 10) + 150}px`;
+        function handleController(inputSource) {
+            const gamepad = inputSource.gamepad;
+            if (gamepad) return {
+                axes: gamepad.axes,
+                buttons: gamepad.buttons
+            };
+            return null;
+        }
+        let controller0;
+        let controller1;
+        let controllerGrip0;
+        let controllerGrip1;
+        controller0 = renderer.xr.getController(0);
+        this.scene.add(controller0);
+        controller1 = renderer.xr.getController(1);
+        this.scene.add(controller1);
+        const controllerModelFactory = new (0, $66472e2cd73a5392$export$100331f925a5e0de)();
+        controllerGrip0 = renderer.xr.getControllerGrip(0);
+        controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
+        this.scene.add(controllerGrip0);
+        controllerGrip1 = renderer.xr.getControllerGrip(1);
+        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+        this.scene.add(controllerGrip1);
+        let xrButton = (0, $2700ada9f878d4f8$export$d1c1e163c7960c6).createButton(renderer);
+        this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement("button");
             button.innerHTML = `<?xml version="1.0" encoding="utf-8"?>
@@ -51352,8 +51694,29 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         }
         function render() {
             const delta = clock.getDelta();
-            if (renderer.xr.isPresenting) viewer1.activeCamera = viewer1?.xrCamera;
-            else {
+            if (renderer.xr.isPresenting) {
+                let session = renderer.xr.getSession();
+                viewer1.activeCamera = viewer1?.xrCamera;
+                const inputSources = Array.from(session.inputSources);
+                const moveSpeed = 0.05;
+                const rotationSpeed = 0.05;
+                inputSources.forEach((inputSource)=>{
+                    const controllerData = handleController(inputSource);
+                    if (controllerData) {
+                        const axes = controllerData.axes;
+                        // Rotation (left thumbstick)
+                        if (Math.abs(axes[0]) > 0.1) viewer1.cameraRig.rotation.y -= axes[0] * rotationSpeed;
+                        // Movement (right thumbstick)
+                        if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
+                            const moveX = axes[2] * moveSpeed;
+                            const moveZ = -axes[3] * moveSpeed;
+                            const movement = new $ea01ff4a5048cd08$exports.Vector3(moveX, 0, moveZ);
+                            movement.applyQuaternion(viewer1.cameraRig.quaternion);
+                            viewer1.cameraRig.position.add(movement);
+                        }
+                    }
+                });
+            } else {
                 viewer1.activeCamera = viewer1?.flatCamera;
                 const needResize = viewer1.canvas.width !== viewer1.canvas.clientWidth || viewer1.canvas.height !== viewer1.canvas.clientHeight;
                 if (needResize && viewer1?.flatCamera) {
@@ -52940,8 +53303,11 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
         this.flatCamera.updateProjectionMatrix();
         this.xrCamera = new $ea01ff4a5048cd08$exports.PerspectiveCamera(fov, aspect, near, far);
-        this.xrCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
-        this.xrCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
+        this.cameraRig = new $ea01ff4a5048cd08$exports.Group();
+        this.scene.add(this.cameraRig);
+        this.cameraRig.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+        this.cameraRig.rotation.y = this.flatCamera.rotation.y;
+        this.cameraRig.add(this.xrCamera);
         this.xrCamera.updateProjectionMatrix();
         this.activeCamera = this.flatCamera;
         let cameraTarget;
