@@ -222,6 +222,7 @@ export class Viewer {
     private defaultBackgroundColor: Color; // Used if no environment sky is set
     private overrides: any;
     private cameraRig: any;
+    private previousLeftThumbstickX: number;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -338,6 +339,7 @@ export class Viewer {
         let controller1: THREE.Group;
         let controllerGrip0;
         let controllerGrip1;
+        let previousLeftThumbstickX = 0;
 
         controller0 = renderer.xr.getController(0);
         this.scene.add(controller0);
@@ -402,29 +404,65 @@ export class Viewer {
             const delta = clock.getDelta();
 
             if (renderer.xr.isPresenting) {
+
                 let session : XRSession = <XRSession>renderer.xr.getSession();
                 viewer.activeCamera = viewer?.xrCamera;
+
                 const inputSources = Array.from(session.inputSources);
                 const moveSpeed = 0.05;
-                const rotationSpeed = 0.05;
+                const snapAngle = 30;
 
                 inputSources.forEach((inputSource) => {
+
                     const controllerData = handleController(inputSource);
+
                     if (controllerData) {
+
                         const axes = controllerData.axes;
 
-                        // Rotation (left thumbstick)
-                        if (Math.abs(axes[0]) > 0.1) {
-                            viewer.cameraRig.rotation.y -= axes[0] * rotationSpeed;
+                        if (inputSource.handedness === 'left') {
+
+                            // Rotation (left thumbstick x)
+                            if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
+                                if (axes[2] > 0) {
+                                    viewer.cameraRig.rotation.y -= snapAngle;
+                                } else {
+                                    viewer.cameraRig.rotation.y += snapAngle;
+                                }
+                            }
+                            previousLeftThumbstickX = axes[2];
+
+                            // Up/down position left thumbstick y)
+                            if (Math.abs(axes[3]) > 0.3) {
+                                viewer.cameraRig.position.y 0= axes[3] * moveSpeed;
+                            }
                         }
 
-                        // Movement (right thumbstick)
-                        if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
-                            const moveX = axes[2] * moveSpeed;
-                            const moveZ = -axes[3] * moveSpeed;
-                            const movement = new THREE.Vector3(moveX, 0, moveZ);
-                            movement.applyQuaternion(viewer.cameraRig.quaternion);
-                            viewer.cameraRig.position.add(movement);
+                        if (inputSource.handedness === 'right') {
+                            // Movement (right thumbstick)
+                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
+                                const moveX = axes[2] * moveSpeed;
+                                const moveZ = -axes[3] * moveSpeed;
+
+                                // Get the camera's forward and right vectors
+                                const forward = new THREE.Vector3();
+                                viewer.activeCamera.getWorldDirection(forward);
+
+                                // TODO Make this an option
+                                //forward.y = 0; // Ignore vertical movement
+
+                                forward.normalize();
+
+                                const right = new THREE.Vector3();
+                                right.crossVectors(forward, viewer.activeCamera.up).normalize();
+
+                                // Calculate the movement vector
+                                const movement = new THREE.Vector3();
+                                movement.addScaledVector(forward, moveZ);
+                                movement.addScaledVector(right, moveX);
+
+                                viewer.cameraRig.position.add(movement);
+                            }
                         }
                     }
                 });

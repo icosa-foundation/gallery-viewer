@@ -51646,6 +51646,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         let controller1;
         let controllerGrip0;
         let controllerGrip1;
+        let previousLeftThumbstickX = 0;
         controller0 = renderer.xr.getController(0);
         this.scene.add(controller0);
         controller1 = renderer.xr.getController(1);
@@ -51699,20 +51700,40 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                 viewer1.activeCamera = viewer1?.xrCamera;
                 const inputSources = Array.from(session.inputSources);
                 const moveSpeed = 0.05;
-                const rotationSpeed = 0.05;
+                const snapAngle = 30;
                 inputSources.forEach((inputSource)=>{
                     const controllerData = handleController(inputSource);
                     if (controllerData) {
                         const axes = controllerData.axes;
-                        // Rotation (left thumbstick)
-                        if (Math.abs(axes[0]) > 0.1) viewer1.cameraRig.rotation.y -= axes[0] * rotationSpeed;
-                        // Movement (right thumbstick)
-                        if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
-                            const moveX = axes[2] * moveSpeed;
-                            const moveZ = -axes[3] * moveSpeed;
-                            const movement = new $ea01ff4a5048cd08$exports.Vector3(moveX, 0, moveZ);
-                            movement.applyQuaternion(viewer1.cameraRig.quaternion);
-                            viewer1.cameraRig.position.add(movement);
+                        if (inputSource.handedness === "left") {
+                            // Rotation (left thumbstick x)
+                            if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
+                                if (axes[2] > 0) viewer1.cameraRig.rotation.y -= snapAngle;
+                                else viewer1.cameraRig.rotation.y += snapAngle;
+                            }
+                            previousLeftThumbstickX = axes[2];
+                            // Up/down position left thumbstick y)
+                            if (Math.abs(axes[3]) > 0.3) viewer1.cameraRig.position.y += axes[3] * moveSpeed;
+                        }
+                        if (inputSource.handedness === "right") // Movement (right thumbstick)
+                        {
+                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
+                                const moveX = axes[2] * moveSpeed;
+                                const moveZ = -axes[3] * moveSpeed;
+                                // Get the camera's forward and right vectors
+                                const forward = new $ea01ff4a5048cd08$exports.Vector3();
+                                viewer1.activeCamera.getWorldDirection(forward);
+                                // TODO Make this an option
+                                //forward.y = 0; // Ignore vertical movement
+                                forward.normalize();
+                                const right = new $ea01ff4a5048cd08$exports.Vector3();
+                                right.crossVectors(forward, viewer1.activeCamera.up).normalize();
+                                // Calculate the movement vector
+                                const movement = new $ea01ff4a5048cd08$exports.Vector3();
+                                movement.addScaledVector(forward, moveZ);
+                                movement.addScaledVector(right, moveX);
+                                viewer1.cameraRig.position.add(movement);
+                            }
                         }
                     }
                 });
