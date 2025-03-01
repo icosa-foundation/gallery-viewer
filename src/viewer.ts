@@ -567,6 +567,16 @@ export class Viewer {
         this.initFog();
         this.initLights();
         this.initCameras();
+
+        // TODO - this doesn't work
+        // Compensate for insanely large models
+        // let radius = this.overrides?.geometryData?.stats?.radius;
+        // if (radius > 10000) {
+        //     let scale = 1 / radius; // Unit scale
+        //     scale *= 100; // Add a little extra
+        //     this.loadedModel.scale.set(scale, scale, scale);
+        // }
+
         this.scene.add(this.loadedModel);
     }
 
