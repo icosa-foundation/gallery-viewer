@@ -230,7 +230,7 @@ export class Viewer {
         // Attempt to find viewer frame if not assigned
         if(!this.icosa_frame)
             this.icosa_frame = document.getElementById('icosa-viewer');
-        
+
         // Create if still not assigned
         if(!this.icosa_frame) {
             this.icosa_frame = document.createElement('div');
@@ -245,7 +245,7 @@ export class Viewer {
         const fullscreenButton = document.createElement('button');
         fullscreenButton.classList.add('panel-button', 'fullscreen-button');
         fullscreenButton.onclick = () => { this.toggleFullscreen(fullscreenButton); }
-        
+
         controlPanel.appendChild(fullscreenButton);
 
         this.icosa_frame.appendChild(controlPanel);
@@ -2218,8 +2218,6 @@ export class Viewer {
             this.sketchMetadata.FogDensity
         );
     }
-
-
 
 
     private initSceneBackground() {
