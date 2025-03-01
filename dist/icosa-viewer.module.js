@@ -50067,7 +50067,7 @@ class $a970d3af3e0e453f$var$GLTFParser {
                 // According to COLLADA spec...
                 // aspectRatio = xfov / yfov
                 var xfov = yfov * aspectRatio;
-                var _camera = new (0, $ea01ff4a5048cd08$export$74e4ae24825f68d7)(Math.radToDeg(xfov), aspectRatio, camera.perspective.znear || 1, camera.perspective.zfar || 2e6);
+                var _camera = new (0, $ea01ff4a5048cd08$export$74e4ae24825f68d7)($ea01ff4a5048cd08$export$6a7ef315a0d1ef07.radToDeg(xfov), aspectRatio, camera.perspective.znear || 1, camera.perspective.zfar || 2e6);
                 if (camera.name !== undefined) _camera.name = camera.name;
                 if (camera.extras) _camera.userData = camera.extras;
                 return _camera;
@@ -51606,6 +51606,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.brushPath = new URL("brushes/", assetBaseUrl);
         this.environmentPath = new URL("environments/", assetBaseUrl);
         this.texturePath = new URL("textures/", assetBaseUrl);
+        this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(0x000000);
         this.tiltLoader = new (0, $55489216125af3e6$export$36ca96fcead4fad7)(manager);
         this.tiltLoader.setBrushPath(this.brushPath.toString());
         this.objLoader = new (0, $21fa36e3a39b221c$export$7ae31604ad04b4a7)(manager);
@@ -51642,6 +51643,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             };
             return null;
         }
+        this.cameraRig = new $ea01ff4a5048cd08$exports.Group();
         let controller0;
         let controller1;
         let controllerGrip0;
@@ -51728,8 +51730,8 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                         if (inputSource.handedness === "right") {
                             // Rotation (right thumbstick x)
                             if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
-                                if (axes[2] < 0) viewer1.cameraRig.rotation.y -= snapAngle;
-                                else viewer1.cameraRig.rotation.y += snapAngle;
+                                if (axes[2] > 0) viewer1.cameraRig.rotation.y -= $ea01ff4a5048cd08$exports.MathUtils.degToRad(snapAngle);
+                                else viewer1.cameraRig.rotation.y += $ea01ff4a5048cd08$exports.MathUtils.degToRad(snapAngle);
                             }
                             previousLeftThumbstickX = axes[2];
                             // Up/down position right thumbstick y)
@@ -51813,7 +51815,23 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.initFog();
         this.initLights();
         this.initCameras();
+        // TODO - this doesn't work
+        // Compensate for insanely large models
+        // let radius = this.overrides?.geometryData?.stats?.radius;
+        // if (radius > 10000) {
+        //     let scale = 1 / radius; // Unit scale
+        //     scale *= 100; // Add a little extra
+        //     this.loadedModel.scale.set(scale, scale, scale);
+        // }
         this.scene.add(this.loadedModel);
+    }
+    toggleTreeView(root) {
+        if (root.childElementCount == 0) {
+            this.createTreeView(this.scene, root);
+            root.style.display = "none";
+        }
+        if (root.style.display === "block") root.style.display = "none";
+        else if (root.style.display === "none") root.style.display = "block";
     }
     static lookupEnvironment(guid) {
         return ({
@@ -53462,6 +53480,51 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         cameraDir.normalize();
         let newTarget = cameraPos.clone().add(cameraDir);
         this.cameraControls.setTarget(newTarget.x, newTarget.y, newTarget.z, true);
+    }
+    createTreeView(model, root) {
+        const treeView = root;
+        if (!treeView) {
+            console.error("Tree view container not found");
+            return;
+        }
+        treeView.innerHTML = "";
+        if (model) this.createTreeViewNode(model, treeView);
+        else console.error("Model not loaded");
+    }
+    createTreeViewNode(object, parentElement) {
+        const nodeElement = document.createElement("div");
+        nodeElement.classList.add("tree-node");
+        const contentElement = document.createElement("div");
+        contentElement.classList.add("tree-content");
+        const toggleButton = document.createElement("span");
+        toggleButton.classList.add("toggle-btn");
+        toggleButton.textContent = object.children && object.children.length > 0 ? "\u25B6" : " ";
+        toggleButton.addEventListener("click", ()=>{
+            nodeElement.classList.toggle("expanded");
+            toggleButton.textContent = nodeElement.classList.contains("expanded") ? "\u25BC" : "\u25B6";
+        });
+        const visibilityCheckbox = document.createElement("input");
+        visibilityCheckbox.type = "checkbox";
+        visibilityCheckbox.checked = object.visible;
+        visibilityCheckbox.addEventListener("change", ()=>{
+            object.visible = visibilityCheckbox.checked;
+        });
+        const label = document.createElement("span");
+        label.textContent = object.name || object.type;
+        label.style.marginLeft = "5px";
+        contentElement.appendChild(toggleButton);
+        contentElement.appendChild(visibilityCheckbox);
+        contentElement.appendChild(label);
+        nodeElement.appendChild(contentElement);
+        if (object.children && object.children.length > 0) {
+            const childrenContainer = document.createElement("div");
+            childrenContainer.classList.add("children");
+            nodeElement.appendChild(childrenContainer);
+            object.children.forEach((child)=>{
+                this.createTreeViewNode(child, childrenContainer);
+            });
+        }
+        parentElement.appendChild(nodeElement);
     }
 }
 
