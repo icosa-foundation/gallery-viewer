@@ -2349,6 +2349,10 @@ export class Viewer {
         contentElement.appendChild(toggleButton);
         contentElement.appendChild(visibilityCheckbox);
         contentElement.appendChild(label);
+        label.addEventListener('click', () => {
+            console.log(object);
+        });
+
         nodeElement.appendChild(contentElement);
 
         if (object.children && object.children.length > 0) {
