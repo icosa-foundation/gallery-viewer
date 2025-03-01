@@ -33,18 +33,13 @@
         }
     </style>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-        }
         #tree-view {
             padding: 10px;
-            background-color: #ffffff;
+            background-color: rgba(0,0,0,0.25);
+            color: white;
             box-shadow: -2px 0 5px rgba(0,0,0,0.1);
             z-index: 10;
+            display: none;
         }
         .tree-node {
             margin: 5px 0;
@@ -54,23 +49,25 @@
             display: flex;
             align-items: center;
         }
-        .toggle-btn {
+        #tree-view .toggle-btn {
             cursor: pointer;
             width: 20px;
             text-align: center;
         }
-        .children {
+        #tree-view .children {
             margin-left: 20px;
             display: none;
         }
-        .expanded > .children {
+        #tree-view .expanded > .children {
             display: block;
         }
     </style>
     <body style="margin: 0; background-color: black; display: flex; justify-content: center; align-items: center; height: 100vh;">
 
-        <div id="icosa-viewer" style="position: relative; width: 80%; height: 80%;"></div>
-        <div id="tree-view" style="width: 250px; overflow-y: auto;"></div>
+        <div id="icosa-wrapper" style="position: relative; width: 80%; height: 80%; display: flex;">
+            <div id="tree-view" style="width: 250px; overflow-y: auto; flex-shrink: 0;"></div>
+            <div id="icosa-viewer" style="flex-grow: 1; height: 100%;"></div>
+        </div>
 
         <script type="module">
             import { Viewer } from "./icosa-viewer.module.js";
@@ -149,7 +146,7 @@
                 backgroundColor: '#000000',
                 fogColor: '#000000',
                 fogDensity: 0,
-                toggleTreeView: () => this.toggleTreeView(document.getElementById('tree-view')),
+                toggleTreeView: () => viewer.toggleTreeView(document.getElementById('tree-view')),
                 toggleEnvironment: () => viewer.environmentObject && (viewer.environmentObject.visible = !viewer.environmentObject.visible),
                 toggleSky: () => viewer.skyObject && (viewer.skyObject.visible = !viewer.skyObject.visible),
                 fogBackground: () => {
