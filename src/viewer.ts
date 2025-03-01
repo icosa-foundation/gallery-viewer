@@ -219,10 +219,9 @@ export class Viewer {
     public environmentObject?: Object3D;
     public skyObject?: Object3D;
     public sketchMetadata?: SketchMetadata;
-    private defaultBackgroundColor: Color; // Used if no environment sky is set
+    private defaultBackgroundColor: THREE.Color; // Used if no environment sky is set
     private overrides: any;
-    private cameraRig: any;
-    private previousLeftThumbstickX: number;
+    private cameraRig: THREE.Group;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -286,6 +285,8 @@ export class Viewer {
         this.environmentPath = new URL('environments/', assetBaseUrl);
         this.texturePath = new URL('textures/', assetBaseUrl);
 
+        this.defaultBackgroundColor = new THREE.Color(0x000000);
+
         this.tiltLoader = new TiltLoader(manager);
         this.tiltLoader.setBrushPath(this.brushPath.toString());
 
@@ -335,6 +336,7 @@ export class Viewer {
             return null;
         }
 
+        this.cameraRig = new THREE.Group();
         let controller0: THREE.Group;
         let controller1: THREE.Group;
         let controllerGrip0;
