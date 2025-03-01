@@ -580,6 +580,18 @@ export class Viewer {
         this.scene.add(this.loadedModel);
     }
 
+    public toggleTreeView(root: HTMLElement) {
+        if (root.childElementCount == 0) {
+            this.createTreeView(this.scene, root);
+            root.style.display = 'none';
+        }
+        if (root.style.display === 'block') {
+            root.style.display = 'none';
+        } else if (root.style.display === 'none') {
+            root.style.display = 'block';
+        }
+    }
+
     static lookupEnvironment(guid : string) {
         return {
             "e38af599-4575-46ff-a040-459703dbcd36": {
@@ -2291,5 +2303,63 @@ export class Viewer {
         cameraDir.normalize();
         let newTarget = cameraPos.clone().add(cameraDir);
         this.cameraControls.setTarget(newTarget.x, newTarget.y, newTarget.z, true);
+    }
+
+    public createTreeView(model : Object3D<THREE.Object3DEventMap>, root: HTMLElement) {
+        const treeView = root;
+        if (!treeView) {
+            console.error('Tree view container not found');
+            return;
+        }
+        treeView.innerHTML = '';
+        if (model) {
+            this.createTreeViewNode(model, treeView);
+        } else {
+            console.error('Model not loaded');
+        }
+    }
+
+    public createTreeViewNode(object : THREE.Object3D, parentElement : HTMLElement) {
+        const nodeElement = document.createElement('div');
+        nodeElement.classList.add('tree-node');
+
+        const contentElement = document.createElement('div');
+        contentElement.classList.add('tree-content');
+
+        const toggleButton = document.createElement('span');
+        toggleButton.classList.add('toggle-btn');
+        toggleButton.textContent = object.children && object.children.length > 0 ? '▶' : ' ';
+        toggleButton.addEventListener('click', () => {
+            nodeElement.classList.toggle('expanded');
+            toggleButton.textContent = nodeElement.classList.contains('expanded') ? '▼' : '▶';
+        });
+
+        const visibilityCheckbox = document.createElement('input');
+        visibilityCheckbox.type = 'checkbox';
+        visibilityCheckbox.checked = object.visible;
+        visibilityCheckbox.addEventListener('change', () => {
+            object.visible = visibilityCheckbox.checked;
+        });
+
+        const label = document.createElement('span');
+        label.textContent = object.name || object.type;
+        label.style.marginLeft = '5px';
+
+        contentElement.appendChild(toggleButton);
+        contentElement.appendChild(visibilityCheckbox);
+        contentElement.appendChild(label);
+        nodeElement.appendChild(contentElement);
+
+        if (object.children && object.children.length > 0) {
+            const childrenContainer = document.createElement('div');
+            childrenContainer.classList.add('children');
+            nodeElement.appendChild(childrenContainer);
+
+            object.children.forEach(child => {
+                this.createTreeViewNode(child, childrenContainer);
+            });
+        }
+
+        parentElement.appendChild(nodeElement);
     }
 }

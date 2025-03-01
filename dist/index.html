@@ -32,8 +32,46 @@
             right: 0;
         }
     </style>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        #tree-view {
+            padding: 10px;
+            background-color: #ffffff;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .tree-node {
+            margin: 5px 0;
+            white-space: nowrap;
+        }
+        .tree-content {
+            display: flex;
+            align-items: center;
+        }
+        .toggle-btn {
+            cursor: pointer;
+            width: 20px;
+            text-align: center;
+        }
+        .children {
+            margin-left: 20px;
+            display: none;
+        }
+        .expanded > .children {
+            display: block;
+        }
+    </style>
     <body style="margin: 0; background-color: black; display: flex; justify-content: center; align-items: center; height: 100vh;">
+
         <div id="icosa-viewer" style="position: relative; width: 80%; height: 80%;"></div>
+        <div id="tree-view" style="width: 250px; overflow-y: auto;"></div>
+
         <script type="module">
             import { Viewer } from "./icosa-viewer.module.js";
             import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
@@ -111,6 +149,7 @@
                 backgroundColor: '#000000',
                 fogColor: '#000000',
                 fogDensity: 0,
+                toggleTreeView: () => this.toggleTreeView(document.getElementById('tree-view')),
                 toggleEnvironment: () => viewer.environmentObject && (viewer.environmentObject.visible = !viewer.environmentObject.visible),
                 toggleSky: () => viewer.skyObject && (viewer.skyObject.visible = !viewer.skyObject.visible),
                 fogBackground: () => {
@@ -196,6 +235,7 @@
                 logInfo: ""
             };
 
+            const toggleTreeView = gui.add(guiParams, 'toggleTreeView').name("Toggle Hierarchy");
             const backgroundColorControl = gui.addColor(guiParams, 'backgroundColor').onChange(() => viewer.scene.background = new THREE.Color(guiParams.backgroundColor));
             const fogColorControl = gui.addColor(guiParams, 'fogColor').onChange(() => viewer.scene.fog.color = new THREE.Color(guiParams.fogColor));
             const fogDensityControl = gui.add(guiParams, 'fogDensity', 0, 1).onChange(() => viewer.scene.fog.density = guiParams.fogDensity);
