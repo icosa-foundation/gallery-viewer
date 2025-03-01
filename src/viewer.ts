@@ -453,10 +453,10 @@ export class Viewer {
 
                             // Rotation (right thumbstick x)
                             if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
-                                if (axes[2] < 0) {
-                                    viewer.cameraRig.rotation.y -= snapAngle;
+                                if (axes[2] > 0) {
+                                    viewer.cameraRig.rotation.y -= THREE.MathUtils.degToRad(snapAngle);
                                 } else {
-                                    viewer.cameraRig.rotation.y += snapAngle;
+                                    viewer.cameraRig.rotation.y += THREE.MathUtils.degToRad(snapAngle);
                                 }
                             }
                             previousLeftThumbstickX = axes[2];
