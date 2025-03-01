@@ -53494,6 +53494,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     createTreeViewNode(object, parentElement) {
         const nodeElement = document.createElement("div");
         nodeElement.classList.add("tree-node");
+        nodeElement.style.marginLeft = "5px";
         const contentElement = document.createElement("div");
         contentElement.classList.add("tree-content");
         const toggleButton = document.createElement("span");
@@ -53515,6 +53516,9 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         contentElement.appendChild(toggleButton);
         contentElement.appendChild(visibilityCheckbox);
         contentElement.appendChild(label);
+        label.addEventListener("click", ()=>{
+            console.log(object);
+        });
         nodeElement.appendChild(contentElement);
         if (object.children && object.children.length > 0) {
             const childrenContainer = document.createElement("div");

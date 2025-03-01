@@ -2322,6 +2322,7 @@ export class Viewer {
     public createTreeViewNode(object : THREE.Object3D, parentElement : HTMLElement) {
         const nodeElement = document.createElement('div');
         nodeElement.classList.add('tree-node');
+        nodeElement.style.marginLeft = '5px';
 
         const contentElement = document.createElement('div');
         contentElement.classList.add('tree-content');
