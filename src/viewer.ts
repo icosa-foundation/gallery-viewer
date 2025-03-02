@@ -222,6 +222,7 @@ export class Viewer {
     private defaultBackgroundColor: THREE.Color; // Used if no environment sky is set
     private overrides: any;
     private cameraRig: THREE.Group;
+    public selectedNode: THREE.Object3D | null;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -337,6 +338,8 @@ export class Viewer {
         }
 
         this.cameraRig = new THREE.Group();
+        this.selectedNode = null;
+
         let controller0: THREE.Group;
         let controller1: THREE.Group;
         let controllerGrip0;
@@ -383,8 +386,9 @@ export class Viewer {
             viewerContainer.appendChild(button);
             const svgPath = button.querySelector('path');
             button.addEventListener('click', () => {
-                viewer.frameScene()
+                viewer.frameScene();
             });
+
             button.addEventListener('mouseover', () => {
                 svgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.7)');
             });
@@ -2274,8 +2278,14 @@ export class Viewer {
     }
 
     public frameScene() {
+        let box : THREE.Box3 | undefined;
+        if (this.selectedNode == null) {
+            box = this.modelBoundingBox;
+        } else {
+            box = new THREE.Box3().setFromObject(this.selectedNode);
+        }
         // Setup camera to center model
-        const box = this.modelBoundingBox;
+
         if (box != undefined) {
             const boxSize = box.getSize(new THREE.Vector3()).length();
             const boxCenter = box.getCenter(new THREE.Vector3());
@@ -2343,6 +2353,7 @@ export class Viewer {
         });
 
         const label = document.createElement('span');
+        label.classList.add('label');
         label.textContent = object.name || object.type;
         label.style.marginLeft = '5px';
 
@@ -2350,6 +2361,24 @@ export class Viewer {
         contentElement.appendChild(visibilityCheckbox);
         contentElement.appendChild(label);
         label.addEventListener('click', () => {
+
+            let wasSelected : boolean = label.classList.contains('selected');
+
+            document.querySelectorAll('.tree-node').forEach(node => {
+                const label = node.querySelector('.label');
+                if (label) {
+                    label.classList.remove('selected');
+                }
+            });
+
+            if (wasSelected)
+            {
+                label.classList.remove('selected');
+                this.selectedNode = null;
+            } else {
+                label.classList.add('selected');
+                this.selectedNode = object;
+            }
             console.log(object);
         });
 

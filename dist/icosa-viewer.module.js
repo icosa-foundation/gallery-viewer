@@ -51644,6 +51644,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             return null;
         }
         this.cameraRig = new $ea01ff4a5048cd08$exports.Group();
+        this.selectedNode = null;
         let controller0;
         let controller1;
         let controllerGrip0;
@@ -53454,8 +53455,10 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.scene.background = this.defaultBackgroundColor;
     }
     frameScene() {
+        let box;
+        if (this.selectedNode == null) box = this.modelBoundingBox;
+        else box = new $ea01ff4a5048cd08$exports.Box3().setFromObject(this.selectedNode);
         // Setup camera to center model
-        const box = this.modelBoundingBox;
         if (box != undefined) {
             const boxSize = box.getSize(new $ea01ff4a5048cd08$exports.Vector3()).length();
             const boxCenter = box.getCenter(new $ea01ff4a5048cd08$exports.Vector3());
@@ -53511,12 +53514,25 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             object.visible = visibilityCheckbox.checked;
         });
         const label = document.createElement("span");
+        label.classList.add("label");
         label.textContent = object.name || object.type;
         label.style.marginLeft = "5px";
         contentElement.appendChild(toggleButton);
         contentElement.appendChild(visibilityCheckbox);
         contentElement.appendChild(label);
         label.addEventListener("click", ()=>{
+            let wasSelected = label.classList.contains("selected");
+            document.querySelectorAll(".tree-node").forEach((node)=>{
+                const label = node.querySelector(".label");
+                if (label) label.classList.remove("selected");
+            });
+            if (wasSelected) {
+                label.classList.remove("selected");
+                this.selectedNode = null;
+            } else {
+                label.classList.add("selected");
+                this.selectedNode = object;
+            }
             console.log(object);
         });
         nodeElement.appendChild(contentElement);
