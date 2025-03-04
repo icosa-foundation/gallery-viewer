@@ -51816,14 +51816,14 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.initFog();
         this.initLights();
         this.initCameras();
-        // TODO - this doesn't work
         // Compensate for insanely large models
-        // let radius = this.overrides?.geometryData?.stats?.radius;
-        // if (radius > 10000) {
-        //     let scale = 1 / radius; // Unit scale
-        //     scale *= 100; // Add a little extra
-        //     this.loadedModel.scale.set(scale, scale, scale);
-        // }
+        const LIMIT = 100000;
+        let radius = this.overrides?.geometryData?.stats?.radius;
+        if (radius > LIMIT) {
+            let excess = radius - LIMIT;
+            this.loadedModel.scale.divideScalar(excess);
+            this.frameScene();
+        }
         this.scene.add(this.loadedModel);
     }
     toggleTreeView(root) {
