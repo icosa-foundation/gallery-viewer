@@ -157,9 +157,9 @@ class XRButton {
 
             } else {
 
-                message.href = 'https://immersiveweb.dev/';
-                message.innerHTML = 'WEBXR NOT AVAILABLE';
-
+                // message.href = 'https://immersiveweb.dev/';
+                // message.innerHTML = 'WEBXR NOT AVAILABLE';
+                message.style = 'display: none';
             }
 
             message.style.left = 'calc(50% - 90px)';
