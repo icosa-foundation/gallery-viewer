@@ -572,16 +572,18 @@ export class Viewer {
         this.initLights();
         this.initCameras();
 
-        // TODO - this doesn't work
         // Compensate for insanely large models
-        // let radius = this.overrides?.geometryData?.stats?.radius;
-        // if (radius > 10000) {
-        //     let scale = 1 / radius; // Unit scale
-        //     scale *= 100; // Add a little extra
-        //     this.loadedModel.scale.set(scale, scale, scale);
-        // }
-
-        this.scene.add(this.loadedModel);
+        const LIMIT = 100000;
+        let radius = this.overrides?.geometryData?.stats?.radius;
+        if (radius > LIMIT) {
+            let excess = radius - LIMIT;
+            let sceneNode = this.scene.add(this.loadedModel);
+            sceneNode.scale.divideScalar(excess);
+            // Reframe the scaled scene
+            this.frameNode(sceneNode);
+        } else {
+            this.scene.add(this.loadedModel);
+        }
     }
 
     public toggleTreeView(root: HTMLElement) {
@@ -2278,29 +2280,38 @@ export class Viewer {
     }
 
     public frameScene() {
-        let box : THREE.Box3 | undefined;
-        if (this.selectedNode == null) {
-            box = this.modelBoundingBox;
+        if (this.selectedNode != null) {
+            // If a node is selected in the treeview, frame that
+            this.frameNode(this.selectedNode);
+        } else if (this.modelBoundingBox != null) {
+            // This should be the bounding box of the loaded model itself
+            this.frameBox(this.modelBoundingBox);
         } else {
-            box = new THREE.Box3().setFromObject(this.selectedNode);
+            // Fall back to framing the whole scene
+            let box = new THREE.Box3().setFromObject(this.scene);
+            this.frameBox(box);
         }
-        // Setup camera to center model
+    }
 
-        if (box != undefined) {
-            const boxSize = box.getSize(new THREE.Vector3()).length();
-            const boxCenter = box.getCenter(new THREE.Vector3());
+    private frameNode(node: THREE.Object3D) {
+        this.frameBox(new THREE.Box3().setFromObject(node));
+    }
 
-            this.cameraControls.minDistance = boxSize * 0.01;
-            this.cameraControls.maxDistance = boxSize * 10;
+    private frameBox(box: THREE.Box3) {
 
-            const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
-            this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-            let sphere = new THREE.Sphere();
-            box.getBoundingSphere(sphere);
-            let fullDistance = sphere.radius * 1.75;
-            this.cameraControls.dollyTo(fullDistance, true);
-            this.cameraControls.saveState();
-        }
+        const boxSize = box.getSize(new THREE.Vector3()).length();
+        const boxCenter = box.getCenter(new THREE.Vector3());
+
+        this.cameraControls.minDistance = boxSize * 0.01;
+        this.cameraControls.maxDistance = boxSize * 10;
+
+        const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
+        this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+        let sphere = new THREE.Sphere();
+        box.getBoundingSphere(sphere);
+        let fullDistance = sphere.radius * 1.75;
+        this.cameraControls.dollyTo(fullDistance, true);
+        this.cameraControls.saveState();
     }
 
     public levelCamera() {
