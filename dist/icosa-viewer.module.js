@@ -53692,10 +53692,9 @@ class $2700ada9f878d4f8$export$d1c1e163c7960c6 {
             if (window.isSecureContext === false) {
                 message.href = document.location.href.replace(/^http:/, 'https:');
                 message.innerHTML = 'WEBXR NEEDS HTTPS'; // TODO Improve message
-            } else {
-                message.href = 'https://immersiveweb.dev/';
-                message.innerHTML = 'WEBXR NOT AVAILABLE';
-            }
+            } else // message.href = 'https://immersiveweb.dev/';
+            // message.innerHTML = 'WEBXR NOT AVAILABLE';
+            message.style = 'display: none';
             message.style.left = 'calc(50% - 90px)';
             message.style.width = '180px';
             message.style.textDecoration = 'none';
@@ -62967,15 +62966,16 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.initFog();
         this.initLights();
         this.initCameras();
-        // TODO - this doesn't work
         // Compensate for insanely large models
-        // let radius = this.overrides?.geometryData?.stats?.radius;
-        // if (radius > 10000) {
-        //     let scale = 1 / radius; // Unit scale
-        //     scale *= 100; // Add a little extra
-        //     this.loadedModel.scale.set(scale, scale, scale);
-        // }
-        this.scene.add(this.loadedModel);
+        const LIMIT = 100000;
+        let radius = this.overrides?.geometryData?.stats?.radius;
+        if (radius > LIMIT) {
+            let excess = radius - LIMIT;
+            let sceneNode = this.scene.add(this.loadedModel);
+            sceneNode.scale.divideScalar(excess);
+            // Reframe the scaled scene
+            this.frameNode(sceneNode);
+        } else this.scene.add(this.loadedModel);
     }
     toggleTreeView(root) {
         if (root.childElementCount == 0) {
@@ -64606,23 +64606,31 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.scene.background = this.defaultBackgroundColor;
     }
     frameScene() {
-        let box;
-        if (this.selectedNode == null) box = this.modelBoundingBox;
-        else box = new $ea01ff4a5048cd08$exports.Box3().setFromObject(this.selectedNode);
-        // Setup camera to center model
-        if (box != undefined) {
-            const boxSize = box.getSize(new $ea01ff4a5048cd08$exports.Vector3()).length();
-            const boxCenter = box.getCenter(new $ea01ff4a5048cd08$exports.Vector3());
-            this.cameraControls.minDistance = boxSize * 0.01;
-            this.cameraControls.maxDistance = boxSize * 10;
-            const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
-            this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-            let sphere = new $ea01ff4a5048cd08$exports.Sphere();
-            box.getBoundingSphere(sphere);
-            let fullDistance = sphere.radius * 1.75;
-            this.cameraControls.dollyTo(fullDistance, true);
-            this.cameraControls.saveState();
+        if (this.selectedNode != null) // If a node is selected in the treeview, frame that
+        this.frameNode(this.selectedNode);
+        else if (this.modelBoundingBox != null) // This should be the bounding box of the loaded model itself
+        this.frameBox(this.modelBoundingBox);
+        else {
+            // Fall back to framing the whole scene
+            let box = new $ea01ff4a5048cd08$exports.Box3().setFromObject(this.scene);
+            this.frameBox(box);
         }
+    }
+    frameNode(node) {
+        this.frameBox(new $ea01ff4a5048cd08$exports.Box3().setFromObject(node));
+    }
+    frameBox(box) {
+        const boxSize = box.getSize(new $ea01ff4a5048cd08$exports.Vector3()).length();
+        const boxCenter = box.getCenter(new $ea01ff4a5048cd08$exports.Vector3());
+        this.cameraControls.minDistance = boxSize * 0.01;
+        this.cameraControls.maxDistance = boxSize * 10;
+        const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
+        this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
+        let sphere = new $ea01ff4a5048cd08$exports.Sphere();
+        box.getBoundingSphere(sphere);
+        let fullDistance = sphere.radius * 1.75;
+        this.cameraControls.dollyTo(fullDistance, true);
+        this.cameraControls.saveState();
     }
     levelCamera() {
         // Sets the camera target so that the camera is looking forward and level
