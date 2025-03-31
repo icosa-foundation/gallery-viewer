@@ -64377,6 +64377,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     async loadTilt(url, overrides) {
         const tiltData = await this.tiltLoader.loadAsync(url);
         this.loadedModel = tiltData;
+        this.setupSketchMetaData(tiltData);
         this.initializeScene(overrides);
     }
     setAllVertexColors(model) {
@@ -64396,6 +64397,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
             let withVertexColors = overrides?.["withVertexColors"];
             if (withVertexColors) this.setAllVertexColors(this.loadedModel);
+            this.setupSketchMetaData(this.loadedModel);
             this.initializeScene(overrides);
         });
     }
@@ -64410,13 +64412,16 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                 this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
                 let withVertexColors = overrides?.["withVertexColors"];
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
+                this.setupSketchMetaData(this.loadedModel);
                 this.initializeScene(overrides);
+                this.frameScene(); // Not sure why the standard viewpoint heuristic isn't working here
             });
         });
     }
     async loadFbx(url, overrides) {
         const fbxData = await this.fbxLoader.loadAsync(url);
         this.loadedModel = fbxData;
+        this.setupSketchMetaData(fbxData);
         this.initializeScene(overrides);
     }
     async assignEnvironment(scene) {
@@ -64518,6 +64523,7 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                 }
             }
             let visualCenterPoint = new $ea01ff4a5048cd08$exports.Vector3(vp[0], vp[1], vp[2]);
+            console.log(visualCenterPoint);
             cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
             cameraTarget = cameraTarget || visualCenterPoint;
         }

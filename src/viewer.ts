@@ -1997,6 +1997,7 @@ export class Viewer {
     public async loadTilt(url: string, overrides : any) {
         const tiltData = await this.tiltLoader.loadAsync(url);
         this.loadedModel = tiltData;
+        this.setupSketchMetaData(tiltData);
         this.initializeScene(overrides);
     }
 
@@ -2027,6 +2028,7 @@ export class Viewer {
             if (withVertexColors) {
                 this.setAllVertexColors(this.loadedModel);
             }
+            this.setupSketchMetaData(this.loadedModel);
             this.initializeScene(overrides);
         });
     }
@@ -2046,7 +2048,9 @@ export class Viewer {
                 if (withVertexColors) {
                     this.setAllVertexColors(this.loadedModel);
                 }
+                this.setupSketchMetaData(this.loadedModel);
                 this.initializeScene(overrides);
+                this.frameScene(); // Not sure why the standard viewpoint heuristic isn't working here
             });
         });
     }
@@ -2054,6 +2058,7 @@ export class Viewer {
     public async loadFbx(url: string, overrides : any) {
         const fbxData = await this.fbxLoader.loadAsync(url);
         this.loadedModel = fbxData;
+        this.setupSketchMetaData(fbxData);
         this.initializeScene(overrides);
     }
 
@@ -2155,6 +2160,7 @@ export class Viewer {
                 }
             }
             let visualCenterPoint = new THREE.Vector3(vp[0], vp[1], vp[2]);
+            console.log(visualCenterPoint);
             cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
             cameraTarget = cameraTarget || visualCenterPoint;
         }

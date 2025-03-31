@@ -43,7 +43,7 @@
     "@depasquale/three-immersive-controls": "^0.0.15",
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
-    "three-icosa": "^0.4.2-alpha.7",
+    "three-icosa": "^0.4.2-alpha.8",
     "three-tiltloader": "^0.4.2-alpha.4"
   },
   "peerDependencies": {
