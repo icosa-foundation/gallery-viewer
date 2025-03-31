@@ -2679,8 +2679,13 @@ $parcel$export($ea01ff4a5048cd08$exports, "createCanvasElement", () => $ded5eecc
  * @license
  * Copyright 2010-2025 Three.js Authors
  * SPDX-License-Identifier: MIT
- */ const $ded5eecc0cd20cc2$export$3545e07a80636437 = '174';
-const $ded5eecc0cd20cc2$export$7177b3e430c2d7ca = {
+ */ const $ded5eecc0cd20cc2$export$3545e07a80636437 = '175';
+/**
+ * Represents mouse buttons and interaction types in context of controls.
+ *
+ * @type {ConstantsMouse}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7177b3e430c2d7ca = {
     LEFT: 0,
     MIDDLE: 1,
     RIGHT: 2,
@@ -2688,214 +2693,1248 @@ const $ded5eecc0cd20cc2$export$7177b3e430c2d7ca = {
     DOLLY: 1,
     PAN: 2
 };
-const $ded5eecc0cd20cc2$export$d46bd3ead7cc759b = {
+/**
+ * Represents touch interaction types in context of controls.
+ *
+ * @type {ConstantsTouch}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d46bd3ead7cc759b = {
     ROTATE: 0,
     PAN: 1,
     DOLLY_PAN: 2,
     DOLLY_ROTATE: 3
 };
-const $ded5eecc0cd20cc2$export$3237e1f2c1ea1f44 = 0;
-const $ded5eecc0cd20cc2$export$b9a7b4fc5cb15f9b = 1;
-const $ded5eecc0cd20cc2$export$b8058bcc7037d3f3 = 2;
-const $ded5eecc0cd20cc2$export$f24be24dcddeac0d = 3;
-const $ded5eecc0cd20cc2$export$346307dbae2b7447 = 0;
-const $ded5eecc0cd20cc2$export$5813f879eee7cd88 = 1;
-const $ded5eecc0cd20cc2$export$a47c4b43a1be34f0 = 2;
-const $ded5eecc0cd20cc2$export$896ae1ade6c829c4 = 3;
-const $ded5eecc0cd20cc2$export$2ede184fc2998901 = 0;
-const $ded5eecc0cd20cc2$export$d9f0486e75b5ace = 1;
-const $ded5eecc0cd20cc2$export$3b296b6f144d5b03 = 2;
-const $ded5eecc0cd20cc2$export$63b8d6b580fc65ba = 0;
-const $ded5eecc0cd20cc2$export$5b29a26d96ee6af0 = 1;
-const $ded5eecc0cd20cc2$export$777d8f9551c2216b = 2;
-const $ded5eecc0cd20cc2$export$cdfa06f868e2e467 = 3;
-const $ded5eecc0cd20cc2$export$4138e1c684b46a20 = 4;
-const $ded5eecc0cd20cc2$export$eda4864c68df1fa2 = 5;
-const $ded5eecc0cd20cc2$export$20183a0484ce21a0 = 100;
-const $ded5eecc0cd20cc2$export$73e0df5177988548 = 101;
-const $ded5eecc0cd20cc2$export$28e582859cbec660 = 102;
-const $ded5eecc0cd20cc2$export$c8c1508da8d0600c = 103;
-const $ded5eecc0cd20cc2$export$99948c02fb51055f = 104;
-const $ded5eecc0cd20cc2$export$2110f05edf778d3d = 200;
-const $ded5eecc0cd20cc2$export$8805bad65e24940e = 201;
-const $ded5eecc0cd20cc2$export$7fbe15b28d28cf52 = 202;
-const $ded5eecc0cd20cc2$export$947829af9f2c17f6 = 203;
-const $ded5eecc0cd20cc2$export$d5773124e86cf28c = 204;
-const $ded5eecc0cd20cc2$export$11d468cc7f19e971 = 205;
-const $ded5eecc0cd20cc2$export$a78aed1ca2a87192 = 206;
-const $ded5eecc0cd20cc2$export$5d0fe17fd8773bac = 207;
-const $ded5eecc0cd20cc2$export$ef5f2dd8ffac5574 = 208;
-const $ded5eecc0cd20cc2$export$56b85b2686ab16 = 209;
-const $ded5eecc0cd20cc2$export$c05e2a1fc8609506 = 210;
-const $ded5eecc0cd20cc2$export$7dd8f434fd59075 = 211;
-const $ded5eecc0cd20cc2$export$99c8d898a9afbcee = 212;
-const $ded5eecc0cd20cc2$export$310cd2be38d13b56 = 213;
-const $ded5eecc0cd20cc2$export$db77b8fbcf45dbf4 = 214;
-const $ded5eecc0cd20cc2$export$69025ce147cee220 = 0;
-const $ded5eecc0cd20cc2$export$7182eb52ea3b3f04 = 1;
-const $ded5eecc0cd20cc2$export$eedccec66ab7ebe = 2;
-const $ded5eecc0cd20cc2$export$296f78a0b892f81a = 3;
-const $ded5eecc0cd20cc2$export$a60d398fc7b7590e = 4;
-const $ded5eecc0cd20cc2$export$7d7234c1240a1fc4 = 5;
-const $ded5eecc0cd20cc2$export$c5e2c52991f30937 = 6;
-const $ded5eecc0cd20cc2$export$2f843afa843d8916 = 7;
-const $ded5eecc0cd20cc2$export$e50ac29801f1774d = 0;
-const $ded5eecc0cd20cc2$export$9f9d94f963c85479 = 1;
-const $ded5eecc0cd20cc2$export$e641dc52bc3494aa = 2;
-const $ded5eecc0cd20cc2$export$9fcb6b4294603b2 = 0;
-const $ded5eecc0cd20cc2$export$98f52c2a46c598ca = 1;
-const $ded5eecc0cd20cc2$export$74b25e54b3bcd548 = 2;
-const $ded5eecc0cd20cc2$export$932b3dd283d4a366 = 3;
-const $ded5eecc0cd20cc2$export$a0d98fe6d7e4af64 = 4;
-const $ded5eecc0cd20cc2$export$2c7b09c1e9abfb5e = 5;
-const $ded5eecc0cd20cc2$export$212d53a513a325b2 = 6;
-const $ded5eecc0cd20cc2$export$f2863e1668a8e317 = 7;
-const $ded5eecc0cd20cc2$export$2595a3798997538 = 'attached';
-const $ded5eecc0cd20cc2$export$d7e7dc2e114517a0 = 'detached';
-const $ded5eecc0cd20cc2$export$1beec6768cbb3d2d = 300;
-const $ded5eecc0cd20cc2$export$8759762a6477f2c4 = 301;
-const $ded5eecc0cd20cc2$export$dc59f8aed047f61d = 302;
-const $ded5eecc0cd20cc2$export$d64030b316d3b087 = 303;
-const $ded5eecc0cd20cc2$export$ee99d97d46898098 = 304;
-const $ded5eecc0cd20cc2$export$dbf3e70ff37af79 = 306;
-const $ded5eecc0cd20cc2$export$533346c8e8dac0f5 = 1000;
-const $ded5eecc0cd20cc2$export$9d9334239a5a5e06 = 1001;
-const $ded5eecc0cd20cc2$export$c7e7c00b14f51a4f = 1002;
-const $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0 = 1003;
-const $ded5eecc0cd20cc2$export$d129e38cf6feaa8c = 1004;
-const $ded5eecc0cd20cc2$export$14a4936464a36496 = 1004;
-const $ded5eecc0cd20cc2$export$d2327c1afe5bfdf2 = 1005;
-const $ded5eecc0cd20cc2$export$cbc5b7f5647595d8 = 1005;
-const $ded5eecc0cd20cc2$export$8a72f490b25c56c8 = 1006;
-const $ded5eecc0cd20cc2$export$19a719f377145a13 = 1007;
-const $ded5eecc0cd20cc2$export$dbe96bee3fe9dbf0 = 1007;
-const $ded5eecc0cd20cc2$export$5d8599b6a933fb1b = 1008;
-const $ded5eecc0cd20cc2$export$90d80f1e3506775f = 1008;
-const $ded5eecc0cd20cc2$export$2e8ce08d3f6f5e10 = 1009;
-const $ded5eecc0cd20cc2$export$545fce0311a9796a = 1010;
-const $ded5eecc0cd20cc2$export$88572337f312435f = 1011;
-const $ded5eecc0cd20cc2$export$c63dc51868b06a9d = 1012;
-const $ded5eecc0cd20cc2$export$5c612977753abe2 = 1013;
-const $ded5eecc0cd20cc2$export$c3c7fc4518ebba96 = 1014;
-const $ded5eecc0cd20cc2$export$f6d331659b644596 = 1015;
-const $ded5eecc0cd20cc2$export$2697304443f382bc = 1016;
-const $ded5eecc0cd20cc2$export$b3969b01faf587f2 = 1017;
-const $ded5eecc0cd20cc2$export$18886f8ae33e90de = 1018;
-const $ded5eecc0cd20cc2$export$6c8ea339bfab1301 = 1020;
-const $ded5eecc0cd20cc2$export$5a4c329b7e2092d3 = 35902;
-const $ded5eecc0cd20cc2$export$988473390501ed4b = 1021;
-const $ded5eecc0cd20cc2$export$7c67423a5ee6f5eb = 1022;
-const $ded5eecc0cd20cc2$export$3f8bb04b555a363c = 1023;
-const $ded5eecc0cd20cc2$export$cc09ccbf6d1ed449 = 1024;
-const $ded5eecc0cd20cc2$export$9053a81c4a69c289 = 1025;
-const $ded5eecc0cd20cc2$export$c1b6b5136be58045 = 1026;
-const $ded5eecc0cd20cc2$export$1e113ac2d0905829 = 1027;
-const $ded5eecc0cd20cc2$export$4e041a7967d15c4b = 1028;
-const $ded5eecc0cd20cc2$export$aa92e870a709d190 = 1029;
-const $ded5eecc0cd20cc2$export$6cdf0b461c7ce8a0 = 1030;
-const $ded5eecc0cd20cc2$export$1ba1c45f9f77d4d7 = 1031;
-const $ded5eecc0cd20cc2$export$d1fd40c11bfa798e = 1032;
-const $ded5eecc0cd20cc2$export$c200e7d26f592f21 = 1033;
-const $ded5eecc0cd20cc2$export$21d1799c6d552fc0 = 33776;
-const $ded5eecc0cd20cc2$export$afa304c3e981b668 = 33777;
-const $ded5eecc0cd20cc2$export$d2a1a68024a3e56c = 33778;
-const $ded5eecc0cd20cc2$export$9a79c424327dacf9 = 33779;
-const $ded5eecc0cd20cc2$export$19ada9bbb1af3573 = 35840;
-const $ded5eecc0cd20cc2$export$d0f0355bb3d948e4 = 35841;
-const $ded5eecc0cd20cc2$export$b82296714358084c = 35842;
-const $ded5eecc0cd20cc2$export$b71692456c47b6c3 = 35843;
-const $ded5eecc0cd20cc2$export$6ab91af2d757aee7 = 36196;
-const $ded5eecc0cd20cc2$export$7800993ef8106a6a = 37492;
-const $ded5eecc0cd20cc2$export$23ed8300a860e7d8 = 37496;
-const $ded5eecc0cd20cc2$export$dc5570b4a2b92d48 = 37808;
-const $ded5eecc0cd20cc2$export$68880cd325f8b2fb = 37809;
-const $ded5eecc0cd20cc2$export$7d2c0be323373d95 = 37810;
-const $ded5eecc0cd20cc2$export$22b52da301fc3a3e = 37811;
-const $ded5eecc0cd20cc2$export$c009e2cb4a66485e = 37812;
-const $ded5eecc0cd20cc2$export$118fff5afa255b63 = 37813;
-const $ded5eecc0cd20cc2$export$120713c829ae0667 = 37814;
-const $ded5eecc0cd20cc2$export$c79eeabbf53313e9 = 37815;
-const $ded5eecc0cd20cc2$export$443cf6567cdd6424 = 37816;
-const $ded5eecc0cd20cc2$export$6573984fc9840780 = 37817;
-const $ded5eecc0cd20cc2$export$e7aee563f30091de = 37818;
-const $ded5eecc0cd20cc2$export$2eb8634622ddeab7 = 37819;
-const $ded5eecc0cd20cc2$export$202b1ce7b5d25742 = 37820;
-const $ded5eecc0cd20cc2$export$18ab77abd087e467 = 37821;
-const $ded5eecc0cd20cc2$export$ce40b115e188bc81 = 36492;
-const $ded5eecc0cd20cc2$export$d279c5c4bac5121e = 36494;
-const $ded5eecc0cd20cc2$export$cde52d17225fdbd3 = 36495;
-const $ded5eecc0cd20cc2$export$b1688df4c4c21670 = 36283;
-const $ded5eecc0cd20cc2$export$fc15e5d8261eed58 = 36284;
-const $ded5eecc0cd20cc2$export$d220f6ade8463a0f = 36285;
-const $ded5eecc0cd20cc2$export$768646d09dc1b6ef = 36286;
-const $ded5eecc0cd20cc2$export$d62fdc9d1b1cccad = 2200;
-const $ded5eecc0cd20cc2$export$dfaf4422ce096e29 = 2201;
-const $ded5eecc0cd20cc2$export$f8f6f2041b78e210 = 2202;
-const $ded5eecc0cd20cc2$export$995b32462a65e855 = 2300;
-const $ded5eecc0cd20cc2$export$30fac1aace31cf4d = 2301;
-const $ded5eecc0cd20cc2$export$198b11ff4c72bb30 = 2302;
-const $ded5eecc0cd20cc2$export$7f795934b84ab523 = 2400;
-const $ded5eecc0cd20cc2$export$24a4ccb5099273b5 = 2401;
-const $ded5eecc0cd20cc2$export$8e8c3ecdcd8e1fee = 2402;
-const $ded5eecc0cd20cc2$export$bcfbbdcf8de7f8cd = 2500;
-const $ded5eecc0cd20cc2$export$d875e029ef558d3 = 2501;
-const $ded5eecc0cd20cc2$export$4c28c87c2dc84758 = 0;
-const $ded5eecc0cd20cc2$export$b23a071aa286eb29 = 1;
-const $ded5eecc0cd20cc2$export$f0d8293634f88842 = 2;
-const $ded5eecc0cd20cc2$export$deeb383078690b50 = 3200;
-const $ded5eecc0cd20cc2$export$8f910f4c4f73df11 = 3201;
-const $ded5eecc0cd20cc2$export$be2e2ddbc3983173 = 3202;
-const $ded5eecc0cd20cc2$export$1a54198784742f80 = 3203;
-const $ded5eecc0cd20cc2$export$2852a58ebdac27b8 = 0;
-const $ded5eecc0cd20cc2$export$9990ad26f9db5b2c = 1;
+/**
+ * Disables face culling.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$3237e1f2c1ea1f44 = 0;
+/**
+ * Culls back faces.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$b9a7b4fc5cb15f9b = 1;
+/**
+ * Culls front faces.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$b8058bcc7037d3f3 = 2;
+/**
+ * Culls both front and back faces.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$f24be24dcddeac0d = 3;
+/**
+ * Gives unfiltered shadow maps - fastest, but lowest quality.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$346307dbae2b7447 = 0;
+/**
+ * Filters shadow maps using the Percentage-Closer Filtering (PCF) algorithm.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$5813f879eee7cd88 = 1;
+/**
+ * Filters shadow maps using the Percentage-Closer Filtering (PCF) algorithm with
+ * better soft shadows especially when using low-resolution shadow maps.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$a47c4b43a1be34f0 = 2;
+/**
+ * Filters shadow maps using the Variance Shadow Map (VSM) algorithm.
+ * When using VSMShadowMap all shadow receivers will also cast shadows.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$896ae1ade6c829c4 = 3;
+/**
+ * Only front faces are rendered.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2ede184fc2998901 = 0;
+/**
+ * Only back faces are rendered.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d9f0486e75b5ace = 1;
+/**
+ * Both front and back faces are rendered.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$3b296b6f144d5b03 = 2;
+/**
+ * No blending is performed which effectively disables
+ * alpha transparency.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$63b8d6b580fc65ba = 0;
+/**
+ * The default blending.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$5b29a26d96ee6af0 = 1;
+/**
+ * Represents additive blending.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$777d8f9551c2216b = 2;
+/**
+ * Represents subtractive blending.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$cdfa06f868e2e467 = 3;
+/**
+ * Represents multiply blending.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$4138e1c684b46a20 = 4;
+/**
+ * Represents custom blending.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$eda4864c68df1fa2 = 5;
+/**
+ * A `source + destination` blending equation.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$20183a0484ce21a0 = 100;
+/**
+ * A `source - destination` blending equation.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$73e0df5177988548 = 101;
+/**
+ * A `destination - source` blending equation.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$28e582859cbec660 = 102;
+/**
+ * A blend equation that uses the minimum of source and destination.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c8c1508da8d0600c = 103;
+/**
+ * A blend equation that uses the maximum of source and destination.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$99948c02fb51055f = 104;
+/**
+ * Multiplies all colors by `0`.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2110f05edf778d3d = 200;
+/**
+ * Multiplies all colors by `1`.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8805bad65e24940e = 201;
+/**
+ * Multiplies all colors by the source colors.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7fbe15b28d28cf52 = 202;
+/**
+ * Multiplies all colors by `1` minus each source color.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$947829af9f2c17f6 = 203;
+/**
+ * Multiplies all colors by the source alpha value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d5773124e86cf28c = 204;
+/**
+ * Multiplies all colors by 1 minus the source alpha value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$11d468cc7f19e971 = 205;
+/**
+ * Multiplies all colors by the destination alpha value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$a78aed1ca2a87192 = 206;
+/**
+ * Multiplies all colors by `1` minus the destination alpha value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$5d0fe17fd8773bac = 207;
+/**
+ * Multiplies all colors by the destination color.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$ef5f2dd8ffac5574 = 208;
+/**
+ * Multiplies all colors by `1` minus each destination color.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$56b85b2686ab16 = 209;
+/**
+ * Multiplies the RGB colors by the smaller of either the source alpha
+ * value or the value of `1` minus the destination alpha value. The alpha
+ * value is multiplied by `1`.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c05e2a1fc8609506 = 210;
+/**
+ * Multiplies all colors by a constant color.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7dd8f434fd59075 = 211;
+/**
+ * Multiplies all colors by `1` minus a constant color.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$99c8d898a9afbcee = 212;
+/**
+ * Multiplies all colors by a constant alpha value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$310cd2be38d13b56 = 213;
+/**
+ * Multiplies all colors by 1 minus a constant alpha value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$db77b8fbcf45dbf4 = 214;
+/**
+ * Never pass.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$69025ce147cee220 = 0;
+/**
+ * Always pass.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7182eb52ea3b3f04 = 1;
+/**
+ * Pass if the incoming value is less than the depth buffer value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$eedccec66ab7ebe = 2;
+/**
+ * Pass if the incoming value is less than or equal to the depth buffer value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$296f78a0b892f81a = 3;
+/**
+ * Pass if the incoming value equals the depth buffer value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$a60d398fc7b7590e = 4;
+/**
+ * Pass if the incoming value is greater than or equal to the depth buffer value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7d7234c1240a1fc4 = 5;
+/**
+ * Pass if the incoming value is greater than the depth buffer value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c5e2c52991f30937 = 6;
+/**
+ * Pass if the incoming value is not equal to the depth buffer value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2f843afa843d8916 = 7;
+/**
+ * Multiplies the environment map color with the surface color.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$e50ac29801f1774d = 0;
+/**
+ * Uses reflectivity to blend between the two colors.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9f9d94f963c85479 = 1;
+/**
+ * Adds the two colors.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$e641dc52bc3494aa = 2;
+/**
+ * No tone mapping is applied.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9fcb6b4294603b2 = 0;
+/**
+ * Linear tone mapping.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$98f52c2a46c598ca = 1;
+/**
+ * Reinhard tone mapping.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$74b25e54b3bcd548 = 2;
+/**
+ * Cineon tone mapping.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$932b3dd283d4a366 = 3;
+/**
+ * ACES Filmic tone mapping.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$a0d98fe6d7e4af64 = 4;
+/**
+ * Custom tone mapping.
+ *
+ * Expects a custom implementation by modifying shader code of the material's fragment shader.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2c7b09c1e9abfb5e = 5;
+/**
+ * AgX tone mapping.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$212d53a513a325b2 = 6;
+/**
+ * Neutral tone mapping.
+ *
+ * Implementation based on the Khronos 3D Commerce Group standard tone mapping.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$f2863e1668a8e317 = 7;
+/**
+ * The skinned mesh shares the same world space as the skeleton.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2595a3798997538 = 'attached';
+/**
+ * The skinned mesh does not share the same world space as the skeleton.
+ * This is useful when a skeleton is shared across multiple skinned meshes.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d7e7dc2e114517a0 = 'detached';
+/**
+ * Maps textures using the geometry's UV coordinates.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$1beec6768cbb3d2d = 300;
+/**
+ * Reflection mapping for cube textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8759762a6477f2c4 = 301;
+/**
+ * Refraction mapping for cube textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$dc59f8aed047f61d = 302;
+/**
+ * Reflection mapping for equirectangular textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d64030b316d3b087 = 303;
+/**
+ * Refraction mapping for equirectangular textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$ee99d97d46898098 = 304;
+/**
+ * Reflection mapping for PMREM textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$dbf3e70ff37af79 = 306;
+/**
+ * The texture will simply repeat to infinity.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$533346c8e8dac0f5 = 1000;
+/**
+ * The last pixel of the texture stretches to the edge of the mesh.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9d9334239a5a5e06 = 1001;
+/**
+ * The texture will repeats to infinity, mirroring on each repeat.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c7e7c00b14f51a4f = 1002;
+/**
+ * Returns the value of the texture element that is nearest (in Manhattan distance)
+ * to the specified texture coordinates.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0 = 1003;
+/**
+ * Chooses the mipmap that most closely matches the size of the pixel being textured
+ * and uses the `NearestFilter` criterion (the texel nearest to the center of the pixel)
+ * to produce a texture value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d129e38cf6feaa8c = 1004;
+const $ded5eecc0cd20cc2$export$14a4936464a36496 = 1004; // legacy
+/**
+ * Chooses the two mipmaps that most closely match the size of the pixel being textured and
+ * uses the `NearestFilter` criterion to produce a texture value from each mipmap.
+ * The final texture value is a weighted average of those two values.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d2327c1afe5bfdf2 = 1005;
+const $ded5eecc0cd20cc2$export$cbc5b7f5647595d8 = 1005; // legacy
+/**
+ * Returns the weighted average of the four texture elements that are closest to the specified
+ * texture coordinates, and can include items wrapped or repeated from other parts of a texture,
+ * depending on the values of `wrapS` and `wrapT`, and on the exact mapping.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8a72f490b25c56c8 = 1006;
+/**
+ * Chooses the mipmap that most closely matches the size of the pixel being textured and uses
+ * the `LinearFilter` criterion (a weighted average of the four texels that are closest to the
+ * center of the pixel) to produce a texture value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$19a719f377145a13 = 1007;
+const $ded5eecc0cd20cc2$export$dbe96bee3fe9dbf0 = 1007; // legacy
+/**
+ * Chooses the two mipmaps that most closely match the size of the pixel being textured and uses
+ * the `LinearFilter` criterion to produce a texture value from each mipmap. The final texture value
+ * is a weighted average of those two values.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$5d8599b6a933fb1b = 1008;
+const $ded5eecc0cd20cc2$export$90d80f1e3506775f = 1008; // legacy
+/**
+ * An unsigned byte data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2e8ce08d3f6f5e10 = 1009;
+/**
+ * A byte data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$545fce0311a9796a = 1010;
+/**
+ * A short data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$88572337f312435f = 1011;
+/**
+ * An unsigned short data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c63dc51868b06a9d = 1012;
+/**
+ * An int data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$5c612977753abe2 = 1013;
+/**
+ * An unsigned int data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c3c7fc4518ebba96 = 1014;
+/**
+ * A float data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$f6d331659b644596 = 1015;
+/**
+ * A half float data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2697304443f382bc = 1016;
+/**
+ * An unsigned short 4_4_4_4 (packed) data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$b3969b01faf587f2 = 1017;
+/**
+ * An unsigned short 5_5_5_1 (packed) data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$18886f8ae33e90de = 1018;
+/**
+ * An unsigned int 24_8 data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$6c8ea339bfab1301 = 1020;
+/**
+ * An unsigned int 5_9_9_9 (packed) data type for textures.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$5a4c329b7e2092d3 = 35902;
+/**
+ * Discards the red, green and blue components and reads just the alpha component.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$988473390501ed4b = 1021;
+/**
+ * Discards the alpha component and reads the red, green and blue component.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7c67423a5ee6f5eb = 1022;
+/**
+ * Reads the red, green, blue and alpha components.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$3f8bb04b555a363c = 1023;
+/**
+ * reads each element as a single luminance component. This is then converted to a floating point,
+ * clamped to the range `[0,1]`, and then assembled into an RGBA element by placing the luminance value
+ * in the red, green and blue channels, and attaching 1.0 to the alpha channel.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$cc09ccbf6d1ed449 = 1024;
+/**
+ * Reads each element as a luminance/alpha double. The same process occurs as for the `LuminanceFormat`,
+ * except that the alpha channel may have values other than `1.0`.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9053a81c4a69c289 = 1025;
+/**
+ * Reads each element as a single depth value, converts it to floating point, and clamps to the range `[0,1]`.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c1b6b5136be58045 = 1026;
+/**
+ * Reads each element is a pair of depth and stencil values. The depth component of the pair is interpreted as
+ * in `DepthFormat`. The stencil component is interpreted based on the depth + stencil internal format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$1e113ac2d0905829 = 1027;
+/**
+ * Discards the green, blue and alpha components and reads just the red component.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$4e041a7967d15c4b = 1028;
+/**
+ * Discards the green, blue and alpha components and reads just the red component. The texels are read as integers instead of floating point.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$aa92e870a709d190 = 1029;
+/**
+ * Discards the alpha, and blue components and reads the red, and green components.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$6cdf0b461c7ce8a0 = 1030;
+/**
+ * Discards the alpha, and blue components and reads the red, and green components. The texels are read as integers instead of floating point.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$1ba1c45f9f77d4d7 = 1031;
+/**
+ * Discards the alpha component and reads the red, green and blue component. The texels are read as integers instead of floating point.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d1fd40c11bfa798e = 1032;
+/**
+ * Reads the red, green, blue and alpha components. The texels are read as integers instead of floating point.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c200e7d26f592f21 = 1033;
+/**
+ * A DXT1-compressed image in an RGB image format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$21d1799c6d552fc0 = 33776;
+/**
+ * A DXT1-compressed image in an RGB image format with a simple on/off alpha value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$afa304c3e981b668 = 33777;
+/**
+ * A DXT3-compressed image in an RGBA image format. Compared to a 32-bit RGBA texture, it offers 4:1 compression.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d2a1a68024a3e56c = 33778;
+/**
+ * A DXT5-compressed image in an RGBA image format. It also provides a 4:1 compression, but differs to the DXT3
+ * compression in how the alpha compression is done.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9a79c424327dacf9 = 33779;
+/**
+ * PVRTC RGB compression in 4-bit mode. One block for each 4×4 pixels.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$19ada9bbb1af3573 = 35840;
+/**
+ * PVRTC RGB compression in 2-bit mode. One block for each 8×4 pixels.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d0f0355bb3d948e4 = 35841;
+/**
+ * PVRTC RGBA compression in 4-bit mode. One block for each 4×4 pixels.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$b82296714358084c = 35842;
+/**
+ * PVRTC RGBA compression in 2-bit mode. One block for each 8×4 pixels.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$b71692456c47b6c3 = 35843;
+/**
+ * ETC1 RGB format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$6ab91af2d757aee7 = 36196;
+/**
+ * ETC2 RGB format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7800993ef8106a6a = 37492;
+/**
+ * ETC2 RGBA format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$23ed8300a860e7d8 = 37496;
+/**
+ * ASTC RGBA 4x4 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$dc5570b4a2b92d48 = 37808;
+/**
+ * ASTC RGBA 5x4 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$68880cd325f8b2fb = 37809;
+/**
+ * ASTC RGBA 5x5 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7d2c0be323373d95 = 37810;
+/**
+ * ASTC RGBA 6x5 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$22b52da301fc3a3e = 37811;
+/**
+ * ASTC RGBA 6x6 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c009e2cb4a66485e = 37812;
+/**
+ * ASTC RGBA 8x5 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$118fff5afa255b63 = 37813;
+/**
+ * ASTC RGBA 8x6 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$120713c829ae0667 = 37814;
+/**
+ * ASTC RGBA 8x8 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c79eeabbf53313e9 = 37815;
+/**
+ * ASTC RGBA 10x5 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$443cf6567cdd6424 = 37816;
+/**
+ * ASTC RGBA 10x6 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$6573984fc9840780 = 37817;
+/**
+ * ASTC RGBA 10x8 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$e7aee563f30091de = 37818;
+/**
+ * ASTC RGBA 10x10 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2eb8634622ddeab7 = 37819;
+/**
+ * ASTC RGBA 12x10 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$202b1ce7b5d25742 = 37820;
+/**
+ * ASTC RGBA 12x12 format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$18ab77abd087e467 = 37821;
+/**
+ * BPTC RGBA format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$ce40b115e188bc81 = 36492;
+/**
+ * BPTC Signed RGB format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d279c5c4bac5121e = 36494;
+/**
+ * BPTC Unsigned RGB format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$cde52d17225fdbd3 = 36495;
+/**
+ * RGTC1 Red format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$b1688df4c4c21670 = 36283;
+/**
+ * RGTC1 Signed Red format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$fc15e5d8261eed58 = 36284;
+/**
+ * RGTC2 Red Green format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d220f6ade8463a0f = 36285;
+/**
+ * RGTC2 Signed Red Green format.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$768646d09dc1b6ef = 36286;
+/**
+ * Animations are played once.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d62fdc9d1b1cccad = 2200;
+/**
+ * Animations are played with a chosen number of repetitions, each time jumping from
+ * the end of the clip directly to its beginning.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$dfaf4422ce096e29 = 2201;
+/**
+ * Animations are played with a chosen number of repetitions, alternately playing forward
+ * and backward.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$f8f6f2041b78e210 = 2202;
+/**
+ * Discrete interpolation mode for keyframe tracks.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$995b32462a65e855 = 2300;
+/**
+ * Linear interpolation mode for keyframe tracks.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$30fac1aace31cf4d = 2301;
+/**
+ * Smooth interpolation mode for keyframe tracks.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$198b11ff4c72bb30 = 2302;
+/**
+ * Zero curvature ending for animations.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7f795934b84ab523 = 2400;
+/**
+ * Zero slope ending for animations.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$24a4ccb5099273b5 = 2401;
+/**
+ * Wrap around ending for animations.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8e8c3ecdcd8e1fee = 2402;
+/**
+ * Default animation blend mode.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$bcfbbdcf8de7f8cd = 2500;
+/**
+ * Additive animation blend mode. Can be used to layer motions on top of
+ * each other to build complex performances from smaller re-usable assets.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d875e029ef558d3 = 2501;
+/**
+ * For every three vertices draw a single triangle.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$4c28c87c2dc84758 = 0;
+/**
+ * For each vertex draw a triangle from the last three vertices.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$b23a071aa286eb29 = 1;
+/**
+ * For each vertex draw a triangle from the first vertex and the last two vertices.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$f0d8293634f88842 = 2;
+/**
+ * Basic depth packing.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$deeb383078690b50 = 3200;
+/**
+ * A depth value is packed into 32 bit RGBA.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8f910f4c4f73df11 = 3201;
+/**
+ * A depth value is packed into 24 bit RGB.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$be2e2ddbc3983173 = 3202;
+/**
+ * A depth value is packed into 16 bit RG.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$1a54198784742f80 = 3203;
+/**
+ * Normal information is relative to the underlying surface.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2852a58ebdac27b8 = 0;
+/**
+ * Normal information is relative to the object orientation.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9990ad26f9db5b2c = 1;
 // Color space string identifiers, matching CSS Color Module Level 4 and WebGPU names where available.
-const $ded5eecc0cd20cc2$export$bfcb490c2dd3db51 = '';
-const $ded5eecc0cd20cc2$export$561f394b24edfcaa = 'srgb';
-const $ded5eecc0cd20cc2$export$42429b3acfb233a4 = 'srgb-linear';
-const $ded5eecc0cd20cc2$export$f197347d588c1b4a = 'linear';
-const $ded5eecc0cd20cc2$export$8d0a61916cc26abb = 'srgb';
-const $ded5eecc0cd20cc2$export$69433f11f42d5527 = 0;
-const $ded5eecc0cd20cc2$export$9f542ae4b5baca34 = 7680;
-const $ded5eecc0cd20cc2$export$8a4f28336ef203d3 = 7681;
-const $ded5eecc0cd20cc2$export$2928c0231297c036 = 7682;
-const $ded5eecc0cd20cc2$export$c0e9611c8a15f9a8 = 7683;
-const $ded5eecc0cd20cc2$export$9c2c08927385dcc4 = 34055;
-const $ded5eecc0cd20cc2$export$7c74ea00fa1315e6 = 34056;
-const $ded5eecc0cd20cc2$export$22e2e5726612443 = 5386;
-const $ded5eecc0cd20cc2$export$1343870698229224 = 512;
-const $ded5eecc0cd20cc2$export$8e1d8ed281997fa6 = 513;
-const $ded5eecc0cd20cc2$export$55648a1cde8329a7 = 514;
-const $ded5eecc0cd20cc2$export$2dff107857e6aca2 = 515;
-const $ded5eecc0cd20cc2$export$6f93765ab2f451a2 = 516;
-const $ded5eecc0cd20cc2$export$6f3fb2d2440f2b76 = 517;
-const $ded5eecc0cd20cc2$export$4119cf7b4c98fd5a = 518;
-const $ded5eecc0cd20cc2$export$14cf96713ddd97a8 = 519;
-const $ded5eecc0cd20cc2$export$d9e2d19a747baaab = 512;
-const $ded5eecc0cd20cc2$export$36bcf49c713b3eb7 = 513;
-const $ded5eecc0cd20cc2$export$66f28d946fc6a0d5 = 514;
-const $ded5eecc0cd20cc2$export$64eea11eb407ddf1 = 515;
-const $ded5eecc0cd20cc2$export$155af022118f3a38 = 516;
-const $ded5eecc0cd20cc2$export$67ab95dde6bed156 = 517;
-const $ded5eecc0cd20cc2$export$1cdcb70d53d65f61 = 518;
-const $ded5eecc0cd20cc2$export$187b73a3e352c145 = 519;
-const $ded5eecc0cd20cc2$export$763e8360f4d7f77d = 35044;
-const $ded5eecc0cd20cc2$export$8505d14ac8546ca = 35048;
-const $ded5eecc0cd20cc2$export$721e63549e51d81e = 35040;
-const $ded5eecc0cd20cc2$export$415731dc4f48e299 = 35045;
-const $ded5eecc0cd20cc2$export$9e809946455f13bc = 35049;
-const $ded5eecc0cd20cc2$export$2ed9499a35b5f832 = 35041;
-const $ded5eecc0cd20cc2$export$32ab2503ea19469a = 35046;
-const $ded5eecc0cd20cc2$export$ab4022c2c3f86315 = 35050;
-const $ded5eecc0cd20cc2$export$ba7f1db36a76a970 = 35042;
-const $ded5eecc0cd20cc2$export$43600cc67fabd9f = '100';
-const $ded5eecc0cd20cc2$export$f63012db5506e7dd = '300 es';
-const $ded5eecc0cd20cc2$export$5a0e9190d10875d3 = 2000;
-const $ded5eecc0cd20cc2$export$cc83beedcb9be9ac = 2001;
-const $ded5eecc0cd20cc2$export$f97db56e2b647801 = {
+/**
+ * No color space.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$bfcb490c2dd3db51 = '';
+/**
+ * sRGB color space.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$561f394b24edfcaa = 'srgb';
+/**
+ * sRGB-linear color space.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$42429b3acfb233a4 = 'srgb-linear';
+/**
+ * Linear transfer function.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$f197347d588c1b4a = 'linear';
+/**
+ * sRGB transfer function.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8d0a61916cc26abb = 'srgb';
+/**
+ * Sets the stencil buffer value to `0`.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$69433f11f42d5527 = 0;
+/**
+ * Keeps the current value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9f542ae4b5baca34 = 7680;
+/**
+ * Sets the stencil buffer value to the specified reference value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8a4f28336ef203d3 = 7681;
+/**
+ * Increments the current stencil buffer value. Clamps to the maximum representable unsigned value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2928c0231297c036 = 7682;
+/**
+ * Decrements the current stencil buffer value. Clamps to `0`.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$c0e9611c8a15f9a8 = 7683;
+/**
+ * Increments the current stencil buffer value. Wraps stencil buffer value to zero when incrementing
+ * the maximum representable unsigned value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9c2c08927385dcc4 = 34055;
+/**
+ * Decrements the current stencil buffer value. Wraps stencil buffer value to the maximum representable
+ * unsigned value when decrementing a stencil buffer value of `0`.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$7c74ea00fa1315e6 = 34056;
+/**
+ * Inverts the current stencil buffer value bitwise.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$22e2e5726612443 = 5386;
+/**
+ * Will never return true.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$1343870698229224 = 512;
+/**
+ * Will return true if the stencil reference value is less than the current stencil value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8e1d8ed281997fa6 = 513;
+/**
+ * Will return true if the stencil reference value is equal to the current stencil value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$55648a1cde8329a7 = 514;
+/**
+ * Will return true if the stencil reference value is less than or equal to the current stencil value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2dff107857e6aca2 = 515;
+/**
+ * Will return true if the stencil reference value is greater than the current stencil value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$6f93765ab2f451a2 = 516;
+/**
+ * Will return true if the stencil reference value is not equal to the current stencil value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$6f3fb2d2440f2b76 = 517;
+/**
+ * Will return true if the stencil reference value is greater than or equal to the current stencil value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$4119cf7b4c98fd5a = 518;
+/**
+ * Will always return true.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$14cf96713ddd97a8 = 519;
+/**
+ * Never pass.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$d9e2d19a747baaab = 512;
+/**
+ * Pass if the incoming value is less than the texture value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$36bcf49c713b3eb7 = 513;
+/**
+ * Pass if the incoming value equals the texture value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$66f28d946fc6a0d5 = 514;
+/**
+ * Pass if the incoming value is less than or equal to the texture value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$64eea11eb407ddf1 = 515;
+/**
+ * Pass if the incoming value is greater than the texture value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$155af022118f3a38 = 516;
+/**
+ * Pass if the incoming value is not equal to the texture value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$67ab95dde6bed156 = 517;
+/**
+ * Pass if the incoming value is greater than or equal to the texture value.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$1cdcb70d53d65f61 = 518;
+/**
+ * Always pass.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$187b73a3e352c145 = 519;
+/**
+ * The contents are intended to be specified once by the application, and used many
+ * times as the source for drawing and image specification commands.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$763e8360f4d7f77d = 35044;
+/**
+ * The contents are intended to be respecified repeatedly by the application, and
+ * used many times as the source for drawing and image specification commands.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$8505d14ac8546ca = 35048;
+/**
+ * The contents are intended to be specified once by the application, and used at most
+ * a few times as the source for drawing and image specification commands.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$721e63549e51d81e = 35040;
+/**
+ * The contents are intended to be specified once by reading data from the 3D API, and queried
+ * many times by the application.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$415731dc4f48e299 = 35045;
+/**
+ * The contents are intended to be respecified repeatedly by reading data from the 3D API, and queried
+ * many times by the application.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$9e809946455f13bc = 35049;
+/**
+ * The contents are intended to be specified once by reading data from the 3D API, and queried at most
+ * a few times by the application
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$2ed9499a35b5f832 = 35041;
+/**
+ * The contents are intended to be specified once by reading data from the 3D API, and used many times as
+ * the source for WebGL drawing and image specification commands.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$32ab2503ea19469a = 35046;
+/**
+ * The contents are intended to be respecified repeatedly by reading data from the 3D API, and used many times
+ * as the source for WebGL drawing and image specification commands.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$ab4022c2c3f86315 = 35050;
+/**
+ * The contents are intended to be specified once by reading data from the 3D API, and used at most a few times
+ * as the source for WebGL drawing and image specification commands.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$ba7f1db36a76a970 = 35042;
+/**
+ * GLSL 1 shader code.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$43600cc67fabd9f = '100';
+/**
+ * GLSL 3 shader code.
+ *
+ * @type {string}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$f63012db5506e7dd = '300 es';
+/**
+ * WebGL coordinate system.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$5a0e9190d10875d3 = 2000;
+/**
+ * WebGPU coordinate system.
+ *
+ * @type {number}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$cc83beedcb9be9ac = 2001;
+/**
+ * Represents the different timestamp query types.
+ *
+ * @type {ConstantsTimestampQuery}
+ * @constant
+ */ const $ded5eecc0cd20cc2$export$f97db56e2b647801 = {
     COMPUTE: 'compute',
     RENDER: 'render'
 };
 /**
+ * This type represents mouse buttons and interaction types in context of controls.
+ *
+ * @typedef {Object} ConstantsMouse
+ * @property {number} MIDDLE - The left mouse button.
+ * @property {number} LEFT - The middle mouse button.
+ * @property {number} RIGHT - The right mouse button.
+ * @property {number} ROTATE - A rotate interaction.
+ * @property {number} DOLLY - A dolly interaction.
+ * @property {number} PAN - A pan interaction.
+ **/ /**
+ * This type represents touch interaction types in context of controls.
+ *
+ * @typedef {Object} ConstantsTouch
+ * @property {number} ROTATE - A rotate interaction.
+ * @property {number} PAN - A pan interaction.
+ * @property {number} DOLLY_PAN - The dolly-pan interaction.
+ * @property {number} DOLLY_ROTATE - A dolly-rotate interaction.
+ **/ /**
+ * This type represents the different timestamp query types.
+ *
+ * @typedef {Object} ConstantsTimestampQuery
+ * @property {string} COMPUTE - A `compute` timestamp query.
+ * @property {string} RENDER - A `render` timestamp query.
+ **/ /**
  * This modules allows to dispatch event objects on custom JavaScript objects.
  *
  * Main repository: [eventdispatcher.js]{@link https://github.com/mrdoob/eventdispatcher.js/}
@@ -3536,31 +4575,231 @@ const $ded5eecc0cd20cc2$export$914076c8150813e5 = 180 / Math.PI;
             throw new Error('Invalid component type.');
     }
 }
-const $ded5eecc0cd20cc2$export$6a7ef315a0d1ef07 = {
+/**
+ * @class
+ * @classdesc A collection of math utility functions.
+ * @hideconstructor
+ */ const $ded5eecc0cd20cc2$export$6a7ef315a0d1ef07 = {
     DEG2RAD: $ded5eecc0cd20cc2$var$DEG2RAD,
     RAD2DEG: $ded5eecc0cd20cc2$export$914076c8150813e5,
-    generateUUID: $ded5eecc0cd20cc2$var$generateUUID,
-    clamp: $ded5eecc0cd20cc2$var$clamp,
-    euclideanModulo: $ded5eecc0cd20cc2$var$euclideanModulo,
-    mapLinear: $ded5eecc0cd20cc2$var$mapLinear,
-    inverseLerp: $ded5eecc0cd20cc2$var$inverseLerp,
-    lerp: $ded5eecc0cd20cc2$var$lerp,
-    damp: $ded5eecc0cd20cc2$var$damp,
-    pingpong: $ded5eecc0cd20cc2$var$pingpong,
-    smoothstep: $ded5eecc0cd20cc2$var$smoothstep,
-    smootherstep: $ded5eecc0cd20cc2$var$smootherstep,
-    randInt: $ded5eecc0cd20cc2$var$randInt,
-    randFloat: $ded5eecc0cd20cc2$var$randFloat,
-    randFloatSpread: $ded5eecc0cd20cc2$var$randFloatSpread,
-    seededRandom: $ded5eecc0cd20cc2$var$seededRandom,
-    degToRad: $ded5eecc0cd20cc2$var$degToRad,
-    radToDeg: $ded5eecc0cd20cc2$var$radToDeg,
-    isPowerOfTwo: $ded5eecc0cd20cc2$var$isPowerOfTwo,
-    ceilPowerOfTwo: $ded5eecc0cd20cc2$var$ceilPowerOfTwo,
-    floorPowerOfTwo: $ded5eecc0cd20cc2$var$floorPowerOfTwo,
-    setQuaternionFromProperEuler: $ded5eecc0cd20cc2$var$setQuaternionFromProperEuler,
-    normalize: $ded5eecc0cd20cc2$var$normalize,
-    denormalize: $ded5eecc0cd20cc2$var$denormalize
+    /**
+	 * Generate a [UUID]{@link https://en.wikipedia.org/wiki/Universally_unique_identifier}
+	 * (universally unique identifier).
+	 *
+	 * @static
+	 * @method
+	 * @return {string} The UUID.
+	 */ generateUUID: $ded5eecc0cd20cc2$var$generateUUID,
+    /**
+	 * Clamps the given value between min and max.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} value - The value to clamp.
+	 * @param {number} min - The min value.
+	 * @param {number} max - The max value.
+	 * @return {number} The clamped value.
+	 */ clamp: $ded5eecc0cd20cc2$var$clamp,
+    /**
+	 * Computes the Euclidean modulo of the given parameters that
+	 * is `( ( n % m ) + m ) % m`.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} n - The first parameter.
+	 * @param {number} m - The second parameter.
+	 * @return {number} The Euclidean modulo.
+	 */ euclideanModulo: $ded5eecc0cd20cc2$var$euclideanModulo,
+    /**
+	 * Performs a linear mapping from range `<a1, a2>` to range `<b1, b2>`
+	 * for the given value.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} x - The value to be mapped.
+	 * @param {number} a1 - Minimum value for range A.
+	 * @param {number} a2 - Maximum value for range A.
+	 * @param {number} b1 - Minimum value for range B.
+	 * @param {number} b2 - Maximum value for range B.
+	 * @return {number} The mapped value.
+	 */ mapLinear: $ded5eecc0cd20cc2$var$mapLinear,
+    /**
+	 * Returns the percentage in the closed interval `[0, 1]` of the given value
+	 * between the start and end point.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} x - The start point
+	 * @param {number} y - The end point.
+	 * @param {number} value - A value between start and end.
+	 * @return {number} The interpolation factor.
+	 */ inverseLerp: $ded5eecc0cd20cc2$var$inverseLerp,
+    /**
+	 * Returns a value linearly interpolated from two known points based on the given interval -
+	 * `t = 0` will return `x` and `t = 1` will return `y`.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} x - The start point
+	 * @param {number} y - The end point.
+	 * @param {number} t - The interpolation factor in the closed interval `[0, 1]`.
+	 * @return {number} The interpolated value.
+	 */ lerp: $ded5eecc0cd20cc2$var$lerp,
+    /**
+	 * Smoothly interpolate a number from `x` to `y` in  a spring-like manner using a delta
+	 * time to maintain frame rate independent movement. For details, see
+	 * [Frame rate independent damping using lerp]{@link http://www.rorydriscoll.com/2016/03/07/frame-rate-independent-damping-using-lerp/}.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} x - The current point.
+	 * @param {number} y - The target point.
+	 * @param {number} lambda - A higher lambda value will make the movement more sudden,
+	 * and a lower value will make the movement more gradual.
+	 * @param {number} dt - Delta time in seconds.
+	 * @return {number} The interpolated value.
+	 */ damp: $ded5eecc0cd20cc2$var$damp,
+    /**
+	 * Returns a value that alternates between `0` and the given `length` parameter.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} x - The value to pingpong.
+	 * @param {number} [length=1] - The positive value the function will pingpong to.
+	 * @return {number} The alternated value.
+	 */ pingpong: $ded5eecc0cd20cc2$var$pingpong,
+    /**
+	 * Returns a value in the range `[0,1]` that represents the percentage that `x` has
+	 * moved between `min` and `max`, but smoothed or slowed down the closer `x` is to
+	 * the `min` and `max`.
+	 *
+	 * See [Smoothstep]{@link http://en.wikipedia.org/wiki/Smoothstep} for more details.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} x - The value to evaluate based on its position between min and max.
+	 * @param {number} min - The min value. Any x value below min will be `0`.
+	 * @param {number} max - The max value. Any x value above max will be `1`.
+	 * @return {number} The alternated value.
+	 */ smoothstep: $ded5eecc0cd20cc2$var$smoothstep,
+    /**
+	 * A [variation on smoothstep]{@link https://en.wikipedia.org/wiki/Smoothstep#Variations}
+	 * that has zero 1st and 2nd order derivatives at x=0 and x=1.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} x - The value to evaluate based on its position between min and max.
+	 * @param {number} min - The min value. Any x value below min will be `0`.
+	 * @param {number} max - The max value. Any x value above max will be `1`.
+	 * @return {number} The alternated value.
+	 */ smootherstep: $ded5eecc0cd20cc2$var$smootherstep,
+    /**
+	 * Returns a random integer from `<low, high>` interval.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} low - The lower value boundary.
+	 * @param {number} high - The upper value boundary
+	 * @return {number} A random integer.
+	 */ randInt: $ded5eecc0cd20cc2$var$randInt,
+    /**
+	 * Returns a random float from `<low, high>` interval.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} low - The lower value boundary.
+	 * @param {number} high - The upper value boundary
+	 * @return {number} A random float.
+	 */ randFloat: $ded5eecc0cd20cc2$var$randFloat,
+    /**
+	 * Returns a random integer from `<-range/2, range/2>` interval.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} range - Defines the value range.
+	 * @return {number} A random float.
+	 */ randFloatSpread: $ded5eecc0cd20cc2$var$randFloatSpread,
+    /**
+	 * Returns a deterministic pseudo-random float in the interval `[0, 1]`.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} [s] - The integer seed.
+	 * @return {number} A random float.
+	 */ seededRandom: $ded5eecc0cd20cc2$var$seededRandom,
+    /**
+	 * Converts degrees to radians.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} degrees - A value in degrees.
+	 * @return {number} The converted value in radians.
+	 */ degToRad: $ded5eecc0cd20cc2$var$degToRad,
+    /**
+	 * Converts radians to degrees.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} radians - A value in radians.
+	 * @return {number} The converted value in degrees.
+	 */ radToDeg: $ded5eecc0cd20cc2$var$radToDeg,
+    /**
+	 * Returns `true` if the given number is a power of two.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} value - The value to check.
+	 * @return {boolean} Whether the given number is a power of two or not.
+	 */ isPowerOfTwo: $ded5eecc0cd20cc2$var$isPowerOfTwo,
+    /**
+	 * Returns the smallest power of two that is greater than or equal to the given number.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} value - The value to find a POT for.
+	 * @return {number} The smallest power of two that is greater than or equal to the given number.
+	 */ ceilPowerOfTwo: $ded5eecc0cd20cc2$var$ceilPowerOfTwo,
+    /**
+	 * Returns the largest power of two that is less than or equal to the given number.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} value - The value to find a POT for.
+	 * @return {number} The largest power of two that is less than or equal to the given number.
+	 */ floorPowerOfTwo: $ded5eecc0cd20cc2$var$floorPowerOfTwo,
+    /**
+	 * Sets the given quaternion from the [Intrinsic Proper Euler Angles]{@link https://en.wikipedia.org/wiki/Euler_angles}
+	 * defined by the given angles and order.
+	 *
+	 * Rotations are applied to the axes in the order specified by order:
+	 * rotation by angle `a` is applied first, then by angle `b`, then by angle `c`.
+	 *
+	 * @static
+	 * @method
+	 * @param {Quaternion} q - The quaternion to set.
+	 * @param {number} a - The rotation applied to the first axis, in radians.
+	 * @param {number} b - The rotation applied to the second axis, in radians.
+	 * @param {number} c - The rotation applied to the third axis, in radians.
+	 * @param {('XYX'|'XZX'|'YXY'|'YZY'|'ZXZ'|'ZYZ')} order - A string specifying the axes order.
+	 */ setQuaternionFromProperEuler: $ded5eecc0cd20cc2$var$setQuaternionFromProperEuler,
+    /**
+	 * Normalizes the given value according to the given typed array.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} value - The float value in the range `[0,1]` to normalize.
+	 * @param {TypedArray} array - The typed array that defines the data type of the value.
+	 * @return {number} The normalize value.
+	 */ normalize: $ded5eecc0cd20cc2$var$normalize,
+    /**
+	 * Denormalizes the given value according to the given typed array.
+	 *
+	 * @static
+	 * @method
+	 * @param {number} value - The value to denormalize.
+	 * @param {TypedArray} array - The typed array that defines the data type of the value.
+	 * @return {number} The denormalize (float) value in the range `[0,1]`.
+	 */ denormalize: $ded5eecc0cd20cc2$var$denormalize
 };
 /**
  * Class representing a 2D vector. A 2D vector is an ordered pair of numbers
@@ -4779,8 +6018,9 @@ let $ded5eecc0cd20cc2$var$_canvas;
 	 * Returns a data URI containing a representation of the given image.
 	 *
 	 * @param {(HTMLImageElement|HTMLCanvasElement)} image - The image object.
+	 * @param {string} [type='image/png'] - Indicates the image format.
 	 * @return {string} The data URI.
-	 */ static getDataURL(image) {
+	 */ static getDataURL(image, type = 'image/png') {
         if (/^data:/i.test(image.src)) return image.src;
         if (typeof HTMLCanvasElement === 'undefined') return image.src;
         let canvas;
@@ -4794,7 +6034,7 @@ let $ded5eecc0cd20cc2$var$_canvas;
             else context.drawImage(image, 0, 0, image.width, image.height);
             canvas = $ded5eecc0cd20cc2$var$_canvas;
         }
-        return canvas.toDataURL('image/png');
+        return canvas.toDataURL(type);
     }
     /**
 	 * Converts the given sRGB image data to linear color space.
@@ -4830,21 +6070,79 @@ let $ded5eecc0cd20cc2$var$_canvas;
     }
 }
 let $ded5eecc0cd20cc2$var$_sourceId = 0;
-class $ded5eecc0cd20cc2$export$1d2df86270c81ecb {
-    constructor(data = null){
-        this.isSource = true;
-        Object.defineProperty(this, 'id', {
+/**
+ * Represents the data source of a texture.
+ *
+ * The main purpose of this class is to decouple the data definition from the texture
+ * definition so the same data can be used with multiple texture instances.
+ */ class $ded5eecc0cd20cc2$export$1d2df86270c81ecb {
+    /**
+	 * Constructs a new video texture.
+	 *
+	 * @param {any} [data=null] - The data definition of a texture.
+	 */ constructor(data = null){
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isSource = true;
+        /**
+		 * The ID of the source.
+		 *
+		 * @name Source#id
+		 * @type {number}
+		 * @readonly
+		 */ Object.defineProperty(this, 'id', {
             value: $ded5eecc0cd20cc2$var$_sourceId++
         });
-        this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
-        this.data = data;
-        this.dataReady = true;
-        this.version = 0;
+        /**
+		 * The UUID of the source.
+		 *
+		 * @type {string}
+		 * @readonly
+		 */ this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
+        /**
+		 * The data definition of a texture.
+		 *
+		 * @type {any}
+		 */ this.data = data;
+        /**
+		 * This property is only relevant when {@link Source#needsUpdate} is set to `true` and
+		 * provides more control on how texture data should be processed. When `dataReady` is set
+		 * to `false`, the engine performs the memory allocation (if necessary) but does not transfer
+		 * the data into the GPU memory.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.dataReady = true;
+        /**
+		 * This starts at `0` and counts how many times {@link Source#needsUpdate} is set to `true`.
+		 *
+		 * @type {number}
+		 * @readonly
+		 * @default 0
+		 */ this.version = 0;
     }
-    set needsUpdate(value) {
+    /**
+	 * When the property is set to `true`, the engine allocates the memory
+	 * for the texture (if necessary) and triggers the actual texture upload
+	 * to the GPU next time the source is used.
+	 *
+	 * @type {boolean}
+	 * @default false
+	 * @param {boolean} value
+	 */ set needsUpdate(value) {
         if (value === true) this.version++;
     }
-    toJSON(meta) {
+    /**
+	 * Serializes the source into JSON.
+	 *
+	 * @param {?(Object|string)} meta - An optional value holding meta information about the serialization.
+	 * @return {Object} A JSON object representing the serialized source.
+	 * @see {@link ObjectLoader#parse}
+	 */ toJSON(meta) {
         const isRootObject = meta === undefined || typeof meta === 'string';
         if (!isRootObject && meta.images[this.uuid] !== undefined) return meta.images[this.uuid];
         const output = {
@@ -4901,11 +6199,11 @@ let $ded5eecc0cd20cc2$var$_textureId = 0;
 	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
 	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
 	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
-	 * @param {number} [minFilter=LinearFilter] - The min filter value.
-	 * @param {number} [format=RGBAFormat] - The min filter value.
-	 * @param {number} [type=UnsignedByteType] - The min filter value.
-	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The min filter value.
-	 * @param {string} [colorSpace=NoColorSpace] - The min filter value.
+	 * @param {number} [minFilter=LinearMipmapLinearFilter] - The min filter value.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 * @param {string} [colorSpace=NoColorSpace] - The color space.
 	 */ constructor(image = $ded5eecc0cd20cc2$export$5431306cf43de24a.DEFAULT_IMAGE, mapping = $ded5eecc0cd20cc2$export$5431306cf43de24a.DEFAULT_MAPPING, wrapS = $ded5eecc0cd20cc2$export$9d9334239a5a5e06, wrapT = $ded5eecc0cd20cc2$export$9d9334239a5a5e06, magFilter = $ded5eecc0cd20cc2$export$8a72f490b25c56c8, minFilter = $ded5eecc0cd20cc2$export$5d8599b6a933fb1b, format = $ded5eecc0cd20cc2$export$3f8bb04b555a363c, type = $ded5eecc0cd20cc2$export$2e8ce08d3f6f5e10, anisotropy = $ded5eecc0cd20cc2$export$5431306cf43de24a.DEFAULT_ANISOTROPY, colorSpace = $ded5eecc0cd20cc2$export$bfcb490c2dd3db51){
         super();
         /**
@@ -6093,20 +7391,88 @@ let $ded5eecc0cd20cc2$var$_textureId = 0;
         yield this.w;
     }
 }
-/*
- In options, we can specify:
- * Texture parameters for an auto-generated target texture
- * depthBuffer/stencilBuffer: Booleans to indicate if we should generate these buffers
-*/ class $ded5eecc0cd20cc2$export$efcb1f8bf367cbfb extends $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a {
-    constructor(width = 1, height = 1, options = {}){
+/**
+ * A render target is a buffer where the video card draws pixels for a scene
+ * that is being rendered in the background. It is used in different effects,
+ * such as applying postprocessing to a rendered image before displaying it
+ * on the screen.
+ *
+ * @augments EventDispatcher
+ */ class $ded5eecc0cd20cc2$export$efcb1f8bf367cbfb extends $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a {
+    /**
+	 * Render target options.
+	 *
+	 * @typedef {Object} RenderTarget~Options
+	 * @property {boolean} [generateMipmaps=false] - Whether to generate mipmaps or not.
+	 * @property {number} [magFilter=LinearFilter] - The mag filter.
+	 * @property {number} [minFilter=LinearFilter] - The min filter.
+	 * @property {number} [format=RGBAFormat] - The texture format.
+	 * @property {number} [type=UnsignedByteType] - The texture type.
+	 * @property {?string} [internalFormat=null] - The texture's internal format.
+	 * @property {number} [wrapS=ClampToEdgeWrapping] - The texture's uv wrapping mode.
+	 * @property {number} [wrapT=ClampToEdgeWrapping] - The texture's uv wrapping mode.
+	 * @property {number} [anisotropy=1] - The texture's anisotropy value.
+	 * @property {string} [colorSpace=NoColorSpace] - The texture's color space.
+	 * @property {boolean} [depthBuffer=true] - Whether to allocate a depth buffer or not.
+	 * @property {boolean} [stencilBuffer=false] - Whether to allocate a stencil buffer or not.
+	 * @property {boolean} [resolveDepthBuffer=true] - Whether to resolve the depth buffer or not.
+	 * @property {boolean} [resolveStencilBuffer=true] - Whether  to resolve the stencil buffer or not.
+	 * @property {?Texture} [depthTexture=null] - Reference to a depth texture.
+	 * @property {number} [samples=0] - The MSAA samples count.
+	 * @property {number} [count=1] - Defines the number of color attachments . Must be at least `1`.
+	 */ /**
+	 * Constructs a new render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */ constructor(width = 1, height = 1, options = {}){
         super();
-        this.isRenderTarget = true;
-        this.width = width;
-        this.height = height;
-        this.depth = 1;
-        this.scissor = new $ded5eecc0cd20cc2$export$fa7daccca11cdbe3(0, 0, width, height);
-        this.scissorTest = false;
-        this.viewport = new $ded5eecc0cd20cc2$export$fa7daccca11cdbe3(0, 0, width, height);
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isRenderTarget = true;
+        /**
+		 * The width of the render target.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.width = width;
+        /**
+		 * The height of the render target.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.height = height;
+        /**
+		 * The depth of the render target.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.depth = 1;
+        /**
+		 * A rectangular area inside the render target's viewport. Fragments that are
+		 * outside the area will be discarded.
+		 *
+		 * @type {Vector4}
+		 * @default (0,0,width,height)
+		 */ this.scissor = new $ded5eecc0cd20cc2$export$fa7daccca11cdbe3(0, 0, width, height);
+        /**
+		 * Indicates whether the scissor test should be enabled when rendering into
+		 * this render target or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.scissorTest = false;
+        /**
+		 * A rectangular area representing the render target's viewport.
+		 *
+		 * @type {Vector4}
+		 * @default (0,0,width,height)
+		 */ this.viewport = new $ded5eecc0cd20cc2$export$fa7daccca11cdbe3(0, 0, width, height);
         const image = {
             width: width,
             height: height,
@@ -6128,22 +7494,57 @@ let $ded5eecc0cd20cc2$var$_textureId = 0;
         texture.flipY = false;
         texture.generateMipmaps = options.generateMipmaps;
         texture.internalFormat = options.internalFormat;
-        this.textures = [];
+        /**
+		 * An array of textures. Each color attachment is represented as a separate texture.
+		 * Has at least a single entry for the default color attachment.
+		 *
+		 * @type {Array<Texture>}
+		 */ this.textures = [];
         const count = options.count;
         for(let i = 0; i < count; i++){
             this.textures[i] = texture.clone();
             this.textures[i].isRenderTargetTexture = true;
             this.textures[i].renderTarget = this;
         }
-        this.depthBuffer = options.depthBuffer;
-        this.stencilBuffer = options.stencilBuffer;
-        this.resolveDepthBuffer = options.resolveDepthBuffer;
-        this.resolveStencilBuffer = options.resolveStencilBuffer;
-        this._depthTexture = null;
-        this.depthTexture = options.depthTexture;
-        this.samples = options.samples;
+        /**
+		 * Whether to allocate a depth buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.depthBuffer = options.depthBuffer;
+        /**
+		 * Whether to allocate a stencil buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.stencilBuffer = options.stencilBuffer;
+        /**
+		 * Whether to resolve the depth buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.resolveDepthBuffer = options.resolveDepthBuffer;
+        /**
+		 * Whether to resolve the stencil buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.resolveStencilBuffer = options.resolveStencilBuffer;
+        this._depthTexture = options.depthTexture;
+        /**
+		 * The number of MSAA samples.
+		 *
+		 * A value of `0` disables MSAA.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.samples = options.samples;
     }
-    get texture() {
+    /**
+	 * The texture representing the default color attachment.
+	 *
+	 * @type {Texture}
+	 */ get texture() {
         return this.textures[0];
     }
     set texture(value) {
@@ -6154,10 +7555,23 @@ let $ded5eecc0cd20cc2$var$_textureId = 0;
         if (current !== null) current.renderTarget = this;
         this._depthTexture = current;
     }
-    get depthTexture() {
+    /**
+	 * Instead of saving the depth in a renderbuffer, a texture
+	 * can be used instead which is useful for further processing
+	 * e.g. in context of post-processing.
+	 *
+	 * @type {?DepthTexture}
+	 * @default null
+	 */ get depthTexture() {
         return this._depthTexture;
     }
-    setSize(width, height, depth = 1) {
+    /**
+	 * Sets the size of this render target.
+	 *
+	 * @param {number} width - The width.
+	 * @param {number} height - The height.
+	 * @param {number} [depth=1] - The depth.
+	 */ setSize(width, height, depth = 1) {
         if (this.width !== width || this.height !== height || this.depth !== depth) {
             this.width = width;
             this.height = height;
@@ -6172,10 +7586,21 @@ let $ded5eecc0cd20cc2$var$_textureId = 0;
         this.viewport.set(0, 0, width, height);
         this.scissor.set(0, 0, width, height);
     }
-    clone() {
+    /**
+	 * Returns a new render target with copied values from this instance.
+	 *
+	 * @return {RenderTarget} A clone of this instance.
+	 */ clone() {
         return new this.constructor().copy(this);
     }
-    copy(source) {
+    /**
+	 * Copies the settings of the given render target. This is a structural copy so
+	 * no resources are shared between render targets after the copy. That includes
+	 * all MRT textures and the depth texture.
+	 *
+	 * @param {RenderTarget} source - The render target to copy.
+	 * @return {RenderTarget} A reference to this instance.
+	 */ copy(source) {
         this.width = source.width;
         this.height = source.height;
         this.depth = source.depth;
@@ -6199,54 +7624,185 @@ let $ded5eecc0cd20cc2$var$_textureId = 0;
         this.samples = source.samples;
         return this;
     }
-    dispose() {
+    /**
+	 * Frees the GPU-related resources allocated by this instance. Call this
+	 * method whenever this instance is no longer used in your app.
+	 *
+	 * @fires RenderTarget#dispose
+	 */ dispose() {
         this.dispatchEvent({
             type: 'dispose'
         });
     }
 }
-class $ded5eecc0cd20cc2$export$3c052beb2e51e23f extends $ded5eecc0cd20cc2$export$efcb1f8bf367cbfb {
-    constructor(width = 1, height = 1, options = {}){
+/**
+ * A render target used in context of {@link WebGLRenderer}.
+ *
+ * @augments RenderTarget
+ */ class $ded5eecc0cd20cc2$export$3c052beb2e51e23f extends $ded5eecc0cd20cc2$export$efcb1f8bf367cbfb {
+    /**
+	 * Constructs a new 3D render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */ constructor(width = 1, height = 1, options = {}){
         super(width, height, options);
-        this.isWebGLRenderTarget = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isWebGLRenderTarget = true;
     }
 }
-class $ded5eecc0cd20cc2$export$dfac6c8e811406a3 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(data = null, width = 1, height = 1, depth = 1){
+/**
+ * Creates an array of textures directly from raw buffer data.
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$dfac6c8e811406a3 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new data array texture.
+	 *
+	 * @param {?TypedArray} [data=null] - The buffer data.
+	 * @param {number} [width=1] - The width of the texture.
+	 * @param {number} [height=1] - The height of the texture.
+	 * @param {number} [depth=1] - The depth of the texture.
+	 */ constructor(data = null, width = 1, height = 1, depth = 1){
         super(null);
-        this.isDataArrayTexture = true;
-        this.image = {
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isDataArrayTexture = true;
+        /**
+		 * The image definition of a data texture.
+		 *
+		 * @type {{data:TypedArray,width:number,height:number,depth:number}}
+		 */ this.image = {
             data: data,
             width: width,
             height: height,
             depth: depth
         };
-        this.magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
-        this.minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
-        this.wrapR = $ded5eecc0cd20cc2$export$9d9334239a5a5e06;
-        this.generateMipmaps = false;
-        this.flipY = false;
-        this.unpackAlignment = 1;
-        this.layerUpdates = new Set();
+        /**
+		 * How the texture is sampled when a texel covers more than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */ this.magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
+        /**
+		 * How the texture is sampled when a texel covers less than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */ this.minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
+        /**
+		 * This defines how the texture is wrapped in the depth and corresponds to
+		 * *W* in UVW mapping.
+		 *
+		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
+		 * @default ClampToEdgeWrapping
+		 */ this.wrapR = $ded5eecc0cd20cc2$export$9d9334239a5a5e06;
+        /**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.generateMipmaps = false;
+        /**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flipY = false;
+        /**
+		 * Specifies the alignment requirements for the start of each pixel row in memory.
+		 *
+		 * Overwritten and set to `1` by default.
+		 *
+		 * @type {boolean}
+		 * @default 1
+		 */ this.unpackAlignment = 1;
+        /**
+		 * A set of all layers which need to be updated in the texture.
+		 *
+		 * @type {Set<number>}
+		 */ this.layerUpdates = new Set();
     }
-    addLayerUpdate(layerIndex) {
+    /**
+	 * Describes that a specific layer of the texture needs to be updated.
+	 * Normally when {@link Texture#needsUpdate} is set to `true`, the
+	 * entire data texture array is sent to the GPU. Marking specific
+	 * layers will only transmit subsets of all mipmaps associated with a
+	 * specific depth in the array which is often much more performant.
+	 *
+	 * @param {number} layerIndex - The layer index that should be updated.
+	 */ addLayerUpdate(layerIndex) {
         this.layerUpdates.add(layerIndex);
     }
-    clearLayerUpdates() {
+    /**
+	 * Resets the layer updates registry.
+	 */ clearLayerUpdates() {
         this.layerUpdates.clear();
     }
 }
-class $ded5eecc0cd20cc2$export$c77a02c11ed180c7 extends $ded5eecc0cd20cc2$export$3c052beb2e51e23f {
-    constructor(width = 1, height = 1, depth = 1, options = {}){
+/**
+ * An array render target used in context of {@link WebGLRenderer}.
+ *
+ * @augments WebGLRenderTarget
+ */ class $ded5eecc0cd20cc2$export$c77a02c11ed180c7 extends $ded5eecc0cd20cc2$export$3c052beb2e51e23f {
+    /**
+	 * Constructs a new array render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {number} [depth=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */ constructor(width = 1, height = 1, depth = 1, options = {}){
         super(width, height, options);
-        this.isWebGLArrayRenderTarget = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isWebGLArrayRenderTarget = true;
         this.depth = depth;
-        this.texture = new $ded5eecc0cd20cc2$export$dfac6c8e811406a3(null, width, height, depth);
+        /**
+		 * Overwritten with a different texture type.
+		 *
+		 * @type {DataArrayTexture}
+		 */ this.texture = new $ded5eecc0cd20cc2$export$dfac6c8e811406a3(null, width, height, depth);
         this.texture.isRenderTargetTexture = true;
     }
 }
-class $ded5eecc0cd20cc2$export$d7a3086320f856db extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(data = null, width = 1, height = 1, depth = 1){
+/**
+ * Creates a three-dimensional texture from raw data, with parameters to
+ * divide it into width, height, and depth.
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$d7a3086320f856db extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new data array texture.
+	 *
+	 * @param {?TypedArray} [data=null] - The buffer data.
+	 * @param {number} [width=1] - The width of the texture.
+	 * @param {number} [height=1] - The height of the texture.
+	 * @param {number} [depth=1] - The depth of the texture.
+	 */ constructor(data = null, width = 1, height = 1, depth = 1){
         // We're going to add .setXXX() methods for setting properties later.
         // Users can still set in Data3DTexture directly.
         //
@@ -6255,27 +7811,100 @@ class $ded5eecc0cd20cc2$export$d7a3086320f856db extends $ded5eecc0cd20cc2$export
         //
         // See #14839
         super(null);
-        this.isData3DTexture = true;
-        this.image = {
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isData3DTexture = true;
+        /**
+		 * The image definition of a data texture.
+		 *
+		 * @type {{data:TypedArray,width:number,height:number,depth:number}}
+		 */ this.image = {
             data: data,
             width: width,
             height: height,
             depth: depth
         };
-        this.magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
-        this.minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
-        this.wrapR = $ded5eecc0cd20cc2$export$9d9334239a5a5e06;
-        this.generateMipmaps = false;
-        this.flipY = false;
-        this.unpackAlignment = 1;
+        /**
+		 * How the texture is sampled when a texel covers more than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */ this.magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
+        /**
+		 * How the texture is sampled when a texel covers less than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */ this.minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
+        /**
+		 * This defines how the texture is wrapped in the depth and corresponds to
+		 * *W* in UVW mapping.
+		 *
+		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
+		 * @default ClampToEdgeWrapping
+		 */ this.wrapR = $ded5eecc0cd20cc2$export$9d9334239a5a5e06;
+        /**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.generateMipmaps = false;
+        /**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flipY = false;
+        /**
+		 * Specifies the alignment requirements for the start of each pixel row in memory.
+		 *
+		 * Overwritten and set to `1` by default.
+		 *
+		 * @type {boolean}
+		 * @default 1
+		 */ this.unpackAlignment = 1;
     }
 }
-class $ded5eecc0cd20cc2$export$7ee06591009639df extends $ded5eecc0cd20cc2$export$3c052beb2e51e23f {
-    constructor(width = 1, height = 1, depth = 1, options = {}){
+/**
+ * A 3D render target used in context of {@link WebGLRenderer}.
+ *
+ * @augments WebGLRenderTarget
+ */ class $ded5eecc0cd20cc2$export$7ee06591009639df extends $ded5eecc0cd20cc2$export$3c052beb2e51e23f {
+    /**
+	 * Constructs a new 3D render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {number} [depth=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */ constructor(width = 1, height = 1, depth = 1, options = {}){
         super(width, height, options);
-        this.isWebGL3DRenderTarget = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isWebGL3DRenderTarget = true;
         this.depth = depth;
-        this.texture = new $ded5eecc0cd20cc2$export$d7a3086320f856db(null, width, height, depth);
+        /**
+		 * Overwritten with a different texture type.
+		 *
+		 * @type {Data3DTexture}
+		 */ this.texture = new $ded5eecc0cd20cc2$export$d7a3086320f856db(null, width, height, depth);
         this.texture.isRenderTargetTexture = true;
     }
 }
@@ -10139,33 +11768,83 @@ const $ded5eecc0cd20cc2$var$_quaternion$3 = /*@__PURE__*/ new $ded5eecc0cd20cc2$
  * @type {string}
  * @default 'XYZ'
  */ $ded5eecc0cd20cc2$export$d93cc409a0768c5f.DEFAULT_ORDER = 'XYZ';
-class $ded5eecc0cd20cc2$export$89312ce47c0ca777 {
-    constructor(){
-        this.mask = 1;
+/**
+ * A layers object assigns an 3D object to 1 or more of 32
+ * layers numbered `0` to `31` - internally the layers are stored as a
+ * bit mask], and by default all 3D objects are a member of layer `0`.
+ *
+ * This can be used to control visibility - an object must share a layer with
+ * a camera to be visible when that camera's view is
+ * rendered.
+ *
+ * All classes that inherit from {@link Object3D} have an `layers` property which
+ * is an instance of this class.
+ */ class $ded5eecc0cd20cc2$export$89312ce47c0ca777 {
+    /**
+	 * Constructs a new layers instance, with membership
+	 * initially set to layer `0`.
+	 */ constructor(){
+        /**
+		 * A bit mask storing which of the 32 layers this layers object is currently
+		 * a member of.
+		 *
+		 * @type {number}
+		 */ this.mask = 1;
     }
-    set(channel) {
-        this.mask = (1 << channel | 0) >>> 0;
+    /**
+	 * Sets membership to the given layer, and remove membership all other layers.
+	 *
+	 * @param {number} layer - The layer to set.
+	 */ set(layer) {
+        this.mask = (1 << layer | 0) >>> 0;
     }
-    enable(channel) {
-        this.mask |= 1 << channel | 0;
+    /**
+	 * Adds membership of the given layer.
+	 *
+	 * @param {number} layer - The layer to enable.
+	 */ enable(layer) {
+        this.mask |= 1 << layer | 0;
     }
-    enableAll() {
+    /**
+	 * Adds membership to all layers.
+	 */ enableAll() {
         this.mask = -1;
     }
-    toggle(channel) {
-        this.mask ^= 1 << channel | 0;
+    /**
+	 * Toggles the membership of the given layer.
+	 *
+	 * @param {number} layer - The layer to toggle.
+	 */ toggle(layer) {
+        this.mask ^= 1 << layer | 0;
     }
-    disable(channel) {
-        this.mask &= ~(1 << channel | 0);
+    /**
+	 * Removes membership of the given layer.
+	 *
+	 * @param {number} layer - The layer to enable.
+	 */ disable(layer) {
+        this.mask &= ~(1 << layer | 0);
     }
-    disableAll() {
+    /**
+	 * Removes the membership from all layers.
+	 */ disableAll() {
         this.mask = 0;
     }
-    test(layers) {
+    /**
+	 * Returns `true` if this and the given layers object have at least one
+	 * layer in common.
+	 *
+	 * @param {Layers} layers - The layers to test.
+	 * @return {boolean } Whether this and the given layers object have at least one layer in common or not.
+	 */ test(layers) {
         return (this.mask & layers.mask) !== 0;
     }
-    isEnabled(channel) {
-        return (this.mask & (1 << channel | 0)) !== 0;
+    /**
+	 * Returns `true` if the given layer is enabled.
+	 *
+	 * @param {number} layer - The layer to test.
+	 * @return {boolean } Whether the given layer is enabled or not.
+	 */ isEnabled(layer) {
+        return (this.mask & (1 << layer | 0)) !== 0;
     }
 }
 let $ded5eecc0cd20cc2$var$_object3DId = 0;
@@ -10431,6 +12110,25 @@ const $ded5eecc0cd20cc2$var$_zAxis = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$
 		 *
 		 * @type {Array<AnimationClip>}
 		 */ this.animations = [];
+        /**
+		 * Custom depth material to be used when rendering to the depth map. Can only be used
+		 * in context of meshes. When shadow-casting with a {@link DirectionalLight} or {@link SpotLight},
+		 * if you are modifying vertex positions in the vertex shader you must specify a custom depth
+		 * material for proper shadows.
+		 *
+		 * Only relevant in context of {@link WebGLRenderer}.
+		 *
+		 * @type {(Material|undefined)}
+		 * @default undefined
+		 */ this.customDepthMaterial = undefined;
+        /**
+		 * Same as {@link Object3D#customDepthMaterial}, but used with {@link PointLight}.
+		 *
+		 * Only relevant in context of {@link WebGLRenderer}.
+		 *
+		 * @type {(Material|undefined)}
+		 * @default undefined
+		 */ this.customDistanceMaterial = undefined;
         /**
 		 * An object that can be used to store custom data about the 3D object. It
 		 * should not hold references to functions as these will not be cloned.
@@ -12048,7 +13746,7 @@ function $ded5eecc0cd20cc2$var$hue2rgb(p, q, t) {
 	 * Converts the colors RGB values into the HSL format and stores them into the
 	 * given target object.
 	 *
-	 * @param {{h:0,s:0,l:0}} target - The target object that is used to store the method's result.
+	 * @param {{h:number,s:number,l:number}} target - The target object that is used to store the method's result.
 	 * @param {string} [colorSpace=ColorManagement.workingColorSpace] - The color space.
 	 * @return {{h:number,s:number,l:number}} The HSL representation of this color.
 	 */ getHSL(target, colorSpace = $ded5eecc0cd20cc2$export$5e6fd513f44698c.workingColorSpace) {
@@ -12446,7 +14144,7 @@ let $ded5eecc0cd20cc2$var$_materialId = 0;
 		 * Defines the blending equation.
 		 *
 		 * @type {(AddEquation|SubtractEquation|ReverseSubtractEquation|MinEquation|MaxEquation)}
-		 * @default OneMinusSrcAlphaFactor
+		 * @default AddEquation
 		 */ this.blendEquation = $ded5eecc0cd20cc2$export$20183a0484ce21a0;
         /**
 		 * Defines the blending source alpha factor.
@@ -12463,8 +14161,8 @@ let $ded5eecc0cd20cc2$var$_materialId = 0;
         /**
 		 * Defines the blending equation of the alpha channel.
 		 *
-		 * @type {(AddEquation|SubtractEquation|ReverseSubtractEquation|MinEquation|MaxEquation)}
-		 * @default OneMinusSrcAlphaFactor
+		 * @type {?(AddEquation|SubtractEquation|ReverseSubtractEquation|MinEquation|MaxEquation)}
+		 * @default null
 		 */ this.blendEquationAlpha = null;
         /**
 		 * Represents the RGB values of the constant blend color.
@@ -12663,6 +14361,12 @@ let $ded5eecc0cd20cc2$var$_materialId = 0;
 		 * @default false
 		 */ this.forceSinglePass = false;
         /**
+		 * Whether it's possible to override the material with {@link Scene#overrideMaterial} or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.allowOverride = true;
+        /**
 		 * Defines whether 3D objects using this material are visible.
 		 *
 		 * @type {boolean}
@@ -12741,7 +14445,13 @@ let $ded5eecc0cd20cc2$var$_materialId = 0;
 	 */ customProgramCacheKey() {
         return this.onBeforeCompile.toString();
     }
-    setValues(values) {
+    /**
+	 * This method can be used to set default values from parameter objects.
+	 * It is a generic implementation so it can be used with different types
+	 * of materials.
+	 *
+	 * @param {Object} [values] - The material values to set.
+	 */ setValues(values) {
         if (values === undefined) return;
         for(const key in values){
             const newValue = values[key];
@@ -13021,29 +14731,164 @@ let $ded5eecc0cd20cc2$var$_materialId = 0;
         console.warn('Material: onBuild() has been removed.'); // @deprecated, r166
     }
 }
-class $ded5eecc0cd20cc2$export$55cbcc9b622fe1f5 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material for drawing geometries in a simple shaded (flat or wireframe) way.
+ *
+ * This material is not affected by lights.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$55cbcc9b622fe1f5 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh basic material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshBasicMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshBasicMaterial = true;
         this.type = 'MeshBasicMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // emissive
-        this.map = null;
-        this.lightMap = null;
-        this.lightMapIntensity = 1.0;
-        this.aoMap = null;
-        this.aoMapIntensity = 1.0;
-        this.specularMap = null;
-        this.alphaMap = null;
-        this.envMap = null;
-        this.envMapRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
-        this.combine = $ded5eecc0cd20cc2$export$e50ac29801f1774d;
-        this.reflectivity = 1;
-        this.refractionRatio = 0.98;
-        this.wireframe = false;
-        this.wireframeLinewidth = 1;
-        this.wireframeLinecap = 'round';
-        this.wireframeLinejoin = 'round';
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // emissive
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The light map. Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.lightMap = null;
+        /**
+		 * Intensity of the baked light.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.lightMapIntensity = 1.0;
+        /**
+		 * The red channel of this texture is used as the ambient occlusion map.
+		 * Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.aoMap = null;
+        /**
+		 * Intensity of the ambient occlusion effect. Range is `[0,1]`, where `0`
+		 * disables ambient occlusion. Where intensity is `1` and the AO map's
+		 * red channel is also `1`, ambient light is fully occluded on a surface.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.aoMapIntensity = 1.0;
+        /**
+		 * Specular map used by the material.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.specularMap = null;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * The environment map.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.envMap = null;
+        /**
+		 * The rotation of the environment map in radians.
+		 *
+		 * @type {Euler}
+		 * @default (0,0,0)
+		 */ this.envMapRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
+        /**
+		 * How to combine the result of the surface's color with the environment map, if any.
+		 *
+		 * When set to `MixOperation`, the {@link MeshBasicMaterial#reflectivity} is used to
+		 * blend between the two colors.
+		 *
+		 * @type {(MultiplyOperation|MixOperation|AddOperation)}
+		 * @default MultiplyOperation
+		 */ this.combine = $ded5eecc0cd20cc2$export$e50ac29801f1774d;
+        /**
+		 * How much the environment map affects the surface.
+		 * The valid range is between `0` (no reflections) and `1` (full reflections).
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.reflectivity = 1;
+        /**
+		 * The index of refraction (IOR) of air (approximately 1) divided by the
+		 * index of refraction of the material. It is used with environment mapping
+		 * modes {@link CubeRefractionMapping} and {@link EquirectangularRefractionMapping}.
+		 * The refraction ratio should not exceed `1`.
+		 *
+		 * @type {number}
+		 * @default 0.98
+		 */ this.refractionRatio = 0.98;
+        /**
+		 * Renders the geometry as a wireframe.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.wireframe = false;
+        /**
+		 * Controls the thickness of the wireframe.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.wireframeLinewidth = 1;
+        /**
+		 * Defines appearance of wireframe ends.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinecap = 'round';
+        /**
+		 * Defines appearance of wireframe joints.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinejoin = 'round';
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -13197,41 +15042,147 @@ function $ded5eecc0cd20cc2$var$_generateTables() {
 const $ded5eecc0cd20cc2$var$_vector$9 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$64b5c384219d3699();
 const $ded5eecc0cd20cc2$var$_vector2$1 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$c977b3e384af9ae1();
 let $ded5eecc0cd20cc2$var$_id$2 = 0;
-class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized = false){
+/**
+ * This class stores data for an attribute (such as vertex positions, face
+ * indices, normals, colors, UVs, and any custom attributes ) associated with
+ * a geometry, which allows for more efficient passing of data to the GPU.
+ *
+ * When working with vector-like data, the `fromBufferAttribute( attribute, index )`
+ * helper methods on vector and color class might be helpful. E.g. {@link Vector3#fromBufferAttribute}.
+ */ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {TypedArray} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized = false){
         if (Array.isArray(array)) throw new TypeError('THREE.BufferAttribute: array should be a Typed Array.');
-        this.isBufferAttribute = true;
-        Object.defineProperty(this, 'id', {
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isBufferAttribute = true;
+        /**
+		 * The ID of the buffer attribute.
+		 *
+		 * @name BufferAttribute#id
+		 * @type {number}
+		 * @readonly
+		 */ Object.defineProperty(this, 'id', {
             value: $ded5eecc0cd20cc2$var$_id$2++
         });
-        this.name = '';
-        this.array = array;
-        this.itemSize = itemSize;
-        this.count = array !== undefined ? array.length / itemSize : 0;
-        this.normalized = normalized;
-        this.usage = $ded5eecc0cd20cc2$export$763e8360f4d7f77d;
-        this.updateRanges = [];
-        this.gpuType = $ded5eecc0cd20cc2$export$f6d331659b644596;
-        this.version = 0;
+        /**
+		 * The name of the buffer attribute.
+		 *
+		 * @type {string}
+		 */ this.name = '';
+        /**
+		 * The array holding the attribute data. It should have `itemSize * numVertices`
+		 * elements, where `numVertices` is the number of vertices in the associated geometry.
+		 *
+		 * @type {TypedArray}
+		 */ this.array = array;
+        /**
+		 * The number of values of the array that should be associated with a particular vertex.
+		 * For instance, if this attribute is storing a 3-component vector (such as a position,
+		 * normal, or color), then the value should be `3`.
+		 *
+		 * @type {number}
+		 */ this.itemSize = itemSize;
+        /**
+		 * Represents the number of items this buffer attribute stores. It is internally computed
+		 * by dividing the `array` length by the `itemSize`.
+		 *
+		 * @type {number}
+		 * @readonly
+		 */ this.count = array !== undefined ? array.length / itemSize : 0;
+        /**
+		 * Applies to integer data only. Indicates how the underlying data in the buffer maps to
+		 * the values in the GLSL code. For instance, if `array` is an instance of `UInt16Array`,
+		 * and `normalized` is `true`, the values `0 -+65535` in the array data will be mapped to
+		 * `0.0f - +1.0f` in the GLSL attribute. If `normalized` is `false`, the values will be converted
+		 * to floats unmodified, i.e. `65535` becomes `65535.0f`.
+		 *
+		 * @type {boolean}
+		 */ this.normalized = normalized;
+        /**
+		 * Defines the intended usage pattern of the data store for optimization purposes.
+		 *
+		 * Note: After the initial use of a buffer, its usage cannot be changed. Instead,
+		 * instantiate a new one and set the desired usage before the next render.
+		 *
+		 * @type {(StaticDrawUsage|DynamicDrawUsage|StreamDrawUsage|StaticReadUsage|DynamicReadUsage|StreamReadUsage|StaticCopyUsage|DynamicCopyUsage|StreamCopyUsage)}
+		 * @default StaticDrawUsage
+		 */ this.usage = $ded5eecc0cd20cc2$export$763e8360f4d7f77d;
+        /**
+		 * This can be used to only update some components of stored vectors (for example, just the
+		 * component related to color). Use the `addUpdateRange()` function to add ranges to this array.
+		 *
+		 * @type {Array<Object>}
+		 */ this.updateRanges = [];
+        /**
+		 * Configures the bound GPU type for use in shaders.
+		 *
+		 * Note: this only has an effect for integer arrays and is not configurable for float arrays.
+		 * For lower precision float types, use `Float16BufferAttribute`.
+		 *
+		 * @type {(FloatType|IntType)}
+		 * @default FloatType
+		 */ this.gpuType = $ded5eecc0cd20cc2$export$f6d331659b644596;
+        /**
+		 * A version number, incremented every time the `needsUpdate` is set to `true`.
+		 *
+		 * @type {number}
+		 */ this.version = 0;
     }
-    onUploadCallback() {}
-    set needsUpdate(value) {
+    /**
+	 * A callback function that is executed after the renderer has transferred the attribute
+	 * array data to the GPU.
+	 */ onUploadCallback() {}
+    /**
+	 * Flag to indicate that this attribute has changed and should be re-sent to
+	 * the GPU. Set this to `true` when you modify the value of the array.
+	 *
+	 * @type {number}
+	 * @default false
+	 * @param {boolean} value
+	 */ set needsUpdate(value) {
         if (value === true) this.version++;
     }
-    setUsage(value) {
+    /**
+	 * Sets the usage of this buffer attribute.
+	 *
+	 * @param {(StaticDrawUsage|DynamicDrawUsage|StreamDrawUsage|StaticReadUsage|DynamicReadUsage|StreamReadUsage|StaticCopyUsage|DynamicCopyUsage|StreamCopyUsage)} value - The usage to set.
+	 * @return {BufferAttribute} A reference to this buffer attribute.
+	 */ setUsage(value) {
         this.usage = value;
         return this;
     }
-    addUpdateRange(start, count) {
+    /**
+	 * Adds a range of data in the data array to be updated on the GPU.
+	 *
+	 * @param {number} start - Position at which to start update.
+	 * @param {number} count - The number of components to update.
+	 */ addUpdateRange(start, count) {
         this.updateRanges.push({
             start: start,
             count: count
         });
     }
-    clearUpdateRanges() {
+    /**
+	 * Clears the update ranges.
+	 */ clearUpdateRanges() {
         this.updateRanges.length = 0;
     }
-    copy(source) {
+    /**
+	 * Copies the values of the given buffer attribute to this instance.
+	 *
+	 * @param {BufferAttribute} source - The buffer attribute to copy.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ copy(source) {
         this.name = source.name;
         this.array = new source.array.constructor(source.array);
         this.itemSize = source.itemSize;
@@ -13241,17 +15192,37 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         this.gpuType = source.gpuType;
         return this;
     }
-    copyAt(index1, attribute, index2) {
+    /**
+	 * Copies a vector from the given buffer attribute to this one. The start
+	 * and destination position in the attribute buffers are represented by the
+	 * given indices.
+	 *
+	 * @param {number} index1 - The destination index into this buffer attribute.
+	 * @param {BufferAttribute} attribute - The buffer attribute to copy from.
+	 * @param {number} index2 - The source index into the given buffer attribute.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ copyAt(index1, attribute, index2) {
         index1 *= this.itemSize;
         index2 *= attribute.itemSize;
         for(let i = 0, l = this.itemSize; i < l; i++)this.array[index1 + i] = attribute.array[index2 + i];
         return this;
     }
-    copyArray(array) {
+    /**
+	 * Copies the given array data into this buffer attribute.
+	 *
+	 * @param {(TypedArray|Array)} array - The array to copy.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ copyArray(array) {
         this.array.set(array);
         return this;
     }
-    applyMatrix3(m) {
+    /**
+	 * Applies the given 3x3 matrix to the given attribute. Works with
+	 * item size `2` and `3`.
+	 *
+	 * @param {Matrix3} m - The matrix to apply.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ applyMatrix3(m) {
         if (this.itemSize === 2) for(let i = 0, l = this.count; i < l; i++){
             $ded5eecc0cd20cc2$var$_vector2$1.fromBufferAttribute(this, i);
             $ded5eecc0cd20cc2$var$_vector2$1.applyMatrix3(m);
@@ -13264,7 +15235,13 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         }
         return this;
     }
-    applyMatrix4(m) {
+    /**
+	 * Applies the given 4x4 matrix to the given attribute. Only works with
+	 * item size `3`.
+	 *
+	 * @param {Matrix4} m - The matrix to apply.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ applyMatrix4(m) {
         for(let i = 0, l = this.count; i < l; i++){
             $ded5eecc0cd20cc2$var$_vector$9.fromBufferAttribute(this, i);
             $ded5eecc0cd20cc2$var$_vector$9.applyMatrix4(m);
@@ -13272,7 +15249,13 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         }
         return this;
     }
-    applyNormalMatrix(m) {
+    /**
+	 * Applies the given 3x3 normal matrix to the given attribute. Only works with
+	 * item size `3`.
+	 *
+	 * @param {Matrix3} m - The normal matrix to apply.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ applyNormalMatrix(m) {
         for(let i = 0, l = this.count; i < l; i++){
             $ded5eecc0cd20cc2$var$_vector$9.fromBufferAttribute(this, i);
             $ded5eecc0cd20cc2$var$_vector$9.applyNormalMatrix(m);
@@ -13280,7 +15263,13 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         }
         return this;
     }
-    transformDirection(m) {
+    /**
+	 * Applies the given 4x4 matrix to the given attribute. Only works with
+	 * item size `3` and with direction vectors.
+	 *
+	 * @param {Matrix4} m - The matrix to apply.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ transformDirection(m) {
         for(let i = 0, l = this.count; i < l; i++){
             $ded5eecc0cd20cc2$var$_vector$9.fromBufferAttribute(this, i);
             $ded5eecc0cd20cc2$var$_vector$9.transformDirection(m);
@@ -13288,62 +15277,132 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         }
         return this;
     }
-    set(value, offset = 0) {
+    /**
+	 * Sets the given array data in the buffer attribute.
+	 *
+	 * @param {(TypedArray|Array)} value - The array data to set.
+	 * @param {number} [offset=0] - The offset in this buffer attribute's array.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ set(value, offset = 0) {
         // Matching BufferAttribute constructor, do not normalize the array.
         this.array.set(value, offset);
         return this;
     }
-    getComponent(index, component) {
+    /**
+	 * Returns the given component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} component - The component index.
+	 * @return {number} The returned value.
+	 */ getComponent(index, component) {
         let value = this.array[index * this.itemSize + component];
         if (this.normalized) value = $ded5eecc0cd20cc2$var$denormalize(value, this.array);
         return value;
     }
-    setComponent(index, component, value) {
+    /**
+	 * Sets the given value to the given component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} component - The component index.
+	 * @param {number} value - The value to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setComponent(index, component, value) {
         if (this.normalized) value = $ded5eecc0cd20cc2$var$normalize(value, this.array);
         this.array[index * this.itemSize + component] = value;
         return this;
     }
-    getX(index) {
+    /**
+	 * Returns the x component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @return {number} The x component.
+	 */ getX(index) {
         let x = this.array[index * this.itemSize];
         if (this.normalized) x = $ded5eecc0cd20cc2$var$denormalize(x, this.array);
         return x;
     }
-    setX(index, x) {
+    /**
+	 * Sets the x component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} x - The value to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setX(index, x) {
         if (this.normalized) x = $ded5eecc0cd20cc2$var$normalize(x, this.array);
         this.array[index * this.itemSize] = x;
         return this;
     }
-    getY(index) {
+    /**
+	 * Returns the y component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @return {number} The y component.
+	 */ getY(index) {
         let y = this.array[index * this.itemSize + 1];
         if (this.normalized) y = $ded5eecc0cd20cc2$var$denormalize(y, this.array);
         return y;
     }
-    setY(index, y) {
+    /**
+	 * Sets the y component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} y - The value to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setY(index, y) {
         if (this.normalized) y = $ded5eecc0cd20cc2$var$normalize(y, this.array);
         this.array[index * this.itemSize + 1] = y;
         return this;
     }
-    getZ(index) {
+    /**
+	 * Returns the z component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @return {number} The z component.
+	 */ getZ(index) {
         let z = this.array[index * this.itemSize + 2];
         if (this.normalized) z = $ded5eecc0cd20cc2$var$denormalize(z, this.array);
         return z;
     }
-    setZ(index, z) {
+    /**
+	 * Sets the z component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} z - The value to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setZ(index, z) {
         if (this.normalized) z = $ded5eecc0cd20cc2$var$normalize(z, this.array);
         this.array[index * this.itemSize + 2] = z;
         return this;
     }
-    getW(index) {
+    /**
+	 * Returns the w component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @return {number} The w component.
+	 */ getW(index) {
         let w = this.array[index * this.itemSize + 3];
         if (this.normalized) w = $ded5eecc0cd20cc2$var$denormalize(w, this.array);
         return w;
     }
-    setW(index, w) {
+    /**
+	 * Sets the w component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} w - The value to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setW(index, w) {
         if (this.normalized) w = $ded5eecc0cd20cc2$var$normalize(w, this.array);
         this.array[index * this.itemSize + 3] = w;
         return this;
     }
-    setXY(index, x, y) {
+    /**
+	 * Sets the x and y component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} x - The value for the x component to set.
+	 * @param {number} y - The value for the y component to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setXY(index, x, y) {
         index *= this.itemSize;
         if (this.normalized) {
             x = $ded5eecc0cd20cc2$var$normalize(x, this.array);
@@ -13353,7 +15412,15 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         this.array[index + 1] = y;
         return this;
     }
-    setXYZ(index, x, y, z) {
+    /**
+	 * Sets the x, y and z component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} x - The value for the x component to set.
+	 * @param {number} y - The value for the y component to set.
+	 * @param {number} z - The value for the z component to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setXYZ(index, x, y, z) {
         index *= this.itemSize;
         if (this.normalized) {
             x = $ded5eecc0cd20cc2$var$normalize(x, this.array);
@@ -13365,7 +15432,16 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         this.array[index + 2] = z;
         return this;
     }
-    setXYZW(index, x, y, z, w) {
+    /**
+	 * Sets the x, y, z and w component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} x - The value for the x component to set.
+	 * @param {number} y - The value for the y component to set.
+	 * @param {number} z - The value for the z component to set.
+	 * @param {number} w - The value for the w component to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setXYZW(index, x, y, z, w) {
         index *= this.itemSize;
         if (this.normalized) {
             x = $ded5eecc0cd20cc2$var$normalize(x, this.array);
@@ -13379,14 +15455,29 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         this.array[index + 3] = w;
         return this;
     }
-    onUpload(callback) {
+    /**
+	 * Sets the given callback function that is executed after the Renderer has transferred
+	 * the attribute array data to the GPU. Can be used to perform clean-up operations after
+	 * the upload when attribute data are not needed anymore on the CPU side.
+	 *
+	 * @param {Function} callback - The `onUpload()` callback.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ onUpload(callback) {
         this.onUploadCallback = callback;
         return this;
     }
-    clone() {
+    /**
+	 * Returns a new buffer attribute with copied values from this instance.
+	 *
+	 * @return {BufferAttribute} A clone of this instance.
+	 */ clone() {
         return new this.constructor(this.array, this.itemSize).copy(this);
     }
-    toJSON() {
+    /**
+	 * Serializes the buffer attribute into JSON.
+	 *
+	 * @return {Object} A JSON object representing the serialized buffer attribute.
+	 */ toJSON() {
         const data = {
             itemSize: this.itemSize,
             type: this.array.constructor.name,
@@ -13398,44 +15489,134 @@ class $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
         return data;
     }
 }
-//
-class $ded5eecc0cd20cc2$export$f9ff2d6a20248cbf extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `Int8` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$f9ff2d6a20248cbf extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Int8Array)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Int8Array(array), itemSize, normalized);
     }
 }
-class $ded5eecc0cd20cc2$export$cacc90cf35d11cdd extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `UInt8` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$cacc90cf35d11cdd extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Uint8Array)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Uint8Array(array), itemSize, normalized);
     }
 }
-class $ded5eecc0cd20cc2$export$baaa85a1a812c157 extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `UInt8Clamped` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$baaa85a1a812c157 extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Uint8ClampedArray)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Uint8ClampedArray(array), itemSize, normalized);
     }
 }
-class $ded5eecc0cd20cc2$export$2b755a102ccdcefe extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `Int16` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$2b755a102ccdcefe extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Int16Array)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Int16Array(array), itemSize, normalized);
     }
 }
-class $ded5eecc0cd20cc2$export$640a853f68025f2e extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `UInt16` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$640a853f68025f2e extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Uint16Array)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Uint16Array(array), itemSize, normalized);
     }
 }
-class $ded5eecc0cd20cc2$export$46b369aed2968a0a extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `Int32` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$46b369aed2968a0a extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Int32Array)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Int32Array(array), itemSize, normalized);
     }
 }
-class $ded5eecc0cd20cc2$export$7eb8c9fa25cd5bd6 extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `UInt32` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$7eb8c9fa25cd5bd6 extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Uint32Array)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Uint32Array(array), itemSize, normalized);
     }
 }
-class $ded5eecc0cd20cc2$export$dbd3698c64958d69 extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `Float16` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * This class automatically converts to to and from FP16 since `Float16Array` is not
+ * natively supported in JavaScript.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$dbd3698c64958d69 extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Uint16Array)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Uint16Array(array), itemSize, normalized);
         this.isFloat16BufferAttribute = true;
     }
@@ -13516,8 +15697,19 @@ class $ded5eecc0cd20cc2$export$dbd3698c64958d69 extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$cbe7a62641830ebd extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized){
+/**
+ * Convenient class that can be used when creating a `Float32` buffer attribute with
+ * a plain `Array` instance.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$cbe7a62641830ebd extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new buffer attribute.
+	 *
+	 * @param {(Array<number>|Float32Array)} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(array, itemSize, normalized){
         super(new Float32Array(array), itemSize, normalized);
     }
 }
@@ -13528,74 +15720,249 @@ const $ded5eecc0cd20cc2$var$_offset = /*@__PURE__*/ new $ded5eecc0cd20cc2$export
 const $ded5eecc0cd20cc2$var$_box$2 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$6f7d5a9418ab2aa3();
 const $ded5eecc0cd20cc2$var$_boxMorphTargets = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$6f7d5a9418ab2aa3();
 const $ded5eecc0cd20cc2$var$_vector$8 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$64b5c384219d3699();
-class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a {
-    constructor(){
+/**
+ * A representation of mesh, line, or point geometry. Includes vertex
+ * positions, face indices, normals, colors, UVs, and custom attributes
+ * within buffers, reducing the cost of passing all this data to the GPU.
+ *
+ * ```js
+ * const geometry = new THREE.BufferGeometry();
+ * // create a simple square shape. We duplicate the top left and bottom right
+ * // vertices because each vertex needs to appear once per triangle.
+ * const vertices = new Float32Array( [
+ * 	-1.0, -1.0,  1.0, // v0
+ * 	 1.0, -1.0,  1.0, // v1
+ * 	 1.0,  1.0,  1.0, // v2
+ *
+ * 	 1.0,  1.0,  1.0, // v3
+ * 	-1.0,  1.0,  1.0, // v4
+ * 	-1.0, -1.0,  1.0  // v5
+ * ] );
+ * // itemSize = 3 because there are 3 values (components) per vertex
+ * geometry.setAttribute( 'position', new THREE.BufferAttribute( vertices, 3 ) );
+ * const material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+ * const mesh = new THREE.Mesh( geometry, material );
+ * ```
+ *
+ * @augments EventDispatcher
+ */ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a {
+    /**
+	 * Constructs a new geometry.
+	 */ constructor(){
         super();
-        this.isBufferGeometry = true;
-        Object.defineProperty(this, 'id', {
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isBufferGeometry = true;
+        /**
+		 * The ID of the geometry.
+		 *
+		 * @name BufferGeometry#id
+		 * @type {number}
+		 * @readonly
+		 */ Object.defineProperty(this, 'id', {
             value: $ded5eecc0cd20cc2$var$_id$1++
         });
-        this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
-        this.name = '';
+        /**
+		 * The UUID of the geometry.
+		 *
+		 * @type {string}
+		 * @readonly
+		 */ this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
+        /**
+		 * The name of the geometry.
+		 *
+		 * @type {string}
+		 */ this.name = '';
         this.type = 'BufferGeometry';
-        this.index = null;
-        this.indirect = null;
-        this.attributes = {};
-        this.morphAttributes = {};
-        this.morphTargetsRelative = false;
-        this.groups = [];
-        this.boundingBox = null;
-        this.boundingSphere = null;
-        this.drawRange = {
+        /**
+		 * Allows for vertices to be re-used across multiple triangles; this is
+		 * called using "indexed triangles". Each triangle is associated with the
+		 * indices of three vertices. This attribute therefore stores the index of
+		 * each vertex for each triangular face. If this attribute is not set, the
+		 * renderer assumes that each three contiguous positions represent a single triangle.
+		 *
+		 * @type {?BufferAttribute}
+		 * @default null
+		 */ this.index = null;
+        /**
+		 * A (storage) buffer attribute which was generated with a compute shader and
+		 * now defines indirect draw calls.
+		 *
+		 * Can only be used with {@link WebGPURenderer} and a WebGPU backend.
+		 *
+		 * @type {?BufferAttribute}
+		 * @default null
+		 */ this.indirect = null;
+        /**
+		 * This dictionary has as id the name of the attribute to be set and as value
+		 * the buffer attribute to set it to. Rather than accessing this property directly,
+		 * use `setAttribute()` and `getAttribute()` to access attributes of this geometry.
+		 *
+		 * @type {Object<string,(BufferAttribute|InterleavedBufferAttribute)>}
+		 */ this.attributes = {};
+        /**
+		 * This dictionary holds the morph targets of the geometry.
+		 *
+		 * Note: Once the geometry has been rendered, the morph attribute data cannot
+		 * be changed. You will have to call `dispose()?, and create a new geometry instance.
+		 *
+		 * @type {Object}
+		 */ this.morphAttributes = {};
+        /**
+		 * Used to control the morph target behavior; when set to `true`, the morph
+		 * target data is treated as relative offsets, rather than as absolute
+		 * positions/normals.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.morphTargetsRelative = false;
+        /**
+		 * Split the geometry into groups, each of which will be rendered in a
+		 * separate draw call. This allows an array of materials to be used with the geometry.
+		 *
+		 * Use `addGroup()` and `clearGroups()` to edit groups, rather than modifying this array directly.
+		 *
+		 * Every vertex and index must belong to exactly one group — groups must not share vertices or
+		 * indices, and must not leave vertices or indices unused.
+		 *
+		 * @type {Array<Object>}
+		 */ this.groups = [];
+        /**
+		 * Bounding box for the geometry which can be calculated with `computeBoundingBox()`.
+		 *
+		 * @type {Box3}
+		 * @default null
+		 */ this.boundingBox = null;
+        /**
+		 * Bounding sphere for the geometry which can be calculated with `computeBoundingSphere()`.
+		 *
+		 * @type {Sphere}
+		 * @default null
+		 */ this.boundingSphere = null;
+        /**
+		 * Determines the part of the geometry to render. This should not be set directly,
+		 * instead use `setDrawRange()`.
+		 *
+		 * @type {{start:number,count:number}}
+		 */ this.drawRange = {
             start: 0,
             count: Infinity
         };
-        this.userData = {};
+        /**
+		 * An object that can be used to store custom data about the geometry.
+		 * It should not hold references to functions as these will not be cloned.
+		 *
+		 * @type {Object}
+		 */ this.userData = {};
     }
-    getIndex() {
+    /**
+	 * Returns the index of this geometry.
+	 *
+	 * @return {?BufferAttribute} The index. Returns `null` if no index is defined.
+	 */ getIndex() {
         return this.index;
     }
-    setIndex(index) {
+    /**
+	 * Sets the given index to this geometry.
+	 *
+	 * @param {Array<number>|BufferAttribute} index - The index to set.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ setIndex(index) {
         if (Array.isArray(index)) this.index = new ($ded5eecc0cd20cc2$export$bc6f937da07eae17(index) ? $ded5eecc0cd20cc2$export$7eb8c9fa25cd5bd6 : $ded5eecc0cd20cc2$export$640a853f68025f2e)(index, 1);
         else this.index = index;
         return this;
     }
-    setIndirect(indirect) {
+    /**
+	 * Sets the given indirect attribute to this geometry.
+	 *
+	 * @param {BufferAttribute} indirect - The attribute holding indirect draw calls.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ setIndirect(indirect) {
         this.indirect = indirect;
         return this;
     }
-    getIndirect() {
+    /**
+	 * Returns the indirect attribute of this geometry.
+	 *
+	 * @return {?BufferAttribute} The indirect attribute. Returns `null` if no indirect attribute is defined.
+	 */ getIndirect() {
         return this.indirect;
     }
-    getAttribute(name) {
+    /**
+	 * Returns the buffer attribute for the given name.
+	 *
+	 * @param {string} name - The attribute name.
+	 * @return {BufferAttribute|InterleavedBufferAttribute|undefined} The buffer attribute.
+	 * Returns `undefined` if not attribute has been found.
+	 */ getAttribute(name) {
         return this.attributes[name];
     }
-    setAttribute(name, attribute) {
+    /**
+	 * Sets the given attribute for the given name.
+	 *
+	 * @param {string} name - The attribute name.
+	 * @param {BufferAttribute|InterleavedBufferAttribute} attribute - The attribute to set.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ setAttribute(name, attribute) {
         this.attributes[name] = attribute;
         return this;
     }
-    deleteAttribute(name) {
+    /**
+	 * Deletes the attribute for the given name.
+	 *
+	 * @param {string} name - The attribute name to delete.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ deleteAttribute(name) {
         delete this.attributes[name];
         return this;
     }
-    hasAttribute(name) {
+    /**
+	 * Returns `true` if this geometry has an attribute for the given name.
+	 *
+	 * @param {string} name - The attribute name.
+	 * @return {boolean} Whether this geometry has an attribute for the given name or not.
+	 */ hasAttribute(name) {
         return this.attributes[name] !== undefined;
     }
-    addGroup(start, count, materialIndex = 0) {
+    /**
+	 * Adds a group to this geometry.
+	 *
+	 * @param {number} start - The first element in this draw call. That is the first
+	 * vertex for non-indexed geometry, otherwise the first triangle index.
+	 * @param {number} count - Specifies how many vertices (or indices) are part of this group.
+	 * @param {number} [materialIndex=0] - The material array index to use.
+	 */ addGroup(start, count, materialIndex = 0) {
         this.groups.push({
             start: start,
             count: count,
             materialIndex: materialIndex
         });
     }
-    clearGroups() {
+    /**
+	 * Clears all groups.
+	 */ clearGroups() {
         this.groups = [];
     }
-    setDrawRange(start, count) {
+    /**
+	 * Sets the draw range for this geometry.
+	 *
+	 * @param {number} start - The first vertex for non-indexed geometry, otherwise the first triangle index.
+	 * @param {number} count - For non-indexed BufferGeometry, `count` is the number of vertices to render.
+	 * For indexed BufferGeometry, `count` is the number of indices to render.
+	 */ setDrawRange(start, count) {
         this.drawRange.start = start;
         this.drawRange.count = count;
     }
-    applyMatrix4(matrix) {
+    /**
+	 * Applies the given 4x4 transformation matrix to the geometry.
+	 *
+	 * @param {Matrix4} matrix - The matrix to apply.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ applyMatrix4(matrix) {
         const position = this.attributes.position;
         if (position !== undefined) {
             position.applyMatrix4(matrix);
@@ -13616,54 +15983,119 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
         if (this.boundingSphere !== null) this.computeBoundingSphere();
         return this;
     }
-    applyQuaternion(q) {
+    /**
+	 * Applies the rotation represented by the Quaternion to the geometry.
+	 *
+	 * @param {Quaternion} q - The Quaternion to apply.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ applyQuaternion(q) {
         $ded5eecc0cd20cc2$var$_m1.makeRotationFromQuaternion(q);
         this.applyMatrix4($ded5eecc0cd20cc2$var$_m1);
         return this;
     }
-    rotateX(angle) {
+    /**
+	 * Rotates the geometry about the X axis. This is typically done as a one time
+	 * operation, and not during a loop. Use {@link Object3D#rotation} for typical
+	 * real-time mesh rotation.
+	 *
+	 * @param {number} angle - The angle in radians.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ rotateX(angle) {
         // rotate geometry around world x-axis
         $ded5eecc0cd20cc2$var$_m1.makeRotationX(angle);
         this.applyMatrix4($ded5eecc0cd20cc2$var$_m1);
         return this;
     }
-    rotateY(angle) {
+    /**
+	 * Rotates the geometry about the Y axis. This is typically done as a one time
+	 * operation, and not during a loop. Use {@link Object3D#rotation} for typical
+	 * real-time mesh rotation.
+	 *
+	 * @param {number} angle - The angle in radians.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ rotateY(angle) {
         // rotate geometry around world y-axis
         $ded5eecc0cd20cc2$var$_m1.makeRotationY(angle);
         this.applyMatrix4($ded5eecc0cd20cc2$var$_m1);
         return this;
     }
-    rotateZ(angle) {
+    /**
+	 * Rotates the geometry about the Z axis. This is typically done as a one time
+	 * operation, and not during a loop. Use {@link Object3D#rotation} for typical
+	 * real-time mesh rotation.
+	 *
+	 * @param {number} angle - The angle in radians.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ rotateZ(angle) {
         // rotate geometry around world z-axis
         $ded5eecc0cd20cc2$var$_m1.makeRotationZ(angle);
         this.applyMatrix4($ded5eecc0cd20cc2$var$_m1);
         return this;
     }
-    translate(x, y, z) {
+    /**
+	 * Translates the geometry. This is typically done as a one time
+	 * operation, and not during a loop. Use {@link Object3D#position} for typical
+	 * real-time mesh rotation.
+	 *
+	 * @param {number} x - The x offset.
+	 * @param {number} y - The y offset.
+	 * @param {number} z - The z offset.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ translate(x, y, z) {
         // translate geometry
         $ded5eecc0cd20cc2$var$_m1.makeTranslation(x, y, z);
         this.applyMatrix4($ded5eecc0cd20cc2$var$_m1);
         return this;
     }
-    scale(x, y, z) {
+    /**
+	 * Scales the geometry. This is typically done as a one time
+	 * operation, and not during a loop. Use {@link Object3D#scale} for typical
+	 * real-time mesh rotation.
+	 *
+	 * @param {number} x - The x scale.
+	 * @param {number} y - The y scale.
+	 * @param {number} z - The z scale.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ scale(x, y, z) {
         // scale geometry
         $ded5eecc0cd20cc2$var$_m1.makeScale(x, y, z);
         this.applyMatrix4($ded5eecc0cd20cc2$var$_m1);
         return this;
     }
-    lookAt(vector) {
+    /**
+	 * Rotates the geometry to face a point in 3D space. This is typically done as a one time
+	 * operation, and not during a loop. Use {@link Object3D#lookAt} for typical
+	 * real-time mesh rotation.
+	 *
+	 * @param {Vector3} vector - The target point.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ lookAt(vector) {
         $ded5eecc0cd20cc2$var$_obj.lookAt(vector);
         $ded5eecc0cd20cc2$var$_obj.updateMatrix();
         this.applyMatrix4($ded5eecc0cd20cc2$var$_obj.matrix);
         return this;
     }
-    center() {
+    /**
+	 * Center the geometry based on its bounding box.
+	 *
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ center() {
         this.computeBoundingBox();
         this.boundingBox.getCenter($ded5eecc0cd20cc2$var$_offset).negate();
         this.translate($ded5eecc0cd20cc2$var$_offset.x, $ded5eecc0cd20cc2$var$_offset.y, $ded5eecc0cd20cc2$var$_offset.z);
         return this;
     }
-    setFromPoints(points) {
+    /**
+	 * Defines a geometry by creating a `position` attribute based on the given array of points. The array
+	 * can hold 2D or 3D vectors. When using two-dimensional data, the `z` coordinate for all vertices is
+	 * set to `0`.
+	 *
+	 * If the method is used with an existing `position` attribute, the vertex data are overwritten with the
+	 * data from the array. The length of the array must match the vertex count.
+	 *
+	 * @param {Array<Vector2>|Array<Vector3>} points - The points.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ setFromPoints(points) {
         const positionAttribute = this.getAttribute('position');
         if (positionAttribute === undefined) {
             const position = [];
@@ -13683,7 +16115,11 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
         }
         return this;
     }
-    computeBoundingBox() {
+    /**
+	 * Computes the bounding box of the geometry, and updates the `boundingBox` member.
+	 * The bounding box is not computed by the engine; it must be computed by your app.
+	 * You may need to recompute the bounding box if the geometry vertices are modified.
+	 */ computeBoundingBox() {
         if (this.boundingBox === null) this.boundingBox = new $ded5eecc0cd20cc2$export$6f7d5a9418ab2aa3();
         const position = this.attributes.position;
         const morphAttributesPosition = this.morphAttributes.position;
@@ -13711,7 +16147,11 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
         } else this.boundingBox.makeEmpty();
         if (isNaN(this.boundingBox.min.x) || isNaN(this.boundingBox.min.y) || isNaN(this.boundingBox.min.z)) console.error('THREE.BufferGeometry.computeBoundingBox(): Computed min/max have NaN values. The "position" attribute is likely to have NaN values.', this);
     }
-    computeBoundingSphere() {
+    /**
+	 * Computes the bounding sphere of the geometry, and updates the `boundingSphere` member.
+	 * The engine automatically computes the bounding sphere when it is needed, e.g., for ray casting or view frustum culling.
+	 * You may need to recompute the bounding sphere if the geometry vertices are modified.
+	 */ computeBoundingSphere() {
         if (this.boundingSphere === null) this.boundingSphere = new $ded5eecc0cd20cc2$export$805e8b72413ccaba();
         const position = this.attributes.position;
         const morphAttributesPosition = this.morphAttributes.position;
@@ -13763,7 +16203,13 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
             if (isNaN(this.boundingSphere.radius)) console.error('THREE.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values.', this);
         }
     }
-    computeTangents() {
+    /**
+	 * Calculates and adds a tangent attribute to this geometry.
+	 *
+	 * The computation is only supported for indexed geometries and if position, normal, and uv attributes
+	 * are defined. When using a tangent space normal map, prefer the MikkTSpace algorithm provided by
+	 * {@link BufferGeometryUtils#computeMikkTSpaceTangents} instead.
+	 */ computeTangents() {
         const index = this.index;
         const attributes = this.attributes;
         // based on http://www.terathon.com/code/tangent.html
@@ -13845,7 +16291,12 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
             }
         }
     }
-    computeVertexNormals() {
+    /**
+	 * Computes vertex normals for the given vertex data. For indexed geometries, the method sets
+	 * each vertex normal to be the average of the face normals of the faces that share that vertex.
+	 * For non-indexed geometries, vertices are not shared, and the method sets each vertex normal
+	 * to be the same as the face normal.
+	 */ computeVertexNormals() {
         const index = this.index;
         const positionAttribute = this.getAttribute('position');
         if (positionAttribute !== undefined) {
@@ -13895,7 +16346,10 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
             normalAttribute.needsUpdate = true;
         }
     }
-    normalizeNormals() {
+    /**
+	 * Ensures every normal vector in a geometry will have a magnitude of `1`. This will
+	 * correct lighting on the geometry surfaces.
+	 */ normalizeNormals() {
         const normals = this.attributes.normal;
         for(let i = 0, il = normals.count; i < il; i++){
             $ded5eecc0cd20cc2$var$_vector$8.fromBufferAttribute(normals, i);
@@ -13903,7 +16357,12 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
             normals.setXYZ(i, $ded5eecc0cd20cc2$var$_vector$8.x, $ded5eecc0cd20cc2$var$_vector$8.y, $ded5eecc0cd20cc2$var$_vector$8.z);
         }
     }
-    toNonIndexed() {
+    /**
+	 * Return a new non-index version of this indexed geometry. If the geometry
+	 * is already non-indexed, the method is a NOOP.
+	 *
+	 * @return {BufferGeometry} The non-indexed version of this indexed geometry.
+	 */ toNonIndexed() {
         function convertBufferAttribute(attribute, indices) {
             const array = attribute.array;
             const itemSize = attribute.itemSize;
@@ -13952,7 +16411,11 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
         }
         return geometry2;
     }
-    toJSON() {
+    /**
+	 * Serializes the geometry into JSON.
+	 *
+	 * @return {Object} A JSON object representing the serialized geometry.
+	 */ toJSON() {
         const data = {
             metadata: {
                 version: 4.6,
@@ -14011,10 +16474,19 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
         };
         return data;
     }
-    clone() {
+    /**
+	 * Returns a new geometry with copied values from this instance.
+	 *
+	 * @return {BufferGeometry} A clone of this instance.
+	 */ clone() {
         return new this.constructor().copy(this);
     }
-    copy(source) {
+    /**
+	 * Copies the values of the given geometry to this instance.
+	 *
+	 * @param {BufferGeometry} source - The geometry to copy.
+	 * @return {BufferGeometry} A reference to this instance.
+	 */ copy(source) {
         // reset
         this.index = null;
         this.attributes = {};
@@ -14028,7 +16500,7 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
         this.name = source.name;
         // index
         const index = source.index;
-        if (index !== null) this.setIndex(index.clone(data));
+        if (index !== null) this.setIndex(index.clone());
         // attributes
         const attributes = source.attributes;
         for(const name in attributes){
@@ -14063,7 +16535,12 @@ class $ded5eecc0cd20cc2$export$b7be63a67df8959 extends $ded5eecc0cd20cc2$export$
         this.userData = source.userData;
         return this;
     }
-    dispose() {
+    /**
+	 * Frees the GPU-related resources allocated by this instance. Call this
+	 * method whenever this instance is no longer used in your app.
+	 *
+	 * @fires BufferGeometry#dispose
+	 */ dispose() {
         this.dispatchEvent({
             type: 'dispose'
         });
@@ -14482,9 +16959,8 @@ function $ded5eecc0cd20cc2$var$checkGeometryIntersection(object, material, rayca
         return new $ded5eecc0cd20cc2$export$33e43285f7406bd5(data.width, data.height, data.depth, data.widthSegments, data.heightSegments, data.depthSegments);
     }
 }
-/**
- * Uniform Utilities
- */ function $ded5eecc0cd20cc2$export$acda854380553452(src) {
+// Uniform Utilities
+function $ded5eecc0cd20cc2$export$acda854380553452(src) {
     const dst = {};
     for(const u in src){
         dst[u] = {};
@@ -14529,30 +17005,184 @@ const $ded5eecc0cd20cc2$export$d8ecdf8615bfea69 = {
 };
 var $ded5eecc0cd20cc2$var$default_vertex = "void main() {\n\tgl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );\n}";
 var $ded5eecc0cd20cc2$var$default_fragment = "void main() {\n\tgl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 );\n}";
-class $ded5eecc0cd20cc2$export$83c7d75d550a8b0d extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material rendered with custom shaders. A shader is a small program written in GLSL.
+ * that runs on the GPU. You may want to use a custom shader if you need to implement an
+ * effect not included with any of the built-in materials.
+ *
+ * There are the following notes to bear in mind when using a `ShaderMaterial`:
+ *
+ * - `ShaderMaterial` can only be used with {@link WebGLRenderer}.
+ * - Built in attributes and uniforms are passed to the shaders along with your code. If
+ * you don't want that, use {@link RawShaderMaterial} instead.
+ * - You can use the directive `#pragma unroll_loop_start` and `#pragma unroll_loop_end`
+ * in order to unroll a `for` loop in GLSL by the shader preprocessor. The directive has
+ * to be placed right above the loop. The loop formatting has to correspond to a defined standard.
+ *   - The loop has to be [normalized]{@link https://en.wikipedia.org/wiki/Normalized_loop}.
+ *   - The loop variable has to be *i*.
+ *   - The value `UNROLLED_LOOP_INDEX` will be replaced with the explicitly
+ * value of *i* for the given iteration and can be used in preprocessor
+ * statements.
+ *
+ * ```js
+ * const material = new THREE.ShaderMaterial( {
+ * 	uniforms: {
+ * 		time: { value: 1.0 },
+ * 		resolution: { value: new THREE.Vector2() }
+ * 	},
+ * 	vertexShader: document.getElementById( 'vertexShader' ).textContent,
+ * 	fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+ * } );
+ * ```
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$83c7d75d550a8b0d extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new shader material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isShaderMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isShaderMaterial = true;
         this.type = 'ShaderMaterial';
-        this.defines = {};
-        this.uniforms = {};
-        this.uniformsGroups = [];
-        this.vertexShader = $ded5eecc0cd20cc2$var$default_vertex;
-        this.fragmentShader = $ded5eecc0cd20cc2$var$default_fragment;
-        this.linewidth = 1;
-        this.wireframe = false;
-        this.wireframeLinewidth = 1;
-        this.fog = false; // set to use scene fog
-        this.lights = false; // set to use scene lights
-        this.clipping = false; // set to use user-defined clipping planes
-        this.forceSinglePass = true;
-        this.extensions = {
+        /**
+		 * Defines custom constants using `#define` directives within the GLSL code
+		 * for both the vertex shader and the fragment shader; each key/value pair
+		 * yields another directive.
+		 * ```js
+		 * defines: {
+		 * 	FOO: 15,
+		 * 	BAR: true
+		 * }
+		 * ```
+		 * Yields the lines:
+		 * ```
+		 * #define FOO 15
+		 * #define BAR true
+		 * ```
+		 *
+		 * @type {Object}
+		 */ this.defines = {};
+        /**
+		 * An object of the form:
+		 * ```js
+		 * {
+		 * 	"uniform1": { value: 1.0 },
+		 * 	"uniform2": { value: 2 }
+		 * }
+		 * ```
+		 * specifying the uniforms to be passed to the shader code; keys are uniform
+		 * names, values are definitions of the form
+		 * ```
+		 * {
+		 * 	value: 1.0
+		 * }
+		 * ```
+		 * where `value` is the value of the uniform. Names must match the name of
+		 * the uniform, as defined in the GLSL code. Note that uniforms are refreshed
+		 * on every frame, so updating the value of the uniform will immediately
+		 * update the value available to the GLSL code.
+		 *
+		 * @type {Object}
+		 */ this.uniforms = {};
+        /**
+		 * An array holding uniforms groups for configuring UBOs.
+		 *
+		 * @type {Array<UniformsGroup>}
+		 */ this.uniformsGroups = [];
+        /**
+		 * Vertex shader GLSL code. This is the actual code for the shader.
+		 *
+		 * @type {string}
+		 */ this.vertexShader = $ded5eecc0cd20cc2$var$default_vertex;
+        /**
+		 * Fragment shader GLSL code. This is the actual code for the shader.
+		 *
+		 * @type {string}
+		 */ this.fragmentShader = $ded5eecc0cd20cc2$var$default_fragment;
+        /**
+		 * Controls line thickness or lines.
+		 *
+		 * WebGL and WebGPU ignore this setting and always render line primitives with a
+		 * width of one pixel.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.linewidth = 1;
+        /**
+		 * Renders the geometry as a wireframe.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.wireframe = false;
+        /**
+		 * Controls the thickness of the wireframe.
+		 *
+		 * WebGL and WebGPU ignore this property and always render
+		 * 1 pixel wide lines.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.wireframeLinewidth = 1;
+        /**
+		 * Define whether the material color is affected by global fog settings; `true`
+		 * to pass fog uniforms to the shader.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.fog = false;
+        /**
+		 * Defines whether this material uses lighting; `true` to pass uniform data
+		 * related to lighting to this shader.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.lights = false;
+        /**
+		 * Defines whether this material supports clipping; `true` to let the renderer
+		 * pass the clippingPlanes uniform.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.clipping = false;
+        /**
+		 * Overwritten and set to `true` by default.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.forceSinglePass = true;
+        /**
+		 * This object allows to enable certain WebGL 2 extensions.
+		 *
+		 * - clipCullDistance: set to `true` to use vertex shader clipping
+		 * - multiDraw: set to `true` to use vertex shader multi_draw / enable gl_DrawID
+		 *
+		 * @type {{clipCullDistance:false,multiDraw:false}}
+		 */ this.extensions = {
             clipCullDistance: false,
             multiDraw: false // set to use vertex shader multi_draw / enable gl_DrawID
         };
-        // When rendered geometry doesn't include these attributes but the material does,
-        // use these default values in WebGL. This avoids errors when buffer data is missing.
-        this.defaultAttributeValues = {
+        /**
+		 * When the rendered geometry doesn't include these attributes but the
+		 * material does, these default values will be passed to the shaders. This
+		 * avoids errors when buffer data is missing.
+		 *
+		 * - color: [ 1, 1, 1 ]
+		 * - uv: [ 0, 0 ]
+		 * - uv1: [ 0, 0 ]
+		 *
+		 * @type {Object}
+		 */ this.defaultAttributeValues = {
             'color': [
                 1,
                 1,
@@ -14567,9 +17197,26 @@ class $ded5eecc0cd20cc2$export$83c7d75d550a8b0d extends $ded5eecc0cd20cc2$export
                 0
             ]
         };
-        this.index0AttributeName = undefined;
-        this.uniformsNeedUpdate = false;
-        this.glslVersion = null;
+        /**
+		 * If set, this calls [gl.bindAttribLocation]{@link https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bindAttribLocation}
+		 * to bind a generic vertex index to an attribute variable.
+		 *
+		 * @type {string|undefined}
+		 * @default undefined
+		 */ this.index0AttributeName = undefined;
+        /**
+		 * Can be used to force a uniform update while changing uniforms in
+		 * {@link Object3D#onBeforeRender}.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.uniformsNeedUpdate = false;
+        /**
+		 * Defines the GLSL version of custom shader code.
+		 *
+		 * @type {?(GLSL1|GLSL3)}
+		 * @default null
+		 */ this.glslVersion = null;
         if (parameters !== undefined) this.setValues(parameters);
     }
     copy(source) {
@@ -15152,25 +17799,84 @@ const $ded5eecc0cd20cc2$var$aspect = 1;
         renderTarget.texture.needsPMREMUpdate = true;
     }
 }
-class $ded5eecc0cd20cc2$export$ee2e5a18258a4049 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(images, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, colorSpace){
-        images = images !== undefined ? images : [];
-        mapping = mapping !== undefined ? mapping : $ded5eecc0cd20cc2$export$8759762a6477f2c4;
+/**
+ * Creates a cube texture made up of six images.
+ *
+ * ```js
+ * const loader = new THREE.CubeTextureLoader();
+ * loader.setPath( 'textures/cube/pisa/' );
+ *
+ * const textureCube = loader.load( [
+ * 	'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'
+ * ] );
+ *
+ * const material = new THREE.MeshBasicMaterial( { color: 0xffffff, envMap: textureCube } );
+ * ```
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$ee2e5a18258a4049 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new cube texture.
+	 *
+	 * @param {Array<Image>} [images=[]] - An array holding a image for each side of a cube.
+	 * @param {number} [mapping=CubeReflectionMapping] - The texture mapping.
+	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
+	 * @param {number} [minFilter=LinearMipmapLinearFilter] - The min filter value.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 * @param {string} [colorSpace=NoColorSpace] - The color space value.
+	 */ constructor(images = [], mapping = $ded5eecc0cd20cc2$export$8759762a6477f2c4, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, colorSpace){
         super(images, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, colorSpace);
-        this.isCubeTexture = true;
-        this.flipY = false;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isCubeTexture = true;
+        /**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flipY = false;
     }
-    get images() {
+    /**
+	 * Alias for {@link CubeTexture#image}.
+	 *
+	 * @type {Array<Image>}
+	 */ get images() {
         return this.image;
     }
     set images(value) {
         this.image = value;
     }
 }
-class $ded5eecc0cd20cc2$export$ac386671d651941e extends $ded5eecc0cd20cc2$export$3c052beb2e51e23f {
-    constructor(size = 1, options = {}){
+/**
+ * A cube render target used in context of {@link WebGLRenderer}.
+ *
+ * @augments WebGLRenderTarget
+ */ class $ded5eecc0cd20cc2$export$ac386671d651941e extends $ded5eecc0cd20cc2$export$3c052beb2e51e23f {
+    /**
+	 * Constructs a new cube render target.
+	 *
+	 * @param {number} [size=1] - The size of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */ constructor(size = 1, options = {}){
         super(size, size, options);
-        this.isWebGLCubeRenderTarget = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isWebGLCubeRenderTarget = true;
         const image = {
             width: size,
             height: size,
@@ -15184,7 +17890,11 @@ class $ded5eecc0cd20cc2$export$ac386671d651941e extends $ded5eecc0cd20cc2$export
             image,
             image
         ];
-        this.texture = new $ded5eecc0cd20cc2$export$ee2e5a18258a4049(images, options.mapping, options.wrapS, options.wrapT, options.magFilter, options.minFilter, options.format, options.type, options.anisotropy, options.colorSpace);
+        /**
+		 * Overwritten with a different texture type.
+		 *
+		 * @type {DataArrayTexture}
+		 */ this.texture = new $ded5eecc0cd20cc2$export$ee2e5a18258a4049(images, options.mapping, options.wrapS, options.wrapT, options.magFilter, options.minFilter, options.format, options.type, options.anisotropy, options.colorSpace);
         // By convention -- likely based on the RenderMan spec from the 1990's -- cube maps are specified by WebGL (and three.js)
         // in a coordinate system in which positive-x is to the right when looking up the positive-z axis -- in other words,
         // in a left-handed coordinate system. By continuing this convention, preexisting cube maps continued to render correctly.
@@ -15195,7 +17905,13 @@ class $ded5eecc0cd20cc2$export$ac386671d651941e extends $ded5eecc0cd20cc2$export
         this.texture.generateMipmaps = options.generateMipmaps !== undefined ? options.generateMipmaps : false;
         this.texture.minFilter = options.minFilter !== undefined ? options.minFilter : $ded5eecc0cd20cc2$export$8a72f490b25c56c8;
     }
-    fromEquirectangularTexture(renderer, texture) {
+    /**
+	 * Converts the given equirectangular texture to a cube map.
+	 *
+	 * @param {WebGLRenderer} renderer - The renderer.
+	 * @param {Texture} texture - The equirectangular texture.
+	 * @return {WebGLCubeRenderTarget} A reference to this cube render target.
+	 */ fromEquirectangularTexture(renderer, texture) {
         this.texture.type = texture.type;
         this.texture.colorSpace = texture.colorSpace;
         this.texture.generateMipmaps = texture.generateMipmaps;
@@ -15266,7 +17982,14 @@ class $ded5eecc0cd20cc2$export$ac386671d651941e extends $ded5eecc0cd20cc2$export
         mesh.material.dispose();
         return this;
     }
-    clear(renderer, color, depth, stencil) {
+    /**
+	 * Clears this cube render target.
+	 *
+	 * @param {WebGLRenderer} renderer - The renderer.
+	 * @param {boolean} [color=true] - Whether the color buffer should be cleared or not.
+	 * @param {boolean} [depth=true] - Whether the depth buffer should be cleared or not.
+	 * @param {boolean} [stencil=true] - Whether the stencil buffer should be cleared or not.
+	 */ clear(renderer, color = true, depth = true, stencil = true) {
         const currentRenderTarget = renderer.getRenderTarget();
         for(let i = 0; i < 6; i++){
             renderer.setRenderTarget(this, i);
@@ -15307,13 +18030,45 @@ class $ded5eecc0cd20cc2$export$ac386671d651941e extends $ded5eecc0cd20cc2$export
 const $ded5eecc0cd20cc2$var$_moveEvent = {
     type: 'move'
 };
-class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
-    constructor(){
-        this._targetRay = null;
-        this._grip = null;
-        this._hand = null;
+/**
+ * Class for representing a XR controller with its
+ * different coordinate systems.
+ *
+ * @private
+ */ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
+    /**
+	 * Constructs a new XR controller.
+	 */ constructor(){
+        /**
+		 * A group representing the target ray space
+		 * of the XR controller.
+		 *
+		 * @private
+		 * @type {?Group}
+		 * @default null
+		 */ this._targetRay = null;
+        /**
+		 * A group representing the grip space
+		 * of the XR controller.
+		 *
+		 * @private
+		 * @type {?Group}
+		 * @default null
+		 */ this._grip = null;
+        /**
+		 * A group representing the hand space
+		 * of the XR controller.
+		 *
+		 * @private
+		 * @type {?Group}
+		 * @default null
+		 */ this._hand = null;
     }
-    getHandSpace() {
+    /**
+	 * Returns a group representing the hand space of the XR controller.
+	 *
+	 * @return {Group} A group representing the hand space of the XR controller.
+	 */ getHandSpace() {
         if (this._hand === null) {
             this._hand = new $ded5eecc0cd20cc2$export$eb2fcfdbd7ba97d4();
             this._hand.matrixAutoUpdate = false;
@@ -15325,7 +18080,11 @@ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
         }
         return this._hand;
     }
-    getTargetRaySpace() {
+    /**
+	 * Returns a group representing the target ray space of the XR controller.
+	 *
+	 * @return {Group} A group representing the target ray space of the XR controller.
+	 */ getTargetRaySpace() {
         if (this._targetRay === null) {
             this._targetRay = new $ded5eecc0cd20cc2$export$eb2fcfdbd7ba97d4();
             this._targetRay.matrixAutoUpdate = false;
@@ -15337,7 +18096,11 @@ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
         }
         return this._targetRay;
     }
-    getGripSpace() {
+    /**
+	 * Returns a group representing the grip space of the XR controller.
+	 *
+	 * @return {Group} A group representing the grip space of the XR controller.
+	 */ getGripSpace() {
         if (this._grip === null) {
             this._grip = new $ded5eecc0cd20cc2$export$eb2fcfdbd7ba97d4();
             this._grip.matrixAutoUpdate = false;
@@ -15349,13 +18112,24 @@ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
         }
         return this._grip;
     }
-    dispatchEvent(event) {
+    /**
+	 * Dispatches the given event to the groups representing
+	 * the different coordinate spaces of the XR controller.
+	 *
+	 * @param {Object} event - The event to dispatch.
+	 * @return {WebXRController} A reference to this instance.
+	 */ dispatchEvent(event) {
         if (this._targetRay !== null) this._targetRay.dispatchEvent(event);
         if (this._grip !== null) this._grip.dispatchEvent(event);
         if (this._hand !== null) this._hand.dispatchEvent(event);
         return this;
     }
-    connect(inputSource) {
+    /**
+	 * Connects the controller with the given XR input source.
+	 *
+	 * @param {XRInputSource} inputSource - The input source.
+	 * @return {WebXRController} A reference to this instance.
+	 */ connect(inputSource) {
         if (inputSource && inputSource.hand) {
             const hand = this._hand;
             if (hand) for (const inputjoint of inputSource.hand.values())// Initialize hand with joints when connected
@@ -15367,7 +18141,12 @@ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
         });
         return this;
     }
-    disconnect(inputSource) {
+    /**
+	 * Disconnects the controller from the given XR input source.
+	 *
+	 * @param {XRInputSource} inputSource - The input source.
+	 * @return {WebXRController} A reference to this instance.
+	 */ disconnect(inputSource) {
         this.dispatchEvent({
             type: 'disconnected',
             data: inputSource
@@ -15377,7 +18156,16 @@ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
         if (this._hand !== null) this._hand.visible = false;
         return this;
     }
-    update(inputSource, frame, referenceSpace) {
+    /**
+	 * Updates the controller with the given input source, XR frame and reference space.
+	 * This updates the transformations of the groups that represent the different
+	 * coordinate systems of the controller.
+	 *
+	 * @param {XRInputSource} inputSource - The input source.
+	 * @param {XRFrame} frame - The XR frame.
+	 * @param {XRReferenceSpace} referenceSpace - The reference space.
+	 * @return {WebXRController} A reference to this instance.
+	 */ update(inputSource, frame, referenceSpace) {
         let inputPose = null;
         let gripPose = null;
         let handPose = null;
@@ -15463,8 +18251,14 @@ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
         if (hand !== null) hand.visible = handPose !== null;
         return this;
     }
-    // private method
-    _getHandJoint(hand, inputjoint) {
+    /**
+	 * Returns a group representing the hand joint for the given input joint.
+	 *
+	 * @private
+	 * @param {Group} hand - The group representing the hand space.
+	 * @param {XRHandJoint} inputjoint - The XR frame.
+	 * @return {Group} A group representing the hand joint for the given input joint.
+	 */ _getHandJoint(hand, inputjoint) {
         if (hand.joints[inputjoint.jointName] === undefined) {
             const joint = new $ded5eecc0cd20cc2$export$eb2fcfdbd7ba97d4();
             joint.matrixAutoUpdate = false;
@@ -15686,7 +18480,8 @@ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
 		 * @default (0,0,0)
 		 */ this.environmentRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
         /**
-		 * Forces everything in the scene to be rendered with the defined material.
+		 * Forces everything in the scene to be rendered with the defined material. It is possible
+		 * to exclude materials from override by setting {@link Material#allowOverride} to `false`.
 		 *
 		 * @type {?Material}
 		 * @default null
@@ -15720,52 +18515,150 @@ class $ded5eecc0cd20cc2$export$cb626c57dcc48b9f {
         return data;
     }
 }
-class $ded5eecc0cd20cc2$export$3d5cd879f108f53f {
-    constructor(array, stride){
-        this.isInterleavedBuffer = true;
-        this.array = array;
-        this.stride = stride;
-        this.count = array !== undefined ? array.length / stride : 0;
-        this.usage = $ded5eecc0cd20cc2$export$763e8360f4d7f77d;
-        this.updateRanges = [];
-        this.version = 0;
-        this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
+/**
+ * "Interleaved" means that multiple attributes, possibly of different types,
+ * (e.g., position, normal, uv, color) are packed into a single array buffer.
+ *
+ * An introduction into interleaved arrays can be found here: [Interleaved array basics]{@link https://blog.tojicode.com/2011/05/interleaved-array-basics.html}
+ */ class $ded5eecc0cd20cc2$export$3d5cd879f108f53f {
+    /**
+	 * Constructs a new interleaved buffer.
+	 *
+	 * @param {TypedArray} array - A typed array with a shared buffer storing attribute data.
+	 * @param {number} stride - The number of typed-array elements per vertex.
+	 */ constructor(array, stride){
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isInterleavedBuffer = true;
+        /**
+		 * A typed array with a shared buffer storing attribute data.
+		 *
+		 * @type {TypedArray}
+		 */ this.array = array;
+        /**
+		 * The number of typed-array elements per vertex.
+		 *
+		 * @type {number}
+		 */ this.stride = stride;
+        /**
+		 * The total number of elements in the array
+		 *
+		 * @type {number}
+		 * @readonly
+		 */ this.count = array !== undefined ? array.length / stride : 0;
+        /**
+		 * Defines the intended usage pattern of the data store for optimization purposes.
+		 *
+		 * Note: After the initial use of a buffer, its usage cannot be changed. Instead,
+		 * instantiate a new one and set the desired usage before the next render.
+		 *
+		 * @type {(StaticDrawUsage|DynamicDrawUsage|StreamDrawUsage|StaticReadUsage|DynamicReadUsage|StreamReadUsage|StaticCopyUsage|DynamicCopyUsage|StreamCopyUsage)}
+		 * @default StaticDrawUsage
+		 */ this.usage = $ded5eecc0cd20cc2$export$763e8360f4d7f77d;
+        /**
+		 * This can be used to only update some components of stored vectors (for example, just the
+		 * component related to color). Use the `addUpdateRange()` function to add ranges to this array.
+		 *
+		 * @type {Array<Object>}
+		 */ this.updateRanges = [];
+        /**
+		 * A version number, incremented every time the `needsUpdate` is set to `true`.
+		 *
+		 * @type {number}
+		 */ this.version = 0;
+        /**
+		 * The UUID of the interleaved buffer.
+		 *
+		 * @type {string}
+		 * @readonly
+		 */ this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
     }
-    onUploadCallback() {}
-    set needsUpdate(value) {
+    /**
+	 * A callback function that is executed after the renderer has transferred the attribute array
+	 * data to the GPU.
+	 */ onUploadCallback() {}
+    /**
+	 * Flag to indicate that this attribute has changed and should be re-sent to
+	 * the GPU. Set this to `true` when you modify the value of the array.
+	 *
+	 * @type {number}
+	 * @default false
+	 * @param {boolean} value
+	 */ set needsUpdate(value) {
         if (value === true) this.version++;
     }
-    setUsage(value) {
+    /**
+	 * Sets the usage of this interleaved buffer.
+	 *
+	 * @param {(StaticDrawUsage|DynamicDrawUsage|StreamDrawUsage|StaticReadUsage|DynamicReadUsage|StreamReadUsage|StaticCopyUsage|DynamicCopyUsage|StreamCopyUsage)} value - The usage to set.
+	 * @return {InterleavedBuffer} A reference to this interleaved buffer.
+	 */ setUsage(value) {
         this.usage = value;
         return this;
     }
-    addUpdateRange(start, count) {
+    /**
+	 * Adds a range of data in the data array to be updated on the GPU.
+	 *
+	 * @param {number} start - Position at which to start update.
+	 * @param {number} count - The number of components to update.
+	 */ addUpdateRange(start, count) {
         this.updateRanges.push({
             start: start,
             count: count
         });
     }
-    clearUpdateRanges() {
+    /**
+	 * Clears the update ranges.
+	 */ clearUpdateRanges() {
         this.updateRanges.length = 0;
     }
-    copy(source) {
+    /**
+	 * Copies the values of the given interleaved buffer to this instance.
+	 *
+	 * @param {InterleavedBuffer} source - The interleaved buffer to copy.
+	 * @return {InterleavedBuffer} A reference to this instance.
+	 */ copy(source) {
         this.array = new source.array.constructor(source.array);
         this.count = source.count;
         this.stride = source.stride;
         this.usage = source.usage;
         return this;
     }
-    copyAt(index1, attribute, index2) {
+    /**
+	 * Copies a vector from the given interleaved buffer to this one. The start
+	 * and destination position in the attribute buffers are represented by the
+	 * given indices.
+	 *
+	 * @param {number} index1 - The destination index into this interleaved buffer.
+	 * @param {InterleavedBuffer} interleavedBuffer - The interleaved buffer to copy from.
+	 * @param {number} index2 - The source index into the given interleaved buffer.
+	 * @return {InterleavedBuffer} A reference to this instance.
+	 */ copyAt(index1, interleavedBuffer, index2) {
         index1 *= this.stride;
-        index2 *= attribute.stride;
-        for(let i = 0, l = this.stride; i < l; i++)this.array[index1 + i] = attribute.array[index2 + i];
+        index2 *= interleavedBuffer.stride;
+        for(let i = 0, l = this.stride; i < l; i++)this.array[index1 + i] = interleavedBuffer.array[index2 + i];
         return this;
     }
-    set(value, offset = 0) {
+    /**
+	 * Sets the given array data in the interleaved buffer.
+	 *
+	 * @param {(TypedArray|Array)} value - The array data to set.
+	 * @param {number} [offset=0] - The offset in this interleaved buffer's array.
+	 * @return {InterleavedBuffer} A reference to this instance.
+	 */ set(value, offset = 0) {
         this.array.set(value, offset);
         return this;
     }
-    clone(data) {
+    /**
+	 * Returns a new interleaved buffer with copied values from this instance.
+	 *
+	 * @param {Object} [data] - An object with shared array buffers that allows to retain shared structures.
+	 * @return {InterleavedBuffer} A clone of this instance.
+	 */ clone(data) {
         if (data.arrayBuffers === undefined) data.arrayBuffers = {};
         if (this.array.buffer._uuid === undefined) this.array.buffer._uuid = $ded5eecc0cd20cc2$var$generateUUID();
         if (data.arrayBuffers[this.array.buffer._uuid] === undefined) data.arrayBuffers[this.array.buffer._uuid] = this.array.slice(0).buffer;
@@ -15774,11 +18667,23 @@ class $ded5eecc0cd20cc2$export$3d5cd879f108f53f {
         ib.setUsage(this.usage);
         return ib;
     }
-    onUpload(callback) {
+    /**
+	 * Sets the given callback function that is executed after the Renderer has transferred
+	 * the array data to the GPU. Can be used to perform clean-up operations after
+	 * the upload when data are not needed anymore on the CPU side.
+	 *
+	 * @param {Function} callback - The `onUpload()` callback.
+	 * @return {InterleavedBuffer} A reference to this instance.
+	 */ onUpload(callback) {
         this.onUploadCallback = callback;
         return this;
     }
-    toJSON(data) {
+    /**
+	 * Serializes the interleaved buffer into JSON.
+	 *
+	 * @param {Object} [data] - An optional value holding meta information about the serialization.
+	 * @return {Object} A JSON object representing the serialized interleaved buffer.
+	 */ toJSON(data) {
         if (data.arrayBuffers === undefined) data.arrayBuffers = {};
         // generate UUID for array buffer if necessary
         if (this.array.buffer._uuid === undefined) this.array.buffer._uuid = $ded5eecc0cd20cc2$var$generateUUID();
@@ -15793,25 +18698,84 @@ class $ded5eecc0cd20cc2$export$3d5cd879f108f53f {
     }
 }
 const $ded5eecc0cd20cc2$var$_vector$7 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$64b5c384219d3699();
-class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
-    constructor(interleavedBuffer, itemSize, offset, normalized = false){
-        this.isInterleavedBufferAttribute = true;
-        this.name = '';
-        this.data = interleavedBuffer;
-        this.itemSize = itemSize;
-        this.offset = offset;
-        this.normalized = normalized;
+/**
+ * An alternative version of a buffer attribute with interleaved data. Interleaved
+ * attributes share a common interleaved data storage ({@link InterleavedBuffer}) and refer with
+ * different offsets into the buffer.
+ */ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
+    /**
+	 * Constructs a new interleaved buffer attribute.
+	 *
+	 * @param {InterleavedBuffer} interleavedBuffer - The buffer holding the interleaved data.
+	 * @param {number} itemSize - The item size.
+	 * @param {number} offset - The attribute offset into the buffer.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 */ constructor(interleavedBuffer, itemSize, offset, normalized = false){
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isInterleavedBufferAttribute = true;
+        /**
+		 * The name of the buffer attribute.
+		 *
+		 * @type {string}
+		 */ this.name = '';
+        /**
+		 * The buffer holding the interleaved data.
+		 *
+		 * @type {InterleavedBuffer}
+		 */ this.data = interleavedBuffer;
+        /**
+		 * The item size, see {@link BufferAttribute#itemSize}.
+		 *
+		 * @type {number}
+		 */ this.itemSize = itemSize;
+        /**
+		 * The attribute offset into the buffer.
+		 *
+		 * @type {number}
+		 */ this.offset = offset;
+        /**
+		 * Whether the data are normalized or not, see {@link BufferAttribute#normalized}
+		 *
+		 * @type {InterleavedBuffer}
+		 */ this.normalized = normalized;
     }
-    get count() {
+    /**
+	 * The item count of this buffer attribute.
+	 *
+	 * @type {number}
+	 * @readonly
+	 */ get count() {
         return this.data.count;
     }
-    get array() {
+    /**
+	 * The array holding the interleaved buffer attribute data.
+	 *
+	 * @type {TypedArray}
+	 */ get array() {
         return this.data.array;
     }
-    set needsUpdate(value) {
+    /**
+	 * Flag to indicate that this attribute has changed and should be re-sent to
+	 * the GPU. Set this to `true` when you modify the value of the array.
+	 *
+	 * @type {number}
+	 * @default false
+	 * @param {boolean} value
+	 */ set needsUpdate(value) {
         this.data.needsUpdate = value;
     }
-    applyMatrix4(m) {
+    /**
+	 * Applies the given 4x4 matrix to the given attribute. Only works with
+	 * item size `3`.
+	 *
+	 * @param {Matrix4} m - The matrix to apply.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ applyMatrix4(m) {
         for(let i = 0, l = this.data.count; i < l; i++){
             $ded5eecc0cd20cc2$var$_vector$7.fromBufferAttribute(this, i);
             $ded5eecc0cd20cc2$var$_vector$7.applyMatrix4(m);
@@ -15819,7 +18783,13 @@ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
         }
         return this;
     }
-    applyNormalMatrix(m) {
+    /**
+	 * Applies the given 3x3 normal matrix to the given attribute. Only works with
+	 * item size `3`.
+	 *
+	 * @param {Matrix3} m - The normal matrix to apply.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ applyNormalMatrix(m) {
         for(let i = 0, l = this.count; i < l; i++){
             $ded5eecc0cd20cc2$var$_vector$7.fromBufferAttribute(this, i);
             $ded5eecc0cd20cc2$var$_vector$7.applyNormalMatrix(m);
@@ -15827,7 +18797,13 @@ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
         }
         return this;
     }
-    transformDirection(m) {
+    /**
+	 * Applies the given 4x4 matrix to the given attribute. Only works with
+	 * item size `3` and with direction vectors.
+	 *
+	 * @param {Matrix4} m - The matrix to apply.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ transformDirection(m) {
         for(let i = 0, l = this.count; i < l; i++){
             $ded5eecc0cd20cc2$var$_vector$7.fromBufferAttribute(this, i);
             $ded5eecc0cd20cc2$var$_vector$7.transformDirection(m);
@@ -15835,57 +18811,121 @@ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
         }
         return this;
     }
-    getComponent(index, component) {
+    /**
+	 * Returns the given component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} component - The component index.
+	 * @return {number} The returned value.
+	 */ getComponent(index, component) {
         let value = this.array[index * this.data.stride + this.offset + component];
         if (this.normalized) value = $ded5eecc0cd20cc2$var$denormalize(value, this.array);
         return value;
     }
-    setComponent(index, component, value) {
+    /**
+	 * Sets the given value to the given component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} component - The component index.
+	 * @param {number} value - The value to set.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ setComponent(index, component, value) {
         if (this.normalized) value = $ded5eecc0cd20cc2$var$normalize(value, this.array);
         this.data.array[index * this.data.stride + this.offset + component] = value;
         return this;
     }
-    setX(index, x) {
+    /**
+	 * Sets the x component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} x - The value to set.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ setX(index, x) {
         if (this.normalized) x = $ded5eecc0cd20cc2$var$normalize(x, this.array);
         this.data.array[index * this.data.stride + this.offset] = x;
         return this;
     }
-    setY(index, y) {
+    /**
+	 * Sets the y component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} y - The value to set.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ setY(index, y) {
         if (this.normalized) y = $ded5eecc0cd20cc2$var$normalize(y, this.array);
         this.data.array[index * this.data.stride + this.offset + 1] = y;
         return this;
     }
-    setZ(index, z) {
+    /**
+	 * Sets the z component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} z - The value to set.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ setZ(index, z) {
         if (this.normalized) z = $ded5eecc0cd20cc2$var$normalize(z, this.array);
         this.data.array[index * this.data.stride + this.offset + 2] = z;
         return this;
     }
-    setW(index, w) {
+    /**
+	 * Sets the w component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} w - The value to set.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ setW(index, w) {
         if (this.normalized) w = $ded5eecc0cd20cc2$var$normalize(w, this.array);
         this.data.array[index * this.data.stride + this.offset + 3] = w;
         return this;
     }
-    getX(index) {
+    /**
+	 * Returns the x component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @return {number} The x component.
+	 */ getX(index) {
         let x = this.data.array[index * this.data.stride + this.offset];
         if (this.normalized) x = $ded5eecc0cd20cc2$var$denormalize(x, this.array);
         return x;
     }
-    getY(index) {
+    /**
+	 * Returns the y component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @return {number} The y component.
+	 */ getY(index) {
         let y = this.data.array[index * this.data.stride + this.offset + 1];
         if (this.normalized) y = $ded5eecc0cd20cc2$var$denormalize(y, this.array);
         return y;
     }
-    getZ(index) {
+    /**
+	 * Returns the z component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @return {number} The z component.
+	 */ getZ(index) {
         let z = this.data.array[index * this.data.stride + this.offset + 2];
         if (this.normalized) z = $ded5eecc0cd20cc2$var$denormalize(z, this.array);
         return z;
     }
-    getW(index) {
+    /**
+	 * Returns the w component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @return {number} The w component.
+	 */ getW(index) {
         let w = this.data.array[index * this.data.stride + this.offset + 3];
         if (this.normalized) w = $ded5eecc0cd20cc2$var$denormalize(w, this.array);
         return w;
     }
-    setXY(index, x, y) {
+    /**
+	 * Sets the x and y component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} x - The value for the x component to set.
+	 * @param {number} y - The value for the y component to set.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ setXY(index, x, y) {
         index = index * this.data.stride + this.offset;
         if (this.normalized) {
             x = $ded5eecc0cd20cc2$var$normalize(x, this.array);
@@ -15895,7 +18935,15 @@ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
         this.data.array[index + 1] = y;
         return this;
     }
-    setXYZ(index, x, y, z) {
+    /**
+	 * Sets the x, y and z component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} x - The value for the x component to set.
+	 * @param {number} y - The value for the y component to set.
+	 * @param {number} z - The value for the z component to set.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ setXYZ(index, x, y, z) {
         index = index * this.data.stride + this.offset;
         if (this.normalized) {
             x = $ded5eecc0cd20cc2$var$normalize(x, this.array);
@@ -15907,7 +18955,16 @@ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
         this.data.array[index + 2] = z;
         return this;
     }
-    setXYZW(index, x, y, z, w) {
+    /**
+	 * Sets the x, y, z and w component of the vector at the given index.
+	 *
+	 * @param {number} index - The index into the buffer attribute.
+	 * @param {number} x - The value for the x component to set.
+	 * @param {number} y - The value for the y component to set.
+	 * @param {number} z - The value for the z component to set.
+	 * @param {number} w - The value for the w component to set.
+	 * @return {InterleavedBufferAttribute} A reference to this instance.
+	 */ setXYZW(index, x, y, z, w) {
         index = index * this.data.stride + this.offset;
         if (this.normalized) {
             x = $ded5eecc0cd20cc2$var$normalize(x, this.array);
@@ -15921,7 +18978,14 @@ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
         this.data.array[index + 3] = w;
         return this;
     }
-    clone(data) {
+    /**
+	 * Returns a new buffer attribute with copied values from this instance.
+	 *
+	 * If no parameter is provided, cloning an interleaved buffer attribute will de-interleave buffer data.
+	 *
+	 * @param {Object} [data] - An object with interleaved buffers that allows to retain the interleaved property.
+	 * @return {BufferAttribute|InterleavedBufferAttribute} A clone of this instance.
+	 */ clone(data) {
         if (data === undefined) {
             console.log('THREE.InterleavedBufferAttribute.clone(): Cloning an interleaved buffer attribute will de-interleave buffer data.');
             const array = [];
@@ -15936,7 +19000,14 @@ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
             return new $ded5eecc0cd20cc2$export$920b6d07334599c7(data.interleavedBuffers[this.data.uuid], this.itemSize, this.offset, this.normalized);
         }
     }
-    toJSON(data) {
+    /**
+	 * Serializes the buffer attribute into JSON.
+	 *
+	 * If no parameter is provided, cloning an interleaved buffer attribute will de-interleave buffer data.
+	 *
+	 * @param {Object} [data] - An optional value holding meta information about the serialization.
+	 * @return {Object} A JSON object representing the serialized buffer attribute.
+	 */ toJSON(data) {
         if (data === undefined) {
             console.log('THREE.InterleavedBufferAttribute.toJSON(): Serializing an interleaved buffer attribute will de-interleave buffer data.');
             const array = [];
@@ -15965,18 +19036,90 @@ class $ded5eecc0cd20cc2$export$920b6d07334599c7 {
         }
     }
 }
-class $ded5eecc0cd20cc2$export$5ec7dd1c6994bf8e extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material for rendering instances of {@link Sprite}.
+ *
+ * ```js
+ * const map = new THREE.TextureLoader().load( 'textures/sprite.png' );
+ * const material = new THREE.SpriteMaterial( { map: map, color: 0xffffff } );
+ *
+ * const sprite = new THREE.Sprite( material );
+ * sprite.scale.set(200, 200, 1)
+ * scene.add( sprite );
+ * ```
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$5ec7dd1c6994bf8e extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new sprite material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isSpriteMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isSpriteMaterial = true;
         this.type = 'SpriteMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff);
-        this.map = null;
-        this.alphaMap = null;
-        this.rotation = 0;
-        this.sizeAttenuation = true;
-        this.transparent = true;
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff);
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * The rotation of the sprite in radians.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.rotation = 0;
+        /**
+		 * Specifies whether size of the sprite is attenuated by the camera depth (perspective camera only).
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.sizeAttenuation = true;
+        /**
+		 * Overwritten since sprite materials are transparent
+		 * by default.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.transparent = true;
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -16312,7 +19455,7 @@ const $ded5eecc0cd20cc2$var$_v2$1 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$6
 	 * Updates the LOD by computing which LOD level should be visible according
 	 * to the current distance of the given camera.
 	 *
-	 * @param {Camera} camera - The camera the scene is renderd with.
+	 * @param {Camera} camera - The camera the scene is rendered with.
 	 */ update(camera) {
         const levels = this.levels;
         if (levels.length > 1) {
@@ -16576,18 +19719,74 @@ const $ded5eecc0cd20cc2$var$_ray$2 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$
         this.type = 'Bone';
     }
 }
-class $ded5eecc0cd20cc2$export$b691f601014eabe1 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(data = null, width = 1, height = 1, format, type, mapping, wrapS, wrapT, magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0, minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0, anisotropy, colorSpace){
+/**
+ * Creates a texture directly from raw buffer data.
+ *
+ * The interpretation of the data depends on type and format: If the type is
+ * `UnsignedByteType`, a `Uint8Array` will be useful for addressing the
+ * texel data. If the format is `RGBAFormat`, data needs four values for
+ * one texel; Red, Green, Blue and Alpha (typically the opacity).
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$b691f601014eabe1 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new data texture.
+	 *
+	 * @param {?TypedArray} [data=null] - The buffer data.
+	 * @param {number} [width=1] - The width of the texture.
+	 * @param {number} [height=1] - The height of the texture.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
+	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+	 * @param {number} [magFilter=NearestFilter] - The mag filter value.
+	 * @param {number} [minFilter=NearestFilter] - The min filter value.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 * @param {string} [colorSpace=NoColorSpace] - The color space.
+	 */ constructor(data = null, width = 1, height = 1, format, type, mapping, wrapS, wrapT, magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0, minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0, anisotropy, colorSpace){
         super(null, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, colorSpace);
-        this.isDataTexture = true;
-        this.image = {
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isDataTexture = true;
+        /**
+		 * The image definition of a data texture.
+		 *
+		 * @type {{data:TypedArray,width:number,height:number}}
+		 */ this.image = {
             data: data,
             width: width,
             height: height
         };
-        this.generateMipmaps = false;
-        this.flipY = false;
-        this.unpackAlignment = 1;
+        /**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.generateMipmaps = false;
+        /**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flipY = false;
+        /**
+		 * Specifies the alignment requirements for the start of each pixel row in memory.
+		 *
+		 * Overwritten and set to `1` by default.
+		 *
+		 * @type {boolean}
+		 * @default 1
+		 */ this.unpackAlignment = 1;
     }
 }
 const $ded5eecc0cd20cc2$var$_offsetMatrix = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$2ae72fc923e5eb5();
@@ -16768,7 +19967,7 @@ const $ded5eecc0cd20cc2$var$_identityMatrix = /*@__PURE__*/ new $ded5eecc0cd20cc
 	 * Setups the skeleton by the given JSON and bones.
 	 *
 	 * @param {Object} json - The skeleton as serialized JSON.
-	 * @param {Array<Bone>} bones - An array of bones.
+	 * @param {Object<string, Bone>} bones - An array of bones.
 	 * @return {Skeleton} A reference of this instance.
 	 */ fromJSON(json, bones) {
         this.uuid = json.uuid;
@@ -16812,11 +20011,36 @@ const $ded5eecc0cd20cc2$var$_identityMatrix = /*@__PURE__*/ new $ded5eecc0cd20cc
         return data;
     }
 }
-class $ded5eecc0cd20cc2$export$32ea87a8b54d744a extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
-    constructor(array, itemSize, normalized, meshPerAttribute = 1){
+/**
+ * An instanced version of a buffer attribute.
+ *
+ * @augments BufferAttribute
+ */ class $ded5eecc0cd20cc2$export$32ea87a8b54d744a extends $ded5eecc0cd20cc2$export$8dea267bd6bde117 {
+    /**
+	 * Constructs a new instanced buffer attribute.
+	 *
+	 * @param {TypedArray} array - The array holding the attribute data.
+	 * @param {number} itemSize - The item size.
+	 * @param {boolean} [normalized=false] - Whether the data are normalized or not.
+	 * @param {number} [meshPerAttribute=1] - How often a value of this buffer attribute should be repeated.
+	 */ constructor(array, itemSize, normalized, meshPerAttribute = 1){
         super(array, itemSize, normalized);
-        this.isInstancedBufferAttribute = true;
-        this.meshPerAttribute = meshPerAttribute;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isInstancedBufferAttribute = true;
+        /**
+		 * Defines how often a value of this buffer attribute should be repeated. A
+		 * value of one means that each value of the instanced attribute is used for
+		 * a single instance. A value of two means that each value is used for two
+		 * consecutive instances (and so on).
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.meshPerAttribute = meshPerAttribute;
     }
     copy(source) {
         super.copy(source);
@@ -16881,7 +20105,7 @@ const $ded5eecc0cd20cc2$var$_sphere$4 = /*@__PURE__*/ new $ded5eecc0cd20cc2$expo
 		 * {@link Texture#needsUpdate} flag to true if you modify instanced data
 		 * via {@link InstancedMesh#setMorphAt}.
 		 *
-		 * @type {?InstancedBufferAttribute}
+		 * @type {?DataTexture}
 		 * @default null
 		 */ this.morphTexture = null;
         /**
@@ -17017,7 +20241,7 @@ const $ded5eecc0cd20cc2$var$_sphere$4 = /*@__PURE__*/ new $ded5eecc0cd20cc2$expo
 	 * {@link InstancedMesh#instanceMatrix} to `true` after updating all the colors.
 	 *
 	 * @param {number} index - The instance index.
-	 * @param {Matrix4} matrix - The the local transformation.
+	 * @param {Matrix4} matrix - The local transformation.
 	 */ setMatrixAt(index, matrix) {
         matrix.toArray(this.instanceMatrix.array, index * 16);
     }
@@ -17745,7 +20969,7 @@ function $ded5eecc0cd20cc2$var$copyArrayContents(src, target) {
     /**
 	 * Validates the instance defined by the given ID.
 	 *
-	 * @param {number} instanceId - The the instance to validate.
+	 * @param {number} instanceId - The instance to validate.
 	 */ validateInstanceId(instanceId) {
         const instanceInfo = this._instanceInfo;
         if (instanceId < 0 || instanceId >= instanceInfo.length || instanceInfo[instanceId].active === false) throw new Error(`THREE.BatchedMesh: Invalid instanceId ${instanceId}. Instance is either out of range or has been deleted.`);
@@ -17753,7 +20977,7 @@ function $ded5eecc0cd20cc2$var$copyArrayContents(src, target) {
     /**
 	 * Validates the geometry defined by the given ID.
 	 *
-	 * @param {number} geometryId - The the geometry to validate.
+	 * @param {number} geometryId - The geometry to validate.
 	 */ validateGeometryId(geometryId) {
         const geometryInfoList = this._geometryInfo;
         if (geometryId < 0 || geometryId >= geometryInfoList.length || geometryInfoList[geometryId].active === false) throw new Error(`THREE.BatchedMesh: Invalid geometryId ${geometryId}. Geometry is either out of range or has been deleted.`);
@@ -17904,7 +21128,7 @@ function $ded5eecc0cd20cc2$var$copyArrayContents(src, target) {
 	 * is not enough space reserved for geometry. Calling this will change all instances that are
 	 * rendering that geometry.
 	 *
-	 * @param {number} geometryId - The ID of the geomtry that should be replaced with the given geometry.
+	 * @param {number} geometryId - The ID of the geometry that should be replaced with the given geometry.
 	 * @param {BufferGeometry} geometry - The new geometry.
 	 * @return {number} The geometry ID.
 	 */ setGeometryAt(geometryId, geometry) {
@@ -17961,7 +21185,7 @@ function $ded5eecc0cd20cc2$var$copyArrayContents(src, target) {
 	 * Deletes the geometry defined by the given ID from this batch. Any instances referencing
 	 * this geometry will also be removed as a side effect.
 	 *
-	 * @param {number} geometryId - The ID of the geomtry to remove from the batch.
+	 * @param {number} geometryId - The ID of the geometry to remove from the batch.
 	 * @return {BatchedMesh} A reference to this batched mesh.
 	 */ deleteGeometry(geometryId) {
         const geometryInfoList = this._geometryInfo;
@@ -18453,17 +21677,80 @@ function $ded5eecc0cd20cc2$var$copyArrayContents(src, target) {
         this.onBeforeRender(renderer, null, shadowCamera, geometry, depthMaterial);
     }
 }
-class $ded5eecc0cd20cc2$export$fbaaa33907730a0c extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material for rendering line primitives.
+ *
+ * Materials define the appearance of renderable 3D objects.
+ *
+ * ```js
+ * const material = new THREE.LineBasicMaterial( { color: 0xffffff } );
+ * ```
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$fbaaa33907730a0c extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new line basic material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isLineBasicMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isLineBasicMaterial = true;
         this.type = 'LineBasicMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff);
-        this.map = null;
-        this.linewidth = 1;
-        this.linecap = 'round';
-        this.linejoin = 'round';
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff);
+        /**
+		 * Sets the color of the lines using data from a texture. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * Controls line thickness or lines.
+		 *
+		 * Can only be used with {@link SVGRenderer}. WebGL and WebGPU
+		 * ignore this setting and always render line primitives with a
+		 * width of one pixel.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.linewidth = 1;
+        /**
+		 * Defines appearance of line ends.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('butt'|'round'|'square')}
+		 * @default 'round'
+		 */ this.linecap = 'round';
+        /**
+		 * Defines appearance of line joints.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.linejoin = 'round';
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -18737,17 +22024,96 @@ const $ded5eecc0cd20cc2$var$_end = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$64
         this.type = 'LineLoop';
     }
 }
-class $ded5eecc0cd20cc2$export$a178c45366ce5d6b extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material for rendering point primitives.
+ *
+ * Materials define the appearance of renderable 3D objects.
+ *
+ * ```js
+ * const vertices = [];
+ *
+ * for ( let i = 0; i < 10000; i ++ ) {
+ * 	const x = THREE.MathUtils.randFloatSpread( 2000 );
+ * 	const y = THREE.MathUtils.randFloatSpread( 2000 );
+ * 	const z = THREE.MathUtils.randFloatSpread( 2000 );
+ *
+ * 	vertices.push( x, y, z );
+ * }
+ *
+ * const geometry = new THREE.BufferGeometry();
+ * geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+ * const material = new THREE.PointsMaterial( { color: 0x888888 } );
+ * const points = new THREE.Points( geometry, material );
+ * scene.add( points );
+ * ```
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$a178c45366ce5d6b extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new points material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isPointsMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isPointsMaterial = true;
         this.type = 'PointsMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff);
-        this.map = null;
-        this.alphaMap = null;
-        this.size = 1;
-        this.sizeAttenuation = true;
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff);
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * Defines the size of the points in pixels.
+		 *
+		 * Might be capped if the value exceeds hardware dependent parameters like [gl.ALIASED_POINT_SIZE_RANGE]{@link https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/getParamete}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.size = 1;
+        /**
+		 * Specifies whether size of individual points is attenuated by the camera depth (perspective camera only).
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.sizeAttenuation = true;
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -18902,13 +22268,49 @@ function $ded5eecc0cd20cc2$var$testPoint(point, index, localThresholdSq, matrixW
         });
     }
 }
-class $ded5eecc0cd20cc2$export$6e09d1edf8d5a25c extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy){
+/**
+ * A texture for use with a video.
+ *
+ * ```js
+ * // assuming you have created a HTML video element with id="video"
+ * const video = document.getElementById( 'video' );
+ * const texture = new THREE.VideoTexture( video );
+ * ```
+ *
+ * Note: After the initial use of a texture, its dimensions, format, and type
+ * cannot be changed. Instead, call {@link Texture#dispose} on the texture and instantiate a new one.
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$6e09d1edf8d5a25c extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new video texture.
+	 *
+	 * @param {Video} video - The video element to use as a data source for the texture.
+	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
+	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
+	 * @param {number} [minFilter=LinearFilter] - The min filter value.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 */ constructor(video, mapping, wrapS, wrapT, magFilter = $ded5eecc0cd20cc2$export$8a72f490b25c56c8, minFilter = $ded5eecc0cd20cc2$export$8a72f490b25c56c8, format, type, anisotropy){
         super(video, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-        this.isVideoTexture = true;
-        this.minFilter = minFilter !== undefined ? minFilter : $ded5eecc0cd20cc2$export$8a72f490b25c56c8;
-        this.magFilter = magFilter !== undefined ? magFilter : $ded5eecc0cd20cc2$export$8a72f490b25c56c8;
-        this.generateMipmaps = false;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isVideoTexture = true;
+        /**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.generateMipmaps = false;
         const scope = this;
         function updateVideo() {
             scope.needsUpdate = true;
@@ -18919,105 +22321,391 @@ class $ded5eecc0cd20cc2$export$6e09d1edf8d5a25c extends $ded5eecc0cd20cc2$export
     clone() {
         return new this.constructor(this.image).copy(this);
     }
-    update() {
+    /**
+	 * This method is called automatically by the renderer and sets {@link Texture#needsUpdate}
+	 * to `true` every time a new frame is available.
+	 *
+	 * Only relevant if `requestVideoFrameCallback` is not supported in the browser.
+	 */ update() {
         const video = this.image;
         const hasVideoFrameCallback = 'requestVideoFrameCallback' in video;
         if (hasVideoFrameCallback === false && video.readyState >= video.HAVE_CURRENT_DATA) this.needsUpdate = true;
     }
 }
-class $ded5eecc0cd20cc2$export$68498d200b825382 extends $ded5eecc0cd20cc2$export$6e09d1edf8d5a25c {
-    constructor(mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy){
+/**
+ * This class can be used as an alternative way to define video data. Instead of using
+ * an instance of `HTMLVideoElement` like with `VideoTexture`, `VideoFrameTexture` expects each frame is
+ * defined manually via {@link VideoFrameTexture#setFrame}. A typical use case for this module is when
+ * video frames are decoded with the WebCodecs API.
+ *
+ * ```js
+ * const texture = new THREE.VideoFrameTexture();
+ * texture.setFrame( frame );
+ * ```
+ *
+ * @augments VideoTexture
+ */ class $ded5eecc0cd20cc2$export$68498d200b825382 extends $ded5eecc0cd20cc2$export$6e09d1edf8d5a25c {
+    /**
+	 * Constructs a new video frame texture.
+	 *
+	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
+	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
+	 * @param {number} [minFilter=LinearFilter] - The min filter value.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 */ constructor(mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy){
         super({}, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-        this.isVideoFrameTexture = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isVideoFrameTexture = true;
     }
-    update() {
-    // overwrites `VideoTexture.update()` with an empty method since
-    // this type of texture is updated via `setFrame()`.
-    }
+    /**
+	 * This method overwritten with an empty implementation since
+	 * this type of texture is updated via `setFrame()`.
+	 */ update() {}
     clone() {
         return new this.constructor().copy(this); // restoring Texture.clone()
     }
-    setFrame(frame) {
+    /**
+	 * Sets the current frame of the video. This will automatically update the texture
+	 * so the data can be used for rendering.
+	 *
+	 * @param {VideoFrame} frame - The video frame.
+	 */ setFrame(frame) {
         this.image = frame;
         this.needsUpdate = true;
     }
 }
-class $ded5eecc0cd20cc2$export$9270d786f73ce6fe extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(width, height){
+/**
+ * This class can only be used in combination with `copyFramebufferToTexture()` methods
+ * of renderers. It extracts the contents of the current bound framebuffer and provides it
+ * as a texture for further usage.
+ *
+ * ```js
+ * const pixelRatio = window.devicePixelRatio;
+ * const textureSize = 128 * pixelRatio;
+ *
+ * const frameTexture = new FramebufferTexture( textureSize, textureSize );
+ *
+ * // calculate start position for copying part of the frame data
+ * const vector = new Vector2();
+ * vector.x = ( window.innerWidth * pixelRatio / 2 ) - ( textureSize / 2 );
+ * vector.y = ( window.innerHeight * pixelRatio / 2 ) - ( textureSize / 2 );
+ *
+ * renderer.render( scene, camera );
+ *
+ * // copy part of the rendered frame into the framebuffer texture
+ * renderer.copyFramebufferToTexture( frameTexture, vector );
+ * ```
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$9270d786f73ce6fe extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new framebuffer texture.
+	 *
+	 * @param {number} width - The width of the texture.
+	 * @param {number} height - The height of the texture.
+	 */ constructor(width, height){
         super({
             width: width,
             height: height
         });
-        this.isFramebufferTexture = true;
-        this.magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
-        this.minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
-        this.generateMipmaps = false;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isFramebufferTexture = true;
+        /**
+		 * How the texture is sampled when a texel covers more than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default to disable filtering.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */ this.magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
+        /**
+		 * How the texture is sampled when a texel covers less than one pixel.
+		 *
+		 * Overwritten and set to `NearestFilter` by default to disable filtering.
+		 *
+		 * @type {(NearestFilter|NearestMipmapNearestFilter|NearestMipmapLinearFilter|LinearFilter|LinearMipmapNearestFilter|LinearMipmapLinearFilter)}
+		 * @default NearestFilter
+		 */ this.minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
+        /**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.generateMipmaps = false;
         this.needsUpdate = true;
     }
 }
-class $ded5eecc0cd20cc2$export$3466bac9141a5cc4 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(mipmaps, width, height, format, type, mapping, wrapS, wrapT, magFilter, minFilter, anisotropy, colorSpace){
+/**
+ * Creates a texture based on data in compressed form.
+ *
+ * These texture are usually loaded with {@link CompressedTextureLoader}.
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$3466bac9141a5cc4 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new compressed texture.
+	 *
+	 * @param {Array<Object>} mipmaps - This array holds for all mipmaps (including the bases mip)
+	 * the data and dimensions.
+	 * @param {number} width - The width of the texture.
+	 * @param {number} height - The height of the texture.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
+	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
+	 * @param {number} [minFilter=LinearMipmapLinearFilter] - The min filter value.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 * @param {string} [colorSpace=NoColorSpace] - The color space.
+	 */ constructor(mipmaps, width, height, format, type, mapping, wrapS, wrapT, magFilter, minFilter, anisotropy, colorSpace){
         super(null, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy, colorSpace);
-        this.isCompressedTexture = true;
-        this.image = {
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isCompressedTexture = true;
+        /**
+		 * The image property of a compressed texture just defines its dimensions.
+		 *
+		 * @type {{width:number,height:number}}
+		 */ this.image = {
             width: width,
             height: height
         };
-        this.mipmaps = mipmaps;
-        // no flipping for cube textures
-        // (also flipping doesn't work for compressed textures )
-        this.flipY = false;
-        // can't generate mipmaps for compressed textures
-        // mips must be embedded in DDS files
-        this.generateMipmaps = false;
+        /**
+		 * This array holds for all mipmaps (including the bases mip) the data and dimensions.
+		 *
+		 * @type {Array<Object>}
+		 */ this.mipmaps = mipmaps;
+        /**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Overwritten and set to `false` by default since it is not possible to
+		 * flip compressed textures.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 * @readonly
+		 */ this.flipY = false;
+        /**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default since it is not
+		 * possible to generate mipmaps for compressed data. Mipmaps
+		 * must be embedded in the compressed texture file.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 * @readonly
+		 */ this.generateMipmaps = false;
     }
 }
-class $ded5eecc0cd20cc2$export$5fe6b8e34b274fcb extends $ded5eecc0cd20cc2$export$3466bac9141a5cc4 {
-    constructor(mipmaps, width, height, depth, format, type){
+/**
+ * Creates a texture 2D array based on data in compressed form.
+ *
+ * These texture are usually loaded with {@link CompressedTextureLoader}.
+ *
+ * @augments CompressedTexture
+ */ class $ded5eecc0cd20cc2$export$5fe6b8e34b274fcb extends $ded5eecc0cd20cc2$export$3466bac9141a5cc4 {
+    /**
+	 * Constructs a new compressed array texture.
+	 *
+	 * @param {Array<Object>} mipmaps - This array holds for all mipmaps (including the bases mip)
+	 * the data and dimensions.
+	 * @param {number} width - The width of the texture.
+	 * @param {number} height - The height of the texture.
+	 * @param {number} depth - The depth of the texture.
+	 * @param {number} [format=RGBAFormat] - The min filter value.
+	 * @param {number} [type=UnsignedByteType] - The min filter value.
+	 */ constructor(mipmaps, width, height, depth, format, type){
         super(mipmaps, width, height, format, type);
-        this.isCompressedArrayTexture = true;
-        this.image.depth = depth;
-        this.wrapR = $ded5eecc0cd20cc2$export$9d9334239a5a5e06;
-        this.layerUpdates = new Set();
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isCompressedArrayTexture = true;
+        /**
+		 * The image property of a compressed texture just defines its dimensions.
+		 *
+		 * @name CompressedArrayTexture#image
+		 * @type {{width:number,height:number,depth:number}}
+		 */ this.image.depth = depth;
+        /**
+		 * This defines how the texture is wrapped in the depth and corresponds to
+		 * *W* in UVW mapping.
+		 *
+		 * @type {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)}
+		 * @default ClampToEdgeWrapping
+		 */ this.wrapR = $ded5eecc0cd20cc2$export$9d9334239a5a5e06;
+        /**
+		 * A set of all layers which need to be updated in the texture.
+		 *
+		 * @type {Set<number>}
+		 */ this.layerUpdates = new Set();
     }
-    addLayerUpdate(layerIndex) {
+    /**
+	 * Describes that a specific layer of the texture needs to be updated.
+	 * Normally when {@link Texture#needsUpdate} is set to `true`, the
+	 * entire compressed texture array is sent to the GPU. Marking specific
+	 * layers will only transmit subsets of all mipmaps associated with a
+	 * specific depth in the array which is often much more performant.
+	 *
+	 * @param {number} layerIndex - The layer index that should be updated.
+	 */ addLayerUpdate(layerIndex) {
         this.layerUpdates.add(layerIndex);
     }
-    clearLayerUpdates() {
+    /**
+	 * Resets the layer updates registry.
+	 */ clearLayerUpdates() {
         this.layerUpdates.clear();
     }
 }
-class $ded5eecc0cd20cc2$export$d80173634de65bff extends $ded5eecc0cd20cc2$export$3466bac9141a5cc4 {
-    constructor(images, format, type){
+/**
+ * Creates a cube texture based on data in compressed form.
+ *
+ * These texture are usually loaded with {@link CompressedTextureLoader}.
+ *
+ * @augments CompressedTexture
+ */ class $ded5eecc0cd20cc2$export$d80173634de65bff extends $ded5eecc0cd20cc2$export$3466bac9141a5cc4 {
+    /**
+	 * Constructs a new compressed texture.
+	 *
+	 * @param {Array<CompressedTexture>} images - An array of compressed textures.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 */ constructor(images, format, type){
         super(undefined, images[0].width, images[0].height, format, type, $ded5eecc0cd20cc2$export$8759762a6477f2c4);
-        this.isCompressedCubeTexture = true;
-        this.isCubeTexture = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isCompressedCubeTexture = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isCubeTexture = true;
         this.image = images;
     }
 }
-class $ded5eecc0cd20cc2$export$f7189e49152d1c13 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(canvas, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy){
+/**
+ * Creates a texture from a canvas element.
+ *
+ * This is almost the same as the base texture class, except that it sets {@link Texture#needsUpdate}
+ * to `true` immediately since a canvas can directly be used for rendering.
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$f7189e49152d1c13 extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new texture.
+	 *
+	 * @param {HTMLCanvasElement} [canvas] - The HTML canvas element.
+	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
+	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
+	 * @param {number} [minFilter=LinearMipmapLinearFilter] - The min filter value.
+	 * @param {number} [format=RGBAFormat] - The texture format.
+	 * @param {number} [type=UnsignedByteType] - The texture type.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 */ constructor(canvas, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy){
         super(canvas, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-        this.isCanvasTexture = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isCanvasTexture = true;
         this.needsUpdate = true;
     }
 }
-class $ded5eecc0cd20cc2$export$fc830aa069cc8c2f extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
-    constructor(width, height, type, mapping, wrapS, wrapT, magFilter, minFilter, anisotropy, format = $ded5eecc0cd20cc2$export$c1b6b5136be58045){
+/**
+ * This class can be used to automatically save the depth information of a
+ * rendering into a texture.
+ *
+ * @augments Texture
+ */ class $ded5eecc0cd20cc2$export$fc830aa069cc8c2f extends $ded5eecc0cd20cc2$export$5431306cf43de24a {
+    /**
+	 * Constructs a new depth texture.
+	 *
+	 * @param {number} width - The width of the texture.
+	 * @param {number} height - The height of the texture.
+	 * @param {number} [type=UnsignedIntType] - The texture type.
+	 * @param {number} [mapping=Texture.DEFAULT_MAPPING] - The texture mapping.
+	 * @param {number} [wrapS=ClampToEdgeWrapping] - The wrapS value.
+	 * @param {number} [wrapT=ClampToEdgeWrapping] - The wrapT value.
+	 * @param {number} [magFilter=LinearFilter] - The mag filter value.
+	 * @param {number} [minFilter=LinearFilter] - The min filter value.
+	 * @param {number} [anisotropy=Texture.DEFAULT_ANISOTROPY] - The anisotropy value.
+	 * @param {number} [format=DepthFormat] - The texture format.
+	 */ constructor(width, height, type = $ded5eecc0cd20cc2$export$c3c7fc4518ebba96, mapping, wrapS, wrapT, magFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0, minFilter = $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0, anisotropy, format = $ded5eecc0cd20cc2$export$c1b6b5136be58045){
         if (format !== $ded5eecc0cd20cc2$export$c1b6b5136be58045 && format !== $ded5eecc0cd20cc2$export$1e113ac2d0905829) throw new Error('DepthTexture format must be either THREE.DepthFormat or THREE.DepthStencilFormat');
-        if (type === undefined && format === $ded5eecc0cd20cc2$export$c1b6b5136be58045) type = $ded5eecc0cd20cc2$export$c3c7fc4518ebba96;
-        if (type === undefined && format === $ded5eecc0cd20cc2$export$1e113ac2d0905829) type = $ded5eecc0cd20cc2$export$6c8ea339bfab1301;
         super(null, mapping, wrapS, wrapT, magFilter, minFilter, format, type, anisotropy);
-        this.isDepthTexture = true;
-        this.image = {
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isDepthTexture = true;
+        /**
+		 * The image property of a depth texture just defines its dimensions.
+		 *
+		 * @type {{width:number,height:number}}
+		 */ this.image = {
             width: width,
             height: height
         };
-        this.magFilter = magFilter !== undefined ? magFilter : $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
-        this.minFilter = minFilter !== undefined ? minFilter : $ded5eecc0cd20cc2$export$727aa5ec3fe39bf0;
-        this.flipY = false;
-        this.generateMipmaps = false;
-        this.compareFunction = null;
+        /**
+		 * If set to `true`, the texture is flipped along the vertical axis when
+		 * uploaded to the GPU.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flipY = false;
+        /**
+		 * Whether to generate mipmaps (if possible) for a texture.
+		 *
+		 * Overwritten and set to `false` by default.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.generateMipmaps = false;
+        /**
+		 * The depth compare function.
+		 *
+		 * @type {?(NeverCompare|LessCompare|EqualCompare|LessEqualCompare|GreaterCompare|NotEqualCompare|GreaterEqualCompare|AlwaysCompare)}
+		 * @default null
+		 */ this.compareFunction = null;
     }
     copy(source) {
         super.copy(source);
@@ -19077,7 +22765,7 @@ class $ded5eecc0cd20cc2$export$fc830aa069cc8c2f extends $ded5eecc0cd20cc2$export
 	 * @abstract
 	 * @param {number} t - A interpolation factor representing a position on the curve. Must be in the range `[0,1]`.
 	 * @param {(Vector2|Vector3)} [optionalTarget] - The optional target vector the result is written to.
-	 * @return {?(Vector2|Vector3)} The position on the curve. It can be a 2D or 3D vector depending on the curve definition.
+	 * @return {(Vector2|Vector3)} The position on the curve. It can be a 2D or 3D vector depending on the curve definition.
 	 */ getPoint() {
         console.warn('THREE.Curve: .getPoint() not implemented.');
     }
@@ -20724,7 +24412,7 @@ var $ded5eecc0cd20cc2$var$Curves = /*#__PURE__*/ Object.freeze({
 	 * @param {number} aStartAngle - The start angle in radians.
 	 * @param {number} aEndAngle - The end angle in radians.
 	 * @param {boolean} [aClockwise=false] - Whether to sweep the ellipse clockwise or not.
-	 * @param {boolean} [aRotation=0] - The rotation angle of the ellipse in radians, counterclockwise from the positive X axis.
+	 * @param {number} [aRotation=0] - The rotation angle of the ellipse in radians, counterclockwise from the positive X axis.
 	 * @return {Path} A reference to this path.
 	 */ ellipse(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation) {
         const x0 = this.currentPoint.x;
@@ -20791,7 +24479,7 @@ var $ded5eecc0cd20cc2$var$Curves = /*#__PURE__*/ Object.freeze({
     /**
 	 * Constructs a new lathe geometry.
 	 *
-	 * @param {Array<Vector2>} [points] - An array of points in 2D space. The x-coordinate of each point
+	 * @param {Array<Vector2|Vector3>} [points] - An array of points in 2D space. The x-coordinate of each point
 	 * must be greater than zero.
 	 * @param {number} [segments=12] - The number of circumference segments to generate.
 	 * @param {number} [phiStart=0] - The starting angle in radians.
@@ -21075,8 +24763,8 @@ var $ded5eecc0cd20cc2$var$Curves = /*#__PURE__*/ Object.freeze({
 	 * @param {number} [radialSegments=32] - Number of segmented faces around the circumference of the cylinder.
 	 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the cylinder.
 	 * @param {boolean} [openEnded=false] - Whether the base of the cylinder is open or capped.
-	 * @param {boolean} [thetaStart=0] - Start angle for first segment, in radians.
-	 * @param {boolean} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
+	 * @param {number} [thetaStart=0] - Start angle for first segment, in radians.
+	 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
 	 * The default value results in a complete cylinder.
 	 */ constructor(radiusTop = 1, radiusBottom = 1, height = 1, radialSegments = 32, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2){
         super();
@@ -21270,8 +24958,8 @@ var $ded5eecc0cd20cc2$var$Curves = /*#__PURE__*/ Object.freeze({
 	 * @param {number} [radialSegments=32] - Number of segmented faces around the circumference of the cone.
 	 * @param {number} [heightSegments=1] - Number of rows of faces along the height of the cone.
 	 * @param {boolean} [openEnded=false] - Whether the base of the cone is open or capped.
-	 * @param {boolean} [thetaStart=0] - Start angle for first segment, in radians.
-	 * @param {boolean} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
+	 * @param {number} [thetaStart=0] - Start angle for first segment, in radians.
+	 * @param {number} [thetaLength=Math.PI*2] - The central angle, often called theta, of the circular sector, in radians.
 	 * The default value results in a complete cone.
 	 */ constructor(radius = 1, height = 1, radialSegments = 32, heightSegments = 1, openEnded = false, thetaStart = 0, thetaLength = Math.PI * 2){
         super(0, radius, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength);
@@ -21936,53 +25624,42 @@ const $ded5eecc0cd20cc2$var$_triangle = /*@__PURE__*/ new $ded5eecc0cd20cc2$expo
         return this;
     }
 }
-/**
- * An implementation of the earcut polygon triangulation algorithm. The code
- * is a port of [mapbox/earcut]{@link https://github.com/mapbox/earcut mapbox/earcut} (v2.2.4).
- *
- * @hideconstructor
- */ class $ded5eecc0cd20cc2$var$Earcut {
-    /**
-	 * Triangulates the given shape definition by returning an array of triangles.
-	 *
-	 * @param {Array<number>} data - An array with 2D points.
-	 * @param {Array<number>} holeIndices - An array with indices defining holes.
-	 * @param {number} [dim=2] - The number of coordinates per vertex in the input array.
-	 * @return {Array<number>} An array representing the triangulated faces. Each face is defined by three consecutive numbers
-	 * representing vertex indices.
-	 */ static triangulate(data, holeIndices, dim = 2) {
-        const hasHoles = holeIndices && holeIndices.length;
-        const outerLen = hasHoles ? holeIndices[0] * dim : data.length;
-        let outerNode = $ded5eecc0cd20cc2$var$linkedList(data, 0, outerLen, dim, true);
-        const triangles = [];
-        if (!outerNode || outerNode.next === outerNode.prev) return triangles;
-        let minX, minY, maxX, maxY, x, y, invSize;
-        if (hasHoles) outerNode = $ded5eecc0cd20cc2$var$eliminateHoles(data, holeIndices, outerNode, dim);
-        // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
-        if (data.length > 80 * dim) {
-            minX = maxX = data[0];
-            minY = maxY = data[1];
-            for(let i = dim; i < outerLen; i += dim){
-                x = data[i];
-                y = data[i + 1];
-                if (x < minX) minX = x;
-                if (y < minY) minY = y;
-                if (x > maxX) maxX = x;
-                if (y > maxY) maxY = y;
-            }
-            // minX, minY and invSize are later used to transform coords into integers for z-order calculation
-            invSize = Math.max(maxX - minX, maxY - minY);
-            invSize = invSize !== 0 ? 32767 / invSize : 0;
+/* eslint-disable */ // copy of mapbox/earcut version 3.0.1
+// https://github.com/mapbox/earcut/tree/v3.0.1
+function $ded5eecc0cd20cc2$var$earcut(data, holeIndices, dim = 2) {
+    const hasHoles = holeIndices && holeIndices.length;
+    const outerLen = hasHoles ? holeIndices[0] * dim : data.length;
+    let outerNode = $ded5eecc0cd20cc2$var$linkedList(data, 0, outerLen, dim, true);
+    const triangles = [];
+    if (!outerNode || outerNode.next === outerNode.prev) return triangles;
+    let minX, minY, invSize;
+    if (hasHoles) outerNode = $ded5eecc0cd20cc2$var$eliminateHoles(data, holeIndices, outerNode, dim);
+    // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
+    if (data.length > 80 * dim) {
+        minX = Infinity;
+        minY = Infinity;
+        let maxX = -Infinity;
+        let maxY = -Infinity;
+        for(let i = dim; i < outerLen; i += dim){
+            const x = data[i];
+            const y = data[i + 1];
+            if (x < minX) minX = x;
+            if (y < minY) minY = y;
+            if (x > maxX) maxX = x;
+            if (y > maxY) maxY = y;
         }
-        $ded5eecc0cd20cc2$var$earcutLinked(outerNode, triangles, dim, minX, minY, invSize, 0);
-        return triangles;
+        // minX, minY and invSize are later used to transform coords into integers for z-order calculation
+        invSize = Math.max(maxX - minX, maxY - minY);
+        invSize = invSize !== 0 ? 32767 / invSize : 0;
     }
+    $ded5eecc0cd20cc2$var$earcutLinked(outerNode, triangles, dim, minX, minY, invSize, 0);
+    return triangles;
 }
 // create a circular doubly linked list from polygon points in the specified winding order
 function $ded5eecc0cd20cc2$var$linkedList(data, start, end, dim, clockwise) {
-    let i, last;
-    if (clockwise === $ded5eecc0cd20cc2$var$signedArea(data, start, end, dim) > 0) for(i = start; i < end; i += dim)last = $ded5eecc0cd20cc2$var$insertNode(i, data[i], data[i + 1], last);
-    else for(i = end - dim; i >= start; i -= dim)last = $ded5eecc0cd20cc2$var$insertNode(i, data[i], data[i + 1], last);
+    let last;
+    if (clockwise === $ded5eecc0cd20cc2$var$signedArea(data, start, end, dim) > 0) for(let i = start; i < end; i += dim)last = $ded5eecc0cd20cc2$var$insertNode(i / dim | 0, data[i], data[i + 1], last);
+    else for(let i = end - dim; i >= start; i -= dim)last = $ded5eecc0cd20cc2$var$insertNode(i / dim | 0, data[i], data[i + 1], last);
     if (last && $ded5eecc0cd20cc2$var$equals(last, last.next)) {
         $ded5eecc0cd20cc2$var$removeNode(last);
         last = last.next;
@@ -22010,16 +25687,13 @@ function $ded5eecc0cd20cc2$var$earcutLinked(ear, triangles, dim, minX, minY, inv
     if (!ear) return;
     // interlink polygon nodes in z-order
     if (!pass && invSize) $ded5eecc0cd20cc2$var$indexCurve(ear, minX, minY, invSize);
-    let stop = ear, prev, next;
+    let stop = ear;
     // iterate through ears, slicing them one by one
     while(ear.prev !== ear.next){
-        prev = ear.prev;
-        next = ear.next;
+        const prev = ear.prev;
+        const next = ear.next;
         if (invSize ? $ded5eecc0cd20cc2$var$isEarHashed(ear, minX, minY, invSize) : $ded5eecc0cd20cc2$var$isEar(ear)) {
-            // cut off the triangle
-            triangles.push(prev.i / dim | 0);
-            triangles.push(ear.i / dim | 0);
-            triangles.push(next.i / dim | 0);
+            triangles.push(prev.i, ear.i, next.i); // cut off the triangle
             $ded5eecc0cd20cc2$var$removeNode(ear);
             // skipping the next vertex leads to less sliver triangles
             ear = next.next;
@@ -22032,7 +25706,7 @@ function $ded5eecc0cd20cc2$var$earcutLinked(ear, triangles, dim, minX, minY, inv
             // try filtering points and slicing again
             if (!pass) $ded5eecc0cd20cc2$var$earcutLinked($ded5eecc0cd20cc2$var$filterPoints(ear), triangles, dim, minX, minY, invSize, 1);
             else if (pass === 1) {
-                ear = $ded5eecc0cd20cc2$var$cureLocalIntersections($ded5eecc0cd20cc2$var$filterPoints(ear), triangles, dim);
+                ear = $ded5eecc0cd20cc2$var$cureLocalIntersections($ded5eecc0cd20cc2$var$filterPoints(ear), triangles);
                 $ded5eecc0cd20cc2$var$earcutLinked(ear, triangles, dim, minX, minY, invSize, 2);
             // as a last resort, try splitting the remaining polygon into two
             } else if (pass === 2) $ded5eecc0cd20cc2$var$splitEarcut(ear, triangles, dim, minX, minY, invSize);
@@ -22046,11 +25720,11 @@ function $ded5eecc0cd20cc2$var$isEar(ear) {
     if ($ded5eecc0cd20cc2$var$area(a, b, c) >= 0) return false; // reflex, can't be an ear
     // now make sure we don't have other points inside the potential ear
     const ax = a.x, bx = b.x, cx = c.x, ay = a.y, by = b.y, cy = c.y;
-    // triangle bbox; min & max are calculated like this for speed
-    const x0 = ax < bx ? ax < cx ? ax : cx : bx < cx ? bx : cx, y0 = ay < by ? ay < cy ? ay : cy : by < cy ? by : cy, x1 = ax > bx ? ax > cx ? ax : cx : bx > cx ? bx : cx, y1 = ay > by ? ay > cy ? ay : cy : by > cy ? by : cy;
+    // triangle bbox
+    const x0 = Math.min(ax, bx, cx), y0 = Math.min(ay, by, cy), x1 = Math.max(ax, bx, cx), y1 = Math.max(ay, by, cy);
     let p = c.next;
     while(p !== a){
-        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 && $ded5eecc0cd20cc2$var$pointInTriangle(ax, ay, bx, by, cx, cy, p.x, p.y) && $ded5eecc0cd20cc2$var$area(p.prev, p, p.next) >= 0) return false;
+        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 && $ded5eecc0cd20cc2$var$pointInTriangleExceptFirst(ax, ay, bx, by, cx, cy, p.x, p.y) && $ded5eecc0cd20cc2$var$area(p.prev, p, p.next) >= 0) return false;
         p = p.next;
     }
     return true;
@@ -22059,39 +25733,37 @@ function $ded5eecc0cd20cc2$var$isEarHashed(ear, minX, minY, invSize) {
     const a = ear.prev, b = ear, c = ear.next;
     if ($ded5eecc0cd20cc2$var$area(a, b, c) >= 0) return false; // reflex, can't be an ear
     const ax = a.x, bx = b.x, cx = c.x, ay = a.y, by = b.y, cy = c.y;
-    // triangle bbox; min & max are calculated like this for speed
-    const x0 = ax < bx ? ax < cx ? ax : cx : bx < cx ? bx : cx, y0 = ay < by ? ay < cy ? ay : cy : by < cy ? by : cy, x1 = ax > bx ? ax > cx ? ax : cx : bx > cx ? bx : cx, y1 = ay > by ? ay > cy ? ay : cy : by > cy ? by : cy;
+    // triangle bbox
+    const x0 = Math.min(ax, bx, cx), y0 = Math.min(ay, by, cy), x1 = Math.max(ax, bx, cx), y1 = Math.max(ay, by, cy);
     // z-order range for the current triangle bbox;
     const minZ = $ded5eecc0cd20cc2$var$zOrder(x0, y0, minX, minY, invSize), maxZ = $ded5eecc0cd20cc2$var$zOrder(x1, y1, minX, minY, invSize);
     let p = ear.prevZ, n = ear.nextZ;
     // look for points inside the triangle in both directions
     while(p && p.z >= minZ && n && n.z <= maxZ){
-        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 && p !== a && p !== c && $ded5eecc0cd20cc2$var$pointInTriangle(ax, ay, bx, by, cx, cy, p.x, p.y) && $ded5eecc0cd20cc2$var$area(p.prev, p, p.next) >= 0) return false;
+        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 && p !== a && p !== c && $ded5eecc0cd20cc2$var$pointInTriangleExceptFirst(ax, ay, bx, by, cx, cy, p.x, p.y) && $ded5eecc0cd20cc2$var$area(p.prev, p, p.next) >= 0) return false;
         p = p.prevZ;
-        if (n.x >= x0 && n.x <= x1 && n.y >= y0 && n.y <= y1 && n !== a && n !== c && $ded5eecc0cd20cc2$var$pointInTriangle(ax, ay, bx, by, cx, cy, n.x, n.y) && $ded5eecc0cd20cc2$var$area(n.prev, n, n.next) >= 0) return false;
+        if (n.x >= x0 && n.x <= x1 && n.y >= y0 && n.y <= y1 && n !== a && n !== c && $ded5eecc0cd20cc2$var$pointInTriangleExceptFirst(ax, ay, bx, by, cx, cy, n.x, n.y) && $ded5eecc0cd20cc2$var$area(n.prev, n, n.next) >= 0) return false;
         n = n.nextZ;
     }
     // look for remaining points in decreasing z-order
     while(p && p.z >= minZ){
-        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 && p !== a && p !== c && $ded5eecc0cd20cc2$var$pointInTriangle(ax, ay, bx, by, cx, cy, p.x, p.y) && $ded5eecc0cd20cc2$var$area(p.prev, p, p.next) >= 0) return false;
+        if (p.x >= x0 && p.x <= x1 && p.y >= y0 && p.y <= y1 && p !== a && p !== c && $ded5eecc0cd20cc2$var$pointInTriangleExceptFirst(ax, ay, bx, by, cx, cy, p.x, p.y) && $ded5eecc0cd20cc2$var$area(p.prev, p, p.next) >= 0) return false;
         p = p.prevZ;
     }
     // look for remaining points in increasing z-order
     while(n && n.z <= maxZ){
-        if (n.x >= x0 && n.x <= x1 && n.y >= y0 && n.y <= y1 && n !== a && n !== c && $ded5eecc0cd20cc2$var$pointInTriangle(ax, ay, bx, by, cx, cy, n.x, n.y) && $ded5eecc0cd20cc2$var$area(n.prev, n, n.next) >= 0) return false;
+        if (n.x >= x0 && n.x <= x1 && n.y >= y0 && n.y <= y1 && n !== a && n !== c && $ded5eecc0cd20cc2$var$pointInTriangleExceptFirst(ax, ay, bx, by, cx, cy, n.x, n.y) && $ded5eecc0cd20cc2$var$area(n.prev, n, n.next) >= 0) return false;
         n = n.nextZ;
     }
     return true;
 }
 // go through all polygon nodes and cure small local self-intersections
-function $ded5eecc0cd20cc2$var$cureLocalIntersections(start, triangles, dim) {
+function $ded5eecc0cd20cc2$var$cureLocalIntersections(start, triangles) {
     let p = start;
     do {
         const a = p.prev, b = p.next.next;
         if (!$ded5eecc0cd20cc2$var$equals(a, b) && $ded5eecc0cd20cc2$var$intersects(a, p, p.next, b) && $ded5eecc0cd20cc2$var$locallyInside(a, b) && $ded5eecc0cd20cc2$var$locallyInside(b, a)) {
-            triangles.push(a.i / dim | 0);
-            triangles.push(p.i / dim | 0);
-            triangles.push(b.i / dim | 0);
+            triangles.push(a.i, p.i, b.i);
             // remove two nodes involved
             $ded5eecc0cd20cc2$var$removeNode(p);
             $ded5eecc0cd20cc2$var$removeNode(p.next);
@@ -22127,23 +25799,33 @@ function $ded5eecc0cd20cc2$var$splitEarcut(start, triangles, dim, minX, minY, in
 // link every hole into the outer loop, producing a single-ring polygon without holes
 function $ded5eecc0cd20cc2$var$eliminateHoles(data, holeIndices, outerNode, dim) {
     const queue = [];
-    let i, len, start, end, list;
-    for(i = 0, len = holeIndices.length; i < len; i++){
-        start = holeIndices[i] * dim;
-        end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
-        list = $ded5eecc0cd20cc2$var$linkedList(data, start, end, dim, false);
+    for(let i = 0, len = holeIndices.length; i < len; i++){
+        const start = holeIndices[i] * dim;
+        const end = i < len - 1 ? holeIndices[i + 1] * dim : data.length;
+        const list = $ded5eecc0cd20cc2$var$linkedList(data, start, end, dim, false);
         if (list === list.next) list.steiner = true;
         queue.push($ded5eecc0cd20cc2$var$getLeftmost(list));
     }
-    queue.sort($ded5eecc0cd20cc2$var$compareX);
+    queue.sort($ded5eecc0cd20cc2$var$compareXYSlope);
     // process holes from left to right
-    for(i = 0; i < queue.length; i++)outerNode = $ded5eecc0cd20cc2$var$eliminateHole(queue[i], outerNode);
+    for(let i = 0; i < queue.length; i++)outerNode = $ded5eecc0cd20cc2$var$eliminateHole(queue[i], outerNode);
     return outerNode;
 }
-function $ded5eecc0cd20cc2$var$compareX(a, b) {
-    return a.x - b.x;
+function $ded5eecc0cd20cc2$var$compareXYSlope(a, b) {
+    let result = a.x - b.x;
+    // when the left-most point of 2 holes meet at a vertex, sort the holes counterclockwise so that when we find
+    // the bridge to the outer shell is always the point that they meet at.
+    if (result === 0) {
+        result = a.y - b.y;
+        if (result === 0) {
+            const aSlope = (a.next.y - a.y) / (a.next.x - a.x);
+            const bSlope = (b.next.y - b.y) / (b.next.x - b.x);
+            result = aSlope - bSlope;
+        }
+    }
+    return result;
 }
-// find a bridge between vertices that connects hole with an outer ring and link it
+// find a bridge between vertices that connects hole with an outer ring and and link it
 function $ded5eecc0cd20cc2$var$eliminateHole(hole, outerNode) {
     const bridge = $ded5eecc0cd20cc2$var$findHoleBridge(hole, outerNode);
     if (!bridge) return outerNode;
@@ -22154,12 +25836,18 @@ function $ded5eecc0cd20cc2$var$eliminateHole(hole, outerNode) {
 }
 // David Eberly's algorithm for finding a bridge between hole and outer polygon
 function $ded5eecc0cd20cc2$var$findHoleBridge(hole, outerNode) {
-    let p = outerNode, qx = -Infinity, m;
-    const hx = hole.x, hy = hole.y;
+    let p = outerNode;
+    const hx = hole.x;
+    const hy = hole.y;
+    let qx = -Infinity;
+    let m;
     // find a segment intersected by a ray from the hole's leftmost point to the left;
     // segment's endpoint with lesser x will be potential connection point
+    // unless they intersect at a vertex, then choose the vertex
+    if ($ded5eecc0cd20cc2$var$equals(hole, p)) return p;
     do {
-        if (hy <= p.y && hy >= p.next.y && p.next.y !== p.y) {
+        if ($ded5eecc0cd20cc2$var$equals(hole, p.next)) return p.next;
+        else if (hy <= p.y && hy >= p.next.y && p.next.y !== p.y) {
             const x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
             if (x <= hx && x > qx) {
                 qx = x;
@@ -22173,12 +25861,14 @@ function $ded5eecc0cd20cc2$var$findHoleBridge(hole, outerNode) {
     // look for points inside the triangle of hole point, segment intersection and endpoint;
     // if there are no points found, we have a valid connection;
     // otherwise choose the point of the minimum angle with the ray as connection point
-    const stop = m, mx = m.x, my = m.y;
-    let tanMin = Infinity, tan;
+    const stop = m;
+    const mx = m.x;
+    const my = m.y;
+    let tanMin = Infinity;
     p = m;
     do {
         if (hx >= p.x && p.x >= mx && hx !== p.x && $ded5eecc0cd20cc2$var$pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y)) {
-            tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
+            const tan = Math.abs(hy - p.y) / (hx - p.x); // tangential
             if ($ded5eecc0cd20cc2$var$locallyInside(p, hole) && (tan < tanMin || tan === tanMin && (p.x > m.x || p.x === m.x && $ded5eecc0cd20cc2$var$sectorContainsSector(m, p)))) {
                 m = p;
                 tanMin = tan;
@@ -22208,22 +25898,24 @@ function $ded5eecc0cd20cc2$var$indexCurve(start, minX, minY, invSize) {
 // Simon Tatham's linked list merge sort algorithm
 // http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
 function $ded5eecc0cd20cc2$var$sortLinked(list) {
-    let i, p, q, e, tail, numMerges, pSize, qSize, inSize = 1;
+    let numMerges;
+    let inSize = 1;
     do {
-        p = list;
+        let p = list;
+        let e;
         list = null;
-        tail = null;
+        let tail = null;
         numMerges = 0;
         while(p){
             numMerges++;
-            q = p;
-            pSize = 0;
-            for(i = 0; i < inSize; i++){
+            let q = p;
+            let pSize = 0;
+            for(let i = 0; i < inSize; i++){
                 pSize++;
                 q = q.nextZ;
                 if (!q) break;
             }
-            qSize = inSize;
+            let qSize = inSize;
             while(pSize > 0 || qSize > 0 && q){
                 if (pSize !== 0 && (qSize === 0 || !q || p.z <= q.z)) {
                     e = p;
@@ -22274,9 +25966,13 @@ function $ded5eecc0cd20cc2$var$getLeftmost(start) {
 function $ded5eecc0cd20cc2$var$pointInTriangle(ax, ay, bx, by, cx, cy, px, py) {
     return (cx - px) * (ay - py) >= (ax - px) * (cy - py) && (ax - px) * (by - py) >= (bx - px) * (ay - py) && (bx - px) * (cy - py) >= (cx - px) * (by - py);
 }
+// check if a point lies within a convex triangle but false if its equal to the first point of the triangle
+function $ded5eecc0cd20cc2$var$pointInTriangleExceptFirst(ax, ay, bx, by, cx, cy, px, py) {
+    return !(ax === px && ay === py) && $ded5eecc0cd20cc2$var$pointInTriangle(ax, ay, bx, by, cx, cy, px, py);
+}
 // check if a diagonal between two polygon nodes is valid (lies in polygon interior)
 function $ded5eecc0cd20cc2$var$isValidDiagonal(a, b) {
-    return a.next.i !== b.i && a.prev.i !== b.i && !$ded5eecc0cd20cc2$var$intersectsPolygon(a, b) && // doesn't intersect other edges
+    return a.next.i !== b.i && a.prev.i !== b.i && !$ded5eecc0cd20cc2$var$intersectsPolygon(a, b) && // dones't intersect other edges
     ($ded5eecc0cd20cc2$var$locallyInside(a, b) && $ded5eecc0cd20cc2$var$locallyInside(b, a) && $ded5eecc0cd20cc2$var$middleInside(a, b) && // locally visible
     ($ded5eecc0cd20cc2$var$area(a.prev, a, b.prev) || $ded5eecc0cd20cc2$var$area(a, b.prev, b)) || // does not create opposite-facing sectors
     $ded5eecc0cd20cc2$var$equals(a, b) && $ded5eecc0cd20cc2$var$area(a.prev, a, a.next) > 0 && $ded5eecc0cd20cc2$var$area(b.prev, b, b.next) > 0); // special zero-length case
@@ -22324,8 +26020,10 @@ function $ded5eecc0cd20cc2$var$locallyInside(a, b) {
 }
 // check if the middle point of a polygon diagonal is inside the polygon
 function $ded5eecc0cd20cc2$var$middleInside(a, b) {
-    let p = a, inside = false;
-    const px = (a.x + b.x) / 2, py = (a.y + b.y) / 2;
+    let p = a;
+    let inside = false;
+    const px = (a.x + b.x) / 2;
+    const py = (a.y + b.y) / 2;
     do {
         if (p.y > py !== p.next.y > py && p.next.y !== p.y && px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x) inside = !inside;
         p = p.next;
@@ -22335,7 +26033,7 @@ function $ded5eecc0cd20cc2$var$middleInside(a, b) {
 // link two polygon vertices with a bridge; if the vertices belong to the same ring, it splits polygon into two;
 // if one belongs to the outer ring and another to a hole, it merges it into a single ring
 function $ded5eecc0cd20cc2$var$splitPolygon(a, b) {
-    const a2 = new $ded5eecc0cd20cc2$var$Node(a.i, a.x, a.y), b2 = new $ded5eecc0cd20cc2$var$Node(b.i, b.x, b.y), an = a.next, bp = b.prev;
+    const a2 = $ded5eecc0cd20cc2$var$createNode(a.i, a.x, a.y), b2 = $ded5eecc0cd20cc2$var$createNode(b.i, b.x, b.y), an = a.next, bp = b.prev;
     a.next = b;
     b.prev = a;
     a2.next = an;
@@ -22348,7 +26046,7 @@ function $ded5eecc0cd20cc2$var$splitPolygon(a, b) {
 }
 // create a node and optionally link it with previous one (in a circular doubly linked list)
 function $ded5eecc0cd20cc2$var$insertNode(i, x, y, last) {
-    const p = new $ded5eecc0cd20cc2$var$Node(i, x, y);
+    const p = $ded5eecc0cd20cc2$var$createNode(i, x, y);
     if (!last) {
         p.prev = p;
         p.next = p;
@@ -22366,22 +26064,18 @@ function $ded5eecc0cd20cc2$var$removeNode(p) {
     if (p.prevZ) p.prevZ.nextZ = p.nextZ;
     if (p.nextZ) p.nextZ.prevZ = p.prevZ;
 }
-function $ded5eecc0cd20cc2$var$Node(i, x, y) {
-    // vertex index in coordinates array
-    this.i = i;
-    // vertex coordinates
-    this.x = x;
-    this.y = y;
-    // previous and next vertex nodes in a polygon ring
-    this.prev = null;
-    this.next = null;
-    // z-order curve value
-    this.z = 0;
-    // previous and next nodes in z-order
-    this.prevZ = null;
-    this.nextZ = null;
-    // indicates whether this is a steiner point
-    this.steiner = false;
+function $ded5eecc0cd20cc2$var$createNode(i, x, y) {
+    return {
+        i: i,
+        x: x,
+        y: y,
+        prev: null,
+        next: null,
+        z: 0,
+        prevZ: null,
+        nextZ: null,
+        steiner: false // indicates whether this is a steiner point
+    };
 }
 function $ded5eecc0cd20cc2$var$signedArea(data, start, end, dim) {
     let sum = 0;
@@ -22390,6 +26084,19 @@ function $ded5eecc0cd20cc2$var$signedArea(data, start, end, dim) {
         j = i;
     }
     return sum;
+}
+class $ded5eecc0cd20cc2$var$Earcut {
+    /**
+	 * Triangulates the given shape definition by returning an array of triangles.
+	 *
+	 * @param {Array<number>} data - An array with 2D points.
+	 * @param {Array<number>} holeIndices - An array with indices defining holes.
+	 * @param {number} [dim=2] - The number of coordinates per vertex in the input array.
+	 * @return {Array<number>} An array representing the triangulated faces. Each face is defined by three consecutive numbers
+	 * representing vertex indices.
+	 */ static triangulate(data, holeIndices, dim = 2) {
+        return $ded5eecc0cd20cc2$var$earcut(data, holeIndices, dim);
+    }
 }
 /**
  * A class containing utility functions for shapes.
@@ -22455,26 +26162,6 @@ function $ded5eecc0cd20cc2$var$addContour(vertices, contour) {
 /**
  * Creates extruded geometry from a path shape.
  *
- * parameters = {
- *
- *  curveSegments: <int>, // number of points on the curves
- *  steps: <int>, // number of points for z-side extrusions / used for subdividing segments of extrude spline too
- *  depth: <float>, // Depth to extrude the shape
- *
- *  bevelEnabled: <bool>, // turn on bevel
- *  bevelThickness: <float>, // how deep into the original shape bevel goes
- *  bevelSize: <float>, // how far from shape outline (including bevelOffset) is bevel
- *  bevelOffset: <float>, // how far from shape outline does bevel start
- *  bevelSegments: <int>, // number of bevel layers
- *
- *  extrudePath: <THREE.Curve> // curve to extrude shape along
- *
- *  UVGenerator: <Object> // object that provides UV generator functions
- *
- * }
- */ /**
- * Creates extruded geometry from a path shape.
- *
  * ```js
  * const length = 12, width = 8;
  *
@@ -22497,17 +26184,7 @@ function $ded5eecc0cd20cc2$var$addContour(vertices, contour) {
 	 * Constructs a new extrude geometry.
 	 *
 	 * @param {Shape|Array<Shape>} [shapes] - A shape or an array of shapes.
-	 * @param {Object} [options={}] - The extrude settings.
-	 * @param {number} [options.curveSegments=12] - Number of points on the curves.
-	 * @param {number} [options.steps=1] - Number of points used for subdividing segments along the depth of the extruded spline.
-	 * @param {number} [options.depth=1] - Depth to extrude the shape.
-	 * @param {boolean} [options.bevelEnabled=true] - Whether to beveling to the shape or not.
-	 * @param {number} [options.bevelThickness=0.2] - How deep into the original shape the bevel goes.
-	 * @param {number} [options.bevelSize=bevelThickness-0.1] - Distance from the shape outline that the bevel extends.
-	 * @param {number} [options.bevelOffset=0] - Distance from the shape outline that the bevel starts.
-	 * @param {number} [options.bevelSegments=3] - Number of bevel layers.
-	 * @param {Curve} [options.extrudePath=3] - A 3D spline path along which the shape should be extruded. Bevels not supported for path extrusion.
-	 * @param {Object} [options.UVGenerator] - An object that provides UV generator functions for custom UV generation.
+	 * @param {ExtrudeGeometry~Options} [options] - The extrude settings.
 	 */ constructor(shapes = new $ded5eecc0cd20cc2$export$6428a7f2611ef1fa([
         new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(0.5, 0.5),
         new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(-0.5, 0.5),
@@ -22589,9 +26266,33 @@ function $ded5eecc0cd20cc2$var$addContour(vertices, contour) {
                     if ($ded5eecc0cd20cc2$export$96bdf6d9c66d7ba8.isClockWise(ahole)) holes[h] = ahole.reverse();
                 }
             }
-            const faces = $ded5eecc0cd20cc2$export$96bdf6d9c66d7ba8.triangulateShape(vertices, holes);
+            /**Merges index-adjacent points that are within a threshold distance of each other. Array is modified in-place. Threshold distance is empirical, and scaled based on the magnitude of point coordinates.
+			 * @param {Array<Vector2>} points
+			*/ function mergeOverlappingPoints(points) {
+                const THRESHOLD = 1e-10;
+                const THRESHOLD_SQ = THRESHOLD * THRESHOLD;
+                let prevPos = points[0];
+                for(let i = 1; i <= points.length; i++){
+                    const currentIndex = i % points.length;
+                    const currentPos = points[currentIndex];
+                    const dx = currentPos.x - prevPos.x;
+                    const dy = currentPos.y - prevPos.y;
+                    const distSq = dx * dx + dy * dy;
+                    const scalingFactorSqrt = Math.max(Math.abs(currentPos.x), Math.abs(currentPos.y), Math.abs(prevPos.x), Math.abs(prevPos.y));
+                    const thesholdSqScaled = THRESHOLD_SQ * scalingFactorSqrt * scalingFactorSqrt;
+                    if (distSq <= thesholdSqScaled) {
+                        points.splice(currentIndex, 1);
+                        i--;
+                        continue;
+                    }
+                    prevPos = currentPos;
+                }
+            }
+            mergeOverlappingPoints(vertices);
+            holes.forEach(mergeOverlappingPoints);
+            const numHoles = holes.length;
             /* Vertices */ const contour = vertices; // vertices has all points but contour has only points of circumference
-            for(let h = 0, hl = holes.length; h < hl; h++){
+            for(let h = 0; h < numHoles; h++){
                 const ahole = holes[h];
                 vertices = vertices.concat(ahole);
             }
@@ -22599,7 +26300,7 @@ function $ded5eecc0cd20cc2$var$addContour(vertices, contour) {
                 if (!vec) console.error('THREE.ExtrudeGeometry: vec does not exist');
                 return pt.clone().addScaledVector(vec, size);
             }
-            const vlen = vertices.length, flen = faces.length;
+            const vlen = vertices.length;
             // Find directions for point movement
             function getBevelVec(inPt, inPrev, inNext) {
                 // computes for inPt the corresponding point inPt' on a new contour
@@ -22670,7 +26371,7 @@ function $ded5eecc0cd20cc2$var$addContour(vertices, contour) {
             }
             const holesMovements = [];
             let oneHoleMovements, verticesMovements = contourMovements.concat();
-            for(let h = 0, hl = holes.length; h < hl; h++){
+            for(let h = 0, hl = numHoles; h < hl; h++){
                 const ahole = holes[h];
                 oneHoleMovements = [];
                 for(let i = 0, il = ahole.length, j = il - 1, k = i + 1; i < il; i++, j++, k++){
@@ -22682,6 +26383,8 @@ function $ded5eecc0cd20cc2$var$addContour(vertices, contour) {
                 holesMovements.push(oneHoleMovements);
                 verticesMovements = verticesMovements.concat(oneHoleMovements);
             }
+            const contractedContourVertices = [];
+            const expandedHoleVertices = [];
             // Loop bevelSegments, 1 for the front, 1 for the back
             for(let b = 0; b < bevelSegments; b++){
                 //for ( b = bevelSegments; b > 0; b -- ) {
@@ -22692,17 +26395,23 @@ function $ded5eecc0cd20cc2$var$addContour(vertices, contour) {
                 for(let i = 0, il = contour.length; i < il; i++){
                     const vert = scalePt2(contour[i], contourMovements[i], bs);
                     v(vert.x, vert.y, -z);
+                    if (t == 0) contractedContourVertices.push(vert);
                 }
                 // expand holes
-                for(let h = 0, hl = holes.length; h < hl; h++){
+                for(let h = 0, hl = numHoles; h < hl; h++){
                     const ahole = holes[h];
                     oneHoleMovements = holesMovements[h];
+                    const oneHoleVertices = [];
                     for(let i = 0, il = ahole.length; i < il; i++){
                         const vert = scalePt2(ahole[i], oneHoleMovements[i], bs);
                         v(vert.x, vert.y, -z);
+                        if (t == 0) oneHoleVertices.push(vert);
                     }
+                    if (t == 0) expandedHoleVertices.push(oneHoleVertices);
                 }
             }
+            const faces = $ded5eecc0cd20cc2$export$96bdf6d9c66d7ba8.triangulateShape(contractedContourVertices, expandedHoleVertices);
+            const flen = faces.length;
             const bs = bevelSize + bevelOffset;
             // Back facing vertices
             for(let i = 0; i < vlen; i++){
@@ -24174,14 +27883,61 @@ var $ded5eecc0cd20cc2$var$Geometries = /*#__PURE__*/ Object.freeze({
     TubeGeometry: $ded5eecc0cd20cc2$export$7897d9d48904490c,
     WireframeGeometry: $ded5eecc0cd20cc2$export$4b739da06d24892b
 });
-class $ded5eecc0cd20cc2$export$e8564da406055a3 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * This material can receive shadows, but otherwise is completely transparent.
+ *
+ * ```js
+ * const geometry = new THREE.PlaneGeometry( 2000, 2000 );
+ * geometry.rotateX( - Math.PI / 2 );
+ *
+ * const material = new THREE.ShadowMaterial();
+ * material.opacity = 0.2;
+ *
+ * const plane = new THREE.Mesh( geometry, material );
+ * plane.position.y = -200;
+ * plane.receiveShadow = true;
+ * scene.add( plane );
+ * ```
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$e8564da406055a3 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new shadow material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isShadowMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isShadowMaterial = true;
         this.type = 'ShadowMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
-        this.transparent = true;
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (0,0,0)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
+        /**
+		 * Overwritten since shadow materials are transparent
+		 * by default.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.transparent = true;
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24191,52 +27947,321 @@ class $ded5eecc0cd20cc2$export$e8564da406055a3 extends $ded5eecc0cd20cc2$export$
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$21c421a2e1df9d22 extends $ded5eecc0cd20cc2$export$83c7d75d550a8b0d {
-    constructor(parameters){
+/**
+ * This class works just like {@link ShaderMaterial}, except that definitions
+ * of built-in uniforms and attributes are not automatically prepended to the
+ * GLSL shader code.
+ *
+ * `RawShaderMaterial` can only be used with {@link WebGLRenderer}.
+ *
+ * @augments ShaderMaterial
+ */ class $ded5eecc0cd20cc2$export$21c421a2e1df9d22 extends $ded5eecc0cd20cc2$export$83c7d75d550a8b0d {
+    /**
+	 * Constructs a new raw shader material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super(parameters);
-        this.isRawShaderMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isRawShaderMaterial = true;
         this.type = 'RawShaderMaterial';
     }
 }
-class $ded5eecc0cd20cc2$export$f2980790215acccd extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A standard physically based material, using Metallic-Roughness workflow.
+ *
+ * Physically based rendering (PBR) has recently become the standard in many
+ * 3D applications, such as [Unity]{@link https://blogs.unity3d.com/2014/10/29/physically-based-shading-in-unity-5-a-primer/},
+ * [Unreal]{@link https://docs.unrealengine.com/latest/INT/Engine/Rendering/Materials/PhysicallyBased/} and
+ * [3D Studio Max]{@link http://area.autodesk.com/blogs/the-3ds-max-blog/what039s-new-for-rendering-in-3ds-max-2017}.
+ *
+ * This approach differs from older approaches in that instead of using
+ * approximations for the way in which light interacts with a surface, a
+ * physically correct model is used. The idea is that, instead of tweaking
+ * materials to look good under specific lighting, a material can be created
+ * that will react 'correctly' under all lighting scenarios.
+ *
+ * In practice this gives a more accurate and realistic looking result than
+ * the {@link MeshLambertMaterial} or {@link MeshPhongMaterial}, at the cost of
+ * being somewhat more computationally expensive. `MeshStandardMaterial` uses per-fragment
+ * shading.
+ *
+ * Note that for best results you should always specify an environment map when using this material.
+ *
+ * For a non-technical introduction to the concept of PBR and how to set up a
+ * PBR material, check out these articles by the people at [marmoset]{@link https://www.marmoset.co}:
+ *
+ * - [Basic Theory of Physically Based Rendering]{@link https://www.marmoset.co/posts/basic-theory-of-physically-based-rendering/}
+ * - [Physically Based Rendering and You Can Too]{@link https://www.marmoset.co/posts/physically-based-rendering-and-you-can-too/}
+ *
+ * Technical details of the approach used in three.js (and most other PBR systems) can be found is this
+ * [paper from Disney]{@link https://media.disneyanimation.com/uploads/production/publication_asset/48/asset/s2012_pbs_disney_brdf_notes_v3.pdf}
+ * (pdf), by Brent Burley.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$f2980790215acccd extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh standard material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshStandardMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshStandardMaterial = true;
         this.type = 'MeshStandardMaterial';
         this.defines = {
             'STANDARD': ''
         };
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // diffuse
-        this.roughness = 1.0;
-        this.metalness = 0.0;
-        this.map = null;
-        this.lightMap = null;
-        this.lightMapIntensity = 1.0;
-        this.aoMap = null;
-        this.aoMapIntensity = 1.0;
-        this.emissive = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
-        this.emissiveIntensity = 1.0;
-        this.emissiveMap = null;
-        this.bumpMap = null;
-        this.bumpScale = 1;
-        this.normalMap = null;
-        this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
-        this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
-        this.displacementMap = null;
-        this.displacementScale = 1;
-        this.displacementBias = 0;
-        this.roughnessMap = null;
-        this.metalnessMap = null;
-        this.alphaMap = null;
-        this.envMap = null;
-        this.envMapRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
-        this.envMapIntensity = 1.0;
-        this.wireframe = false;
-        this.wireframeLinewidth = 1;
-        this.wireframeLinecap = 'round';
-        this.wireframeLinejoin = 'round';
-        this.flatShading = false;
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // diffuse
+        /**
+		 * How rough the material appears. `0.0` means a smooth mirror reflection, `1.0`
+		 * means fully diffuse. If `roughnessMap` is also provided,
+		 * both values are multiplied.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.roughness = 1.0;
+        /**
+		 * How much the material is like a metal. Non-metallic materials such as wood
+		 * or stone use `0.0`, metallic use `1.0`, with nothing (usually) in between.
+		 * A value between `0.0` and `1.0` could be used for a rusty metal look.
+		 * If `metalnessMap` is also provided, both values are multiplied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.metalness = 0.0;
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The light map. Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.lightMap = null;
+        /**
+		 * Intensity of the baked light.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.lightMapIntensity = 1.0;
+        /**
+		 * The red channel of this texture is used as the ambient occlusion map.
+		 * Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.aoMap = null;
+        /**
+		 * Intensity of the ambient occlusion effect. Range is `[0,1]`, where `0`
+		 * disables ambient occlusion. Where intensity is `1` and the AO map's
+		 * red channel is also `1`, ambient light is fully occluded on a surface.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.aoMapIntensity = 1.0;
+        /**
+		 * Emissive (light) color of the material, essentially a solid color
+		 * unaffected by other lighting.
+		 *
+		 * @type {Color}
+		 * @default (0,0,0)
+		 */ this.emissive = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
+        /**
+		 * Intensity of the emissive light. Modulates the emissive color.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.emissiveIntensity = 1.0;
+        /**
+		 * Set emissive (glow) map. The emissive map color is modulated by the
+		 * emissive color and the emissive intensity. If you have an emissive map,
+		 * be sure to set the emissive color to something other than black.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.emissiveMap = null;
+        /**
+		 * The texture to create a bump map. The black and white values map to the
+		 * perceived depth in relation to the lights. Bump doesn't actually affect
+		 * the geometry of the object, only the lighting. If a normal map is defined
+		 * this will be ignored.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.bumpMap = null;
+        /**
+		 * How much the bump map affects the material. Typical range is `[0,1]`.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.bumpScale = 1;
+        /**
+		 * The texture to create a normal map. The RGB values affect the surface
+		 * normal for each pixel fragment and change the way the color is lit. Normal
+		 * maps do not change the actual shape of the surface, only the lighting. In
+		 * case the material has a normal map authored using the left handed
+		 * convention, the `y` component of `normalScale` should be negated to compensate
+		 * for the different handedness.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.normalMap = null;
+        /**
+		 * The type of normal map.
+		 *
+		 * @type {(TangentSpaceNormalMap|ObjectSpaceNormalMap)}
+		 * @default TangentSpaceNormalMap
+		 */ this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
+        /**
+		 * How much the normal map affects the material. Typical value range is `[0,1]`.
+		 *
+		 * @type {Vector2}
+		 * @default (1,1)
+		 */ this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
+        /**
+		 * The displacement map affects the position of the mesh's vertices. Unlike
+		 * other maps which only affect the light and shade of the material the
+		 * displaced vertices can cast shadows, block other objects, and otherwise
+		 * act as real geometry. The displacement texture is an image where the value
+		 * of each pixel (white being the highest) is mapped against, and
+		 * repositions, the vertices of the mesh.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.displacementMap = null;
+        /**
+		 * How much the displacement map affects the mesh (where black is no
+		 * displacement, and white is maximum displacement). Without a displacement
+		 * map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementScale = 1;
+        /**
+		 * The offset of the displacement map's values on the mesh's vertices.
+		 * The bias is added to the scaled sample of the displacement map.
+		 * Without a displacement map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementBias = 0;
+        /**
+		 * The green channel of this texture is used to alter the roughness of the
+		 * material.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.roughnessMap = null;
+        /**
+		 * The blue channel of this texture is used to alter the metalness of the
+		 * material.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.metalnessMap = null;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * The environment map. To ensure a physically correct rendering, environment maps
+		 * are internally pre-processed with {@link PMREMGenerator}.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.envMap = null;
+        /**
+		 * The rotation of the environment map in radians.
+		 *
+		 * @type {Euler}
+		 * @default (0,0,0)
+		 */ this.envMapRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
+        /**
+		 * Scales the effect of the environment map by multiplying its color.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.envMapIntensity = 1.0;
+        /**
+		 * Renders the geometry as a wireframe.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.wireframe = false;
+        /**
+		 * Controls the thickness of the wireframe.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.wireframeLinewidth = 1;
+        /**
+		 * Defines appearance of wireframe ends.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinecap = 'round';
+        /**
+		 * Defines appearance of wireframe joints.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinejoin = 'round';
+        /**
+		 * Whether the material is rendered with flat shading or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flatShading = false;
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24278,24 +28303,119 @@ class $ded5eecc0cd20cc2$export$f2980790215acccd extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$28d04986c4269c9f extends $ded5eecc0cd20cc2$export$f2980790215acccd {
-    constructor(parameters){
+/**
+ * An extension of the {@link MeshStandardMaterial}, providing more advanced
+ * physically-based rendering properties:
+ *
+ * - Anisotropy: Ability to represent the anisotropic property of materials
+ * as observable with brushed metals.
+ * - Clearcoat: Some materials — like car paints, carbon fiber, and wet surfaces — require
+ * a clear, reflective layer on top of another layer that may be irregular or rough.
+ * Clearcoat approximates this effect, without the need for a separate transparent surface.
+ * - Iridescence: Allows to render the effect where hue varies  depending on the viewing
+ * angle and illumination angle. This can be seen on soap bubbles, oil films, or on the
+ * wings of many insects.
+ * - Physically-based transparency: One limitation of {@link Material#opacity} is that highly
+ * transparent materials are less reflective. Physically-based transmission provides a more
+ * realistic option for thin, transparent surfaces like glass.
+ * - Advanced reflectivity: More flexible reflectivity for non-metallic materials.
+ * - Sheen: Can be used for representing cloth and fabric materials.
+ *
+ * As a result of these complex shading features, `MeshPhysicalMaterial` has a
+ * higher performance cost, per pixel, than other three.js materials. Most
+ * effects are disabled by default, and add cost as they are enabled. For
+ * best results, always specify an environment map when using this material.
+ *
+ * @augments MeshStandardMaterial
+ */ class $ded5eecc0cd20cc2$export$28d04986c4269c9f extends $ded5eecc0cd20cc2$export$f2980790215acccd {
+    /**
+	 * Constructs a new mesh physical material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshPhysicalMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshPhysicalMaterial = true;
         this.defines = {
             'STANDARD': '',
             'PHYSICAL': ''
         };
         this.type = 'MeshPhysicalMaterial';
-        this.anisotropyRotation = 0;
-        this.anisotropyMap = null;
-        this.clearcoatMap = null;
-        this.clearcoatRoughness = 0.0;
-        this.clearcoatRoughnessMap = null;
-        this.clearcoatNormalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
-        this.clearcoatNormalMap = null;
-        this.ior = 1.5;
-        Object.defineProperty(this, 'reflectivity', {
+        /**
+		 * The rotation of the anisotropy in tangent, bitangent space, measured in radians
+		 * counter-clockwise from the tangent. When `anisotropyMap` is present, this
+		 * property provides additional rotation to the vectors in the texture.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.anisotropyRotation = 0;
+        /**
+		 * Red and green channels represent the anisotropy direction in `[-1, 1]` tangent,
+		 * bitangent space, to be rotated by `anisotropyRotation`. The blue channel
+		 * contains strength as `[0, 1]` to be multiplied by `anisotropy`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.anisotropyMap = null;
+        /**
+		 * The red channel of this texture is multiplied against `clearcoat`,
+		 * for per-pixel control over a coating's intensity.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.clearcoatMap = null;
+        /**
+		 * Roughness of the clear coat layer, from `0.0` to `1.0`.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.clearcoatRoughness = 0.0;
+        /**
+		 * The green channel of this texture is multiplied against
+		 * `clearcoatRoughness`, for per-pixel control over a coating's roughness.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.clearcoatRoughnessMap = null;
+        /**
+		 * How much `clearcoatNormalMap` affects the clear coat layer, from
+		 * `(0,0)` to `(1,1)`.
+		 *
+		 * @type {Vector2}
+		 * @default (1,1)
+		 */ this.clearcoatNormalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
+        /**
+		 * Can be used to enable independent normals for the clear coat layer.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.clearcoatNormalMap = null;
+        /**
+		 * Index-of-refraction for non-metallic materials, from `1.0` to `2.333`.
+		 *
+		 * @type {number}
+		 * @default 1.5
+		 */ this.ior = 1.5;
+        /**
+		 * Degree of reflectivity, from `0.0` to `1.0`. Default is `0.5`, which
+		 * corresponds to an index-of-refraction of `1.5`.
+		 *
+		 * This models the reflectivity of non-metallic materials. It has no effect
+		 * when `metalness` is `1.0`
+		 *
+		 * @name MeshPhysicalMaterial#reflectivity
+		 * @type {number}
+		 * @default 0.5
+		 */ Object.defineProperty(this, 'reflectivity', {
             get: function() {
                 return $ded5eecc0cd20cc2$var$clamp(2.5 * (this.ior - 1) / (this.ior + 1), 0, 1);
             },
@@ -24303,26 +28423,130 @@ class $ded5eecc0cd20cc2$export$28d04986c4269c9f extends $ded5eecc0cd20cc2$export
                 this.ior = (1 + 0.4 * reflectivity) / (1 - 0.4 * reflectivity);
             }
         });
-        this.iridescenceMap = null;
-        this.iridescenceIOR = 1.3;
-        this.iridescenceThicknessRange = [
+        /**
+		 * The red channel of this texture is multiplied against `iridescence`, for per-pixel
+		 * control over iridescence.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.iridescenceMap = null;
+        /**
+		 * Strength of the iridescence RGB color shift effect, represented by an index-of-refraction.
+		 * Between `1.0` to `2.333`.
+		 *
+		 * @type {number}
+		 * @default 1.3
+		 */ this.iridescenceIOR = 1.3;
+        /**
+		 *Array of exactly 2 elements, specifying minimum and maximum thickness of the iridescence layer.
+		 Thickness of iridescence layer has an equivalent effect of the one `thickness` has on `ior`.
+		 *
+		 * @type {Array<number,number>}
+		 * @default [100,400]
+		 */ this.iridescenceThicknessRange = [
             100,
             400
         ];
-        this.iridescenceThicknessMap = null;
-        this.sheenColor = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
-        this.sheenColorMap = null;
-        this.sheenRoughness = 1.0;
-        this.sheenRoughnessMap = null;
-        this.transmissionMap = null;
-        this.thickness = 0;
-        this.thicknessMap = null;
-        this.attenuationDistance = Infinity;
-        this.attenuationColor = new $ded5eecc0cd20cc2$export$892596cec99bc70e(1, 1, 1);
-        this.specularIntensity = 1.0;
-        this.specularIntensityMap = null;
-        this.specularColor = new $ded5eecc0cd20cc2$export$892596cec99bc70e(1, 1, 1);
-        this.specularColorMap = null;
+        /**
+		 * A texture that defines the thickness of the iridescence layer, stored in the green channel.
+		 * Minimum and maximum values of thickness are defined by `iridescenceThicknessRange` array:
+		 * - `0.0` in the green channel will result in thickness equal to first element of the array.
+		 * - `1.0` in the green channel will result in thickness equal to second element of the array.
+		 * - Values in-between will linearly interpolate between the elements of the array.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.iridescenceThicknessMap = null;
+        /**
+		 * The sheen tint.
+		 *
+		 * @type {Color}
+		 * @default (0,0,0)
+		 */ this.sheenColor = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
+        /**
+		 * The RGB channels of this texture are multiplied against  `sheenColor`, for per-pixel control
+		 * over sheen tint.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.sheenColorMap = null;
+        /**
+		 * Roughness of the sheen layer, from `0.0` to `1.0`.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.sheenRoughness = 1.0;
+        /**
+		 * The alpha channel of this texture is multiplied against `sheenRoughness`, for per-pixel control
+		 * over sheen roughness.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.sheenRoughnessMap = null;
+        /**
+		 * The red channel of this texture is multiplied against `transmission`, for per-pixel control over
+		 * optical transparency.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.transmissionMap = null;
+        /**
+		 * The thickness of the volume beneath the surface. The value is given in the
+		 * coordinate space of the mesh. If the value is `0` the material is
+		 * thin-walled. Otherwise the material is a volume boundary.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.thickness = 0;
+        /**
+		 * A texture that defines the thickness, stored in the green channel. This will
+		 * be multiplied by `thickness`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.thicknessMap = null;
+        /**
+		 * Density of the medium given as the average distance that light travels in
+		 * the medium before interacting with a particle. The value is given in world
+		 * space units, and must be greater than zero.
+		 *
+		 * @type {number}
+		 * @default Infinity
+		 */ this.attenuationDistance = Infinity;
+        /**
+		 * The color that white light turns into due to absorption when reaching the
+		 * attenuation distance.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.attenuationColor = new $ded5eecc0cd20cc2$export$892596cec99bc70e(1, 1, 1);
+        /**
+		 * A float that scales the amount of specular reflection for non-metals only.
+		 * When set to zero, the model is effectively Lambertian. From `0.0` to `1.0`.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.specularIntensity = 1.0;
+        /**
+		 * The alpha channel of this texture is multiplied against `specularIntensity`,
+		 * for per-pixel control over specular intensity.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.specularIntensityMap = null;
+        /**
+		 * Tints the specular reflection at normal incidence for non-metals only.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.specularColor = new $ded5eecc0cd20cc2$export$892596cec99bc70e(1, 1, 1);
+        /**
+		 * The RGB channels of this texture are multiplied against `specularColor`,
+		 * for per-pixel control over specular color.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.specularColorMap = null;
         this._anisotropy = 0;
         this._clearcoat = 0;
         this._dispersion = 0;
@@ -24331,42 +28555,83 @@ class $ded5eecc0cd20cc2$export$28d04986c4269c9f extends $ded5eecc0cd20cc2$export
         this._transmission = 0;
         this.setValues(parameters);
     }
-    get anisotropy() {
+    /**
+	 * The anisotropy strength.
+	 *
+	 * @type {number}
+	 * @default 0
+	 */ get anisotropy() {
         return this._anisotropy;
     }
     set anisotropy(value) {
         if (this._anisotropy > 0 !== value > 0) this.version++;
         this._anisotropy = value;
     }
-    get clearcoat() {
+    /**
+	 * Represents the intensity of the clear coat layer, from `0.0` to `1.0`. Use
+	 * clear coat related properties to enable multilayer materials that have a
+	 * thin translucent layer over the base layer.
+	 *
+	 * @type {number}
+	 * @default 0
+	 */ get clearcoat() {
         return this._clearcoat;
     }
     set clearcoat(value) {
         if (this._clearcoat > 0 !== value > 0) this.version++;
         this._clearcoat = value;
     }
-    get iridescence() {
+    /**
+	 * The intensity of the iridescence layer, simulating RGB color shift based on the angle between
+	 * the surface and the viewer, from `0.0` to `1.0`.
+	 *
+	 * @type {number}
+	 * @default 0
+	 */ get iridescence() {
         return this._iridescence;
     }
     set iridescence(value) {
         if (this._iridescence > 0 !== value > 0) this.version++;
         this._iridescence = value;
     }
-    get dispersion() {
+    /**
+	 * Defines the strength of the angular separation of colors (chromatic aberration) transmitting
+	 * through a relatively clear volume. Any value zero or larger is valid, the typical range of
+	 * realistic values is `[0, 1]`. This property can be only be used with transmissive objects.
+	 *
+	 * @type {number}
+	 * @default 0
+	 */ get dispersion() {
         return this._dispersion;
     }
     set dispersion(value) {
         if (this._dispersion > 0 !== value > 0) this.version++;
         this._dispersion = value;
     }
-    get sheen() {
+    /**
+	 * The intensity of the sheen layer, from `0.0` to `1.0`.
+	 *
+	 * @type {number}
+	 * @default 0
+	 */ get sheen() {
         return this._sheen;
     }
     set sheen(value) {
         if (this._sheen > 0 !== value > 0) this.version++;
         this._sheen = value;
     }
-    get transmission() {
+    /**
+	 * Degree of transmission (or optical transparency), from `0.0` to `1.0`.
+	 *
+	 * Thin, transparent or semitransparent, plastic or glass materials remain
+	 * largely reflective even if they are fully transmissive. The transmission
+	 * property can be used to model these materials.
+	 *
+	 * When transmission is non-zero, `opacity` should be  set to `1`.
+	 *
+	 * @type {number}
+	 * @default 0
+	 */ get transmission() {
         return this._transmission;
     }
     set transmission(value) {
@@ -24415,43 +28680,278 @@ class $ded5eecc0cd20cc2$export$28d04986c4269c9f extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$24c72f71cbaf0678 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material for shiny surfaces with specular highlights.
+ *
+ * The material uses a non-physically based [Blinn-Phong]{@link https://en.wikipedia.org/wiki/Blinn-Phong_shading_model}
+ * model for calculating reflectance. Unlike the Lambertian model used in the
+ * {@link MeshLambertMaterial} this can simulate shiny surfaces with specular
+ * highlights (such as varnished wood). `MeshPhongMaterial` uses per-fragment shading.
+ *
+ * Performance will generally be greater when using this material over the
+ * {@link MeshStandardMaterial} or {@link MeshPhysicalMaterial}, at the cost of
+ * some graphical accuracy.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$24c72f71cbaf0678 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh phong material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshPhongMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshPhongMaterial = true;
         this.type = 'MeshPhongMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // diffuse
-        this.specular = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x111111);
-        this.shininess = 30;
-        this.map = null;
-        this.lightMap = null;
-        this.lightMapIntensity = 1.0;
-        this.aoMap = null;
-        this.aoMapIntensity = 1.0;
-        this.emissive = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
-        this.emissiveIntensity = 1.0;
-        this.emissiveMap = null;
-        this.bumpMap = null;
-        this.bumpScale = 1;
-        this.normalMap = null;
-        this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
-        this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
-        this.displacementMap = null;
-        this.displacementScale = 1;
-        this.displacementBias = 0;
-        this.specularMap = null;
-        this.alphaMap = null;
-        this.envMap = null;
-        this.envMapRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
-        this.combine = $ded5eecc0cd20cc2$export$e50ac29801f1774d;
-        this.reflectivity = 1;
-        this.refractionRatio = 0.98;
-        this.wireframe = false;
-        this.wireframeLinewidth = 1;
-        this.wireframeLinecap = 'round';
-        this.wireframeLinejoin = 'round';
-        this.flatShading = false;
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // diffuse
+        /**
+		 * Specular color of the material. The default color is set to `0x111111` (very dark grey)
+		 *
+		 * This defines how shiny the material is and the color of its shine.
+		 *
+		 * @type {Color}
+		 */ this.specular = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x111111);
+        /**
+		 * How shiny the specular highlight is; a higher value gives a sharper highlight.
+		 *
+		 * @type {number}
+		 * @default 30
+		 */ this.shininess = 30;
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The light map. Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.lightMap = null;
+        /**
+		 * Intensity of the baked light.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.lightMapIntensity = 1.0;
+        /**
+		 * The red channel of this texture is used as the ambient occlusion map.
+		 * Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.aoMap = null;
+        /**
+		 * Intensity of the ambient occlusion effect. Range is `[0,1]`, where `0`
+		 * disables ambient occlusion. Where intensity is `1` and the AO map's
+		 * red channel is also `1`, ambient light is fully occluded on a surface.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.aoMapIntensity = 1.0;
+        /**
+		 * Emissive (light) color of the material, essentially a solid color
+		 * unaffected by other lighting.
+		 *
+		 * @type {Color}
+		 * @default (0,0,0)
+		 */ this.emissive = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
+        /**
+		 * Intensity of the emissive light. Modulates the emissive color.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.emissiveIntensity = 1.0;
+        /**
+		 * Set emissive (glow) map. The emissive map color is modulated by the
+		 * emissive color and the emissive intensity. If you have an emissive map,
+		 * be sure to set the emissive color to something other than black.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.emissiveMap = null;
+        /**
+		 * The texture to create a bump map. The black and white values map to the
+		 * perceived depth in relation to the lights. Bump doesn't actually affect
+		 * the geometry of the object, only the lighting. If a normal map is defined
+		 * this will be ignored.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.bumpMap = null;
+        /**
+		 * How much the bump map affects the material. Typical range is `[0,1]`.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.bumpScale = 1;
+        /**
+		 * The texture to create a normal map. The RGB values affect the surface
+		 * normal for each pixel fragment and change the way the color is lit. Normal
+		 * maps do not change the actual shape of the surface, only the lighting. In
+		 * case the material has a normal map authored using the left handed
+		 * convention, the `y` component of `normalScale` should be negated to compensate
+		 * for the different handedness.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.normalMap = null;
+        /**
+		 * The type of normal map.
+		 *
+		 * @type {(TangentSpaceNormalMap|ObjectSpaceNormalMap)}
+		 * @default TangentSpaceNormalMap
+		 */ this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
+        /**
+		 * How much the normal map affects the material. Typical value range is `[0,1]`.
+		 *
+		 * @type {Vector2}
+		 * @default (1,1)
+		 */ this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
+        /**
+		 * The displacement map affects the position of the mesh's vertices. Unlike
+		 * other maps which only affect the light and shade of the material the
+		 * displaced vertices can cast shadows, block other objects, and otherwise
+		 * act as real geometry. The displacement texture is an image where the value
+		 * of each pixel (white being the highest) is mapped against, and
+		 * repositions, the vertices of the mesh.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.displacementMap = null;
+        /**
+		 * How much the displacement map affects the mesh (where black is no
+		 * displacement, and white is maximum displacement). Without a displacement
+		 * map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementScale = 1;
+        /**
+		 * The offset of the displacement map's values on the mesh's vertices.
+		 * The bias is added to the scaled sample of the displacement map.
+		 * Without a displacement map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementBias = 0;
+        /**
+		 * The specular map value affects both how much the specular surface
+		 * highlight contributes and how much of the environment map affects the
+		 * surface.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.specularMap = null;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * The environment map.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.envMap = null;
+        /**
+		 * The rotation of the environment map in radians.
+		 *
+		 * @type {Euler}
+		 * @default (0,0,0)
+		 */ this.envMapRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
+        /**
+		 * How to combine the result of the surface's color with the environment map, if any.
+		 *
+		 * When set to `MixOperation`, the {@link MeshBasicMaterial#reflectivity} is used to
+		 * blend between the two colors.
+		 *
+		 * @type {(MultiplyOperation|MixOperation|AddOperation)}
+		 * @default MultiplyOperation
+		 */ this.combine = $ded5eecc0cd20cc2$export$e50ac29801f1774d;
+        /**
+		 * How much the environment map affects the surface.
+		 * The valid range is between `0` (no reflections) and `1` (full reflections).
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.reflectivity = 1;
+        /**
+		 * The index of refraction (IOR) of air (approximately 1) divided by the
+		 * index of refraction of the material. It is used with environment mapping
+		 * modes {@link CubeRefractionMapping} and {@link EquirectangularRefractionMapping}.
+		 * The refraction ratio should not exceed `1`.
+		 *
+		 * @type {number}
+		 * @default 0.98
+		 */ this.refractionRatio = 0.98;
+        /**
+		 * Renders the geometry as a wireframe.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.wireframe = false;
+        /**
+		 * Controls the thickness of the wireframe.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.wireframeLinewidth = 1;
+        /**
+		 * Defines appearance of wireframe ends.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinecap = 'round';
+        /**
+		 * Defines appearance of wireframe joints.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinejoin = 'round';
+        /**
+		 * Whether the material is rendered with flat shading or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flatShading = false;
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24491,38 +28991,216 @@ class $ded5eecc0cd20cc2$export$24c72f71cbaf0678 extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$df893cf97e765622 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material implementing toon shading.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$df893cf97e765622 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh toon material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshToonMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshToonMaterial = true;
         this.defines = {
             'TOON': ''
         };
         this.type = 'MeshToonMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff);
-        this.map = null;
-        this.gradientMap = null;
-        this.lightMap = null;
-        this.lightMapIntensity = 1.0;
-        this.aoMap = null;
-        this.aoMapIntensity = 1.0;
-        this.emissive = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
-        this.emissiveIntensity = 1.0;
-        this.emissiveMap = null;
-        this.bumpMap = null;
-        this.bumpScale = 1;
-        this.normalMap = null;
-        this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
-        this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
-        this.displacementMap = null;
-        this.displacementScale = 1;
-        this.displacementBias = 0;
-        this.alphaMap = null;
-        this.wireframe = false;
-        this.wireframeLinewidth = 1;
-        this.wireframeLinecap = 'round';
-        this.wireframeLinejoin = 'round';
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff);
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * Gradient map for toon shading. It's required to set
+		 * {@link Texture#minFilter} and {@link Texture#magFilter} to {@linkNearestFilter}
+		 * when using this type of texture.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.gradientMap = null;
+        /**
+		 * The light map. Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.lightMap = null;
+        /**
+		 * Intensity of the baked light.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.lightMapIntensity = 1.0;
+        /**
+		 * The red channel of this texture is used as the ambient occlusion map.
+		 * Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.aoMap = null;
+        /**
+		 * Intensity of the ambient occlusion effect. Range is `[0,1]`, where `0`
+		 * disables ambient occlusion. Where intensity is `1` and the AO map's
+		 * red channel is also `1`, ambient light is fully occluded on a surface.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.aoMapIntensity = 1.0;
+        /**
+		 * Emissive (light) color of the material, essentially a solid color
+		 * unaffected by other lighting.
+		 *
+		 * @type {Color}
+		 * @default (0,0,0)
+		 */ this.emissive = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
+        /**
+		 * Intensity of the emissive light. Modulates the emissive color.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.emissiveIntensity = 1.0;
+        /**
+		 * Set emissive (glow) map. The emissive map color is modulated by the
+		 * emissive color and the emissive intensity. If you have an emissive map,
+		 * be sure to set the emissive color to something other than black.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.emissiveMap = null;
+        /**
+		 * The texture to create a bump map. The black and white values map to the
+		 * perceived depth in relation to the lights. Bump doesn't actually affect
+		 * the geometry of the object, only the lighting. If a normal map is defined
+		 * this will be ignored.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.bumpMap = null;
+        /**
+		 * How much the bump map affects the material. Typical range is `[0,1]`.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.bumpScale = 1;
+        /**
+		 * The texture to create a normal map. The RGB values affect the surface
+		 * normal for each pixel fragment and change the way the color is lit. Normal
+		 * maps do not change the actual shape of the surface, only the lighting. In
+		 * case the material has a normal map authored using the left handed
+		 * convention, the `y` component of `normalScale` should be negated to compensate
+		 * for the different handedness.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.normalMap = null;
+        /**
+		 * The type of normal map.
+		 *
+		 * @type {(TangentSpaceNormalMap|ObjectSpaceNormalMap)}
+		 * @default TangentSpaceNormalMap
+		 */ this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
+        /**
+		 * How much the normal map affects the material. Typical value range is `[0,1]`.
+		 *
+		 * @type {Vector2}
+		 * @default (1,1)
+		 */ this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
+        /**
+		 * The displacement map affects the position of the mesh's vertices. Unlike
+		 * other maps which only affect the light and shade of the material the
+		 * displaced vertices can cast shadows, block other objects, and otherwise
+		 * act as real geometry. The displacement texture is an image where the value
+		 * of each pixel (white being the highest) is mapped against, and
+		 * repositions, the vertices of the mesh.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.displacementMap = null;
+        /**
+		 * How much the displacement map affects the mesh (where black is no
+		 * displacement, and white is maximum displacement). Without a displacement
+		 * map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementScale = 1;
+        /**
+		 * The offset of the displacement map's values on the mesh's vertices.
+		 * The bias is added to the scaled sample of the displacement map.
+		 * Without a displacement map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementBias = 0;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * Renders the geometry as a wireframe.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.wireframe = false;
+        /**
+		 * Controls the thickness of the wireframe.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.wireframeLinewidth = 1;
+        /**
+		 * Defines appearance of wireframe ends.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinecap = 'round';
+        /**
+		 * Defines appearance of wireframe joints.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinejoin = 'round';
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24554,22 +29232,115 @@ class $ded5eecc0cd20cc2$export$df893cf97e765622 extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$bfe8c0a091f41ae7 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material that maps the normal vectors to RGB colors.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$bfe8c0a091f41ae7 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh normal material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshNormalMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshNormalMaterial = true;
         this.type = 'MeshNormalMaterial';
-        this.bumpMap = null;
-        this.bumpScale = 1;
-        this.normalMap = null;
-        this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
-        this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
-        this.displacementMap = null;
-        this.displacementScale = 1;
-        this.displacementBias = 0;
-        this.wireframe = false;
-        this.wireframeLinewidth = 1;
-        this.flatShading = false;
+        /**
+		 * The texture to create a bump map. The black and white values map to the
+		 * perceived depth in relation to the lights. Bump doesn't actually affect
+		 * the geometry of the object, only the lighting. If a normal map is defined
+		 * this will be ignored.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.bumpMap = null;
+        /**
+		 * How much the bump map affects the material. Typical range is `[0,1]`.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.bumpScale = 1;
+        /**
+		 * The texture to create a normal map. The RGB values affect the surface
+		 * normal for each pixel fragment and change the way the color is lit. Normal
+		 * maps do not change the actual shape of the surface, only the lighting. In
+		 * case the material has a normal map authored using the left handed
+		 * convention, the `y` component of `normalScale` should be negated to compensate
+		 * for the different handedness.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.normalMap = null;
+        /**
+		 * The type of normal map.
+		 *
+		 * @type {(TangentSpaceNormalMap|ObjectSpaceNormalMap)}
+		 * @default TangentSpaceNormalMap
+		 */ this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
+        /**
+		 * How much the normal map affects the material. Typical value range is `[0,1]`.
+		 *
+		 * @type {Vector2}
+		 * @default (1,1)
+		 */ this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
+        /**
+		 * The displacement map affects the position of the mesh's vertices. Unlike
+		 * other maps which only affect the light and shade of the material the
+		 * displaced vertices can cast shadows, block other objects, and otherwise
+		 * act as real geometry. The displacement texture is an image where the value
+		 * of each pixel (white being the highest) is mapped against, and
+		 * repositions, the vertices of the mesh.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.displacementMap = null;
+        /**
+		 * How much the displacement map affects the mesh (where black is no
+		 * displacement, and white is maximum displacement). Without a displacement
+		 * map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementScale = 1;
+        /**
+		 * The offset of the displacement map's values on the mesh's vertices.
+		 * The bias is added to the scaled sample of the displacement map.
+		 * Without a displacement map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementBias = 0;
+        /**
+		 * Renders the geometry as a wireframe.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.wireframe = false;
+        /**
+		 * Controls the thickness of the wireframe.
+		 *
+		 * WebGL and WebGPU ignore this property and always render
+		 * 1 pixel wide lines.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.wireframeLinewidth = 1;
+        /**
+		 * Whether the material is rendered with flat shading or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flatShading = false;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24588,41 +29359,265 @@ class $ded5eecc0cd20cc2$export$bfe8c0a091f41ae7 extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$5023a9a8114806b8 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material for non-shiny surfaces, without specular highlights.
+ *
+ * The material uses a non-physically based [Lambertian]{@link https://en.wikipedia.org/wiki/Lambertian_reflectance}
+ * model for calculating reflectance. This can simulate some surfaces (such
+ * as untreated wood or stone) well, but cannot simulate shiny surfaces with
+ * specular highlights (such as varnished wood). `MeshLambertMaterial` uses per-fragment
+ * shading.
+ *
+ * Due to the simplicity of the reflectance and illumination models,
+ * performance will be greater when using this material over the
+ * {@link MeshPhongMaterial}, {@link MeshStandardMaterial} or
+ * {@link MeshPhysicalMaterial}, at the cost of some graphical accuracy.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$5023a9a8114806b8 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh lambert material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshLambertMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshLambertMaterial = true;
         this.type = 'MeshLambertMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // diffuse
-        this.map = null;
-        this.lightMap = null;
-        this.lightMapIntensity = 1.0;
-        this.aoMap = null;
-        this.aoMapIntensity = 1.0;
-        this.emissive = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
-        this.emissiveIntensity = 1.0;
-        this.emissiveMap = null;
-        this.bumpMap = null;
-        this.bumpScale = 1;
-        this.normalMap = null;
-        this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
-        this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
-        this.displacementMap = null;
-        this.displacementScale = 1;
-        this.displacementBias = 0;
-        this.specularMap = null;
-        this.alphaMap = null;
-        this.envMap = null;
-        this.envMapRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
-        this.combine = $ded5eecc0cd20cc2$export$e50ac29801f1774d;
-        this.reflectivity = 1;
-        this.refractionRatio = 0.98;
-        this.wireframe = false;
-        this.wireframeLinewidth = 1;
-        this.wireframeLinecap = 'round';
-        this.wireframeLinejoin = 'round';
-        this.flatShading = false;
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // diffuse
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The light map. Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.lightMap = null;
+        /**
+		 * Intensity of the baked light.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.lightMapIntensity = 1.0;
+        /**
+		 * The red channel of this texture is used as the ambient occlusion map.
+		 * Requires a second set of UVs.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.aoMap = null;
+        /**
+		 * Intensity of the ambient occlusion effect. Range is `[0,1]`, where `0`
+		 * disables ambient occlusion. Where intensity is `1` and the AO map's
+		 * red channel is also `1`, ambient light is fully occluded on a surface.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.aoMapIntensity = 1.0;
+        /**
+		 * Emissive (light) color of the material, essentially a solid color
+		 * unaffected by other lighting.
+		 *
+		 * @type {Color}
+		 * @default (0,0,0)
+		 */ this.emissive = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0x000000);
+        /**
+		 * Intensity of the emissive light. Modulates the emissive color.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.emissiveIntensity = 1.0;
+        /**
+		 * Set emissive (glow) map. The emissive map color is modulated by the
+		 * emissive color and the emissive intensity. If you have an emissive map,
+		 * be sure to set the emissive color to something other than black.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.emissiveMap = null;
+        /**
+		 * The texture to create a bump map. The black and white values map to the
+		 * perceived depth in relation to the lights. Bump doesn't actually affect
+		 * the geometry of the object, only the lighting. If a normal map is defined
+		 * this will be ignored.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.bumpMap = null;
+        /**
+		 * How much the bump map affects the material. Typical range is `[0,1]`.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.bumpScale = 1;
+        /**
+		 * The texture to create a normal map. The RGB values affect the surface
+		 * normal for each pixel fragment and change the way the color is lit. Normal
+		 * maps do not change the actual shape of the surface, only the lighting. In
+		 * case the material has a normal map authored using the left handed
+		 * convention, the `y` component of `normalScale` should be negated to compensate
+		 * for the different handedness.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.normalMap = null;
+        /**
+		 * The type of normal map.
+		 *
+		 * @type {(TangentSpaceNormalMap|ObjectSpaceNormalMap)}
+		 * @default TangentSpaceNormalMap
+		 */ this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
+        /**
+		 * How much the normal map affects the material. Typical value range is `[0,1]`.
+		 *
+		 * @type {Vector2}
+		 * @default (1,1)
+		 */ this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
+        /**
+		 * The displacement map affects the position of the mesh's vertices. Unlike
+		 * other maps which only affect the light and shade of the material the
+		 * displaced vertices can cast shadows, block other objects, and otherwise
+		 * act as real geometry. The displacement texture is an image where the value
+		 * of each pixel (white being the highest) is mapped against, and
+		 * repositions, the vertices of the mesh.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.displacementMap = null;
+        /**
+		 * How much the displacement map affects the mesh (where black is no
+		 * displacement, and white is maximum displacement). Without a displacement
+		 * map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementScale = 1;
+        /**
+		 * The offset of the displacement map's values on the mesh's vertices.
+		 * The bias is added to the scaled sample of the displacement map.
+		 * Without a displacement map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementBias = 0;
+        /**
+		 * Specular map used by the material.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.specularMap = null;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * The environment map.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.envMap = null;
+        /**
+		 * The rotation of the environment map in radians.
+		 *
+		 * @type {Euler}
+		 * @default (0,0,0)
+		 */ this.envMapRotation = new $ded5eecc0cd20cc2$export$d93cc409a0768c5f();
+        /**
+		 * How to combine the result of the surface's color with the environment map, if any.
+		 *
+		 * When set to `MixOperation`, the {@link MeshBasicMaterial#reflectivity} is used to
+		 * blend between the two colors.
+		 *
+		 * @type {(MultiplyOperation|MixOperation|AddOperation)}
+		 * @default MultiplyOperation
+		 */ this.combine = $ded5eecc0cd20cc2$export$e50ac29801f1774d;
+        /**
+		 * How much the environment map affects the surface.
+		 * The valid range is between `0` (no reflections) and `1` (full reflections).
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.reflectivity = 1;
+        /**
+		 * The index of refraction (IOR) of air (approximately 1) divided by the
+		 * index of refraction of the material. It is used with environment mapping
+		 * modes {@link CubeRefractionMapping} and {@link EquirectangularRefractionMapping}.
+		 * The refraction ratio should not exceed `1`.
+		 *
+		 * @type {number}
+		 * @default 0.98
+		 */ this.refractionRatio = 0.98;
+        /**
+		 * Renders the geometry as a wireframe.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.wireframe = false;
+        /**
+		 * Controls the thickness of the wireframe.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.wireframeLinewidth = 1;
+        /**
+		 * Defines appearance of wireframe ends.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinecap = 'round';
+        /**
+		 * Defines appearance of wireframe joints.
+		 *
+		 * Can only be used with {@link SVGRenderer}.
+		 *
+		 * @type {('round'|'bevel'|'miter')}
+		 * @default 'round'
+		 */ this.wireframeLinejoin = 'round';
+        /**
+		 * Whether the material is rendered with flat shading or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flatShading = false;
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24660,19 +29655,98 @@ class $ded5eecc0cd20cc2$export$5023a9a8114806b8 extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$2698c22ec13825db extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material for drawing geometry by depth. Depth is based off of the camera
+ * near and far plane. White is nearest, black is farthest.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$2698c22ec13825db extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh depth material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshDepthMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshDepthMaterial = true;
         this.type = 'MeshDepthMaterial';
-        this.depthPacking = $ded5eecc0cd20cc2$export$deeb383078690b50;
-        this.map = null;
-        this.alphaMap = null;
-        this.displacementMap = null;
-        this.displacementScale = 1;
-        this.displacementBias = 0;
-        this.wireframe = false;
-        this.wireframeLinewidth = 1;
+        /**
+		 * Type for depth packing.
+		 *
+		 * @type {(BasicDepthPacking|RGBADepthPacking|RGBDepthPacking|RGDepthPacking)}
+		 * @default BasicDepthPacking
+		 */ this.depthPacking = $ded5eecc0cd20cc2$export$deeb383078690b50;
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * The displacement map affects the position of the mesh's vertices. Unlike
+		 * other maps which only affect the light and shade of the material the
+		 * displaced vertices can cast shadows, block other objects, and otherwise
+		 * act as real geometry. The displacement texture is an image where the value
+		 * of each pixel (white being the highest) is mapped against, and
+		 * repositions, the vertices of the mesh.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.displacementMap = null;
+        /**
+		 * How much the displacement map affects the mesh (where black is no
+		 * displacement, and white is maximum displacement). Without a displacement
+		 * map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementScale = 1;
+        /**
+		 * The offset of the displacement map's values on the mesh's vertices.
+		 * The bias is added to the scaled sample of the displacement map.
+		 * Without a displacement map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementBias = 0;
+        /**
+		 * Renders the geometry as a wireframe.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.wireframe = false;
+        /**
+		 * Controls the thickness of the wireframe.
+		 *
+		 * WebGL and WebGPU ignore this property and always render
+		 * 1 pixel wide lines.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.wireframeLinewidth = 1;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24688,16 +29762,82 @@ class $ded5eecc0cd20cc2$export$2698c22ec13825db extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$33e187ed002f2a19 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * A material used internally for implementing shadow mapping with
+ * point lights.
+ *
+ * Can also be used to customize the shadow casting of an object by assigning
+ * an instance of `MeshDistanceMaterial` to {@link Object3D#customDistanceMaterial}.
+ * The following examples demonstrates this approach in order to ensure
+ * transparent parts of objects do no cast shadows.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$33e187ed002f2a19 extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh distance material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshDistanceMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshDistanceMaterial = true;
         this.type = 'MeshDistanceMaterial';
-        this.map = null;
-        this.alphaMap = null;
-        this.displacementMap = null;
-        this.displacementScale = 1;
-        this.displacementBias = 0;
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * The displacement map affects the position of the mesh's vertices. Unlike
+		 * other maps which only affect the light and shade of the material the
+		 * displaced vertices can cast shadows, block other objects, and otherwise
+		 * act as real geometry. The displacement texture is an image where the value
+		 * of each pixel (white being the highest) is mapped against, and
+		 * repositions, the vertices of the mesh.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.displacementMap = null;
+        /**
+		 * How much the displacement map affects the mesh (where black is no
+		 * displacement, and white is maximum displacement). Without a displacement
+		 * map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementScale = 1;
+        /**
+		 * The offset of the displacement map's values on the mesh's vertices.
+		 * The bias is added to the scaled sample of the displacement map.
+		 * Without a displacement map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementBias = 0;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24710,28 +29850,148 @@ class $ded5eecc0cd20cc2$export$33e187ed002f2a19 extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$6f5fef6235ec12ee extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
-    constructor(parameters){
+/**
+ * This material is defined by a MatCap (or Lit Sphere) texture, which encodes the
+ * material color and shading.
+ *
+ * `MeshMatcapMaterial` does not respond to lights since the matcap image file encodes
+ * baked lighting. It will cast a shadow onto an object that receives shadows
+ * (and shadow clipping works), but it will not self-shadow or receive
+ * shadows.
+ *
+ * @augments Material
+ */ class $ded5eecc0cd20cc2$export$6f5fef6235ec12ee extends $ded5eecc0cd20cc2$export$a2d8b23205c25948 {
+    /**
+	 * Constructs a new mesh matcap material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isMeshMatcapMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isMeshMatcapMaterial = true;
         this.defines = {
             'MATCAP': ''
         };
         this.type = 'MeshMatcapMaterial';
-        this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // diffuse
-        this.matcap = null;
-        this.map = null;
-        this.bumpMap = null;
-        this.bumpScale = 1;
-        this.normalMap = null;
-        this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
-        this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
-        this.displacementMap = null;
-        this.displacementScale = 1;
-        this.displacementBias = 0;
-        this.alphaMap = null;
-        this.flatShading = false;
-        this.fog = true;
+        /**
+		 * Color of the material.
+		 *
+		 * @type {Color}
+		 * @default (1,1,1)
+		 */ this.color = new $ded5eecc0cd20cc2$export$892596cec99bc70e(0xffffff); // diffuse
+        /**
+		 * The matcap map.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.matcap = null;
+        /**
+		 * The color map. May optionally include an alpha channel, typically combined
+		 * with {@link Material#transparent} or {@link Material#alphaTest}. The texture map
+		 * color is modulated by the diffuse `color`.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.map = null;
+        /**
+		 * The texture to create a bump map. The black and white values map to the
+		 * perceived depth in relation to the lights. Bump doesn't actually affect
+		 * the geometry of the object, only the lighting. If a normal map is defined
+		 * this will be ignored.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.bumpMap = null;
+        /**
+		 * How much the bump map affects the material. Typical range is `[0,1]`.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.bumpScale = 1;
+        /**
+		 * The texture to create a normal map. The RGB values affect the surface
+		 * normal for each pixel fragment and change the way the color is lit. Normal
+		 * maps do not change the actual shape of the surface, only the lighting. In
+		 * case the material has a normal map authored using the left handed
+		 * convention, the `y` component of `normalScale` should be negated to compensate
+		 * for the different handedness.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.normalMap = null;
+        /**
+		 * The type of normal map.
+		 *
+		 * @type {(TangentSpaceNormalMap|ObjectSpaceNormalMap)}
+		 * @default TangentSpaceNormalMap
+		 */ this.normalMapType = $ded5eecc0cd20cc2$export$2852a58ebdac27b8;
+        /**
+		 * How much the normal map affects the material. Typical value range is `[0,1]`.
+		 *
+		 * @type {Vector2}
+		 * @default (1,1)
+		 */ this.normalScale = new $ded5eecc0cd20cc2$export$c977b3e384af9ae1(1, 1);
+        /**
+		 * The displacement map affects the position of the mesh's vertices. Unlike
+		 * other maps which only affect the light and shade of the material the
+		 * displaced vertices can cast shadows, block other objects, and otherwise
+		 * act as real geometry. The displacement texture is an image where the value
+		 * of each pixel (white being the highest) is mapped against, and
+		 * repositions, the vertices of the mesh.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.displacementMap = null;
+        /**
+		 * How much the displacement map affects the mesh (where black is no
+		 * displacement, and white is maximum displacement). Without a displacement
+		 * map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementScale = 1;
+        /**
+		 * The offset of the displacement map's values on the mesh's vertices.
+		 * The bias is added to the scaled sample of the displacement map.
+		 * Without a displacement map set, this value is not applied.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.displacementBias = 0;
+        /**
+		 * The alpha map is a grayscale texture that controls the opacity across the
+		 * surface (black: fully transparent; white: fully opaque).
+		 *
+		 * Only the color of the texture is used, ignoring the alpha channel if one
+		 * exists. For RGB and RGBA textures, the renderer will use the green channel
+		 * when sampling this texture due to the extra bit of precision provided for
+		 * green in DXT-compressed and uncompressed RGB 565 formats. Luminance-only and
+		 * luminance/alpha textures will also still work as expected.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.alphaMap = null;
+        /**
+		 * Whether the material is rendered with flat shading or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.flatShading = false;
+        /**
+		 * Whether the material is affected by fog or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.fog = true;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24756,14 +30016,58 @@ class $ded5eecc0cd20cc2$export$6f5fef6235ec12ee extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$327886a3efaeaebe extends $ded5eecc0cd20cc2$export$fbaaa33907730a0c {
-    constructor(parameters){
+/**
+ * A material for rendering line primitives.
+ *
+ * Materials define the appearance of renderable 3D objects.
+ *
+ * ```js
+ * const material = new THREE.LineDashedMaterial( {
+ * 	color: 0xffffff,
+ * 	scale: 1,
+ * 	dashSize: 3,
+ * 	gapSize: 1,
+ * } );
+ * ```
+ *
+ * @augments LineBasicMaterial
+ */ class $ded5eecc0cd20cc2$export$327886a3efaeaebe extends $ded5eecc0cd20cc2$export$fbaaa33907730a0c {
+    /**
+	 * Constructs a new line dashed material.
+	 *
+	 * @param {Object} [parameters] - An object with one or more properties
+	 * defining the material's appearance. Any property of the material
+	 * (including any property from inherited materials) can be passed
+	 * in here. Color values can be passed any type of value accepted
+	 * by {@link Color#set}.
+	 */ constructor(parameters){
         super();
-        this.isLineDashedMaterial = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isLineDashedMaterial = true;
         this.type = 'LineDashedMaterial';
-        this.scale = 1;
-        this.dashSize = 3;
-        this.gapSize = 1;
+        /**
+		 * The scale of the dashed part of a line.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.scale = 1;
+        /**
+		 * The size of the dash. This is both the gap with the stroke.
+		 *
+		 * @type {number}
+		 * @default 3
+		 */ this.dashSize = 3;
+        /**
+		 * The size of the gap.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.gapSize = 1;
         this.setValues(parameters);
     }
     copy(source) {
@@ -24774,18 +30078,31 @@ class $ded5eecc0cd20cc2$export$327886a3efaeaebe extends $ded5eecc0cd20cc2$export
         return this;
     }
 }
-// converts an array to a specific type
-function $ded5eecc0cd20cc2$var$convertArray(array, type, forceClone) {
-    if (!array || // let 'undefined' and 'null' pass
-    !forceClone && array.constructor === type) return array;
+/**
+ * Converts an array to a specific type.
+ *
+ * @param {TypedArray|Array} array - The array to convert.
+ * @param {TypedArray.constructor} type - The constructor of a typed array that defines the new type.
+ * @return {TypedArray} The converted array.
+ */ function $ded5eecc0cd20cc2$var$convertArray(array, type) {
+    if (!array || array.constructor === type) return array;
     if (typeof type.BYTES_PER_ELEMENT === 'number') return new type(array); // create typed array
     return Array.prototype.slice.call(array); // create Array
 }
-function $ded5eecc0cd20cc2$var$isTypedArray(object) {
+/**
+ * Returns `true` if the given object is a typed array.
+ *
+ * @param {any} object - The object to check.
+ * @return {boolean} Whether the given object is a typed array.
+ */ function $ded5eecc0cd20cc2$var$isTypedArray(object) {
     return ArrayBuffer.isView(object) && !(object instanceof DataView);
 }
-// returns an array by which times and values can be sorted
-function $ded5eecc0cd20cc2$var$getKeyframeOrder(times) {
+/**
+ * Returns an array by which times and values can be sorted.
+ *
+ * @param {Array<number>} times - The keyframe time values.
+ * @return {Array<number>} The array.
+ */ function $ded5eecc0cd20cc2$var$getKeyframeOrder(times) {
     function compareTime(i, j) {
         return times[i] - times[j];
     }
@@ -24795,8 +30112,14 @@ function $ded5eecc0cd20cc2$var$getKeyframeOrder(times) {
     result.sort(compareTime);
     return result;
 }
-// uses the array previously returned by 'getKeyframeOrder' to sort data
-function $ded5eecc0cd20cc2$var$sortedArray(values, stride, order) {
+/**
+ * Sorts the given array by the previously computed order via `getKeyframeOrder()`.
+ *
+ * @param {Array<number>} values - The values to sort.
+ * @param {number} stride - The stride.
+ * @param {Array<number>} order - The sort order.
+ * @return {Array<number>} The sorted values.
+ */ function $ded5eecc0cd20cc2$var$sortedArray(values, stride, order) {
     const nValues = values.length;
     const result = new values.constructor(nValues);
     for(let i = 0, dstOffset = 0; dstOffset !== nValues; ++i){
@@ -24805,8 +30128,14 @@ function $ded5eecc0cd20cc2$var$sortedArray(values, stride, order) {
     }
     return result;
 }
-// function for parsing AOS keyframe formats
-function $ded5eecc0cd20cc2$var$flattenJSON(jsonKeys, times, values, valuePropertyName) {
+/**
+ * Used for parsing AOS keyframe formats.
+ *
+ * @param {Array<number>} jsonKeys - A list of JSON keyframes.
+ * @param {Array<number>} times - This array will be filled with keyframe times by this function.
+ * @param {Array<number>} values - This array will be filled with keyframe values by this function.
+ * @param {string} valuePropertyName - The name of the property to use.
+ */ function $ded5eecc0cd20cc2$var$flattenJSON(jsonKeys, times, values, valuePropertyName) {
     let i = 1, key = jsonKeys[0];
     while(key !== undefined && key[valuePropertyName] === undefined)key = jsonKeys[i++];
     if (key === undefined) return; // no data
@@ -24839,7 +30168,16 @@ function $ded5eecc0cd20cc2$var$flattenJSON(jsonKeys, times, values, valuePropert
         key = jsonKeys[i++];
     }while (key !== undefined);
 }
-function $ded5eecc0cd20cc2$var$subclip(sourceClip, name, startFrame, endFrame, fps = 30) {
+/**
+ * Creates a new clip, containing only the segment of the original clip between the given frames.
+ *
+ * @param {AnimationClip} sourceClip - The values to sort.
+ * @param {string} name - The name of the clip.
+ * @param {number} startFrame - The start frame.
+ * @param {number} endFrame - The end frame.
+ * @param {number} [fps=30] - The FPS.
+ * @return {AnimationClip} The new sub clip.
+ */ function $ded5eecc0cd20cc2$var$subclip(sourceClip, name, startFrame, endFrame, fps = 30) {
     const clip = sourceClip.clone();
     clip.name = name;
     const tracks = [];
@@ -24868,7 +30206,15 @@ function $ded5eecc0cd20cc2$var$subclip(sourceClip, name, startFrame, endFrame, f
     clip.resetDuration();
     return clip;
 }
-function $ded5eecc0cd20cc2$var$makeClipAdditive(targetClip, referenceFrame = 0, referenceClip = targetClip, fps = 30) {
+/**
+ * Converts the keyframes of the given animation clip to an additive format.
+ *
+ * @param {AnimationClip} targetClip - The clip to make additive.
+ * @param {number} [referenceFrame=0] - The reference frame.
+ * @param {AnimationClip} [referenceClip=targetClip] - The reference clip.
+ * @param {number} [fps=30] - The FPS.
+ * @return {AnimationClip} The updated clip which is now additive.
+ */ function $ded5eecc0cd20cc2$var$makeClipAdditive(targetClip, referenceFrame = 0, referenceClip = targetClip, fps = 30) {
     if (fps <= 0) fps = 30;
     const numTracks = referenceClip.tracks.length;
     const referenceTime = referenceFrame / fps;
@@ -24931,15 +30277,87 @@ function $ded5eecc0cd20cc2$var$makeClipAdditive(targetClip, referenceFrame = 0, 
     targetClip.blendMode = $ded5eecc0cd20cc2$export$d875e029ef558d3;
     return targetClip;
 }
-const $ded5eecc0cd20cc2$export$7ee8caa573e71ad1 = {
-    convertArray: $ded5eecc0cd20cc2$var$convertArray,
-    isTypedArray: $ded5eecc0cd20cc2$var$isTypedArray,
-    getKeyframeOrder: $ded5eecc0cd20cc2$var$getKeyframeOrder,
-    sortedArray: $ded5eecc0cd20cc2$var$sortedArray,
-    flattenJSON: $ded5eecc0cd20cc2$var$flattenJSON,
-    subclip: $ded5eecc0cd20cc2$var$subclip,
-    makeClipAdditive: $ded5eecc0cd20cc2$var$makeClipAdditive
-};
+/**
+ * A class with various methods to assist with animations.
+ *
+ * @hideconstructor
+ */ class $ded5eecc0cd20cc2$export$7ee8caa573e71ad1 {
+    /**
+	 * Converts an array to a specific type
+	 *
+	 * @static
+	 * @param {TypedArray|Array} array - The array to convert.
+	 * @param {TypedArray.constructor} type - The constructor of a type array.
+	 * @return {TypedArray} The converted array
+	 */ static convertArray(array, type) {
+        return $ded5eecc0cd20cc2$var$convertArray(array, type);
+    }
+    /**
+	 * Returns `true` if the given object is a typed array.
+	 *
+	 * @static
+	 * @param {any} object - The object to check.
+	 * @return {boolean} Whether the given object is a typed array.
+	 */ static isTypedArray(object) {
+        return $ded5eecc0cd20cc2$var$isTypedArray(object);
+    }
+    /**
+	 * Returns an array by which times and values can be sorted.
+	 *
+	 * @static
+	 * @param {Array<number>} times - The keyframe time values.
+	 * @return {Array<number>} The array.
+	 */ static getKeyframeOrder(times) {
+        return $ded5eecc0cd20cc2$var$getKeyframeOrder(times);
+    }
+    /**
+	 * Sorts the given array by the previously computed order via `getKeyframeOrder()`.
+	 *
+	 * @static
+	 * @param {Array<number>} values - The values to sort.
+	 * @param {number} stride - The stride.
+	 * @param {Array<number>} order - The sort order.
+	 * @return {Array<number>} The sorted values.
+	 */ static sortedArray(values, stride, order) {
+        return $ded5eecc0cd20cc2$var$sortedArray(values, stride, order);
+    }
+    /**
+	 * Used for parsing AOS keyframe formats.
+	 *
+	 * @static
+	 * @param {Array<number>} jsonKeys - A list of JSON keyframes.
+	 * @param {Array<number>} times - This array will be filled with keyframe times by this method.
+	 * @param {Array<number>} values - This array will be filled with keyframe values by this method.
+	 * @param {string} valuePropertyName - The name of the property to use.
+	 */ static flattenJSON(jsonKeys, times, values, valuePropertyName) {
+        $ded5eecc0cd20cc2$var$flattenJSON(jsonKeys, times, values, valuePropertyName);
+    }
+    /**
+	 * Creates a new clip, containing only the segment of the original clip between the given frames.
+	 *
+	 * @static
+	 * @param {AnimationClip} sourceClip - The values to sort.
+	 * @param {string} name - The name of the clip.
+	 * @param {number} startFrame - The start frame.
+	 * @param {number} endFrame - The end frame.
+	 * @param {number} [fps=30] - The FPS.
+	 * @return {AnimationClip} The new sub clip.
+	 */ static subclip(sourceClip, name, startFrame, endFrame, fps = 30) {
+        return $ded5eecc0cd20cc2$var$subclip(sourceClip, name, startFrame, endFrame, fps);
+    }
+    /**
+	 * Converts the keyframes of the given animation clip to an additive format.
+	 *
+	 * @static
+	 * @param {AnimationClip} targetClip - The clip to make additive.
+	 * @param {number} [referenceFrame=0] - The reference frame.
+	 * @param {AnimationClip} [referenceClip=targetClip] - The reference clip.
+	 * @param {number} [fps=30] - The FPS.
+	 * @return {AnimationClip} The updated clip which is now additive.
+	 */ static makeClipAdditive(targetClip, referenceFrame = 0, referenceClip = targetClip, fps = 30) {
+        return $ded5eecc0cd20cc2$var$makeClipAdditive(targetClip, referenceFrame, referenceClip, fps);
+    }
+}
 /**
  * Abstract base class of interpolants over parametric samples.
  *
@@ -25254,18 +30672,47 @@ const $ded5eecc0cd20cc2$export$7ee8caa573e71ad1 = {
         return this.copySampleValue_(i1 - 1);
     }
 }
-class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
-    constructor(name, times, values, interpolation){
+/**
+ * Represents s a timed sequence of keyframes, which are composed of lists of
+ * times and related values, and which are used to animate a specific property
+ * of an object.
+ */ class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
+    /**
+	 * Constructs a new keyframe track.
+	 *
+	 * @param {string} name - The keyframe track's name.
+	 * @param {Array<number>} times - A list of keyframe times.
+	 * @param {Array<number>} values - A list of keyframe values.
+	 * @param {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)} [interpolation] - The interpolation type.
+	 */ constructor(name, times, values, interpolation){
         if (name === undefined) throw new Error('THREE.KeyframeTrack: track name is undefined');
         if (times === undefined || times.length === 0) throw new Error('THREE.KeyframeTrack: no keyframes in track named ' + name);
-        this.name = name;
-        this.times = $ded5eecc0cd20cc2$var$convertArray(times, this.TimeBufferType);
-        this.values = $ded5eecc0cd20cc2$var$convertArray(values, this.ValueBufferType);
+        /**
+		 * The track's name can refer to morph targets or bones or
+		 * possibly other values within an animated object. See {@link PropertyBinding#parseTrackName}
+		 * for the forms of strings that can be parsed for property binding.
+		 *
+		 * @type {string}
+		 */ this.name = name;
+        /**
+		 * The keyframe times.
+		 *
+		 * @type {Float32Array}
+		 */ this.times = $ded5eecc0cd20cc2$var$convertArray(times, this.TimeBufferType);
+        /**
+		 * The keyframe values.
+		 *
+		 * @type {Float32Array}
+		 */ this.values = $ded5eecc0cd20cc2$var$convertArray(values, this.ValueBufferType);
         this.setInterpolation(interpolation || this.DefaultInterpolation);
     }
-    // Serialization (in static context, because of constructor invocation
-    // and automatic invocation of .toJSON):
-    static toJSON(track) {
+    /**
+	 * Converts the keyframe track to JSON.
+	 *
+	 * @static
+	 * @param {KeyframeTrack} track - The keyframe track to serialize.
+	 * @return {Object} The serialized keyframe track as JSON.
+	 */ static toJSON(track) {
         const trackType = track.constructor;
         let json;
         // derived classes can define a static toJSON method
@@ -25283,16 +30730,39 @@ class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
         json.type = track.ValueTypeName; // mandatory
         return json;
     }
-    InterpolantFactoryMethodDiscrete(result) {
+    /**
+	 * Factory method for creating a new discrete interpolant.
+	 *
+	 * @static
+	 * @param {TypedArray} [result] - The result buffer.
+	 * @return {DiscreteInterpolant} The new interpolant.
+	 */ InterpolantFactoryMethodDiscrete(result) {
         return new $ded5eecc0cd20cc2$export$fb9758ef7ef8d5cc(this.times, this.values, this.getValueSize(), result);
     }
-    InterpolantFactoryMethodLinear(result) {
+    /**
+	 * Factory method for creating a new linear interpolant.
+	 *
+	 * @static
+	 * @param {TypedArray} [result] - The result buffer.
+	 * @return {LinearInterpolant} The new interpolant.
+	 */ InterpolantFactoryMethodLinear(result) {
         return new $ded5eecc0cd20cc2$export$a8e6009059f51e1a(this.times, this.values, this.getValueSize(), result);
     }
-    InterpolantFactoryMethodSmooth(result) {
+    /**
+	 * Factory method for creating a new smooth interpolant.
+	 *
+	 * @static
+	 * @param {TypedArray} [result] - The result buffer.
+	 * @return {CubicInterpolant} The new interpolant.
+	 */ InterpolantFactoryMethodSmooth(result) {
         return new $ded5eecc0cd20cc2$export$3646682e7a3959(this.times, this.values, this.getValueSize(), result);
     }
-    setInterpolation(interpolation) {
+    /**
+	 * Defines the interpolation factor method for this keyframe track.
+	 *
+	 * @param {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)} interpolation - The interpolation type.
+	 * @return {KeyframeTrack} A reference to this keyframe track.
+	 */ setInterpolation(interpolation) {
         let factoryMethod;
         switch(interpolation){
             case $ded5eecc0cd20cc2$export$995b32462a65e855:
@@ -25318,7 +30788,11 @@ class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
         this.createInterpolant = factoryMethod;
         return this;
     }
-    getInterpolation() {
+    /**
+	 * Returns the current interpolation type.
+	 *
+	 * @return {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)} The interpolation type.
+	 */ getInterpolation() {
         switch(this.createInterpolant){
             case this.InterpolantFactoryMethodDiscrete:
                 return $ded5eecc0cd20cc2$export$995b32462a65e855;
@@ -25328,28 +30802,47 @@ class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
                 return $ded5eecc0cd20cc2$export$198b11ff4c72bb30;
         }
     }
-    getValueSize() {
+    /**
+	 * Returns the value size.
+	 *
+	 * @return {number} The value size.
+	 */ getValueSize() {
         return this.values.length / this.times.length;
     }
-    // move all keyframes either forwards or backwards in time
-    shift(timeOffset) {
+    /**
+	 * Moves all keyframes either forward or backward in time.
+	 *
+	 * @param {number} timeOffset - The offset to move the time values.
+	 * @return {KeyframeTrack} A reference to this keyframe track.
+	 */ shift(timeOffset) {
         if (timeOffset !== 0.0) {
             const times = this.times;
             for(let i = 0, n = times.length; i !== n; ++i)times[i] += timeOffset;
         }
         return this;
     }
-    // scale all keyframe times by a factor (useful for frame <-> seconds conversions)
-    scale(timeScale) {
+    /**
+	 * Scale all keyframe times by a factor (useful for frame - seconds conversions).
+	 *
+	 * @param {number} timeScale - The time scale.
+	 * @return {KeyframeTrack} A reference to this keyframe track.
+	 */ scale(timeScale) {
         if (timeScale !== 1.0) {
             const times = this.times;
             for(let i = 0, n = times.length; i !== n; ++i)times[i] *= timeScale;
         }
         return this;
     }
-    // removes keyframes before and after animation without changing any values within the range [startTime, endTime].
-    // IMPORTANT: We do not shift around keys to the start of the track time, because for interpolated keys this will change their values
-    trim(startTime, endTime) {
+    /**
+	 * Removes keyframes before and after animation without changing any values within the defined time range.
+	 *
+	 * Note: The method does not shift around keys to the start of the track time, because for interpolated
+	 * keys this will change their values
+	 *
+	 * @param {number} startTime - The start time.
+	 * @param {number} endTime - The end time.
+	 * @return {KeyframeTrack} A reference to this keyframe track.
+	 */ trim(startTime, endTime) {
         const times = this.times, nKeys = times.length;
         let from = 0, to = nKeys - 1;
         while(from !== nKeys && times[from] < startTime)++from;
@@ -25367,8 +30860,12 @@ class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
         }
         return this;
     }
-    // ensure we do not get a GarbageInGarbageOut situation, make sure tracks are at least minimally viable
-    validate() {
+    /**
+	 * Performs minimal validation on the keyframe track. Returns `true` if the values
+	 * are valid.
+	 *
+	 * @return {boolean} Whether the keyframes are valid or not.
+	 */ validate() {
         let valid = true;
         const valueSize = this.getValueSize();
         if (valueSize - Math.floor(valueSize) !== 0) {
@@ -25407,9 +30904,13 @@ class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
         }
         return valid;
     }
-    // removes equivalent sequential keys as common in morph target sequences
-    // (0,0,0,0,1,1,1,0,0,0,0,0,0,0) --> (0,0,1,1,0,0)
-    optimize() {
+    /**
+	 * Optimizes this keyframe track by removing equivalent sequential keys (which are
+	 * common in morph target sequences).
+	 *
+	 * @return {AnimationClip} A reference to this animation clip.
+	 */ optimize() {
+        // (0,0,0,0,1,1,1,0,0,0,0,0,0,0) --> (0,0,1,1,0,0)
         // times or values may be shared with other tracks, so overwriting is unsafe
         const times = this.times.slice(), values = this.values.slice(), stride = this.getValueSize(), smoothInterpolation = this.getInterpolation() === $ded5eecc0cd20cc2$export$198b11ff4c72bb30, lastIndex = times.length - 1;
         let writeIndex = 1;
@@ -25456,7 +30957,11 @@ class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
         }
         return this;
     }
-    clone() {
+    /**
+	 * Returns a new keyframe track with copied values from this instance.
+	 *
+	 * @return {KeyframeTrack} A clone of this instance.
+	 */ clone() {
         const times = this.times.slice();
         const values = this.values.slice();
         const TypedKeyframeTrack = this.constructor;
@@ -25466,32 +30971,112 @@ class $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
         return track;
     }
 }
-$ded5eecc0cd20cc2$export$b0e479f45b7006d6.prototype.TimeBufferType = Float32Array;
-$ded5eecc0cd20cc2$export$b0e479f45b7006d6.prototype.ValueBufferType = Float32Array;
-$ded5eecc0cd20cc2$export$b0e479f45b7006d6.prototype.DefaultInterpolation = $ded5eecc0cd20cc2$export$30fac1aace31cf4d;
 /**
- * A Track of Boolean keyframe values.
+ * The value type name.
+ *
+ * @type {String}
+ * @default ''
+ */ $ded5eecc0cd20cc2$export$b0e479f45b7006d6.prototype.ValueTypeName = '';
+/**
+ * The time buffer type of this keyframe track.
+ *
+ * @type {TypedArray|Array}
+ * @default Float32Array.constructor
+ */ $ded5eecc0cd20cc2$export$b0e479f45b7006d6.prototype.TimeBufferType = Float32Array;
+/**
+ * The value buffer type of this keyframe track.
+ *
+ * @type {TypedArray|Array}
+ * @default Float32Array.constructor
+ */ $ded5eecc0cd20cc2$export$b0e479f45b7006d6.prototype.ValueBufferType = Float32Array;
+/**
+ * The default interpolation type of this keyframe track.
+ *
+ * @type {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)}
+ * @default InterpolateLinear
+ */ $ded5eecc0cd20cc2$export$b0e479f45b7006d6.prototype.DefaultInterpolation = $ded5eecc0cd20cc2$export$30fac1aace31cf4d;
+/**
+ * A track for boolean keyframe values.
+ *
+ * @augments KeyframeTrack
  */ class $ded5eecc0cd20cc2$export$d3a344b98cf0b775 extends $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
-    // No interpolation parameter because only InterpolateDiscrete is valid.
-    constructor(name, times, values){
+    /**
+	 * Constructs a new boolean keyframe track.
+	 *
+	 * This keyframe track type has no `interpolation` parameter because the
+	 * interpolation is always discrete.
+	 *
+	 * @param {string} name - The keyframe track's name.
+	 * @param {Array<number>} times - A list of keyframe times.
+	 * @param {Array<number>} values - A list of keyframe values.
+	 */ constructor(name, times, values){
         super(name, times, values);
     }
 }
-$ded5eecc0cd20cc2$export$d3a344b98cf0b775.prototype.ValueTypeName = 'bool';
-$ded5eecc0cd20cc2$export$d3a344b98cf0b775.prototype.ValueBufferType = Array;
-$ded5eecc0cd20cc2$export$d3a344b98cf0b775.prototype.DefaultInterpolation = $ded5eecc0cd20cc2$export$995b32462a65e855;
+/**
+ * The value type name.
+ *
+ * @type {String}
+ * @default 'bool'
+ */ $ded5eecc0cd20cc2$export$d3a344b98cf0b775.prototype.ValueTypeName = 'bool';
+/**
+ * The value buffer type of this keyframe track.
+ *
+ * @type {TypedArray|Array}
+ * @default Array.constructor
+ */ $ded5eecc0cd20cc2$export$d3a344b98cf0b775.prototype.ValueBufferType = Array;
+/**
+ * The default interpolation type of this keyframe track.
+ *
+ * @type {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)}
+ * @default InterpolateDiscrete
+ */ $ded5eecc0cd20cc2$export$d3a344b98cf0b775.prototype.DefaultInterpolation = $ded5eecc0cd20cc2$export$995b32462a65e855;
 $ded5eecc0cd20cc2$export$d3a344b98cf0b775.prototype.InterpolantFactoryMethodLinear = undefined;
 $ded5eecc0cd20cc2$export$d3a344b98cf0b775.prototype.InterpolantFactoryMethodSmooth = undefined;
 /**
- * A Track of keyframe values that represent color.
+ * A track for color keyframe values.
+ *
+ * @augments KeyframeTrack
  */ class $ded5eecc0cd20cc2$export$83444c5d885347d8 extends $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
+    /**
+	 * Constructs a new color keyframe track.
+	 *
+	 * @param {string} name - The keyframe track's name.
+	 * @param {Array<number>} times - A list of keyframe times.
+	 * @param {Array<number>} values - A list of keyframe values.
+	 * @param {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)} [interpolation] - The interpolation type.
+	 */ constructor(name, times, values, interpolation){
+        super(name, times, values, interpolation);
+    }
 }
-$ded5eecc0cd20cc2$export$83444c5d885347d8.prototype.ValueTypeName = 'color';
 /**
- * A Track of numeric keyframe values.
+ * The value type name.
+ *
+ * @type {String}
+ * @default 'color'
+ */ $ded5eecc0cd20cc2$export$83444c5d885347d8.prototype.ValueTypeName = 'color';
+/**
+ * A track for numeric keyframe values.
+ *
+ * @augments KeyframeTrack
  */ class $ded5eecc0cd20cc2$export$d45f0d1a4d9a9314 extends $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
+    /**
+	 * Constructs a new number keyframe track.
+	 *
+	 * @param {string} name - The keyframe track's name.
+	 * @param {Array<number>} times - A list of keyframe times.
+	 * @param {Array<number>} values - A list of keyframe values.
+	 * @param {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)} [interpolation] - The interpolation type.
+	 */ constructor(name, times, values, interpolation){
+        super(name, times, values, interpolation);
+    }
 }
-$ded5eecc0cd20cc2$export$d45f0d1a4d9a9314.prototype.ValueTypeName = 'number';
+/**
+ * The value type name.
+ *
+ * @type {String}
+ * @default 'number'
+ */ $ded5eecc0cd20cc2$export$d45f0d1a4d9a9314.prototype.ValueTypeName = 'number';
 /**
  * Spherical linear unit quaternion interpolant.
  *
@@ -25515,52 +31100,166 @@ $ded5eecc0cd20cc2$export$d45f0d1a4d9a9314.prototype.ValueTypeName = 'number';
     }
 }
 /**
- * A Track of quaternion keyframe values.
+ * A track for Quaternion keyframe values.
+ *
+ * @augments KeyframeTrack
  */ class $ded5eecc0cd20cc2$export$b8043f12b5aafbd7 extends $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
-    InterpolantFactoryMethodLinear(result) {
+    /**
+	 * Constructs a new Quaternion keyframe track.
+	 *
+	 * @param {string} name - The keyframe track's name.
+	 * @param {Array<number>} times - A list of keyframe times.
+	 * @param {Array<number>} values - A list of keyframe values.
+	 * @param {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)} [interpolation] - The interpolation type.
+	 */ constructor(name, times, values, interpolation){
+        super(name, times, values, interpolation);
+    }
+    /**
+	 * Overwritten so the method returns Quaternion based interpolant.
+	 *
+	 * @static
+	 * @param {TypedArray} [result] - The result buffer.
+	 * @return {QuaternionLinearInterpolant} The new interpolant.
+	 */ InterpolantFactoryMethodLinear(result) {
         return new $ded5eecc0cd20cc2$export$2db1cfb7923d931e(this.times, this.values, this.getValueSize(), result);
     }
 }
-$ded5eecc0cd20cc2$export$b8043f12b5aafbd7.prototype.ValueTypeName = 'quaternion';
+/**
+ * The value type name.
+ *
+ * @type {String}
+ * @default 'quaternion'
+ */ $ded5eecc0cd20cc2$export$b8043f12b5aafbd7.prototype.ValueTypeName = 'quaternion';
 // ValueBufferType is inherited
 // DefaultInterpolation is inherited;
 $ded5eecc0cd20cc2$export$b8043f12b5aafbd7.prototype.InterpolantFactoryMethodSmooth = undefined;
 /**
- * A Track that interpolates Strings
+ * A track for string keyframe values.
+ *
+ * @augments KeyframeTrack
  */ class $ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd extends $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
-    // No interpolation parameter because only InterpolateDiscrete is valid.
-    constructor(name, times, values){
+    /**
+	 * Constructs a new string keyframe track.
+	 *
+	 * This keyframe track type has no `interpolation` parameter because the
+	 * interpolation is always discrete.
+	 *
+	 * @param {string} name - The keyframe track's name.
+	 * @param {Array<number>} times - A list of keyframe times.
+	 * @param {Array<number>} values - A list of keyframe values.
+	 */ constructor(name, times, values){
         super(name, times, values);
     }
 }
-$ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd.prototype.ValueTypeName = 'string';
-$ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd.prototype.ValueBufferType = Array;
-$ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd.prototype.DefaultInterpolation = $ded5eecc0cd20cc2$export$995b32462a65e855;
+/**
+ * The value type name.
+ *
+ * @type {String}
+ * @default 'string'
+ */ $ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd.prototype.ValueTypeName = 'string';
+/**
+ * The value buffer type of this keyframe track.
+ *
+ * @type {TypedArray|Array}
+ * @default Array.constructor
+ */ $ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd.prototype.ValueBufferType = Array;
+/**
+ * The default interpolation type of this keyframe track.
+ *
+ * @type {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)}
+ * @default InterpolateDiscrete
+ */ $ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd.prototype.DefaultInterpolation = $ded5eecc0cd20cc2$export$995b32462a65e855;
 $ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd.prototype.InterpolantFactoryMethodLinear = undefined;
 $ded5eecc0cd20cc2$export$6ce41d4f3a8df9cd.prototype.InterpolantFactoryMethodSmooth = undefined;
 /**
- * A Track of vectored keyframe values.
+ * A track for vector keyframe values.
+ *
+ * @augments KeyframeTrack
  */ class $ded5eecc0cd20cc2$export$5ce2dcb4cc9f2bff extends $ded5eecc0cd20cc2$export$b0e479f45b7006d6 {
+    /**
+	 * Constructs a new vector keyframe track.
+	 *
+	 * @param {string} name - The keyframe track's name.
+	 * @param {Array<number>} times - A list of keyframe times.
+	 * @param {Array<number>} values - A list of keyframe values.
+	 * @param {(InterpolateLinear|InterpolateDiscrete|InterpolateSmooth)} [interpolation] - The interpolation type.
+	 */ constructor(name, times, values, interpolation){
+        super(name, times, values, interpolation);
+    }
 }
-$ded5eecc0cd20cc2$export$5ce2dcb4cc9f2bff.prototype.ValueTypeName = 'vector';
-class $ded5eecc0cd20cc2$export$d942c706bf23829c {
-    constructor(name = '', duration = -1, tracks = [], blendMode = $ded5eecc0cd20cc2$export$bcfbbdcf8de7f8cd){
-        this.name = name;
-        this.tracks = tracks;
-        this.duration = duration;
-        this.blendMode = blendMode;
-        this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
+/**
+ * The value type name.
+ *
+ * @type {String}
+ * @default 'vector'
+ */ $ded5eecc0cd20cc2$export$5ce2dcb4cc9f2bff.prototype.ValueTypeName = 'vector';
+/**
+ * A reusable set of keyframe tracks which represent an animation.
+ */ class $ded5eecc0cd20cc2$export$d942c706bf23829c {
+    /**
+	 * Constructs a new animation clip.
+	 *
+	 * Note: Instead of instantiating an AnimationClip directly with the constructor, you can
+	 * use the static interface of this class for creating clips. In most cases though, animation clips
+	 * will automatically be created by loaders when importing animated 3D assets.
+	 *
+	 * @param {string} [name=''] - The clip's name.
+	 * @param {number} [duration=-1] - The clip's duration in seconds. If a negative value is passed,
+	 * the duration will be calculated from the passed keyframes.
+	 * @param {Array<KeyframeTrack>} tracks - An array of keyframe tracks.
+	 * @param {(NormalAnimationBlendMode|AdditiveAnimationBlendMode)} [blendMode=NormalAnimationBlendMode] - Defines how the animation
+	 * is blended/combined when two or more animations are simultaneously played.
+	 */ constructor(name = '', duration = -1, tracks = [], blendMode = $ded5eecc0cd20cc2$export$bcfbbdcf8de7f8cd){
+        /**
+		 * The clip's name.
+		 *
+		 * @type {string}
+		 */ this.name = name;
+        /**
+		 *  An array of keyframe tracks.
+		 *
+		 * @type {Array<KeyframeTrack>}
+		 */ this.tracks = tracks;
+        /**
+		 * The clip's duration in seconds.
+		 *
+		 * @type {number}
+		 */ this.duration = duration;
+        /**
+		 * Defines how the animation is blended/combined when two or more animations
+		 * are simultaneously played.
+		 *
+		 * @type {(NormalAnimationBlendMode|AdditiveAnimationBlendMode)}
+		 */ this.blendMode = blendMode;
+        /**
+		 * The UUID of the animation clip.
+		 *
+		 * @type {string}
+		 * @readonly
+		 */ this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
         // this means it should figure out its duration by scanning the tracks
         if (this.duration < 0) this.resetDuration();
     }
-    static parse(json) {
+    /**
+	 * Factory method for creating an animation clip from the given JSON.
+	 *
+	 * @static
+	 * @param {Object} json - The serialized animation clip.
+	 * @return {AnimationClip} The new animation clip.
+	 */ static parse(json) {
         const tracks = [], jsonTracks = json.tracks, frameTime = 1.0 / (json.fps || 1.0);
         for(let i = 0, n = jsonTracks.length; i !== n; ++i)tracks.push($ded5eecc0cd20cc2$var$parseKeyframeTrack(jsonTracks[i]).scale(frameTime));
         const clip = new this(json.name, json.duration, tracks, json.blendMode);
         clip.uuid = json.uuid;
         return clip;
     }
-    static toJSON(clip) {
+    /**
+	 * Serializes the given animation clip into JSON.
+	 *
+	 * @static
+	 * @param {AnimationClip} clip - The animation clip to serialize.
+	 * @return {Object} The JSON object.
+	 */ static toJSON(clip) {
         const tracks = [], clipTracks = clip.tracks;
         const json = {
             'name': clip.name,
@@ -25572,7 +31271,20 @@ class $ded5eecc0cd20cc2$export$d942c706bf23829c {
         for(let i = 0, n = clipTracks.length; i !== n; ++i)tracks.push($ded5eecc0cd20cc2$export$b0e479f45b7006d6.toJSON(clipTracks[i]));
         return json;
     }
-    static CreateFromMorphTargetSequence(name, morphTargetSequence, fps, noLoop) {
+    /**
+	 * Returns a new animation clip from the passed morph targets array of a
+	 * geometry, taking a name and the number of frames per second.
+	 *
+	 * Note: The fps parameter is required, but the animation speed can be
+	 * overridden via {@link AnimationAction#setDuration}.
+	 *
+	 * @static
+	 * @param {string} name - The name of the animation clip.
+	 * @param {Array<Object>} morphTargetSequence - A sequence of morph targets.
+	 * @param {number} fps - The Frames-Per-Second value.
+	 * @param {boolean} noLoop - Whether the clip should be no loop or not.
+	 * @return {AnimationClip} The new animation clip.
+	 */ static CreateFromMorphTargetSequence(name, morphTargetSequence, fps, noLoop) {
         const numMorphTargets = morphTargetSequence.length;
         const tracks = [];
         for(let i = 0; i < numMorphTargets; i++){
@@ -25593,7 +31305,16 @@ class $ded5eecc0cd20cc2$export$d942c706bf23829c {
         }
         return new this(name, -1, tracks);
     }
-    static findByName(objectOrClipArray, name) {
+    /**
+	 * Searches for an animation clip by name, taking as its first parameter
+	 * either an array of clips, or a mesh or geometry that contains an
+	 * array named "animations" property.
+	 *
+	 * @static
+	 * @param {(Array<AnimationClip>|Object3D)} objectOrClipArray - The array or object to search through.
+	 * @param {string} name - The name to search for.
+	 * @return {?AnimationClip} The found animation clip. Returns `null` if no clip has been found.
+	 */ static findByName(objectOrClipArray, name) {
         let clipArray = objectOrClipArray;
         if (!Array.isArray(objectOrClipArray)) {
             const o = objectOrClipArray;
@@ -25604,7 +31325,19 @@ class $ded5eecc0cd20cc2$export$d942c706bf23829c {
         }
         return null;
     }
-    static CreateClipsFromMorphTargetSequences(morphTargets, fps, noLoop) {
+    /**
+	 * Returns an array of new AnimationClips created from the morph target
+	 * sequences of a geometry, trying to sort morph target names into
+	 * animation-group-based patterns like "Walk_001, Walk_002, Run_001, Run_002...".
+	 *
+	 * See {@link MD2Loader#parse} as an example for how the method should be used.
+	 *
+	 * @static
+	 * @param {Array<Object>} morphTargets - A sequence of morph targets.
+	 * @param {number} fps - The Frames-Per-Second value.
+	 * @param {boolean} noLoop - Whether the clip should be no loop or not.
+	 * @return {Array<AnimationClip>} An array of new animation clips.
+	 */ static CreateClipsFromMorphTargetSequences(morphTargets, fps, noLoop) {
         const animationToMorphTargets = {};
         // tested with https://regex101.com/ on trick sequences
         // such flamingo_flyA_003, flamingo_run1_003, crdeath0059
@@ -25625,8 +31358,16 @@ class $ded5eecc0cd20cc2$export$d942c706bf23829c {
         for(const name in animationToMorphTargets)clips.push(this.CreateFromMorphTargetSequence(name, animationToMorphTargets[name], fps, noLoop));
         return clips;
     }
-    // parse the animation.hierarchy format
-    static parseAnimation(animation, bones) {
+    /**
+	 * Parses the `animation.hierarchy` format and returns a new animation clip.
+	 *
+	 * @static
+	 * @deprecated since r175.
+	 * @param {Object} animation - A serialized animation clip as JSON.
+	 * @param {Array<Bones>} bones - An array of bones.
+	 * @return {?AnimationClip} The new animation clip.
+	 */ static parseAnimation(animation, bones) {
+        console.warn('THREE.AnimationClip: parseAnimation() is deprecated and will be removed with r185');
         if (!animation) {
             console.error('THREE.AnimationClip: No animation in JSONLoader data.');
             return null;
@@ -25686,7 +31427,11 @@ class $ded5eecc0cd20cc2$export$d942c706bf23829c {
         const clip = new this(clipName, duration, tracks, blendMode);
         return clip;
     }
-    resetDuration() {
+    /**
+	 * Sets the duration of this clip to the duration of its longest keyframe track.
+	 *
+	 * @return {AnimationClip} A reference to this animation clip.
+	 */ resetDuration() {
         const tracks = this.tracks;
         let duration = 0;
         for(let i = 0, n = tracks.length; i !== n; ++i){
@@ -25696,25 +31441,47 @@ class $ded5eecc0cd20cc2$export$d942c706bf23829c {
         this.duration = duration;
         return this;
     }
-    trim() {
+    /**
+	 * Trims all tracks to the clip's duration.
+	 *
+	 * @return {AnimationClip} A reference to this animation clip.
+	 */ trim() {
         for(let i = 0; i < this.tracks.length; i++)this.tracks[i].trim(0, this.duration);
         return this;
     }
-    validate() {
+    /**
+	 * Performs minimal validation on each track in the clip. Returns `true` if all
+	 * tracks are valid.
+	 *
+	 * @return {boolean} Whether the clip's keyframes are valid or not.
+	 */ validate() {
         let valid = true;
         for(let i = 0; i < this.tracks.length; i++)valid = valid && this.tracks[i].validate();
         return valid;
     }
-    optimize() {
+    /**
+	 * Optimizes each track by removing equivalent sequential keys (which are
+	 * common in morph target sequences).
+	 *
+	 * @return {AnimationClip} A reference to this animation clip.
+	 */ optimize() {
         for(let i = 0; i < this.tracks.length; i++)this.tracks[i].optimize();
         return this;
     }
-    clone() {
+    /**
+	 * Returns a new animation clip with copied values from this instance.
+	 *
+	 * @return {AnimationClip} A clone of this instance.
+	 */ clone() {
         const tracks = [];
         for(let i = 0; i < this.tracks.length; i++)tracks.push(this.tracks[i].clone());
         return new this.constructor(this.name, this.duration, tracks, this.blendMode);
     }
-    toJSON() {
+    /**
+	 * Serializes this animation clip into JSON.
+	 *
+	 * @return {Object} The JSON object.
+	 */ toJSON() {
         return this.constructor.toJSON(this);
     }
 }
@@ -25757,28 +31524,88 @@ function $ded5eecc0cd20cc2$var$parseKeyframeTrack(json) {
     else // by default, we assume a constructor compatible with the base
     return new trackType(json.name, json.times, json.values, json.interpolation);
 }
-const $ded5eecc0cd20cc2$export$94affb487e701bf2 = {
-    enabled: false,
-    files: {},
-    add: function(key, file) {
+/**
+ * @class
+ * @classdesc A simple caching system, used internally by {@link FileLoader}.
+ * To enable caching across all loaders that use {@link FileLoader}, add `THREE.Cache.enabled = true.` once in your app.
+ * @hideconstructor
+ */ const $ded5eecc0cd20cc2$export$94affb487e701bf2 = {
+    /**
+	 * Whether caching is enabled or not.
+	 *
+	 * @static
+	 * @type {boolean}
+	 * @default false
+	 */ enabled: false,
+    /**
+	 * A dictionary that holds cached files.
+	 *
+	 * @static
+	 * @type {Object<string,Object>}
+	 */ files: {},
+    /**
+	 * Adds a cache entry with a key to reference the file. If this key already
+	 * holds a file, it is overwritten.
+	 *
+	 * @static
+	 * @param {string} key - The key to reference the cached file.
+	 * @param {Object} file -  The file to be cached.
+	 */ add: function(key, file) {
         if (this.enabled === false) return;
         // console.log( 'THREE.Cache', 'Adding key:', key );
         this.files[key] = file;
     },
-    get: function(key) {
+    /**
+	 * Gets the cached value for the given key.
+	 *
+	 * @static
+	 * @param {string} key - The key to reference the cached file.
+	 * @return {Object|undefined} The cached file. If the key does not exist `undefined` is returned.
+	 */ get: function(key) {
         if (this.enabled === false) return;
         // console.log( 'THREE.Cache', 'Checking key:', key );
         return this.files[key];
     },
-    remove: function(key) {
+    /**
+	 * Removes the cached file associated with the given key.
+	 *
+	 * @static
+	 * @param {string} key - The key to reference the cached file.
+	 */ remove: function(key) {
         delete this.files[key];
     },
-    clear: function() {
+    /**
+	 * Remove all values from the cache.
+	 *
+	 * @static
+	 */ clear: function() {
         this.files = {};
     }
 };
-class $ded5eecc0cd20cc2$export$99cc795e99919eed {
-    constructor(onLoad, onProgress, onError){
+/**
+ * Handles and keeps track of loaded and pending data. A default global
+ * instance of this class is created and used by loaders if not supplied
+ * manually.
+ *
+ * In general that should be sufficient, however there are times when it can
+ * be useful to have separate loaders - for example if you want to show
+ * separate loading bars for objects and textures.
+ *
+ * ```js
+ * const manager = new THREE.LoadingManager();
+ * manager.onLoad = () => console.log( 'Loading complete!' );
+ *
+ * const loader1 = new OBJLoader( manager );
+ * const loader2 = new ColladaLoader( manager );
+ * ```
+ */ class $ded5eecc0cd20cc2$export$99cc795e99919eed {
+    /**
+	 * Constructs a new loading manager.
+	 *
+	 * @param {Function} [onLoad] - Executes when all items have been loaded.
+	 * @param {Function} [onProgress] - Executes when single items have been loaded.
+	 * @param {Function} [onError] - Executes when an error occurs.
+	 */ constructor(onLoad, onProgress, onError){
         const scope = this;
         let isLoading = false;
         let itemsLoaded = 0;
@@ -25787,18 +31614,48 @@ class $ded5eecc0cd20cc2$export$99cc795e99919eed {
         const handlers = [];
         // Refer to #5689 for the reason why we don't set .onStart
         // in the constructor
-        this.onStart = undefined;
-        this.onLoad = onLoad;
-        this.onProgress = onProgress;
-        this.onError = onError;
-        this.itemStart = function(url) {
+        /**
+		 * Executes when an item starts loading.
+		 *
+		 * @type {Function|undefined}
+		 * @default undefined
+		 */ this.onStart = undefined;
+        /**
+		 * Executes when all items have been loaded.
+		 *
+		 * @type {Function|undefined}
+		 * @default undefined
+		 */ this.onLoad = onLoad;
+        /**
+		 * Executes when single items have been loaded.
+		 *
+		 * @type {Function|undefined}
+		 * @default undefined
+		 */ this.onProgress = onProgress;
+        /**
+		 * Executes when an error occurs.
+		 *
+		 * @type {Function|undefined}
+		 * @default undefined
+		 */ this.onError = onError;
+        /**
+		 * This should be called by any loader using the manager when the loader
+		 * starts loading an item.
+		 *
+		 * @param {string} url - The URL to load.
+		 */ this.itemStart = function(url) {
             itemsTotal++;
             if (isLoading === false) {
                 if (scope.onStart !== undefined) scope.onStart(url, itemsLoaded, itemsTotal);
             }
             isLoading = true;
         };
-        this.itemEnd = function(url) {
+        /**
+		 * This should be called by any loader using the manager when the loader
+		 * ended loading an item.
+		 *
+		 * @param {string} url - The URL of the loaded item.
+		 */ this.itemEnd = function(url) {
             itemsLoaded++;
             if (scope.onProgress !== undefined) scope.onProgress(url, itemsLoaded, itemsTotal);
             if (itemsLoaded === itemsTotal) {
@@ -25806,27 +31663,94 @@ class $ded5eecc0cd20cc2$export$99cc795e99919eed {
                 if (scope.onLoad !== undefined) scope.onLoad();
             }
         };
-        this.itemError = function(url) {
+        /**
+		 * This should be called by any loader using the manager when the loader
+		 * encounters an error when loading an item.
+		 *
+		 * @param {string} url - The URL of the item that produces an error.
+		 */ this.itemError = function(url) {
             if (scope.onError !== undefined) scope.onError(url);
         };
-        this.resolveURL = function(url) {
+        /**
+		 * Given a URL, uses the URL modifier callback (if any) and returns a
+		 * resolved URL. If no URL modifier is set, returns the original URL.
+		 *
+		 * @param {string} url - The URL to load.
+		 * @return {string} The resolved URL.
+		 */ this.resolveURL = function(url) {
             if (urlModifier) return urlModifier(url);
             return url;
         };
-        this.setURLModifier = function(transform) {
+        /**
+		 * If provided, the callback will be passed each resource URL before a
+		 * request is sent. The callback may return the original URL, or a new URL to
+		 * override loading behavior. This behavior can be used to load assets from
+		 * .ZIP files, drag-and-drop APIs, and Data URIs.
+		 *
+		 * ```js
+		 * const blobs = {'fish.gltf': blob1, 'diffuse.png': blob2, 'normal.png': blob3};
+		 *
+		 * const manager = new THREE.LoadingManager();
+		 *
+		 * // Initialize loading manager with URL callback.
+		 * const objectURLs = [];
+		 * manager.setURLModifier( ( url ) => {
+		 *
+		 * 	url = URL.createObjectURL( blobs[ url ] );
+		 * 	objectURLs.push( url );
+		 * 	return url;
+		 *
+		 * } );
+		 *
+		 * // Load as usual, then revoke the blob URLs.
+		 * const loader = new GLTFLoader( manager );
+		 * loader.load( 'fish.gltf', (gltf) => {
+		 *
+		 * 	scene.add( gltf.scene );
+		 * 	objectURLs.forEach( ( url ) => URL.revokeObjectURL( url ) );
+		 *
+		 * } );
+		 * ```
+		 *
+		 * @param {function(string):string} transform - URL modifier callback. Called with an URL and must return a resolved URL.
+		 * @return {LoadingManager} A reference to this loading manager.
+		 */ this.setURLModifier = function(transform) {
             urlModifier = transform;
             return this;
         };
-        this.addHandler = function(regex, loader) {
+        /**
+		 * Registers a loader with the given regular expression. Can be used to
+		 * define what loader should be used in order to load specific files. A
+		 * typical use case is to overwrite the default loader for textures.
+		 *
+		 * ```js
+		 * // add handler for TGA textures
+		 * manager.addHandler( /\.tga$/i, new TGALoader() );
+		 * ```
+		 *
+		 * @param {string} regex - A regular expression.
+		 * @param {Loader} loader - A loader that should handle matched cases.
+		 * @return {LoadingManager} A reference to this loading manager.
+		 */ this.addHandler = function(regex, loader) {
             handlers.push(regex, loader);
             return this;
         };
-        this.removeHandler = function(regex) {
+        /**
+		 * Removes the loader for the given regular expression.
+		 *
+		 * @param {string} regex - A regular expression.
+		 * @return {LoadingManager} A reference to this loading manager.
+		 */ this.removeHandler = function(regex) {
             const index = handlers.indexOf(regex);
             if (index !== -1) handlers.splice(index, 2);
             return this;
         };
-        this.getHandler = function(file) {
+        /**
+		 * Can be used to retrieve the registered loader for the given file path.
+		 *
+		 * @param {string} file - The file path.
+		 * @return {?Loader} The registered loader. Returns `null` if no loader was found.
+		 */ this.getHandler = function(file) {
             for(let i = 0, l = handlers.length; i < l; i += 2){
                 const regex = handlers[i];
                 const loader = handlers[i + 1];
@@ -25837,7 +31761,12 @@ class $ded5eecc0cd20cc2$export$99cc795e99919eed {
         };
     }
 }
-const $ded5eecc0cd20cc2$export$b033c3f9a95c6a16 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$99cc795e99919eed();
+/**
+ * The global default loading manager.
+ *
+ * @constant
+ * @type {LoadingManager}
+ */ const $ded5eecc0cd20cc2$export$b033c3f9a95c6a16 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$99cc795e99919eed();
 /**
  * Abstract base class for loaders.
  *
@@ -25881,7 +31810,7 @@ const $ded5eecc0cd20cc2$export$b033c3f9a95c6a16 = /*@__PURE__*/ new $ded5eecc0cd
 		 * The [request header]{@link https://developer.mozilla.org/en-US/docs/Glossary/Request_header}
 		 * used in HTTP request.
 		 *
-		 * @type {Object}
+		 * @type {Object<string, any>}
 		 */ this.requestHeader = {};
     }
     /**
@@ -25890,14 +31819,14 @@ const $ded5eecc0cd20cc2$export$b033c3f9a95c6a16 = /*@__PURE__*/ new $ded5eecc0cd
 	 *
 	 * @param {string} url - The path/URL of the file to be loaded.
 	 * @param {Function} onLoad - Executed when the loading process has been finished.
-	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
-	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 * @param {onProgressCallback} [onProgress] - Executed while the loading is in progress.
+	 * @param {onErrorCallback} [onError] - Executed when errors occur.
 	 */ load() {}
     /**
 	 * A async version of {@link Loader#load}.
 	 *
 	 * @param {string} url - The path/URL of the file to be loaded.
-	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onProgressCallback} [onProgress] - Executed while the loading is in progress.
 	 * @return {Promise} A Promise that resolves when the asset has been loaded.
 	 */ loadAsync(url, onProgress) {
         const scope = this;
@@ -25965,12 +31894,10 @@ const $ded5eecc0cd20cc2$export$b033c3f9a95c6a16 = /*@__PURE__*/ new $ded5eecc0cd
 /**
  * Callback for onProgress in loaders.
  *
- *
  * @callback onProgressCallback
  * @param {ProgressEvent} event - An instance of `ProgressEvent` that represents the current loading status.
  */ /**
  * Callback for onError in loaders.
- *
  *
  * @callback onErrorCallback
  * @param {Error} error - The error which occurred during the loading process.
@@ -25991,11 +31918,48 @@ class $ded5eecc0cd20cc2$var$HttpError extends Error {
         this.response = response;
     }
 }
-class $ded5eecc0cd20cc2$export$98435a25b5cf7b2b extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * A low level class for loading resources with the Fetch API, used internally by
+ * most loaders. It can also be used directly to load any file type that does
+ * not have a loader.
+ *
+ * This loader supports caching. If you want to use it, add `THREE.Cache.enabled = true;`
+ * once to your application.
+ *
+ * ```js
+ * const loader = new THREE.FileLoader();
+ * const data = await loader.loadAsync( 'example.txt' );
+ * ```
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$98435a25b5cf7b2b extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new file loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
+        /**
+		 * The expected mime type.
+		 *
+		 * @type {string}
+		 */ this.mimeType = '';
+        /**
+		 * The expected response type.
+		 *
+		 * @type {('arraybuffer'|'blob'|'document'|'json'|'')}
+		 * @default ''
+		 */ this.responseType = '';
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and pass the loaded response to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(any)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} [onProgress] - Executed while the loading is in progress.
+	 * @param {onErrorCallback} [onError] - Executed when errors occur.
+	 * @return {any|undefined} The cached resource if available.
+	 */ load(url, onLoad, onProgress, onError) {
         if (url === undefined) url = '';
         if (this.path !== undefined) url = this.path + url;
         url = this.manager.resolveURL(url);
@@ -26091,7 +32055,7 @@ class $ded5eecc0cd20cc2$export$98435a25b5cf7b2b extends $ded5eecc0cd20cc2$export
                 case 'json':
                     return response.json();
                 default:
-                    if (mimeType === undefined) return response.text();
+                    if (mimeType === '') return response.text();
                     else {
                         // sniff encoding
                         const re = /charset="?([^;"\s]*)"?/i;
@@ -26130,20 +32094,52 @@ class $ded5eecc0cd20cc2$export$98435a25b5cf7b2b extends $ded5eecc0cd20cc2$export
         });
         this.manager.itemStart(url);
     }
-    setResponseType(value) {
+    /**
+	 * Sets the expected response type.
+	 *
+	 * @param {('arraybuffer'|'blob'|'document'|'json'|'')} value - The response type.
+	 * @return {FileLoader} A reference to this file loader.
+	 */ setResponseType(value) {
         this.responseType = value;
         return this;
     }
-    setMimeType(value) {
+    /**
+	 * Sets the expected mime type of the loaded file.
+	 *
+	 * @param {string} value - The mime type.
+	 * @return {FileLoader} A reference to this file loader.
+	 */ setMimeType(value) {
         this.mimeType = value;
         return this;
     }
 }
-class $ded5eecc0cd20cc2$export$29711c7e14f61db extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * Class for loading animation clips in the JSON format. The files are internally
+ * loaded via {@link FileLoader}.
+ *
+ * ```js
+ * const loader = new THREE.AnimationLoader();
+ * const animations = await loader.loadAsync( 'animations/animation.js' );
+ * ```
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$29711c7e14f61db extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new animation loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and pass the loaded animations as an array
+	 * holding instances of {@link AnimationClip} to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(Array<AnimationClip>)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const loader = new $ded5eecc0cd20cc2$export$98435a25b5cf7b2b(this.manager);
         loader.setPath(this.path);
@@ -26159,7 +32155,12 @@ class $ded5eecc0cd20cc2$export$29711c7e14f61db extends $ded5eecc0cd20cc2$export$
             }
         }, onProgress, onError);
     }
-    parse(json) {
+    /**
+	 * Parses the given JSON object and returns an array of animation clips.
+	 *
+	 * @param {Object} json - The serialized animation clips.
+	 * @return {Array<AnimationClip>} The parsed animation clips.
+	 */ parse(json) {
         const animations = [];
         for(let i = 0; i < json.length; i++){
             const clip = $ded5eecc0cd20cc2$export$d942c706bf23829c.parse(json[i]);
@@ -26169,14 +32170,34 @@ class $ded5eecc0cd20cc2$export$29711c7e14f61db extends $ded5eecc0cd20cc2$export$
     }
 }
 /**
- * Abstract Base class to block based textures loader (dds, pvr, ...)
+ * Abstract base class for loading compressed texture formats S3TC, ASTC or ETC.
+ * Textures are internally loaded via {@link FileLoader}.
  *
- * Sub classes have to implement the parse() method which will be used in load().
+ * Derived classes have to implement the `parse()` method which holds the parsing
+ * for the respective format.
+ *
+ * @abstract
+ * @augments Loader
  */ class $ded5eecc0cd20cc2$export$bd73ce947a280350 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+    /**
+	 * Constructs a new compressed texture loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and passes the loaded compressed texture
+	 * to the `onLoad()` callback. The method also returns a new texture object which can
+	 * directly be used for material creation. If you do it this way, the texture
+	 * may pop up in your scene once the respective loading process is finished.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(CompressedTexture)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 * @return {CompressedTexture} The compressed texture.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const images = [];
         const texture = new $ded5eecc0cd20cc2$export$3466bac9141a5cc4();
@@ -26236,11 +32257,38 @@ class $ded5eecc0cd20cc2$export$29711c7e14f61db extends $ded5eecc0cd20cc2$export$
         return texture;
     }
 }
-class $ded5eecc0cd20cc2$export$8905ce1c7a2464a1 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * A loader for loading images. The class loads images with the HTML `Image` API.
+ *
+ * ```js
+ * const loader = new THREE.ImageLoader();
+ * const image = await loader.loadAsync( 'image.png' );
+ * ```
+ * Please note that `ImageLoader` has dropped support for progress
+ * events in `r84`. For an `ImageLoader` that supports progress events, see
+ * [this thread]{@link https://github.com/mrdoob/three.js/issues/10439#issuecomment-275785639}.
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$8905ce1c7a2464a1 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new image loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and passes the loaded image
+	 * to the `onLoad()` callback. The method also returns a new `Image` object which can
+	 * directly be used for texture creation. If you do it this way, the texture
+	 * may pop up in your scene once the respective loading process is finished.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(Image)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Unsupported in this loader.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 * @return {Image} The image.
+	 */ load(url, onLoad, onProgress, onError) {
         if (this.path !== undefined) url = this.path + url;
         url = this.manager.resolveURL(url);
         const scope = this;
@@ -26280,11 +32328,53 @@ class $ded5eecc0cd20cc2$export$8905ce1c7a2464a1 extends $ded5eecc0cd20cc2$export
         return image;
     }
 }
-class $ded5eecc0cd20cc2$export$2ec114afc2cf6308 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * Class for loading cube textures. Images are internally loaded via {@link ImageLoader}.
+ *
+ * The loader returns an instance of {@link CubeTexture} and expects the cube map to
+ * be defined as six separate images representing the sides of a cube. Other cube map definitions
+ * like vertical and horizontal cross, column and row layouts are not supported.
+ *
+ * Note that, by convention, cube maps are specified in a coordinate system
+ * in which positive-x is to the right when looking up the positive-z axis --
+ * in other words, using a left-handed coordinate system. Since three.js uses
+ * a right-handed coordinate system, environment maps used in three.js will
+ * have pos-x and neg-x swapped.
+ *
+ * The loaded cube texture is in sRGB color space. Meaning {@link Texture#colorSpace}
+ * is set to `SRGBColorSpace` by default.
+ *
+ * ```js
+ * const loader = new THREE.CubeTextureLoader().setPath( 'textures/cubeMaps/' );
+ * const cubeTexture = await loader.loadAsync( [
+ * 	'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'
+ * ] );
+ * scene.background = cubeTexture;
+ * ```
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$2ec114afc2cf6308 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new cube texture loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(urls, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and pass the fully loaded cube texture
+	 * to the `onLoad()` callback. The method also returns a new cube texture object which can
+	 * directly be used for material creation. If you do it this way, the cube texture
+	 * may pop up in your scene once the respective loading process is finished.
+	 *
+	 * @param {Array<string>} urls - Array of 6 URLs to images, one for each side of the
+	 * cube texture. The urls should be specified in the following order: pos-x,
+	 * neg-x, pos-y, neg-y, pos-z, neg-z. An array of data URIs are allowed as well.
+	 * @param {function(CubeTexture)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Unsupported in this loader.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 * @return {CubeTexture} The cube texture.
+	 */ load(urls, onLoad, onProgress, onError) {
         const texture = new $ded5eecc0cd20cc2$export$ee2e5a18258a4049();
         texture.colorSpace = $ded5eecc0cd20cc2$export$561f394b24edfcaa;
         const loader = new $ded5eecc0cd20cc2$export$8905ce1c7a2464a1(this.manager);
@@ -26306,14 +32396,34 @@ class $ded5eecc0cd20cc2$export$2ec114afc2cf6308 extends $ded5eecc0cd20cc2$export
     }
 }
 /**
- * Abstract Base class to load generic binary textures formats (rgbe, hdr, ...)
+ * Abstract base class for loading binary texture formats RGBE, EXR or TGA.
+ * Textures are internally loaded via {@link FileLoader}.
  *
- * Sub classes have to implement the parse() method which will be used in load().
+ * Derived classes have to implement the `parse()` method which holds the parsing
+ * for the respective format.
+ *
+ * @abstract
+ * @augments Loader
  */ class $ded5eecc0cd20cc2$export$792d8a18f2c55855 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+    /**
+	 * Constructs a new data texture loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and passes the loaded data texture
+	 * to the `onLoad()` callback. The method also returns a new texture object which can
+	 * directly be used for material creation. If you do it this way, the texture
+	 * may pop up in your scene once the respective loading process is finished.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(DataTexture)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 * @return {DataTexture} The data texture.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const texture = new $ded5eecc0cd20cc2$export$b691f601014eabe1();
         const loader = new $ded5eecc0cd20cc2$export$98435a25b5cf7b2b(this.manager);
@@ -26359,11 +32469,41 @@ class $ded5eecc0cd20cc2$export$2ec114afc2cf6308 extends $ded5eecc0cd20cc2$export
         return texture;
     }
 }
-class $ded5eecc0cd20cc2$export$fd1bfc71f64c538c extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * Class for loading textures. Images are internally
+ * loaded via {@link ImageLoader}.
+ *
+ * ```js
+ * const loader = new THREE.TextureLoader();
+ * const texture = await loader.loadAsync( 'textures/land_ocean_ice_cloud_2048.jpg' );
+ *
+ * const material = new THREE.MeshBasicMaterial( { map:texture } );
+ * ```
+ * Please note that `TextureLoader` has dropped support for progress
+ * events in `r84`. For a `TextureLoader` that supports progress events, see
+ * [this thread]{@link https://github.com/mrdoob/three.js/issues/10439#issuecomment-293260145}.
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$fd1bfc71f64c538c extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new texture loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and pass the fully loaded texture
+	 * to the `onLoad()` callback. The method also returns a new texture object which can
+	 * directly be used for material creation. If you do it this way, the texture
+	 * may pop up in your scene once the respective loading process is finished.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(Texture)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Unsupported in this loader.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 * @return {Texture} The texture.
+	 */ load(url, onLoad, onProgress, onError) {
         const texture = new $ded5eecc0cd20cc2$export$5431306cf43de24a();
         const loader = new $ded5eecc0cd20cc2$export$8905ce1c7a2464a1(this.manager);
         loader.setCrossOrigin(this.crossOrigin);
@@ -26484,7 +32624,7 @@ const $ded5eecc0cd20cc2$var$_lightPositionWorld$1 = /*@__PURE__*/ new $ded5eecc0
 const $ded5eecc0cd20cc2$var$_lookTarget$1 = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$64b5c384219d3699();
 /**
  * Abstract base class for light shadow classes. These classes
- * represent the shadow configuration for different ligth types.
+ * represent the shadow configuration for different light types.
  *
  * @abstract
  */ class $ded5eecc0cd20cc2$var$LightShadow {
@@ -27658,12 +33798,38 @@ const $ded5eecc0cd20cc2$var$_lookTarget = /*@__PURE__*/ new $ded5eecc0cd20cc2$ex
         return data;
     }
 }
-class $ded5eecc0cd20cc2$export$3bd6d323353dcf96 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * Class for loading geometries. The files are internally
+ * loaded via {@link FileLoader}.
+ *
+ * ```js
+ * const loader = new THREE.MaterialLoader();
+ * const material = await loader.loadAsync( 'material.json' );
+ * ```
+ * This loader does not support node materials. Use {@link NodeMaterialLoader} instead.
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$3bd6d323353dcf96 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new material loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
-        this.textures = {};
+        /**
+		 * A dictionary holding textures used by the material.
+		 *
+		 * @type {Object<string,Texture>}
+		 */ this.textures = {};
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and pass the loaded material to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(Material)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const loader = new $ded5eecc0cd20cc2$export$98435a25b5cf7b2b(scope.manager);
         loader.setPath(scope.path);
@@ -27679,7 +33845,12 @@ class $ded5eecc0cd20cc2$export$3bd6d323353dcf96 extends $ded5eecc0cd20cc2$export
             }
         }, onProgress, onError);
     }
-    parse(json) {
+    /**
+	 * Parses the given JSON object and returns a material.
+	 *
+	 * @param {Object} json - The serialized material.
+	 * @return {Material} The parsed material.
+	 */ parse(json) {
         const textures = this.textures;
         function getTexture(name) {
             if (textures[name] === undefined) console.warn('THREE.MaterialLoader: Undefined texture', name);
@@ -27854,14 +34025,31 @@ class $ded5eecc0cd20cc2$export$3bd6d323353dcf96 extends $ded5eecc0cd20cc2$export
         if (json.sheenRoughnessMap !== undefined) material.sheenRoughnessMap = getTexture(json.sheenRoughnessMap);
         return material;
     }
-    setTextures(value) {
+    /**
+	 * Textures are not embedded in the material JSON so they have
+	 * to be injected before the loading process starts.
+	 *
+	 * @param {Object} value - A dictionary holding textures for material properties.
+	 * @return {MaterialLoader} A reference to this material loader.
+	 */ setTextures(value) {
         this.textures = value;
         return this;
     }
-    createMaterialFromType(type) {
+    /**
+	 * Creates a material for the given type.
+	 *
+	 * @param {string} type - The material type.
+	 * @return {Material} The new material.
+	 */ createMaterialFromType(type) {
         return $ded5eecc0cd20cc2$export$3bd6d323353dcf96.createMaterialFromType(type);
     }
-    static createMaterialFromType(type) {
+    /**
+	 * Creates a material for the given type.
+	 *
+	 * @static
+	 * @param {string} type - The material type.
+	 * @return {Material} The new material.
+	 */ static createMaterialFromType(type) {
         const materialLib = {
             ShadowMaterial: $ded5eecc0cd20cc2$export$e8564da406055a3,
             SpriteMaterial: $ded5eecc0cd20cc2$export$5ec7dd1c6994bf8e,
@@ -27885,28 +34073,28 @@ class $ded5eecc0cd20cc2$export$3bd6d323353dcf96 extends $ded5eecc0cd20cc2$export
         return new materialLib[type]();
     }
 }
-class $ded5eecc0cd20cc2$export$b5d2dc08d867e41a {
-    static decodeText(array) {
-        console.warn('THREE.LoaderUtils: decodeText() has been deprecated with r165 and will be removed with r175. Use TextDecoder instead.');
-        if (typeof TextDecoder !== 'undefined') return new TextDecoder().decode(array);
-        // Avoid the String.fromCharCode.apply(null, array) shortcut, which
-        // throws a "maximum call stack size exceeded" error for large arrays.
-        let s = '';
-        for(let i = 0, il = array.length; i < il; i++)// Implicitly assumes little-endian.
-        s += String.fromCharCode(array[i]);
-        try {
-            // merges multi-byte utf-8 characters.
-            return decodeURIComponent(escape(s));
-        } catch (e) {
-            return s;
-        }
-    }
-    static extractUrlBase(url) {
+/**
+ * A class with loader utility functions.
+ */ class $ded5eecc0cd20cc2$export$b5d2dc08d867e41a {
+    /**
+	 * Extracts the base URL from the given URL.
+	 *
+	 * @param {string} url -The URL to extract the base URL from.
+	 * @return {string} The extracted base URL.
+	 */ static extractUrlBase(url) {
         const index = url.lastIndexOf('/');
         if (index === -1) return './';
         return url.slice(0, index + 1);
     }
-    static resolveURL(url, path) {
+    /**
+	 * Resolves relative URLs against the given path. Absolute paths, data urls,
+	 * and blob URLs will be returned as is. Invalid URLs will return an empty
+	 * string.
+	 *
+	 * @param {string} url -The URL to resolve.
+	 * @param {string} path - The base path for relative URLs to be resolved against.
+	 * @return {string} The resolved URL.
+	 */ static resolveURL(url, path) {
         // Invalid URL
         if (typeof url !== 'string' || url === '') return '';
         // Host Relative URL
@@ -27921,12 +34109,27 @@ class $ded5eecc0cd20cc2$export$b5d2dc08d867e41a {
         return path + url;
     }
 }
-class $ded5eecc0cd20cc2$export$231f009cbe414146 extends $ded5eecc0cd20cc2$export$b7be63a67df8959 {
-    constructor(){
+/**
+ * An instanced version of a geometry.
+ */ class $ded5eecc0cd20cc2$export$231f009cbe414146 extends $ded5eecc0cd20cc2$export$b7be63a67df8959 {
+    /**
+	 * Constructs a new instanced buffer geometry.
+	 */ constructor(){
         super();
-        this.isInstancedBufferGeometry = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isInstancedBufferGeometry = true;
         this.type = 'InstancedBufferGeometry';
-        this.instanceCount = Infinity;
+        /**
+		 * The instance count.
+		 *
+		 * @type {number}
+		 * @default Infinity
+		 */ this.instanceCount = Infinity;
     }
     copy(source) {
         super.copy(source);
@@ -27940,11 +34143,36 @@ class $ded5eecc0cd20cc2$export$231f009cbe414146 extends $ded5eecc0cd20cc2$export
         return data;
     }
 }
-class $ded5eecc0cd20cc2$export$dc275bb96327833a extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * Class for loading geometries. The files are internally
+ * loaded via {@link FileLoader}.
+ *
+ * ```js
+ * const loader = new THREE.BufferGeometryLoader();
+ * const geometry = await loader.loadAsync( 'models/json/pressure.json' );
+ *
+ * const material = new THREE.MeshBasicMaterial( { color: 0xF5F5F5 } );
+ * const object = new THREE.Mesh( geometry, material );
+ * scene.add( object );
+ * ```
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$dc275bb96327833a extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new geometry loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and pass the loaded geometry to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(BufferGeometry)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const loader = new $ded5eecc0cd20cc2$export$98435a25b5cf7b2b(scope.manager);
         loader.setPath(scope.path);
@@ -27960,7 +34188,12 @@ class $ded5eecc0cd20cc2$export$dc275bb96327833a extends $ded5eecc0cd20cc2$export
             }
         }, onProgress, onError);
     }
-    parse(json) {
+    /**
+	 * Parses the given JSON object and returns a geometry.
+	 *
+	 * @param {Object} json - The serialized geometry.
+	 * @return {BufferGeometry} The parsed geometry.
+	 */ parse(json) {
         const interleavedBufferMap = {};
         const arrayBufferMap = {};
         function getInterleavedBuffer(json, uuid) {
@@ -28041,11 +34274,37 @@ class $ded5eecc0cd20cc2$export$dc275bb96327833a extends $ded5eecc0cd20cc2$export
         return geometry;
     }
 }
-class $ded5eecc0cd20cc2$export$40110c8505c5ad19 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * A loader for loading a JSON resource in the [JSON Object/Scene format]{@link https://github.com/mrdoob/three.js/wiki/JSON-Object-Scene-format-4}.
+ * The files are internally loaded via {@link FileLoader}.
+ *
+ * ```js
+ * const loader = new THREE.ObjectLoader();
+ * const obj = await loader.loadAsync( 'models/json/example.json' );
+ * scene.add( obj );
+ *
+ * // Alternatively, to parse a previously loaded JSON structure
+ * const object = await loader.parseAsync( a_json_object );
+ * scene.add( object );
+ * ```
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$40110c8505c5ad19 extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new object loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and pass the loaded 3D object to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(Object3D)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const path = this.path === '' ? $ded5eecc0cd20cc2$export$b5d2dc08d867e41a.extractUrlBase(url) : this.path;
         this.resourcePath = this.resourcePath || path;
@@ -28071,7 +34330,14 @@ class $ded5eecc0cd20cc2$export$40110c8505c5ad19 extends $ded5eecc0cd20cc2$export
             scope.parse(json, onLoad);
         }, onProgress, onError);
     }
-    async loadAsync(url, onProgress) {
+    /**
+	 * Async version of {@link ObjectLoader#load}.
+	 *
+	 * @async
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @return {Promise<Object3D>} A Promise that resolves with the loaded 3D object.
+	 */ async loadAsync(url, onProgress) {
         const scope = this;
         const path = this.path === '' ? $ded5eecc0cd20cc2$export$b5d2dc08d867e41a.extractUrlBase(url) : this.path;
         this.resourcePath = this.resourcePath || path;
@@ -28085,7 +34351,14 @@ class $ded5eecc0cd20cc2$export$40110c8505c5ad19 extends $ded5eecc0cd20cc2$export
         if (metadata === undefined || metadata.type === undefined || metadata.type.toLowerCase() === 'geometry') throw new Error('THREE.ObjectLoader: Can\'t load ' + url);
         return await scope.parseAsync(json);
     }
-    parse(json, onLoad) {
+    /**
+	 * Parses the given JSON. This is used internally by {@link ObjectLoader#load}
+	 * but can also be used directly to parse a previously loaded JSON structure.
+	 *
+	 * @param {Object} json - The serialized 3D object.
+	 * @param {onLoad} onLoad - Executed when all resources (e.g. textures) have been fully loaded.
+	 * @return {Object3D} The parsed 3D object.
+	 */ parse(json, onLoad) {
         const animations = this.parseAnimations(json.animations);
         const shapes = this.parseShapes(json.shapes);
         const geometries = this.parseGeometries(json.geometries, shapes);
@@ -28109,7 +34382,12 @@ class $ded5eecc0cd20cc2$export$40110c8505c5ad19 extends $ded5eecc0cd20cc2$export
         }
         return object;
     }
-    async parseAsync(json) {
+    /**
+	 * Async version of {@link ObjectLoader#parse}.
+	 *
+	 * @param {Object} json - The serialized 3D object.
+	 * @return {Promise<Object3D>} A Promise that resolves with the parsed 3D object.
+	 */ async parseAsync(json) {
         const animations = this.parseAnimations(json.animations);
         const shapes = this.parseShapes(json.shapes);
         const geometries = this.parseGeometries(json.geometries, shapes);
@@ -28122,6 +34400,7 @@ class $ded5eecc0cd20cc2$export$40110c8505c5ad19 extends $ded5eecc0cd20cc2$export
         this.bindLightTargets(object);
         return object;
     }
+    // internals
     parseShapes(json) {
         const shapes = {};
         if (json !== undefined) for(let i = 0, l = json.length; i < l; i++){
@@ -28601,21 +34880,72 @@ const $ded5eecc0cd20cc2$var$TEXTURE_FILTER = {
     LinearMipmapNearestFilter: $ded5eecc0cd20cc2$export$19a719f377145a13,
     LinearMipmapLinearFilter: $ded5eecc0cd20cc2$export$5d8599b6a933fb1b
 };
-class $ded5eecc0cd20cc2$export$52286b55c4a9b51f extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * A loader for loading images as an [ImageBitmap]{@link https://developer.mozilla.org/en-US/docs/Web/API/ImageBitmap}.
+ * An `ImageBitmap` provides an asynchronous and resource efficient pathway to prepare
+ * textures for rendering.
+ *
+ * Note that {@link Texture#flipY} and {@link Texture#premultiplyAlpha} are ignored with image bitmaps.
+ * They needs these configuration on bitmap creation unlike regular images need them on uploading to GPU.
+ *
+ * You need to set the equivalent options via {@link ImageBitmapLoader#setOptions} instead.
+ *
+ * Also note that unlike {@link FileLoader}, this loader does not avoid multiple concurrent requests to the same URL.
+ *
+ * ```js
+ * const loader = new THREE.ImageBitmapLoader();
+ * loader.setOptions( { imageOrientation: 'flipY' } ); // set options if needed
+ * const imageBitmap = await loader.loadAsync( 'image.png' );
+ *
+ * const texture = new THREE.Texture( imageBitmap );
+ * texture.needsUpdate = true;
+ * ```
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$52286b55c4a9b51f extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new image bitmap loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
-        this.isImageBitmapLoader = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isImageBitmapLoader = true;
         if (typeof createImageBitmap === 'undefined') console.warn('THREE.ImageBitmapLoader: createImageBitmap() not supported.');
         if (typeof fetch === 'undefined') console.warn('THREE.ImageBitmapLoader: fetch() not supported.');
-        this.options = {
+        /**
+		 * Represents the loader options.
+		 *
+		 * @type {Object}
+		 * @default {premultiplyAlpha:'none'}
+		 */ this.options = {
             premultiplyAlpha: 'none'
         };
     }
-    setOptions(options) {
+    /**
+	 * Sets the given loader options. The structure of the object must match the `options` parameter of
+	 * [createImageBitmap]{@link https://developer.mozilla.org/en-US/docs/Web/API/Window/createImageBitmap}.
+	 *
+	 * @param {Object} options - The loader options to set.
+	 * @return {ImageBitmapLoader} A reference to this image bitmap loader.
+	 */ setOptions(options) {
         this.options = options;
         return this;
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and pass the loaded image bitmap to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(ImageBitmap)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Unsupported in this loader.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 * @return {ImageBitmap|undefined} The image bitmap.
+	 */ load(url, onLoad, onProgress, onError) {
         if (url === undefined) url = '';
         if (this.path !== undefined) url = this.path + url;
         url = this.manager.resolveURL(url);
@@ -28686,11 +35016,39 @@ let $ded5eecc0cd20cc2$var$_context;
         $ded5eecc0cd20cc2$var$_context = value;
     }
 }
-class $ded5eecc0cd20cc2$export$d8d5fccfbf47714e extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
-    constructor(manager){
+/**
+ * Class for loading audio buffers. Audios are internally
+ * loaded via {@link FileLoader}.
+ *
+ * ```js
+ * const audioListener = new THREE.AudioListener();
+ * const ambientSound = new THREE.Audio( audioListener );
+ *
+ * const loader = new THREE.AudioLoader();
+ * const audioBuffer = await loader.loadAsync( 'audio/ambient_ocean.ogg' );
+ *
+ * ambientSound.setBuffer( audioBuffer );
+ * ambientSound.play();
+ * ```
+ *
+ * @augments Loader
+ */ class $ded5eecc0cd20cc2$export$d8d5fccfbf47714e extends $ded5eecc0cd20cc2$export$3b0d6d7590275603 {
+    /**
+	 * Constructs a new audio loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and passes the loaded audio buffer
+	 * to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(AudioBuffer)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const loader = new $ded5eecc0cd20cc2$export$98435a25b5cf7b2b(this.manager);
         loader.setResponseType('arraybuffer');
@@ -28849,30 +35207,77 @@ const $ded5eecc0cd20cc2$var$_projectionMatrix = /*@__PURE__*/ new $ded5eecc0cd20
         this.index = 0;
     }
 }
-class $ded5eecc0cd20cc2$export$9735c82c4bae3302 {
-    constructor(autoStart = true){
-        this.autoStart = autoStart;
-        this.startTime = 0;
-        this.oldTime = 0;
-        this.elapsedTime = 0;
-        this.running = false;
+/**
+ * Class for keeping track of time.
+ */ class $ded5eecc0cd20cc2$export$9735c82c4bae3302 {
+    /**
+	 * Constructs a new clock.
+	 *
+	 * @param {boolean} [autoStart=true] - Whether to automatically start the clock when
+	 * `getDelta()` is called for the first time.
+	 */ constructor(autoStart = true){
+        /**
+		 * If set to `true`, the clock starts automatically when `getDelta()` is called
+		 * for the first time.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.autoStart = autoStart;
+        /**
+		 * Holds the time at which the clock's `start()` method was last called.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.startTime = 0;
+        /**
+		 * Holds the time at which the clock's `start()`, `getElapsedTime()` or
+		 * `getDelta()` methods were last called.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.oldTime = 0;
+        /**
+		 * Keeps track of the total time that the clock has been running.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.elapsedTime = 0;
+        /**
+		 * Whether the clock is running or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.running = false;
     }
-    start() {
+    /**
+	 * Starts the clock. When `autoStart` is set to `true`, the method is automatically
+	 * called by the class.
+	 */ start() {
         this.startTime = $ded5eecc0cd20cc2$var$now();
         this.oldTime = this.startTime;
         this.elapsedTime = 0;
         this.running = true;
     }
-    stop() {
+    /**
+	 * Stops the clock.
+	 */ stop() {
         this.getElapsedTime();
         this.running = false;
         this.autoStart = false;
     }
-    getElapsedTime() {
+    /**
+	 * Returns the elapsed time in seconds.
+	 *
+	 * @return {number} The elapsed time.
+	 */ getElapsedTime() {
         this.getDelta();
         return this.elapsedTime;
     }
-    getDelta() {
+    /**
+	 * Returns the delta time in seconds.
+	 *
+	 * @return {number} The delta time.
+	 */ getDelta() {
         let diff = 0;
         if (this.autoStart && !this.running) {
             this.start();
@@ -28925,7 +35330,7 @@ const $ded5eecc0cd20cc2$var$_orientation$1 = /*@__PURE__*/ new $ded5eecc0cd20cc2
         /**
 		 * An optional filter.
 		 *
-		 * Defined via {@AudioListener#setFilter}.
+		 * Defined via {@link AudioListener#setFilter}.
 		 *
 		 * @type {?AudioNode}
 		 * @default null
@@ -28966,7 +35371,7 @@ const $ded5eecc0cd20cc2$var$_orientation$1 = /*@__PURE__*/ new $ded5eecc0cd20cc2
     /**
 	 * Returns the current set filter.
 	 *
-	 * @return {AudioNode} The filter.
+	 * @return {?AudioNode} The filter.
 	 */ getFilter() {
         return this.filter;
     }
@@ -29612,7 +36017,7 @@ const $ded5eecc0cd20cc2$var$_orientation = /*@__PURE__*/ new $ded5eecc0cd20cc2$e
 	 * starts taking effect.
 	 *
 	 * @param {number} value - The reference distance to set.
-	 * @return {Audio} A reference to this instance.
+	 * @return {PositionalAudio} A reference to this instance.
 	 */ setRefDistance(value) {
         this.panner.refDistance = value;
         return this;
@@ -29628,7 +36033,7 @@ const $ded5eecc0cd20cc2$var$_orientation = /*@__PURE__*/ new $ded5eecc0cd20cc2$e
 	 * Defines how quickly the volume is reduced as the source moves away from the listener.
 	 *
 	 * @param {number} value - The rolloff factor.
-	 * @return {Audio} A reference to this instance.
+	 * @return {PositionalAudio} A reference to this instance.
 	 */ setRolloffFactor(value) {
         this.panner.rolloffFactor = value;
         return this;
@@ -29648,7 +36053,7 @@ const $ded5eecc0cd20cc2$var$_orientation = /*@__PURE__*/ new $ded5eecc0cd20cc2$e
 	 * for more details.
 	 *
 	 * @param {('linear'|'inverse'|'exponential')} value - The distance model to set.
-	 * @return {Audio} A reference to this instance.
+	 * @return {PositionalAudio} A reference to this instance.
 	 */ setDistanceModel(value) {
         this.panner.distanceModel = value;
         return this;
@@ -29667,7 +36072,7 @@ const $ded5eecc0cd20cc2$var$_orientation = /*@__PURE__*/ new $ded5eecc0cd20cc2$e
 	 * This value is used only by the `linear` distance model.
 	 *
 	 * @param {number} value - The max distance.
-	 * @return {Audio} A reference to this instance.
+	 * @return {PositionalAudio} A reference to this instance.
 	 */ setMaxDistance(value) {
         this.panner.maxDistance = value;
         return this;
@@ -29678,7 +36083,7 @@ const $ded5eecc0cd20cc2$var$_orientation = /*@__PURE__*/ new $ded5eecc0cd20cc2$e
 	 * @param {number} coneInnerAngle - An angle, in degrees, of a cone inside of which there will be no volume reduction.
 	 * @param {number} coneOuterAngle - An angle, in degrees, of a cone outside of which the volume will be reduced by a constant value, defined by the `coneOuterGain` parameter.
 	 * @param {number} coneOuterGain - The amount of volume reduction outside the cone defined by the `coneOuterAngle`. When set to `0`, no sound can be heard.
-	 * @return {Audio} A reference to this instance.
+	 * @return {PositionalAudio} A reference to this instance.
 	 */ setDirectionalCone(coneInnerAngle, coneOuterAngle, coneOuterGain) {
         this.panner.coneInnerAngle = coneInnerAngle;
         this.panner.coneOuterAngle = coneOuterAngle;
@@ -29737,7 +36142,7 @@ const $ded5eecc0cd20cc2$var$_orientation = /*@__PURE__*/ new $ded5eecc0cd20cc2$e
 	 * Constructs a new audio analyzer.
 	 *
 	 * @param {Audio} audio - The audio to analyze.
-	 * @param {Audio} [fftSize=2048] - The window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
+	 * @param {number} [fftSize=2048] - The window size in samples that is used when performing a Fast Fourier Transform (FFT) to get frequency domain data.
 	 */ constructor(audio, fftSize = 2048){
         /**
 		 * The global audio listener.
@@ -29776,10 +36181,26 @@ const $ded5eecc0cd20cc2$var$_orientation = /*@__PURE__*/ new $ded5eecc0cd20cc2$e
         return value / data.length;
     }
 }
-class $ded5eecc0cd20cc2$export$dfe0af1ca1acb78a {
-    constructor(binding, typeName, valueSize){
-        this.binding = binding;
-        this.valueSize = valueSize;
+/**
+ * Buffered scene graph property that allows weighted accumulation; used internally.
+ */ class $ded5eecc0cd20cc2$export$dfe0af1ca1acb78a {
+    /**
+	 * Constructs a new property mixer.
+	 *
+	 * @param {PropertyBinding} binding - The property binding.
+	 * @param {string} typeName - The keyframe track type name.
+	 * @param {number} valueSize - The keyframe track value size.
+	 */ constructor(binding, typeName, valueSize){
+        /**
+		 * The property binding.
+		 *
+		 * @type {PropertyBinding}
+		 */ this.binding = binding;
+        /**
+		 * The keyframe track value size.
+		 *
+		 * @type {number}
+		 */ this.valueSize = valueSize;
         let mixFunction, mixFunctionAdditive, setIdentity;
         // buffer layout: [ incoming | accu0 | accu1 | orig | addAccu | (optional work) ]
         //
@@ -29824,13 +36245,37 @@ class $ded5eecc0cd20cc2$export$dfe0af1ca1acb78a {
         this._setIdentity = setIdentity;
         this._origIndex = 3;
         this._addIndex = 4;
-        this.cumulativeWeight = 0;
-        this.cumulativeWeightAdditive = 0;
-        this.useCount = 0;
-        this.referenceCount = 0;
+        /**
+		 * TODO
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.cumulativeWeight = 0;
+        /**
+		 * TODO
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.cumulativeWeightAdditive = 0;
+        /**
+		 * TODO
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.useCount = 0;
+        /**
+		 * TODO
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.referenceCount = 0;
     }
-    // accumulate data in the 'incoming' region into 'accu<i>'
-    accumulate(accuIndex, weight) {
+    /**
+	 * Accumulates data in the `incoming` region into `accu<i>`.
+	 *
+	 * @param {number} accuIndex - The accumulation index.
+	 * @param {number} weight - The weight.
+	 */ accumulate(accuIndex, weight) {
         // note: happily accumulating nothing when weight = 0, the caller knows
         // the weight and shouldn't have made the call in the first place
         const buffer = this.buffer, stride = this.valueSize, offset = accuIndex * stride + stride;
@@ -29847,8 +36292,11 @@ class $ded5eecc0cd20cc2$export$dfe0af1ca1acb78a {
         }
         this.cumulativeWeight = currentWeight;
     }
-    // accumulate data in the 'incoming' region into 'add'
-    accumulateAdditive(weight) {
+    /**
+	 * Accumulates data in the `incoming` region into `add`.
+	 *
+	 * @param {number} weight - The weight.
+	 */ accumulateAdditive(weight) {
         const buffer = this.buffer, stride = this.valueSize, offset = stride * this._addIndex;
         if (this.cumulativeWeightAdditive === 0) // add = identity
         this._setIdentity();
@@ -29856,8 +36304,11 @@ class $ded5eecc0cd20cc2$export$dfe0af1ca1acb78a {
         this._mixBufferRegionAdditive(buffer, offset, 0, weight, stride);
         this.cumulativeWeightAdditive += weight;
     }
-    // apply the state of 'accu<i>' to the binding when accus differ
-    apply(accuIndex) {
+    /**
+	 * Applies the state of `accu<i>` to the binding when accus differ.
+	 *
+	 * @param {number} accuIndex - The accumulation index.
+	 */ apply(accuIndex) {
         const stride = this.valueSize, buffer = this.buffer, offset = accuIndex * stride + stride, weight = this.cumulativeWeight, weightAdditive = this.cumulativeWeightAdditive, binding = this.binding;
         this.cumulativeWeight = 0;
         this.cumulativeWeightAdditive = 0;
@@ -29874,8 +36325,9 @@ class $ded5eecc0cd20cc2$export$dfe0af1ca1acb78a {
             break;
         }
     }
-    // remember the state of the bound property and copy it to both accus
-    saveOriginalState() {
+    /**
+	 * Remembers the state of the bound property and copy it to both accus.
+	 */ saveOriginalState() {
         const binding = this.binding;
         const buffer = this.buffer, stride = this.valueSize, originalValueOffset = stride * this._origIndex;
         binding.getValue(buffer, originalValueOffset);
@@ -29886,11 +36338,13 @@ class $ded5eecc0cd20cc2$export$dfe0af1ca1acb78a {
         this.cumulativeWeight = 0;
         this.cumulativeWeightAdditive = 0;
     }
-    // apply the state previously taken via 'saveOriginalState' to the binding
-    restoreOriginalState() {
+    /**
+	 * Applies the state previously taken via {@link PropertyMixer#saveOriginalState} to the binding.
+	 */ restoreOriginalState() {
         const originalValueOffset = this.valueSize * 3;
         this.binding.setValue(this.buffer, originalValueOffset);
     }
+    // internals
     _setAdditiveIdentityNumeric() {
         const startIndex = this._addIndex * this.valueSize;
         const endIndex = startIndex + this.valueSize;
@@ -29989,17 +36443,49 @@ class $ded5eecc0cd20cc2$var$Composite {
 // prototype version of these methods with one that represents
 // the bound state. When the property is not found, the methods
 // become no-ops.
-class $ded5eecc0cd20cc2$export$7bf70fcf9f891893 {
-    constructor(rootNode, path, parsedPath){
-        this.path = path;
-        this.parsedPath = parsedPath || $ded5eecc0cd20cc2$export$7bf70fcf9f891893.parseTrackName(path);
-        this.node = $ded5eecc0cd20cc2$export$7bf70fcf9f891893.findNode(rootNode, this.parsedPath.nodeName);
-        this.rootNode = rootNode;
+/**
+ * This holds a reference to a real property in the scene graph; used internally.
+ */ class $ded5eecc0cd20cc2$export$7bf70fcf9f891893 {
+    /**
+	 * Constructs a new property binding.
+	 *
+	 * @param {Object} rootNode - The root node.
+	 * @param {string} path - The path.
+	 * @param {?Object} [parsedPath] - The parsed path.
+	 */ constructor(rootNode, path, parsedPath){
+        /**
+		 * The object path to the animated property.
+		 *
+		 * @type {string}
+		 */ this.path = path;
+        /**
+		 * An object holding information about the path.
+		 *
+		 * @type {Object}
+		 */ this.parsedPath = parsedPath || $ded5eecc0cd20cc2$export$7bf70fcf9f891893.parseTrackName(path);
+        /**
+		 * The object owns the animated property.
+		 *
+		 * @type {?Object}
+		 */ this.node = $ded5eecc0cd20cc2$export$7bf70fcf9f891893.findNode(rootNode, this.parsedPath.nodeName);
+        /**
+		 * The root node.
+		 *
+		 * @type {Object3D|Skeleton}
+		 */ this.rootNode = rootNode;
         // initial state of these methods that calls 'bind'
         this.getValue = this._getValue_unbound;
         this.setValue = this._setValue_unbound;
     }
-    static create(root, path, parsedPath) {
+    /**
+	 * Factory method for creating a property binding from the given parameters.
+	 *
+	 * @static
+	 * @param {Object} root - The root node.
+	 * @param {string} path - The path.
+	 * @param {?Object} [parsedPath] - The parsed path.
+	 * @return {PropertyBinding|Composite} The created property binding or composite.
+	 */ static create(root, path, parsedPath) {
         if (!(root && root.isAnimationObjectGroup)) return new $ded5eecc0cd20cc2$export$7bf70fcf9f891893(root, path, parsedPath);
         else return new $ded5eecc0cd20cc2$export$7bf70fcf9f891893.Composite(root, path, parsedPath);
     }
@@ -30007,12 +36493,29 @@ class $ded5eecc0cd20cc2$export$7bf70fcf9f891893 {
 	 * Replaces spaces with underscores and removes unsupported characters from
 	 * node names, to ensure compatibility with parseTrackName().
 	 *
-	 * @param {string} name Node name to be sanitized.
-	 * @return {string}
+	 * @param {string} name - Node name to be sanitized.
+	 * @return {string} The sanitized node name.
 	 */ static sanitizeNodeName(name) {
         return name.replace(/\s/g, '_').replace($ded5eecc0cd20cc2$var$_reservedRe, '');
     }
-    static parseTrackName(trackName) {
+    /**
+	 * Parses the given track name (an object path to an animated property) and
+	 * returns an object with information about the path. Matches strings in the following forms:
+	 *
+	 * - nodeName.property
+	 * - nodeName.property[accessor]
+	 * - nodeName.material.property[accessor]
+	 * - uuid.property[accessor]
+	 * - uuid.objectName[objectIndex].propertyName[propertyIndex]
+	 * - parentName/nodeName.property
+	 * - parentName/parentName/nodeName.property[index]
+	 * - .bone[Armature.DEF_cog].position
+	 * - scene:helium_balloon_model:helium_balloon_model.position
+	 *
+	 * @static
+	 * @param {string} trackName - The track name to parse.
+	 * @return {Object} The parsed track name as an object.
+	 */ static parseTrackName(trackName) {
         const matches = $ded5eecc0cd20cc2$var$_trackRe.exec(trackName);
         if (matches === null) throw new Error('PropertyBinding: Cannot parse trackName: ' + trackName);
         const results = {
@@ -30038,7 +36541,15 @@ class $ded5eecc0cd20cc2$export$7bf70fcf9f891893 {
         if (results.propertyName === null || results.propertyName.length === 0) throw new Error('PropertyBinding: can not parse propertyName from trackName: ' + trackName);
         return results;
     }
-    static findNode(root, nodeName) {
+    /**
+	 * Searches for a node in the hierarchy of the given root object by the given
+	 * node name.
+	 *
+	 * @static
+	 * @param {Object} root - The root object.
+	 * @param {string|number} nodeName - The name of the node.
+	 * @return {?Object} The found node. Returns `null` if no object was found.
+	 */ static findNode(root, nodeName) {
         if (nodeName === undefined || nodeName === '' || nodeName === '.' || nodeName === -1 || nodeName === root.name || nodeName === root.uuid) return root;
         // search into skeleton bones.
         if (root.skeleton) {
@@ -30137,8 +36648,9 @@ class $ded5eecc0cd20cc2$export$7bf70fcf9f891893 {
         this.bind();
         this.setValue(sourceArray, offset);
     }
-    // create getter / setter pair for a property in the scene graph
-    bind() {
+    /**
+	 * Creates a getter / setter pair for the property tracked by this binding.
+	 */ bind() {
         let targetObject = this.node;
         const parsedPath = this.parsedPath;
         const objectName = parsedPath.objectName;
@@ -30259,7 +36771,9 @@ class $ded5eecc0cd20cc2$export$7bf70fcf9f891893 {
         this.getValue = this.GetterByBindingType[bindingType];
         this.setValue = this.SetterByBindingTypeAndVersioning[bindingType][versioning];
     }
-    unbind() {
+    /**
+	 * Unbinds the property.
+	 */ unbind() {
         this.node = null;
         // back to the prototype version of getValue / setValue
         // note: avoiding to mutate the shape of 'this' via 'delete'
@@ -30312,36 +36826,43 @@ $ded5eecc0cd20cc2$export$7bf70fcf9f891893.prototype.SetterByBindingTypeAndVersio
     ]
 ];
 /**
- *
  * A group of objects that receives a shared animation state.
  *
  * Usage:
  *
- *  - Add objects you would otherwise pass as 'root' to the
- *    constructor or the .clipAction method of AnimationMixer.
- *
- *  - Instead pass this object as 'root'.
- *
- *  - You can also add and remove objects later when the mixer
- *    is running.
+ * - Add objects you would otherwise pass as 'root' to the
+ * constructor or the .clipAction method of AnimationMixer.
+ * - Instead pass this object as 'root'.
+ * - You can also add and remove objects later when the mixer is running.
  *
  * Note:
  *
- *    Objects of this class appear as one object to the mixer,
- *    so cache control of the individual objects must be done
- *    on the group.
+ * - Objects of this class appear as one object to the mixer,
+ * so cache control of the individual objects must be done on the group.
  *
  * Limitation:
  *
- *  - The animated properties must be compatible among the
- *    all objects in the group.
- *
- *  - A single property can either be controlled through a
- *    target group or directly, but not both.
+ * - The animated properties must be compatible among the all objects in the group.
+ * - A single property can either be controlled through a target group or directly, but not both.
  */ class $ded5eecc0cd20cc2$export$30619c2afd3f34db {
-    constructor(){
-        this.isAnimationObjectGroup = true;
-        this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
+    /**
+	 * Constructs a new animation group.
+	 *
+	 * @param {...Object3D} arguments - An arbitrary number of 3D objects that share the same animation state.
+	 */ constructor(){
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isAnimationObjectGroup = true;
+        /**
+		 * The UUID of the 3D object.
+		 *
+		 * @type {string}
+		 * @readonly
+		 */ this.uuid = $ded5eecc0cd20cc2$var$generateUUID();
         // cached objects followed by the active ones
         this._objects = Array.prototype.slice.call(arguments);
         this.nCachedObjects_ = 0; // threshold
@@ -30368,7 +36889,11 @@ $ded5eecc0cd20cc2$export$7bf70fcf9f891893.prototype.SetterByBindingTypeAndVersio
             }
         };
     }
-    add() {
+    /**
+	 * Adds an arbitrary number of objects to this animation group.
+	 *
+	 * @param {...Object3D} arguments - The 3D objects to add.
+	 */ add() {
         const objects = this._objects, indicesByUUID = this._indicesByUUID, paths = this._paths, parsedPaths = this._parsedPaths, bindings = this._bindings, nBindings = bindings.length;
         let knownObject = undefined, nObjects = objects.length, nCachedObjects = this.nCachedObjects_;
         for(let i = 0, n = arguments.length; i !== n; ++i){
@@ -30405,7 +36930,11 @@ $ded5eecc0cd20cc2$export$7bf70fcf9f891893.prototype.SetterByBindingTypeAndVersio
         } // for arguments
         this.nCachedObjects_ = nCachedObjects;
     }
-    remove() {
+    /**
+	 * Removes an arbitrary number of objects to this animation group
+	 *
+	 * @param {...Object3D} arguments - The 3D objects to remove.
+	 */ remove() {
         const objects = this._objects, indicesByUUID = this._indicesByUUID, bindings = this._bindings, nBindings = bindings.length;
         let nCachedObjects = this.nCachedObjects_;
         for(let i = 0, n = arguments.length; i !== n; ++i){
@@ -30427,8 +36956,11 @@ $ded5eecc0cd20cc2$export$7bf70fcf9f891893.prototype.SetterByBindingTypeAndVersio
         } // for arguments
         this.nCachedObjects_ = nCachedObjects;
     }
-    // remove & forget
-    uncache() {
+    /**
+	 * Deallocates all memory resources for the passed 3D objects of this animation group.
+	 *
+	 * @param {...Object3D} arguments - The 3D objects to uncache.
+	 */ uncache() {
         const objects = this._objects, indicesByUUID = this._indicesByUUID, bindings = this._bindings, nBindings = bindings.length;
         let nCachedObjects = this.nCachedObjects_, nObjects = objects.length;
         for(let i = 0, n = arguments.length; i !== n; ++i){
@@ -30505,12 +37037,27 @@ $ded5eecc0cd20cc2$export$7bf70fcf9f891893.prototype.SetterByBindingTypeAndVersio
         }
     }
 }
-class $ded5eecc0cd20cc2$export$6946940a69e799e {
-    constructor(mixer, clip, localRoot = null, blendMode = clip.blendMode){
+/**
+ * An instance of `AnimationAction` schedules the playback of an animation which is
+ * stored in {@link AnimationClip}.
+ */ class $ded5eecc0cd20cc2$export$6946940a69e799e {
+    /**
+	 * Constructs a new animation action.
+	 *
+	 * @param {AnimationMixer} mixer - The mixer that is controlled by this action.
+	 * @param {AnimationClip} clip - The animation clip that holds the actual keyframes.
+	 * @param {?Object3D} [localRoot=null] - The root object on which this action is performed.
+	 * @param {(NormalAnimationBlendMode|AdditiveAnimationBlendMode)} [blendMode] - The blend mode.
+	 */ constructor(mixer, clip, localRoot = null, blendMode = clip.blendMode){
         this._mixer = mixer;
         this._clip = clip;
         this._localRoot = localRoot;
-        this.blendMode = blendMode;
+        /**
+		 * Defines how the animation is blended/combined when two or more animations
+		 * are simultaneously played.
+		 *
+		 * @type {(NormalAnimationBlendMode|AdditiveAnimationBlendMode)}
+		 */ this.blendMode = blendMode;
         const tracks = clip.tracks, nTracks = tracks.length, interpolants = new Array(nTracks);
         const interpolantSettings = {
             endingStart: $ded5eecc0cd20cc2$export$7f795934b84ab523,
@@ -30529,35 +37076,114 @@ class $ded5eecc0cd20cc2$export$6946940a69e799e {
         this._byClipCacheIndex = null; // for the memory manager
         this._timeScaleInterpolant = null;
         this._weightInterpolant = null;
-        this.loop = $ded5eecc0cd20cc2$export$dfaf4422ce096e29;
+        /**
+		 * The loop mode, set via {@link AnimationAction#setLoop}.
+		 *
+		 * @type {(LoopRepeat|LoopOnce|LoopPingPong)}
+		 * @default LoopRepeat
+		 */ this.loop = $ded5eecc0cd20cc2$export$dfaf4422ce096e29;
         this._loopCount = -1;
         // global mixer time when the action is to be started
         // it's set back to 'null' upon start of the action
         this._startTime = null;
-        // scaled local time of the action
-        // gets clamped or wrapped to 0..clip.duration according to loop
-        this.time = 0;
-        this.timeScale = 1;
+        /**
+		 * The local time of this action (in seconds, starting with `0`).
+		 *
+		 * The value gets clamped or wrapped to `[0,clip.duration]` (according to the
+		 * loop state).
+		 *
+		 * @type {number}
+		 * @default Infinity
+		 */ this.time = 0;
+        /**
+		 * Scaling factor for the {@link AnimationAction#time}. A value of `0` causes the
+		 * animation to pause. Negative values cause the animation to play backwards.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.timeScale = 1;
         this._effectiveTimeScale = 1;
-        this.weight = 1;
+        /**
+		 * The degree of influence of this action (in the interval `[0, 1]`). Values
+		 * between `0` (no impact) and `1` (full impact) can be used to blend between
+		 * several actions.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.weight = 1;
         this._effectiveWeight = 1;
-        this.repetitions = Infinity; // no. of repetitions when looping
-        this.paused = false; // true -> zero effective time scale
-        this.enabled = true; // false -> zero effective weight
-        this.clampWhenFinished = false; // keep feeding the last frame?
-        this.zeroSlopeAtStart = true; // for smooth interpolation w/o separate
-        this.zeroSlopeAtEnd = true; // clips for start, loop and end
+        /**
+		 * The number of repetitions of the performed clip over the course of this action.
+		 * Can be set via {@link AnimationAction#setLoop}.
+		 *
+		 * Setting this number has no effect if {@link AnimationAction#loop} is set to
+		 * `THREE:LoopOnce`.
+		 *
+		 * @type {number}
+		 * @default Infinity
+		 */ this.repetitions = Infinity;
+        /**
+		 * If set to `true`, the playback of the action is paused.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.paused = false;
+        /**
+		 * If set to `false`, the action is disabled so it has no impact.
+		 *
+		 * When the action is re-enabled, the animation continues from its current
+		 * time (setting `enabled` to `false` doesn't reset the action).
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.enabled = true;
+        /**
+		 * If set to true the animation will automatically be paused on its last frame.
+		 *
+		 * If set to false, {@link AnimationAction#enabled} will automatically be switched
+		 * to `false` when the last loop of the action has finished, so that this action has
+		 * no further impact.
+		 *
+		 * Note: This member has no impact if the action is interrupted (it
+		 * has only an effect if its last loop has really finished).
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.clampWhenFinished = false;
+        /**
+		 * Enables smooth interpolation without separate clips for start, loop and end.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.zeroSlopeAtStart = true;
+        /**
+		 * Enables smooth interpolation without separate clips for start, loop and end.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.zeroSlopeAtEnd = true;
     }
-    // State & Scheduling
-    play() {
+    /**
+	 * Starts the playback of the animation.
+	 *
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ play() {
         this._mixer._activateAction(this);
         return this;
     }
-    stop() {
+    /**
+	 * Stops the playback of the animation.
+	 *
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ stop() {
         this._mixer._deactivateAction(this);
         return this.reset();
     }
-    reset() {
+    /**
+	 * Resets the playback of the animation.
+	 *
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ reset() {
         this.paused = false;
         this.enabled = true;
         this.time = 0; // restart clip
@@ -30565,56 +37191,113 @@ class $ded5eecc0cd20cc2$export$6946940a69e799e {
         this._startTime = null; // forget scheduling
         return this.stopFading().stopWarping();
     }
-    isRunning() {
+    /**
+	 * Returns `true` if the animation is running.
+	 *
+	 * @return {boolean} Whether the animation is running or not.
+	 */ isRunning() {
         return this.enabled && !this.paused && this.timeScale !== 0 && this._startTime === null && this._mixer._isActiveAction(this);
     }
-    // return true when play has been called
-    isScheduled() {
+    /**
+	 * Returns `true` when {@link AnimationAction#play} has been called.
+	 *
+	 * @return {boolean} Whether the animation is scheduled or not.
+	 */ isScheduled() {
         return this._mixer._isActiveAction(this);
     }
-    startAt(time) {
+    /**
+	 * Defines the time when the animation should start.
+	 *
+	 * @param {number} time - The start time in seconds.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ startAt(time) {
         this._startTime = time;
         return this;
     }
-    setLoop(mode, repetitions) {
+    /**
+	 * Configures the loop settings for this action.
+	 *
+	 * @param {(LoopRepeat|LoopOnce|LoopPingPong)} mode - The loop mode.
+	 * @param {number} repetitions - The number of repetitions.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ setLoop(mode, repetitions) {
         this.loop = mode;
         this.repetitions = repetitions;
         return this;
     }
-    // Weight
-    // set the weight stopping any scheduled fading
-    // although .enabled = false yields an effective weight of zero, this
-    // method does *not* change .enabled, because it would be confusing
-    setEffectiveWeight(weight) {
+    /**
+	 * Sets the effective weight of this action.
+	 *
+	 * An action has no effect and thus an effective weight of zero when the
+	 * action is disabled.
+	 *
+	 * @param {number} weight - The weight to set.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ setEffectiveWeight(weight) {
         this.weight = weight;
         // note: same logic as when updated at runtime
         this._effectiveWeight = this.enabled ? weight : 0;
         return this.stopFading();
     }
-    // return the weight considering fading and .enabled
-    getEffectiveWeight() {
+    /**
+	 * Returns the effective weight of this action.
+	 *
+	 * @return {number} The effective weight.
+	 */ getEffectiveWeight() {
         return this._effectiveWeight;
     }
-    fadeIn(duration) {
+    /**
+	 * Fades the animation in by increasing its weight gradually from `0` to `1`,
+	 * within the passed time interval.
+	 *
+	 * @param {number} duration - The duration of the fade.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ fadeIn(duration) {
         return this._scheduleFading(duration, 0, 1);
     }
-    fadeOut(duration) {
+    /**
+	 * Fades the animation out by decreasing its weight gradually from `1` to `0`,
+	 * within the passed time interval.
+	 *
+	 * @param {number} duration - The duration of the fade.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ fadeOut(duration) {
         return this._scheduleFading(duration, 1, 0);
     }
-    crossFadeFrom(fadeOutAction, duration, warp) {
+    /**
+	 * Causes this action to fade in and the given action to fade out,
+	 * within the passed time interval.
+	 *
+	 * @param {AnimationAction} fadeOutAction - The animation action to fade out.
+	 * @param {number} duration - The duration of the fade.
+	 * @param {boolean} [warp=false] - Whether warping should be used or not.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ crossFadeFrom(fadeOutAction, duration, warp = false) {
         fadeOutAction.fadeOut(duration);
         this.fadeIn(duration);
-        if (warp) {
+        if (warp === true) {
             const fadeInDuration = this._clip.duration, fadeOutDuration = fadeOutAction._clip.duration, startEndRatio = fadeOutDuration / fadeInDuration, endStartRatio = fadeInDuration / fadeOutDuration;
             fadeOutAction.warp(1.0, startEndRatio, duration);
             this.warp(endStartRatio, 1.0, duration);
         }
         return this;
     }
-    crossFadeTo(fadeInAction, duration, warp) {
+    /**
+	 * Causes this action to fade out and the given action to fade in,
+	 * within the passed time interval.
+	 *
+	 * @param {AnimationAction} fadeInAction - The animation action to fade in.
+	 * @param {number} duration - The duration of the fade.
+	 * @param {boolean} [warp=false] - Whether warping should be used or not.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ crossFadeTo(fadeInAction, duration, warp = false) {
         return fadeInAction.crossFadeFrom(this, duration, warp);
     }
-    stopFading() {
+    /**
+	 * Stops any fading which is applied to this action.
+	 *
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ stopFading() {
         const weightInterpolant = this._weightInterpolant;
         if (weightInterpolant !== null) {
             this._weightInterpolant = null;
@@ -30622,32 +37305,63 @@ class $ded5eecc0cd20cc2$export$6946940a69e799e {
         }
         return this;
     }
-    // Time Scale Control
-    // set the time scale stopping any scheduled warping
-    // although .paused = true yields an effective time scale of zero, this
-    // method does *not* change .paused, because it would be confusing
-    setEffectiveTimeScale(timeScale) {
+    /**
+	 * Sets the effective time scale of this action.
+	 *
+	 * An action has no effect and thus an effective time scale of zero when the
+	 * action is paused.
+	 *
+	 * @param {number} timeScale - The time scale to set.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ setEffectiveTimeScale(timeScale) {
         this.timeScale = timeScale;
         this._effectiveTimeScale = this.paused ? 0 : timeScale;
         return this.stopWarping();
     }
-    // return the time scale considering warping and .paused
-    getEffectiveTimeScale() {
+    /**
+	 * Returns the effective time scale of this action.
+	 *
+	 * @return {number} The effective time scale.
+	 */ getEffectiveTimeScale() {
         return this._effectiveTimeScale;
     }
-    setDuration(duration) {
+    /**
+	 * Sets the duration for a single loop of this action.
+	 *
+	 * @param {number} duration - The duration to set.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ setDuration(duration) {
         this.timeScale = this._clip.duration / duration;
         return this.stopWarping();
     }
-    syncWith(action) {
+    /**
+	 * Synchronizes this action with the passed other action.
+	 *
+	 * @param {AnimationAction} action - The action to sync with.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ syncWith(action) {
         this.time = action.time;
         this.timeScale = action.timeScale;
         return this.stopWarping();
     }
-    halt(duration) {
+    /**
+	 * Decelerates this animation's speed to `0` within the passed time interval.
+	 *
+	 * @param {number} duration - The duration.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ halt(duration) {
         return this.warp(this._effectiveTimeScale, 0, duration);
     }
-    warp(startTimeScale, endTimeScale, duration) {
+    /**
+	 * Changes the playback speed, within the passed time interval, by modifying
+	 * {@link AnimationAction#timeScale} gradually from `startTimeScale` to
+	 * `endTimeScale`.
+	 *
+	 * @param {number} startTimeScale - The start time scale.
+	 * @param {number} endTimeScale - The end time scale.
+	 * @param {number} duration - The duration.
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ warp(startTimeScale, endTimeScale, duration) {
         const mixer = this._mixer, now = mixer.time, timeScale = this.timeScale;
         let interpolant = this._timeScaleInterpolant;
         if (interpolant === null) {
@@ -30661,7 +37375,11 @@ class $ded5eecc0cd20cc2$export$6946940a69e799e {
         values[1] = endTimeScale / timeScale;
         return this;
     }
-    stopWarping() {
+    /**
+	 * Stops any scheduled warping which is applied to this action.
+	 *
+	 * @return {AnimationAction} A reference to this animation action.
+	 */ stopWarping() {
         const timeScaleInterpolant = this._timeScaleInterpolant;
         if (timeScaleInterpolant !== null) {
             this._timeScaleInterpolant = null;
@@ -30669,14 +37387,25 @@ class $ded5eecc0cd20cc2$export$6946940a69e799e {
         }
         return this;
     }
-    // Object Accessors
-    getMixer() {
+    /**
+	 * Returns the animation mixer of this animation action.
+	 *
+	 * @return {AnimationMixer} The animation mixer.
+	 */ getMixer() {
         return this._mixer;
     }
-    getClip() {
+    /**
+	 * Returns the animation clip of this animation action.
+	 *
+	 * @return {AnimationClip} The animation clip.
+	 */ getClip() {
         return this._clip;
     }
-    getRoot() {
+    /**
+	 * Returns the root object of this animation action.
+	 *
+	 * @return {Object3D} The root object.
+	 */ getRoot() {
         return this._localRoot || this._mixer._root;
     }
     // Interna
@@ -30870,14 +37599,36 @@ class $ded5eecc0cd20cc2$export$6946940a69e799e {
     }
 }
 const $ded5eecc0cd20cc2$var$_controlInterpolantsResultBuffer = new Float32Array(1);
-class $ded5eecc0cd20cc2$export$fbd77e5aefaa0102 extends $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a {
-    constructor(root){
+/**
+ * `AnimationMixer` is a player for animations on a particular object in
+ * the scene. When multiple objects in the scene are animated independently,
+ * one `AnimationMixer` may be used for each object.
+ */ class $ded5eecc0cd20cc2$export$fbd77e5aefaa0102 extends $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a {
+    /**
+	 * Constructs a new animation mixer.
+	 *
+	 * @param {Object3D} root - The object whose animations shall be played by this mixer.
+	 */ constructor(root){
         super();
         this._root = root;
         this._initMemoryManager();
         this._accuIndex = 0;
-        this.time = 0;
-        this.timeScale = 1.0;
+        /**
+		 * The global mixer time (in seconds; starting with `0` on the mixer's creation).
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.time = 0;
+        /**
+		 * A scaling factor for the global time.
+		 *
+		 * Note: Setting this member to `0` and later back to `1` is a
+		 * possibility to pause/unpause all actions that are controlled by this
+		 * mixer.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.timeScale = 1.0;
     }
     _bindAction(action, prototypeAction) {
         const root = action._localRoot || this._root, tracks = action._clip.tracks, nTracks = tracks.length, bindings = action._propertyBindings, interpolants = action._interpolants, rootUuid = root.uuid, bindingsByRoot = this._bindingsByRootAndName;
@@ -31114,10 +37865,18 @@ class $ded5eecc0cd20cc2$export$fbd77e5aefaa0102 extends $ded5eecc0cd20cc2$export
         lastActiveInterpolant.__cacheIndex = prevIndex;
         interpolants[prevIndex] = lastActiveInterpolant;
     }
-    // return an action for a clip optionally using a custom root target
-    // object (this method allocates a lot of dynamic memory in case a
-    // previously unknown clip/root combination is specified)
-    clipAction(clip, optionalRoot, blendMode) {
+    /**
+	 * Returns an instance of {@link AnimationAction} for the passed clip.
+	 *
+	 * If an action fitting the clip and root parameters doesn't yet exist, it
+	 * will be created by this method. Calling this method several times with the
+	 * same clip and root parameters always returns the same action.
+	 *
+	 * @param {AnimationClip|string} clip - An animation clip or alternatively the name of the animation clip.
+	 * @param {Object3D} [optionalRoot] - An alternative root object.
+	 * @param {(NormalAnimationBlendMode|AdditiveAnimationBlendMode)} [blendMode] - The blend mode.
+	 * @return {?AnimationAction} The animation action.
+	 */ clipAction(clip, optionalRoot, blendMode) {
         const root = optionalRoot || this._root, rootUuid = root.uuid;
         let clipObject = typeof clip === 'string' ? $ded5eecc0cd20cc2$export$d942c706bf23829c.findByName(root, clip) : clip;
         const clipUuid = clipObject !== null ? clipObject.uuid : clip;
@@ -31145,20 +37904,35 @@ class $ded5eecc0cd20cc2$export$fbd77e5aefaa0102 extends $ded5eecc0cd20cc2$export
         this._addInactiveAction(newAction, clipUuid, rootUuid);
         return newAction;
     }
-    // get an existing action
-    existingAction(clip, optionalRoot) {
+    /**
+	 * Returns an existing animation action for the passed clip.
+	 *
+	 * @param {AnimationClip|string} clip - An animation clip or alternatively the name of the animation clip.
+	 * @param {Object3D} [optionalRoot] - An alternative root object.
+	 * @return {?AnimationAction} The animation action. Returns `null` if no action was found.
+	 */ existingAction(clip, optionalRoot) {
         const root = optionalRoot || this._root, rootUuid = root.uuid, clipObject = typeof clip === 'string' ? $ded5eecc0cd20cc2$export$d942c706bf23829c.findByName(root, clip) : clip, clipUuid = clipObject ? clipObject.uuid : clip, actionsForClip = this._actionsByClip[clipUuid];
         if (actionsForClip !== undefined) return actionsForClip.actionByRoot[rootUuid] || null;
         return null;
     }
-    // deactivates all previously scheduled actions
-    stopAllAction() {
+    /**
+	 * Deactivates all previously scheduled actions on this mixer.
+	 *
+	 * @return {AnimationMixer} A reference to thi animation mixer.
+	 */ stopAllAction() {
         const actions = this._actions, nActions = this._nActiveActions;
         for(let i = nActions - 1; i >= 0; --i)actions[i].stop();
         return this;
     }
-    // advance the time and update apply the animation
-    update(deltaTime) {
+    /**
+	 * Advances the global mixer time and updates the animation.
+	 *
+	 * This is usually done in the render loop by passing the delta
+	 * time from {@link Clock} or {@link Timer}.
+	 *
+	 * @param {number} deltaTime - The delta time in seconds.
+	 * @return {AnimationMixer} A reference to thi animation mixer.
+	 */ update(deltaTime) {
         deltaTime *= this.timeScale;
         const actions = this._actions, nActions = this._nActiveActions, time = this.time += deltaTime, timeDirection = Math.sign(deltaTime), accuIndex = this._accuIndex ^= 1;
         // run active actions
@@ -31171,18 +37945,32 @@ class $ded5eecc0cd20cc2$export$fbd77e5aefaa0102 extends $ded5eecc0cd20cc2$export
         for(let i = 0; i !== nBindings; ++i)bindings[i].apply(accuIndex);
         return this;
     }
-    // Allows you to seek to a specific time in an animation.
-    setTime(timeInSeconds) {
+    /**
+	 * Sets the global mixer to a specific time and updates the animation accordingly.
+	 *
+	 * This is useful when you need to jump to an exact time in an animation. The
+	 * input parameter will be scaled by {@link AnimationMixer#timeScale}
+	 *
+	 * @param {number} time - The time to set in seconds.
+	 * @return {AnimationMixer} A reference to thi animation mixer.
+	 */ setTime(time) {
         this.time = 0; // Zero out time attribute for AnimationMixer object;
         for(let i = 0; i < this._actions.length; i++)this._actions[i].time = 0; // Zero out time attribute for all associated AnimationAction objects.
-        return this.update(timeInSeconds); // Update used to set exact time. Returns "this" AnimationMixer object.
+        return this.update(time); // Update used to set exact time. Returns "this" AnimationMixer object.
     }
-    // return this mixer's root target object
-    getRoot() {
+    /**
+	 * Returns this mixer's root object.
+	 *
+	 * @return {Object3D} The mixer's root object.
+	 */ getRoot() {
         return this._root;
     }
-    // free all resources specific to a particular clip
-    uncacheClip(clip) {
+    /**
+	 * Deallocates all memory resources for a clip. Before using this method make
+	 * sure to call {@link AnimationAction#stop} for all related actions.
+	 *
+	 * @param {AnimationClip} clip - The clip to uncache.
+	 */ uncacheClip(clip) {
         const actions = this._actions, clipUuid = clip.uuid, actionsByClip = this._actionsByClip, actionsForClip = actionsByClip[clipUuid];
         if (actionsForClip !== undefined) {
             // note: just calling _removeInactiveAction would mess up the
@@ -31203,8 +37991,14 @@ class $ded5eecc0cd20cc2$export$fbd77e5aefaa0102 extends $ded5eecc0cd20cc2$export
             delete actionsByClip[clipUuid];
         }
     }
-    // free all resources specific to a particular root target object
-    uncacheRoot(root) {
+    /**
+	 * Deallocates all memory resources for a root object. Before using this
+	 * method make sure to call {@link AnimationAction#stop} for all related
+	 * actions or alternatively {@link AnimationMixer#stopAllAction} when the
+	 * mixer operates on a single root.
+	 *
+	 * @param {Object3D} root - The root object to uncache.
+	 */ uncacheRoot(root) {
         const rootUuid = root.uuid, actionsByClip = this._actionsByClip;
         for(const clipUuid in actionsByClip){
             const actionByRoot = actionsByClip[clipUuid].actionByRoot, action = actionByRoot[rootUuid];
@@ -31220,8 +38014,14 @@ class $ded5eecc0cd20cc2$export$fbd77e5aefaa0102 extends $ded5eecc0cd20cc2$export
             this._removeInactiveBinding(binding);
         }
     }
-    // remove a targeted clip from the cache
-    uncacheAction(clip, optionalRoot) {
+    /**
+	 * Deallocates all memory resources for an action. The action is identified by the
+	 * given clip and an optional root object. Before using this method make
+	 * sure to call {@link AnimationAction#stop} to deactivate the action.
+	 *
+	 * @param {AnimationClip|string} clip - An animation clip or alternatively the name of the animation clip.
+	 * @param {Object3D} [optionalRoot] - An alternative root object.
+	 */ uncacheAction(clip, optionalRoot) {
         const action = this.existingAction(clip, optionalRoot);
         if (action !== null) {
             this._deactivateAction(action);
@@ -31229,68 +38029,193 @@ class $ded5eecc0cd20cc2$export$fbd77e5aefaa0102 extends $ded5eecc0cd20cc2$export
         }
     }
 }
-class $ded5eecc0cd20cc2$export$6b116d2fdfef087c extends $ded5eecc0cd20cc2$export$efcb1f8bf367cbfb {
-    constructor(width = 1, height = 1, depth = 1, options = {}){
+/**
+ * Represents a 3D render target.
+ *
+ * @augments RenderTarget
+ */ class $ded5eecc0cd20cc2$export$6b116d2fdfef087c extends $ded5eecc0cd20cc2$export$efcb1f8bf367cbfb {
+    /**
+	 * Constructs a new 3D render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {number} [depth=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */ constructor(width = 1, height = 1, depth = 1, options = {}){
         super(width, height, options);
-        this.isRenderTarget3D = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isRenderTarget3D = true;
         this.depth = depth;
-        this.texture = new $ded5eecc0cd20cc2$export$d7a3086320f856db(null, width, height, depth);
+        /**
+		 * Overwritten with a different texture type.
+		 *
+		 * @type {Data3DTexture}
+		 */ this.texture = new $ded5eecc0cd20cc2$export$d7a3086320f856db(null, width, height, depth);
         this.texture.isRenderTargetTexture = true;
     }
 }
-class $ded5eecc0cd20cc2$export$eb4d196341728d65 extends $ded5eecc0cd20cc2$export$efcb1f8bf367cbfb {
-    constructor(width = 1, height = 1, depth = 1, options = {}){
+/**
+ * Represents an array render target.
+ *
+ * @augments RenderTarget
+ */ class $ded5eecc0cd20cc2$export$eb4d196341728d65 extends $ded5eecc0cd20cc2$export$efcb1f8bf367cbfb {
+    /**
+	 * Constructs a new 3D render target.
+	 *
+	 * @param {number} [width=1] - The width of the render target.
+	 * @param {number} [height=1] - The height of the render target.
+	 * @param {number} [depth=1] - The height of the render target.
+	 * @param {RenderTarget~Options} [options] - The configuration object.
+	 */ constructor(width = 1, height = 1, depth = 1, options = {}){
         super(width, height, options);
         this.isRenderTargetArray = true;
         this.depth = depth;
-        this.texture = new $ded5eecc0cd20cc2$export$dfac6c8e811406a3(null, width, height, depth);
+        /**
+		 * Overwritten with a different texture type.
+		 *
+		 * @type {DataArrayTexture}
+		 */ this.texture = new $ded5eecc0cd20cc2$export$dfac6c8e811406a3(null, width, height, depth);
         this.texture.isRenderTargetTexture = true;
     }
 }
-class $ded5eecc0cd20cc2$export$2947cebfe91c02f8 {
-    constructor(value){
-        this.value = value;
+/**
+ * Represents a uniform which is a global shader variable. They are passed to shader programs.
+ *
+ * When declaring a uniform of a {@link ShaderMaterial}, it is declared by value or by object.
+ * ```js
+ * uniforms: {
+ * 	time: { value: 1.0 },
+ * 	resolution: new Uniform( new Vector2() )
+ * };
+ * ```
+ * Since this class can only be used in context of {@link ShaderMaterial}, it is only supported
+ * in {@link WebGLRenderer}.
+ */ class $ded5eecc0cd20cc2$export$2947cebfe91c02f8 {
+    /**
+	 * Constructs a new uniform.
+	 *
+	 * @param {any} value - The uniform value.
+	 */ constructor(value){
+        /**
+		 * The uniform value.
+		 *
+		 * @type {any}
+		 */ this.value = value;
     }
-    clone() {
+    /**
+	 * Returns a new uniform with copied values from this instance.
+	 * If the value has a `clone()` method, the value is cloned as well.
+	 *
+	 * @return {Uniform} A clone of this instance.
+	 */ clone() {
         return new $ded5eecc0cd20cc2$export$2947cebfe91c02f8(this.value.clone === undefined ? this.value : this.value.clone());
     }
 }
 let $ded5eecc0cd20cc2$var$_id = 0;
-class $ded5eecc0cd20cc2$export$c412d5ffe1f79209 extends $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a {
-    constructor(){
+/**
+ * A class for managing multiple uniforms in a single group. The renderer will process
+ * such a definition as a single UBO.
+ *
+ * Since this class can only be used in context of {@link ShaderMaterial}, it is only supported
+ * in {@link WebGLRenderer}.
+ *
+ * @augments EventDispatcher
+ */ class $ded5eecc0cd20cc2$export$c412d5ffe1f79209 extends $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a {
+    /**
+	 * Constructs a new uniforms group.
+	 */ constructor(){
         super();
-        this.isUniformsGroup = true;
-        Object.defineProperty(this, 'id', {
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isUniformsGroup = true;
+        /**
+		 * The ID of the 3D object.
+		 *
+		 * @name UniformsGroup#id
+		 * @type {number}
+		 * @readonly
+		 */ Object.defineProperty(this, 'id', {
             value: $ded5eecc0cd20cc2$var$_id++
         });
-        this.name = '';
-        this.usage = $ded5eecc0cd20cc2$export$763e8360f4d7f77d;
-        this.uniforms = [];
+        /**
+		 * The name of the uniforms group.
+		 *
+		 * @type {string}
+		 */ this.name = '';
+        /**
+		 * The buffer usage.
+		 *
+		 * @type {(StaticDrawUsage|DynamicDrawUsage|StreamDrawUsage|StaticReadUsage|DynamicReadUsage|StreamReadUsage|StaticCopyUsage|DynamicCopyUsage|StreamCopyUsage)}
+		 * @default StaticDrawUsage
+		 */ this.usage = $ded5eecc0cd20cc2$export$763e8360f4d7f77d;
+        /**
+		 * An array holding the uniforms.
+		 *
+		 * @type {Array<Uniform>}
+		 */ this.uniforms = [];
     }
-    add(uniform) {
+    /**
+	 * Adds the given uniform to this uniforms group.
+	 *
+	 * @param {Uniform} uniform - The uniform to add.
+	 * @return {UniformsGroup} A reference to this uniforms group.
+	 */ add(uniform) {
         this.uniforms.push(uniform);
         return this;
     }
-    remove(uniform) {
+    /**
+	 * Removes the given uniform from this uniforms group.
+	 *
+	 * @param {Uniform} uniform - The uniform to remove.
+	 * @return {UniformsGroup} A reference to this uniforms group.
+	 */ remove(uniform) {
         const index = this.uniforms.indexOf(uniform);
         if (index !== -1) this.uniforms.splice(index, 1);
         return this;
     }
-    setName(name) {
+    /**
+	 * Sets the name of this uniforms group.
+	 *
+	 * @param {string} name - The name to set.
+	 * @return {UniformsGroup} A reference to this uniforms group.
+	 */ setName(name) {
         this.name = name;
         return this;
     }
-    setUsage(value) {
+    /**
+	 * Sets the usage of this uniforms group.
+	 *
+	 * @param {(StaticDrawUsage|DynamicDrawUsage|StreamDrawUsage|StaticReadUsage|DynamicReadUsage|StreamReadUsage|StaticCopyUsage|DynamicCopyUsage|StreamCopyUsage)} value - The usage to set.
+	 * @return {UniformsGroup} A reference to this uniforms group.
+	 */ setUsage(value) {
         this.usage = value;
         return this;
     }
-    dispose() {
+    /**
+	 * Frees the GPU-related resources allocated by this instance. Call this
+	 * method whenever this instance is no longer used in your app.
+	 *
+	 * @fires Texture#dispose
+	 */ dispose() {
         this.dispatchEvent({
             type: 'dispose'
         });
-        return this;
     }
-    copy(source) {
+    /**
+	 * Copies the values of the given uniforms group to this instance.
+	 *
+	 * @param {UniformsGroup} source - The uniforms group to copy.
+	 * @return {UniformsGroup} A reference to this uniforms group.
+	 */ copy(source) {
         this.name = source.name;
         this.usage = source.usage;
         const uniformsSource = source.uniforms;
@@ -31303,15 +38228,41 @@ class $ded5eecc0cd20cc2$export$c412d5ffe1f79209 extends $ded5eecc0cd20cc2$export
         }
         return this;
     }
-    clone() {
+    /**
+	 * Returns a new uniforms group with copied values from this instance.
+	 *
+	 * @return {UniformsGroup} A clone of this instance.
+	 */ clone() {
         return new this.constructor().copy(this);
     }
 }
-class $ded5eecc0cd20cc2$export$25ec0e1af1389358 extends $ded5eecc0cd20cc2$export$3d5cd879f108f53f {
-    constructor(array, stride, meshPerAttribute = 1){
+/**
+ * An instanced version of an interleaved buffer.
+ *
+ * @augments InterleavedBuffer
+ */ class $ded5eecc0cd20cc2$export$25ec0e1af1389358 extends $ded5eecc0cd20cc2$export$3d5cd879f108f53f {
+    /**
+	 * Constructs a new instanced interleaved buffer.
+	 *
+	 * @param {TypedArray} array - A typed array with a shared buffer storing attribute data.
+	 * @param {number} stride - The number of typed-array elements per vertex.
+	 * @param {number} [meshPerAttribute=1] - Defines how often a value of this interleaved buffer should be repeated.
+	 */ constructor(array, stride, meshPerAttribute = 1){
         super(array, stride);
-        this.isInstancedInterleavedBuffer = true;
-        this.meshPerAttribute = meshPerAttribute;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isInstancedInterleavedBuffer = true;
+        /**
+		 * Defines how often a value of this buffer attribute should be repeated,
+		 * see {@link InstancedBufferAttribute#meshPerAttribute}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.meshPerAttribute = meshPerAttribute;
     }
     copy(source) {
         super.copy(source);
@@ -31330,48 +38281,184 @@ class $ded5eecc0cd20cc2$export$25ec0e1af1389358 extends $ded5eecc0cd20cc2$export
         return json;
     }
 }
-class $ded5eecc0cd20cc2$export$6b7339ae8dbddf73 {
-    constructor(buffer, type, itemSize, elementSize, count){
-        this.isGLBufferAttribute = true;
-        this.name = '';
-        this.buffer = buffer;
-        this.type = type;
-        this.itemSize = itemSize;
-        this.elementSize = elementSize;
-        this.count = count;
-        this.version = 0;
+/**
+ * An alternative version of a buffer attribute with more control over the VBO.
+ *
+ * The renderer does not construct a VBO for this kind of attribute. Instead, it uses
+ * whatever VBO is passed in constructor and can later be altered via the `buffer` property.
+ *
+ * The most common use case for this class is when some kind of GPGPU calculation interferes
+ * or even produces the VBOs in question.
+ *
+ * Notice that this class can only be used with {@link WebGLRenderer}.
+ */ class $ded5eecc0cd20cc2$export$6b7339ae8dbddf73 {
+    /**
+	 * Constructs a new GL buffer attribute.
+	 *
+	 * @param {WebGLBuffer} buffer - The native WebGL buffer.
+	 * @param {number} type - The native data type (e.g. `gl.FLOAT`).
+	 * @param {number} itemSize - The item size.
+	 * @param {number} elementSize - The corresponding size (in bytes) for the given `type` parameter.
+	 * @param {number} count - The expected number of vertices in VBO.
+	 */ constructor(buffer, type, itemSize, elementSize, count){
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isGLBufferAttribute = true;
+        /**
+		 * The name of the buffer attribute.
+		 *
+		 * @type {string}
+		 */ this.name = '';
+        /**
+		 * The native WebGL buffer.
+		 *
+		 * @type {WebGLBuffer}
+		 */ this.buffer = buffer;
+        /**
+		 * The native data type.
+		 *
+		 * @type {number}
+		 */ this.type = type;
+        /**
+		 * The item size, see {@link BufferAttribute#itemSize}.
+		 *
+		 * @type {number}
+		 */ this.itemSize = itemSize;
+        /**
+		 * The corresponding size (in bytes) for the given `type` parameter.
+		 *
+		 * @type {number}
+		 */ this.elementSize = elementSize;
+        /**
+		 * The expected number of vertices in VBO.
+		 *
+		 * @type {number}
+		 */ this.count = count;
+        /**
+		 * A version number, incremented every time the `needsUpdate` is set to `true`.
+		 *
+		 * @type {number}
+		 */ this.version = 0;
     }
-    set needsUpdate(value) {
+    /**
+	 * Flag to indicate that this attribute has changed and should be re-sent to
+	 * the GPU. Set this to `true` when you modify the value of the array.
+	 *
+	 * @type {number}
+	 * @default false
+	 * @param {boolean} value
+	 */ set needsUpdate(value) {
         if (value === true) this.version++;
     }
-    setBuffer(buffer) {
+    /**
+	 * Sets the given native WebGL buffer.
+	 *
+	 * @param {WebGLBuffer} buffer - The buffer to set.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setBuffer(buffer) {
         this.buffer = buffer;
         return this;
     }
-    setType(type, elementSize) {
+    /**
+	 * Sets the given native data type and element size.
+	 *
+	 * @param {number} type - The native data type (e.g. `gl.FLOAT`).
+	 * @param {number} elementSize - The corresponding size (in bytes) for the given `type` parameter.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setType(type, elementSize) {
         this.type = type;
         this.elementSize = elementSize;
         return this;
     }
-    setItemSize(itemSize) {
+    /**
+	 * Sets the item size.
+	 *
+	 * @param {number} itemSize - The item size.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setItemSize(itemSize) {
         this.itemSize = itemSize;
         return this;
     }
-    setCount(count) {
+    /**
+	 * Sets the count (the expected number of vertices in VBO).
+	 *
+	 * @param {number} count - The count.
+	 * @return {BufferAttribute} A reference to this instance.
+	 */ setCount(count) {
         this.count = count;
         return this;
     }
 }
 const $ded5eecc0cd20cc2$var$_matrix = /*@__PURE__*/ new $ded5eecc0cd20cc2$export$2ae72fc923e5eb5();
-class $ded5eecc0cd20cc2$export$8b7aaceff00bd2f {
-    constructor(origin, direction, near = 0, far = Infinity){
-        this.ray = new $ded5eecc0cd20cc2$export$a186db52eed6d40e(origin, direction);
-        // direction is assumed to be normalized (for accurate distance calculations)
-        this.near = near;
-        this.far = far;
-        this.camera = null;
-        this.layers = new $ded5eecc0cd20cc2$export$89312ce47c0ca777();
-        this.params = {
+/**
+ * This class is designed to assist with raycasting. Raycasting is used for
+ * mouse picking (working out what objects in the 3d space the mouse is over)
+ * amongst other things.
+ */ class $ded5eecc0cd20cc2$export$8b7aaceff00bd2f {
+    /**
+	 * Constructs a new raycaster.
+	 *
+	 * @param {Vector3} origin - The origin vector where the ray casts from.
+	 * @param {Vector3} direction - The (normalized) direction vector that gives direction to the ray.
+	 * @param {number} [near=0] - All results returned are further away than near. Near can't be negative.
+	 * @param {number} [far=Infinity] - All results returned are closer than far. Far can't be lower than near.
+	 */ constructor(origin, direction, near = 0, far = Infinity){
+        /**
+		 * The ray used for raycasting.
+		 *
+		 * @type {Ray}
+		 */ this.ray = new $ded5eecc0cd20cc2$export$a186db52eed6d40e(origin, direction);
+        /**
+		 * All results returned are further away than near. Near can't be negative.
+		 *
+		 * @type {number}
+		 * @default 0
+		 */ this.near = near;
+        /**
+		 * All results returned are further away than near. Near can't be negative.
+		 *
+		 * @type {number}
+		 * @default Infinity
+		 */ this.far = far;
+        /**
+		 * The camera to use when raycasting against view-dependent objects such as
+		 * billboarded objects like sprites. This field can be set manually or
+		 * is set when calling `setFromCamera()`.
+		 *
+		 * @type {?Camera}
+		 * @default null
+		 */ this.camera = null;
+        /**
+		 * Allows to selectively ignore 3D objects when performing intersection tests.
+		 * The following code example ensures that only 3D objects on layer `1` will be
+		 * honored by raycaster.
+		 * ```js
+		 * raycaster.layers.set( 1 );
+		 * object.layers.enable( 1 );
+		 * ```
+		 *
+		 * @type {Layers}
+		 */ this.layers = new $ded5eecc0cd20cc2$export$89312ce47c0ca777();
+        /**
+		 * A parameter object that configures the raycasting. It has the structure:
+		 *
+		 * ```
+		 * {
+		 * 	Mesh: {},
+		 * 	Line: { threshold: 1 },
+		 * 	LOD: {},
+		 * 	Points: { threshold: 1 },
+		 * 	Sprite: {}
+		 * }
+		 * ```
+		 * Where `threshold` is the precision of the raycaster when intersecting objects, in world units.
+		 *
+		 * @type {Object}
+		 */ this.params = {
             Mesh: {},
             Line: {
                 threshold: 1
@@ -31383,11 +38470,22 @@ class $ded5eecc0cd20cc2$export$8b7aaceff00bd2f {
             Sprite: {}
         };
     }
-    set(origin, direction) {
+    /**
+	 * Updates the ray with a new origin and direction by copying the values from the arguments.
+	 *
+	 * @param {Vector3} origin - The origin vector where the ray casts from.
+	 * @param {Vector3} direction - The (normalized) direction vector that gives direction to the ray.
+	 */ set(origin, direction) {
         // direction is assumed to be normalized (for accurate distance calculations)
         this.ray.set(origin, direction);
     }
-    setFromCamera(coords, camera) {
+    /**
+	 * Uses the given coordinates and camera to compute a new origin and direction for the internal ray.
+	 *
+	 * @param {Vector2} coords - 2D coordinates of the mouse, in normalized device coordinates (NDC).
+	 * X and Y components should be between `-1` and `1`.
+	 * @param {Camera} camera - The camera from which the ray should originate.
+	 */ setFromCamera(coords, camera) {
         if (camera.isPerspectiveCamera) {
             this.ray.origin.setFromMatrixPosition(camera.matrixWorld);
             this.ray.direction.set(coords.x, coords.y, 0.5).unproject(camera).sub(this.ray.origin).normalize();
@@ -31398,18 +38496,65 @@ class $ded5eecc0cd20cc2$export$8b7aaceff00bd2f {
             this.camera = camera;
         } else console.error('THREE.Raycaster: Unsupported camera type: ' + camera.type);
     }
-    setFromXRController(controller) {
+    /**
+	 * Uses the given WebXR controller to compute a new origin and direction for the internal ray.
+	 *
+	 * @param {WebXRController} controller - The controller to copy the position and direction from.
+	 * @return {Raycaster} A reference to this raycaster.
+	 */ setFromXRController(controller) {
         $ded5eecc0cd20cc2$var$_matrix.identity().extractRotation(controller.matrixWorld);
         this.ray.origin.setFromMatrixPosition(controller.matrixWorld);
         this.ray.direction.set(0, 0, -1).applyMatrix4($ded5eecc0cd20cc2$var$_matrix);
         return this;
     }
-    intersectObject(object, recursive = true, intersects = []) {
+    /**
+	 * The intersection point of a raycaster intersection test.
+	 * @typedef {Object} Raycaster~Intersection
+	 * @property {number} distance - The distance from the ray's origin to the intersection point.
+	 * @property {number} distanceToRay -  Some 3D objects e.g. {@link Points} provide the distance of the
+	 * intersection to the nearest point on the ray. For other objects it will be `undefined`.
+	 * @property {Vector3} point - The intersection point, in world coordinates.
+	 * @property {Object} face - The face that has been intersected.
+	 * @property {number} faceIndex - The face index.
+	 * @property {Object3D} object - The 3D object that has been intersected.
+	 * @property {Vector2} uv - U,V coordinates at point of intersection.
+	 * @property {Vector2} uv1 - Second set of U,V coordinates at point of intersection.
+	 * @property {Vector3} uv1 - Interpolated normal vector at point of intersection.
+	 * @property {number} instanceId - The index number of the instance where the ray
+	 * intersects the {@link InstancedMesh}.
+	 */ /**
+	 * Checks all intersection between the ray and the object with or without the
+	 * descendants. Intersections are returned sorted by distance, closest first.
+	 *
+	 * `Raycaster` delegates to the `raycast()` method of the passed 3D object, when
+	 * evaluating whether the ray intersects the object or not. This allows meshes to respond
+	 * differently to ray casting than lines or points.
+	 *
+	 * Note that for meshes, faces must be pointed towards the origin of the ray in order
+	 * to be detected; intersections of the ray passing through the back of a face will not
+	 * be detected. To raycast against both faces of an object, you'll want to set  {@link Material#side}
+	 * to `THREE.DoubleSide`.
+	 *
+	 * @param {Object3D} object - The 3D object to check for intersection with the ray.
+	 * @param {boolean} [recursive=true] - If set to `true`, it also checks all descendants.
+	 * Otherwise it only checks intersection with the object.
+	 * @param {Array<Raycaster~Intersection>} [intersects=[]] The target array that holds the result of the method.
+	 * @return {Array<Raycaster~Intersection>} An array holding the intersection points.
+	 */ intersectObject(object, recursive = true, intersects = []) {
         $ded5eecc0cd20cc2$var$intersect(object, this, intersects, recursive);
         intersects.sort($ded5eecc0cd20cc2$var$ascSort);
         return intersects;
     }
-    intersectObjects(objects, recursive = true, intersects = []) {
+    /**
+	 * Checks all intersection between the ray and the objects with or without
+	 * the descendants. Intersections are returned sorted by distance, closest first.
+	 *
+	 * @param {Array<Object3D>} objects - The 3D objects to check for intersection with the ray.
+	 * @param {boolean} [recursive=true] - If set to `true`, it also checks all descendants.
+	 * Otherwise it only checks intersection with the object.
+	 * @param {Array<Raycaster~Intersection>} [intersects=[]] The target array that holds the result of the method.
+	 * @return {Array<Raycaster~Intersection>} An array holding the intersection points.
+	 */ intersectObjects(objects, recursive = true, intersects = []) {
         for(let i = 0, l = objects.length; i < l; i++)$ded5eecc0cd20cc2$var$intersect(objects[i], this, intersects, recursive);
         intersects.sort($ded5eecc0cd20cc2$var$ascSort);
         return intersects;
@@ -33809,7 +40954,16 @@ let $ded5eecc0cd20cc2$var$_lineGeometry, $ded5eecc0cd20cc2$var$_coneGeometry;
     /**
 	 * Connects the controls to the DOM. This method has so called "side effects" since
 	 * it adds the module's event listeners to the DOM.
-	 */ connect() {}
+	 *
+	 * @param {HTMLDOMElement} element - The DOM element to connect to.
+	 */ connect(element) {
+        if (element === undefined) {
+            console.warn('THREE.Controls: connect() now requires an element.'); // @deprecated, the warning can be removed with r185
+            return;
+        }
+        if (this.domElement !== null) this.disconnect();
+        this.domElement = element;
+    }
     /**
 	 * Disconnects the controls from the DOM.
 	 */ disconnect() {}
@@ -34496,9 +41650,8 @@ const $ea01ff4a5048cd08$export$955f9f2e84c43c8b = {
     sprite_vert: $ea01ff4a5048cd08$var$vertex$1,
     sprite_frag: $ea01ff4a5048cd08$var$fragment$1
 };
-/**
- * Uniforms library for shared webgl shaders
- */ const $ea01ff4a5048cd08$export$6643083551874bf5 = {
+// Uniforms library for shared webgl shaders
+const $ea01ff4a5048cd08$export$6643083551874bf5 = {
     common: {
         diffuse: {
             value: /*@__PURE__*/ new (0, $ded5eecc0cd20cc2$export$892596cec99bc70e)(0xffffff)
@@ -35304,7 +42457,8 @@ function $ea01ff4a5048cd08$var$WebGLBackground(renderer, cubemaps, cubeuvmaps, s
                     side: (0, $ded5eecc0cd20cc2$export$d9f0486e75b5ace),
                     depthTest: false,
                     depthWrite: false,
-                    fog: false
+                    fog: false,
+                    allowOverride: false
                 }));
                 boxMesh.geometry.deleteAttribute('normal');
                 boxMesh.geometry.deleteAttribute('uv');
@@ -35354,7 +42508,8 @@ function $ea01ff4a5048cd08$var$WebGLBackground(renderer, cubemaps, cubeuvmaps, s
                     side: (0, $ded5eecc0cd20cc2$export$2ede184fc2998901),
                     depthTest: false,
                     depthWrite: false,
-                    fog: false
+                    fog: false,
+                    allowOverride: false
                 }));
                 planeMesh.geometry.deleteAttribute('normal');
                 // add "map" material property so the renderer can evaluate it like for built-in materials
@@ -35982,10 +43137,14 @@ const $ea01ff4a5048cd08$var$_origin = /*@__PURE__*/ new (0, $ded5eecc0cd20cc2$ex
  * higher roughness levels. In this way we maintain resolution to smoothly
  * interpolate diffuse lighting while limiting sampling computation.
  *
- * Paper: Fast, Accurate Image-Based Lighting
- * https://drive.google.com/file/d/15y8r_UpKlU9SvV4ILb0C3qCPecS8pvLz/view
+ * Paper: Fast, Accurate Image-Based Lighting:
+ * {@link https://drive.google.com/file/d/15y8r_UpKlU9SvV4ILb0C3qCPecS8pvLz/view}
 */ class $ea01ff4a5048cd08$export$6add42717753e221 {
-    constructor(renderer){
+    /**
+	 * Constructs a new PMREM generator.
+	 *
+	 * @param {WebGLRenderer} renderer - The renderer.
+	 */ constructor(renderer){
         this._renderer = renderer;
         this._pingPongRenderTarget = null;
         this._lodMax = 0;
@@ -36004,12 +43163,14 @@ const $ea01ff4a5048cd08$var$_origin = /*@__PURE__*/ new (0, $ded5eecc0cd20cc2$ex
 	 * in radians to be applied to the scene before PMREM generation. Optional near
 	 * and far planes ensure the scene is rendered in its entirety.
 	 *
-	 * @param {Scene} scene
-	 * @param {number} sigma
-	 * @param {number} near
-	 * @param {number} far
-	 * @param {Object} [options={}]
-	 * @return {WebGLRenderTarget}
+	 * @param {Scene} scene - The scene to be captured.
+	 * @param {number} [sigma=0] - The blur radius in radians.
+	 * @param {number} [near=0.1] - The near plane distance.
+	 * @param {number} [far=100] - The far plane distance.
+	 * @param {Object} [options={}] - The configuration options.
+	 * @param {number} [options.size=256] - The texture size of the PMREM.
+	 * @param {Vector3} [options.renderTarget=origin] - The position of the internal cube camera that renders the scene.
+	 * @return {WebGLRenderTarget} The resulting PMREM.
 	 */ fromScene(scene, sigma = 0, near = 0.1, far = 100, options = {}) {
         const { size: size = 256, position: position = $ea01ff4a5048cd08$var$_origin } = options;
         $ea01ff4a5048cd08$var$_oldTarget = this._renderer.getRenderTarget();
@@ -36030,11 +43191,10 @@ const $ea01ff4a5048cd08$var$_origin = /*@__PURE__*/ new (0, $ded5eecc0cd20cc2$ex
 	 * Generates a PMREM from an equirectangular texture, which can be either LDR
 	 * or HDR. The ideal input image size is 1k (1024 x 512),
 	 * as this matches best with the 256 x 256 cubemap output.
-	 * The smallest supported equirectangular image size is 64 x 32.
 	 *
-	 * @param {Texture} equirectangular
-	 * @param {?WebGLRenderTarget} [renderTarget=null] - Optional render target.
-	 * @return {WebGLRenderTarget}
+	 * @param {Texture} equirectangular - The equirectangular texture to be converted.
+	 * @param {?WebGLRenderTarget} [renderTarget=null] - The render target to use.
+	 * @return {WebGLRenderTarget} The resulting PMREM.
 	 */ fromEquirectangular(equirectangular, renderTarget = null) {
         return this._fromTexture(equirectangular, renderTarget);
     }
@@ -36042,11 +43202,10 @@ const $ea01ff4a5048cd08$var$_origin = /*@__PURE__*/ new (0, $ded5eecc0cd20cc2$ex
 	 * Generates a PMREM from an cubemap texture, which can be either LDR
 	 * or HDR. The ideal input cube size is 256 x 256,
 	 * as this matches best with the 256 x 256 cubemap output.
-	 * The smallest supported cube size is 16 x 16.
 	 *
-	 * @param {Texture} cubemap
-	 * @param {null} [renderTarget=null] - Optional render target.
-	 * @return {WebGLRenderTarget}
+	 * @param {Texture} cubemap - The cubemap texture to be converted.
+	 * @param {?WebGLRenderTarget} [renderTarget=null] - The render target to use.
+	 * @return {WebGLRenderTarget} The resulting PMREM.
 	 */ fromCubemap(cubemap, renderTarget = null) {
         return this._fromTexture(cubemap, renderTarget);
     }
@@ -36240,6 +43399,7 @@ const $ea01ff4a5048cd08$var$_origin = /*@__PURE__*/ new (0, $ded5eecc0cd20cc2$ex
 	 * the poles) to approximate the orthogonally-separable blur. It is least
 	 * accurate at the poles, but still does a decent job.
 	 *
+	 * @private
 	 * @param {WebGLRenderTarget} cubeUVRenderTarget
 	 * @param {number} lodIn
 	 * @param {number} lodOut
@@ -39677,24 +46837,24 @@ function $ea01ff4a5048cd08$var$WebGLState(gl, extensions) {
     }
     function DepthBuffer() {
         let locked = false;
-        let reversed = false;
+        let currentReversed = false;
         let currentDepthMask = null;
         let currentDepthFunc = null;
         let currentDepthClear = null;
         return {
-            setReversed: function(value) {
-                if (reversed !== value) {
+            setReversed: function(reversed) {
+                if (currentReversed !== reversed) {
                     const ext = extensions.get('EXT_clip_control');
                     if (reversed) ext.clipControlEXT(ext.LOWER_LEFT_EXT, ext.ZERO_TO_ONE_EXT);
                     else ext.clipControlEXT(ext.LOWER_LEFT_EXT, ext.NEGATIVE_ONE_TO_ONE_EXT);
+                    currentReversed = reversed;
                     const oldDepth = currentDepthClear;
                     currentDepthClear = null;
                     this.setClear(oldDepth);
                 }
-                reversed = value;
             },
             getReversed: function() {
-                return reversed;
+                return currentReversed;
             },
             setTest: function(depthTest) {
                 if (depthTest) enable(gl.DEPTH_TEST);
@@ -39707,7 +46867,7 @@ function $ea01ff4a5048cd08$var$WebGLState(gl, extensions) {
                 }
             },
             setFunc: function(depthFunc) {
-                if (reversed) depthFunc = $ea01ff4a5048cd08$var$reversedFuncs[depthFunc];
+                if (currentReversed) depthFunc = $ea01ff4a5048cd08$var$reversedFuncs[depthFunc];
                 if (currentDepthFunc !== depthFunc) {
                     switch(depthFunc){
                         case 0, $ded5eecc0cd20cc2$export$69025ce147cee220:
@@ -39745,7 +46905,7 @@ function $ea01ff4a5048cd08$var$WebGLState(gl, extensions) {
             },
             setClear: function(depth) {
                 if (currentDepthClear !== depth) {
-                    if (reversed) depth = 1 - depth;
+                    if (currentReversed) depth = 1 - depth;
                     gl.clearDepth(depth);
                     currentDepthClear = depth;
                 }
@@ -39755,7 +46915,7 @@ function $ea01ff4a5048cd08$var$WebGLState(gl, extensions) {
                 currentDepthMask = null;
                 currentDepthFunc = null;
                 currentDepthClear = null;
-                reversed = false;
+                currentReversed = false;
             }
         };
     }
@@ -41476,14 +48636,40 @@ void main() {
 	}
 
 }`;
-class $ea01ff4a5048cd08$var$WebXRDepthSensing {
-    constructor(){
-        this.texture = null;
-        this.mesh = null;
-        this.depthNear = 0;
-        this.depthFar = 0;
+/**
+ * A XR module that manages the access to the Depth Sensing API.
+ */ class $ea01ff4a5048cd08$var$WebXRDepthSensing {
+    /**
+	 * Constructs a new depth sensing module.
+	 */ constructor(){
+        /**
+		 * A texture representing the depth of the user's environment.
+		 *
+		 * @type {?Texture}
+		 */ this.texture = null;
+        /**
+		 * A plane mesh for visualizing the depth texture.
+		 *
+		 * @type {?Mesh}
+		 */ this.mesh = null;
+        /**
+		 * The depth near value.
+		 *
+		 * @type {number}
+		 */ this.depthNear = 0;
+        /**
+		 * The depth near far.
+		 *
+		 * @type {number}
+		 */ this.depthFar = 0;
     }
-    init(renderer, depthData, renderState) {
+    /**
+	 * Inits the depth sensing module
+	 *
+	 * @param {WebGLRenderer} renderer - The renderer.
+	 * @param {XRWebGLDepthInformation} depthData - The XR depth data.
+	 * @param {XRRenderState} renderState - The XR render state.
+	 */ init(renderer, depthData, renderState) {
         if (this.texture === null) {
             const texture = new (0, $ded5eecc0cd20cc2$export$5431306cf43de24a)();
             const texProps = renderer.properties.get(texture);
@@ -41495,7 +48681,12 @@ class $ea01ff4a5048cd08$var$WebXRDepthSensing {
             this.texture = texture;
         }
     }
-    getMesh(cameraXR) {
+    /**
+	 * Returns a plane mesh that visualizes the depth texture.
+	 *
+	 * @param {ArrayCamera} cameraXR - The XR camera.
+	 * @return {?Mesh} The plane mesh.
+	 */ getMesh(cameraXR) {
         if (this.texture !== null) {
             if (this.mesh === null) {
                 const viewport = cameraXR.cameras[0].viewport;
@@ -41519,16 +48710,35 @@ class $ea01ff4a5048cd08$var$WebXRDepthSensing {
         }
         return this.mesh;
     }
-    reset() {
+    /**
+	 * Resets the module
+	 */ reset() {
         this.texture = null;
         this.mesh = null;
     }
-    getDepthTexture() {
+    /**
+	 * Returns a texture representing the depth of the user's environment.
+	 *
+	 * @return {?Texture} The depth texture.
+	 */ getDepthTexture() {
         return this.texture;
     }
 }
-class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a) {
-    constructor(renderer, gl){
+/**
+ * This class represents an abstraction of the WebXR Device API and is
+ * internally used by {@link WebGLRenderer}. `WebXRManager` also provides a public
+ * interface that allows users to enable/disable XR and perform XR related
+ * tasks like for instance retrieving controllers.
+ *
+ * @augments EventDispatcher
+ * @hideconstructor
+ */ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec8b666c5fe2c75a) {
+    /**
+	 * Constructs a new WebGL renderer.
+	 *
+	 * @param {WebGLRenderer} renderer - The renderer.
+	 * @param {WebGL2RenderingContext} gl - The rendering context.
+	 */ constructor(renderer, gl){
         super();
         const scope = this;
         let session = null;
@@ -41564,10 +48774,34 @@ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec
         let _currentDepthNear = null;
         let _currentDepthFar = null;
         //
-        this.cameraAutoUpdate = true;
-        this.enabled = false;
-        this.isPresenting = false;
-        this.getController = function(index) {
+        /**
+		 * Whether the manager's XR camera should be automatically updated or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.cameraAutoUpdate = true;
+        /**
+		 * This flag notifies the renderer to be ready for XR rendering. Set it to `true`
+		 * if you are going to use XR in your app.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.enabled = false;
+        /**
+		 * Whether XR presentation is active or not.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default false
+		 */ this.isPresenting = false;
+        /**
+		 * Returns a group representing the `target ray` space of the XR controller.
+		 * Use this space for visualizing 3D objects that support the user in pointing
+		 * tasks like UI interaction.
+		 *
+		 * @param {number} index - The index of the controller.
+		 * @return {Group} A group representing the `target ray` space.
+		 */ this.getController = function(index) {
             let controller = controllers[index];
             if (controller === undefined) {
                 controller = new (0, $ded5eecc0cd20cc2$export$cb626c57dcc48b9f)();
@@ -41575,7 +48809,21 @@ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec
             }
             return controller.getTargetRaySpace();
         };
-        this.getControllerGrip = function(index) {
+        /**
+		 * Returns a group representing the `grip` space of the XR controller.
+		 * Use this space for visualizing 3D objects that support the user in pointing
+		 * tasks like UI interaction.
+		 *
+		 * Note: If you want to show something in the user's hand AND offer a
+		 * pointing ray at the same time, you'll want to attached the handheld object
+		 * to the group returned by `getControllerGrip()` and the ray to the
+		 * group returned by `getController()`. The idea is to have two
+		 * different groups in two different coordinate spaces for the same WebXR
+		 * controller.
+		 *
+		 * @param {number} index - The index of the controller.
+		 * @return {Group} A group representing the `grip` space.
+		 */ this.getControllerGrip = function(index) {
             let controller = controllers[index];
             if (controller === undefined) {
                 controller = new (0, $ded5eecc0cd20cc2$export$cb626c57dcc48b9f)();
@@ -41583,7 +48831,14 @@ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec
             }
             return controller.getGripSpace();
         };
-        this.getHand = function(index) {
+        /**
+		 * Returns a group representing the `hand` space of the XR controller.
+		 * Use this space for visualizing 3D objects that support the user in pointing
+		 * tasks like UI interaction.
+		 *
+		 * @param {number} index - The index of the controller.
+		 * @return {Group} A group representing the `hand` space.
+		 */ this.getHand = function(index) {
             let controller = controllers[index];
             if (controller === undefined) {
                 controller = new (0, $ded5eecc0cd20cc2$export$cb626c57dcc48b9f)();
@@ -41638,33 +48893,79 @@ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec
                 type: 'sessionend'
             });
         }
-        this.setFramebufferScaleFactor = function(value) {
+        /**
+		 * Sets the framebuffer scale factor.
+		 *
+		 * This method can not be used during a XR session.
+		 *
+		 * @param {number} value - The framebuffer scale factor.
+		 */ this.setFramebufferScaleFactor = function(value) {
             framebufferScaleFactor = value;
             if (scope.isPresenting === true) console.warn('THREE.WebXRManager: Cannot change framebuffer scale while presenting.');
         };
-        this.setReferenceSpaceType = function(value) {
+        /**
+		 * Sets the reference space type. Can be used to configure a spatial relationship with the user's physical
+		 * environment. Depending on how the user moves in 3D space, setting an appropriate reference space can
+		 * improve tracking. Default is `local-floor`.
+		 *
+		 * This method can not be used during a XR session.
+		 *
+		 * @param {string} value - The reference space type.
+		 */ this.setReferenceSpaceType = function(value) {
             referenceSpaceType = value;
             if (scope.isPresenting === true) console.warn('THREE.WebXRManager: Cannot change reference space type while presenting.');
         };
-        this.getReferenceSpace = function() {
+        /**
+		 * Returns the XR reference space.
+		 *
+		 * @return {XRReferenceSpace} The XR reference space.
+		 */ this.getReferenceSpace = function() {
             return customReferenceSpace || referenceSpace;
         };
-        this.setReferenceSpace = function(space) {
+        /**
+		 * Sets a custom XR reference space.
+		 *
+		 * @param {XRReferenceSpace} space - The XR reference space.
+		 */ this.setReferenceSpace = function(space) {
             customReferenceSpace = space;
         };
-        this.getBaseLayer = function() {
+        /**
+		 * Returns the current base layer.
+		 *
+		 * @return {?(XRWebGLLayer|XRProjectionLayer)} The XR base layer.
+		 */ this.getBaseLayer = function() {
             return glProjLayer !== null ? glProjLayer : glBaseLayer;
         };
-        this.getBinding = function() {
+        /**
+		 * Returns the current XR binding.
+		 *
+		 * @return {?XRWebGLBinding} The XR binding.
+		 */ this.getBinding = function() {
             return glBinding;
         };
-        this.getFrame = function() {
+        /**
+		 * Returns the current XR frame.
+		 *
+		 * @return {?XRFrame} The XR frame. Returns `null` when used outside a XR session.
+		 */ this.getFrame = function() {
             return xrFrame;
         };
-        this.getSession = function() {
+        /**
+		 * Returns the current XR session.
+		 *
+		 * @return {?XRSession} The XR session. Returns `null` when used outside a XR session.
+		 */ this.getSession = function() {
             return session;
         };
-        this.setSession = async function(value) {
+        /**
+		 * After a XR session has been requested usually with one of the `*Button` modules, it
+		 * is injected into the renderer with this method. This method triggers the start of
+		 * the actual XR rendering.
+		 *
+		 * @async
+		 * @param {XRSession} value - The XR session to set.
+		 * @return {Promise} A Promise that resolves when the session has been set.
+		 */ this.setSession = async function(value) {
             session = value;
             if (session !== null) {
                 initialRenderTarget = renderer.getRenderTarget();
@@ -41750,10 +49051,18 @@ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec
                 });
             }
         };
-        this.getEnvironmentBlendMode = function() {
+        /**
+		 * Returns the environment blend mode from the current XR session.
+		 *
+		 * @return {'opaque'|'additive'|'alpha-blend'|undefined} The environment blend mode. Returns `undefined` when used outside of a XR session.
+		 */ this.getEnvironmentBlendMode = function() {
             if (session !== null) return session.environmentBlendMode;
         };
-        this.getDepthTexture = function() {
+        /**
+		 * Returns the current depth texture computed via depth sensing.
+		 *
+		 * @return {?Texture} The depth texture.
+		 */ this.getDepthTexture = function() {
             return depthSensing.getDepthTexture();
         };
         function onInputSourcesChange(event) {
@@ -41855,7 +49164,15 @@ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec
             else camera.matrixWorld.multiplyMatrices(parent.matrixWorld, camera.matrix);
             camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
         }
-        this.updateCamera = function(camera) {
+        /**
+		 * Updates the state of the XR camera. Use this method on app level if you
+		 * set cameraAutoUpdate` to `false`. The method requires the non-XR
+		 * camera of the scene as a parameter. The passed in camera's transformation
+		 * is automatically adjusted to the position of the XR camera when calling
+		 * this method.
+		 *
+		 * @param {Camera} camera - The camera.
+		 */ this.updateCamera = function(camera) {
             if (session === null) return;
             let depthNear = camera.near;
             let depthFar = camera.far;
@@ -41904,24 +49221,50 @@ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec
                 camera.zoom = 1;
             }
         }
-        this.getCamera = function() {
+        /**
+		 * Returns an instance of {@link ArrayCamera} which represents the XR camera
+		 * of the active XR session. For each view it holds a separate camera object.
+		 *
+		 * The camera's `fov` is currently not used and does not reflect the fov of
+		 * the XR camera. If you need the fov on app level, you have to compute in
+		 * manually from the XR camera's projection matrices.
+		 *
+		 * @return {ArrayCamera} The XR camera.
+		 */ this.getCamera = function() {
             return cameraXR;
         };
-        this.getFoveation = function() {
+        /**
+		 * Returns the amount of foveation used by the XR compositor for the projection layer.
+		 *
+		 * @return {number} The amount of foveation.
+		 */ this.getFoveation = function() {
             if (glProjLayer === null && glBaseLayer === null) return undefined;
             return foveation;
         };
-        this.setFoveation = function(value) {
+        /**
+		 * Sets the foveation value.
+		 *
+		 * @param {number} value - A number in the range `[0,1]` where `0` means no foveation (full resolution)
+		 * and `1` means maximum foveation (the edges render at lower resolution).
+		 */ this.setFoveation = function(value) {
             // 0 = no foveation = full resolution
             // 1 = maximum foveation = the edges render at lower resolution
             foveation = value;
             if (glProjLayer !== null) glProjLayer.fixedFoveation = value;
             if (glBaseLayer !== null && glBaseLayer.fixedFoveation !== undefined) glBaseLayer.fixedFoveation = value;
         };
-        this.hasDepthSensing = function() {
+        /**
+		 * Returns `true` if depth sensing is supported.
+		 *
+		 * @return {boolean} Whether depth sensing is supported or not.
+		 */ this.hasDepthSensing = function() {
             return depthSensing.texture !== null;
         };
-        this.getDepthSensingMesh = function() {
+        /**
+		 * Returns the depth sensing mesh.
+		 *
+		 * @return {Mesh} The depth sensing mesh.
+		 */ this.getDepthSensingMesh = function() {
             return depthSensing.getMesh(cameraXR);
         };
         // Animation Loop
@@ -41950,7 +49293,7 @@ class $ea01ff4a5048cd08$var$WebXRManager extends (0, $ded5eecc0cd20cc2$export$ec
                         viewport = glSubImage.viewport;
                         // For side-by-side projection, we only produce a single texture for both eyes.
                         if (i === 0) {
-                            renderer.setRenderTargetTextures(newRenderTarget, glSubImage.colorTexture, glProjLayer.ignoreDepthValues ? undefined : glSubImage.depthStencilTexture);
+                            renderer.setRenderTargetTextures(newRenderTarget, glSubImage.colorTexture, glSubImage.depthStencilTexture);
                             renderer.setRenderTarget(newRenderTarget);
                         }
                     }
@@ -42491,10 +49834,24 @@ function $ea01ff4a5048cd08$var$WebGLUniformsGroups(gl, info, capabilities, state
         dispose: dispose
     };
 }
-class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
-    constructor(parameters = {}){
+/**
+ * This renderer uses WebGL 2 to display scenes.
+ *
+ * WebGL 1 is not supported since `r163`.
+ */ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
+    /**
+	 * Constructs a new WebGL renderer.
+	 *
+	 * @param {WebGLRenderer~Options} [parameters] - The configuration parameter.
+	 */ constructor(parameters = {}){
         const { canvas: canvas = (0, $ded5eecc0cd20cc2$export$1033a2df66368859)(), context: context = null, depth: depth = true, stencil: stencil = false, alpha: alpha = false, antialias: antialias = false, premultipliedAlpha: premultipliedAlpha = true, preserveDrawingBuffer: preserveDrawingBuffer = false, powerPreference: powerPreference = 'default', failIfMajorPerformanceCaveat: failIfMajorPerformanceCaveat = false, reverseDepthBuffer: reverseDepthBuffer = false } = parameters;
-        this.isWebGLRenderer = true;
+        /**
+		 * This flag can be used for type testing.
+		 *
+		 * @type {boolean}
+		 * @readonly
+		 * @default true
+		 */ this.isWebGLRenderer = true;
         let _alpha;
         if (context !== null) {
             if (typeof WebGLRenderingContext !== 'undefined' && context instanceof WebGLRenderingContext) throw new Error('THREE.WebGLRenderer: WebGL 1 is not supported since r163.');
@@ -42509,11 +49866,32 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
         const renderListStack = [];
         const renderStateStack = [];
         // public properties
-        this.domElement = canvas;
-        // Debug configuration container
-        this.debug = {
+        /**
+		 * A canvas where the renderer draws its output.This is automatically created by the renderer
+		 * in the constructor (if not provided already); you just need to add it to your page like so:
+		 * ```js
+		 * document.body.appendChild( renderer.domElement );
+		 * ```
+		 *
+		 * @type {DOMElement}
+		 */ this.domElement = canvas;
+        /**
+		 * A object with debug configuration settings.
+		 *
+		 * - `checkShaderErrors`: If it is `true`, defines whether material shader programs are
+		 * checked for errors during compilation and linkage process. It may be useful to disable
+		 * this check in production for performance gain. It is strongly recommended to keep these
+		 * checks enabled during development. If the shader does not compile and link - it will not
+		 * work and associated material will not render.
+		 * - `onShaderError(gl, program, glVertexShader,glFragmentShader)`: A callback function that
+		 * can be used for custom error reporting. The callback receives the WebGL context, an instance
+		 * of WebGLProgram as well two instances of WebGLShader representing the vertex and fragment shader.
+		 * Assigning a custom function disables the default error reporting.
+		 *
+		 * @type {Object}
+		 */ this.debug = {
             /**
-			 * Enables error checking and reporting when shader programs are being compiled
+			 * Enables error checking and reporting when shader programs are being compiled.
 			 * @type {boolean}
 			 */ checkShaderErrors: true,
             /**
@@ -42522,24 +49900,86 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
 			 */ onShaderError: null
         };
         // clearing
-        this.autoClear = true;
-        this.autoClearColor = true;
-        this.autoClearDepth = true;
-        this.autoClearStencil = true;
+        /**
+		 * Whether the renderer should automatically clear its output before rendering a frame or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.autoClear = true;
+        /**
+		 * If {@link WebGLRenderer#autoClear} set to `true`, whether the renderer should clear
+		 * the color buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.autoClearColor = true;
+        /**
+		 * If {@link WebGLRenderer#autoClear} set to `true`, whether the renderer should clear
+		 * the depth buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.autoClearDepth = true;
+        /**
+		 * If {@link WebGLRenderer#autoClear} set to `true`, whether the renderer should clear
+		 * the stencil buffer or not.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.autoClearStencil = true;
         // scene graph
-        this.sortObjects = true;
+        /**
+		 * Whether the renderer should sort objects or not.
+		 *
+		 * Note: Sorting is used to attempt to properly render objects that have some
+		 * degree of transparency. By definition, sorting objects may not work in all
+		 * cases. Depending on the needs of application, it may be necessary to turn
+		 * off sorting and use other methods to deal with transparency rendering e.g.
+		 * manually determining each object's rendering order.
+		 *
+		 * @type {boolean}
+		 * @default true
+		 */ this.sortObjects = true;
         // user-defined clipping
-        this.clippingPlanes = [];
-        this.localClippingEnabled = false;
-        // physically based shading
-        this._outputColorSpace = (0, $ded5eecc0cd20cc2$export$561f394b24edfcaa);
+        /**
+		 * User-defined clipping planes specified in world space. These planes apply globally.
+		 * Points in space whose dot product with the plane is negative are cut away.
+		 *
+		 * @type {Array<Plane>}
+		 */ this.clippingPlanes = [];
+        /**
+		 * Whether the renderer respects object-level clipping planes or not.
+		 *
+		 * @type {boolean}
+		 * @default false
+		 */ this.localClippingEnabled = false;
         // tone mapping
-        this.toneMapping = (0, $ded5eecc0cd20cc2$export$9fcb6b4294603b2);
-        this.toneMappingExposure = 1.0;
+        /**
+		 * The tone mapping technique of the renderer.
+		 *
+		 * @type {(NoToneMapping|LinearToneMapping|ReinhardToneMapping|CineonToneMapping|ACESFilmicToneMapping|CustomToneMapping|AgXToneMapping|NeutralToneMapping)}
+		 * @default NoToneMapping
+		 */ this.toneMapping = (0, $ded5eecc0cd20cc2$export$9fcb6b4294603b2);
+        /**
+		 * Exposure level of tone mapping.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.toneMappingExposure = 1.0;
+        // transmission
+        /**
+		 * The normalized resolution scale for the transmission render target, measured in percentage
+		 * of viewport dimensions. Lowering this value can result in significant performance improvements
+		 * when using {@link MeshPhysicalMaterial#transmission}.
+		 *
+		 * @type {number}
+		 * @default 1
+		 */ this.transmissionResolutionScale = 1.0;
         // internal properties
         const _this = this;
         let _isContextLost = false;
         // internal state cache
+        this._outputColorSpace = (0, $ded5eecc0cd20cc2$export$561f394b24edfcaa);
         let _currentActiveCubeFace = 0;
         let _currentActiveMipmapLevel = 0;
         let _currentRenderTarget = null;
@@ -42564,8 +50004,6 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
         // clipping
         let _clippingEnabled = false;
         let _localClippingEnabled = false;
-        // transmission render target scale
-        this.transmissionResolutionScale = 1.0;
         // camera matrices cache
         const _currentProjectionMatrix = new (0, $ded5eecc0cd20cc2$export$2ae72fc923e5eb5)();
         const _projScreenMatrix = new (0, $ded5eecc0cd20cc2$export$2ae72fc923e5eb5)();
@@ -42649,45 +50087,133 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             bufferRenderer = new $ea01ff4a5048cd08$var$WebGLBufferRenderer(_gl, extensions, info);
             indexedBufferRenderer = new $ea01ff4a5048cd08$var$WebGLIndexedBufferRenderer(_gl, extensions, info);
             info.programs = programCache.programs;
-            _this.capabilities = capabilities;
-            _this.extensions = extensions;
-            _this.properties = properties;
-            _this.renderLists = renderLists;
-            _this.shadowMap = shadowMap;
-            _this.state = state;
-            _this.info = info;
+            /**
+			 * Holds details about the capabilities of the current rendering context.
+			 *
+			 * @name WebGLRenderer#capabilities
+			 * @type {WebGLRenderer~Capabilities}
+			 */ _this.capabilities = capabilities;
+            /**
+			 * Provides methods for retrieving and testing WebGL extensions.
+			 *
+			 * - `get(extensionName:string)`: Used to check whether a WebGL extension is supported
+			 * and return the extension object if available.
+			 * - `has(extensionName:string)`: returns `true` if the extension is supported.
+			 *
+			 * @name WebGLRenderer#extensions
+			 * @type {Object}
+			 */ _this.extensions = extensions;
+            /**
+			 * Used to track properties of other objects like native WebGL objects.
+			 *
+			 * @name WebGLRenderer#properties
+			 * @type {Object}
+			 */ _this.properties = properties;
+            /**
+			 * Manages the render lists of the renderer.
+			 *
+			 * @name WebGLRenderer#renderLists
+			 * @type {Object}
+			 */ _this.renderLists = renderLists;
+            /**
+			 * Interface for managing shadows.
+			 *
+			 * @name WebGLRenderer#shadowMap
+			 * @type {WebGLRenderer~ShadowMap}
+			 */ _this.shadowMap = shadowMap;
+            /**
+			 * Interface for managing the WebGL state.
+			 *
+			 * @name WebGLRenderer#state
+			 * @type {Object}
+			 */ _this.state = state;
+            /**
+			 * Holds a series of statistical information about the GPU memory
+			 * and the rendering process. Useful for debugging and monitoring.
+			 *
+			 * By default these data are reset at each render call but when having
+			 * multiple render passes per frame (e.g. when using post processing) it can
+			 * be preferred to reset with a custom pattern. First, set `autoReset` to
+			 * `false`.
+			 * ```js
+			 * renderer.info.autoReset = false;
+			 * ```
+			 * Call `reset()` whenever you have finished to render a single frame.
+			 * ```js
+			 * renderer.info.reset();
+			 * ```
+			 *
+			 * @name WebGLRenderer#info
+			 * @type {WebGLRenderer~Info}
+			 */ _this.info = info;
         }
         initGLContext();
         // xr
         const xr = new $ea01ff4a5048cd08$var$WebXRManager(_this, _gl);
-        this.xr = xr;
-        // API
-        this.getContext = function() {
+        /**
+		 * A reference to the XR manager.
+		 *
+		 * @type {WebXRManager}
+		 */ this.xr = xr;
+        /**
+		 * Returns the rendering context.
+		 *
+		 * @return {WebGL2RenderingContext} The rendering context.
+		 */ this.getContext = function() {
             return _gl;
         };
-        this.getContextAttributes = function() {
+        /**
+		 * Returns the rendering context attributes.
+		 *
+		 * @return {WebGLContextAttributes} The rendering context attributes.
+		 */ this.getContextAttributes = function() {
             return _gl.getContextAttributes();
         };
-        this.forceContextLoss = function() {
+        /**
+		 * Simulates a loss of the WebGL context. This requires support for the `WEBGL_lose_context` extension.
+		 */ this.forceContextLoss = function() {
             const extension = extensions.get('WEBGL_lose_context');
             if (extension) extension.loseContext();
         };
-        this.forceContextRestore = function() {
+        /**
+		 * Simulates a restore of the WebGL context. This requires support for the `WEBGL_lose_context` extension.
+		 */ this.forceContextRestore = function() {
             const extension = extensions.get('WEBGL_lose_context');
             if (extension) extension.restoreContext();
         };
-        this.getPixelRatio = function() {
+        /**
+		 * Returns the pixel ratio.
+		 *
+		 * @return {number} The pixel ratio.
+		 */ this.getPixelRatio = function() {
             return _pixelRatio;
         };
-        this.setPixelRatio = function(value) {
+        /**
+		 * Sets the given pixel ratio and resizes the canvas if necessary.
+		 *
+		 * @param {number} value - The pixel ratio.
+		 */ this.setPixelRatio = function(value) {
             if (value === undefined) return;
             _pixelRatio = value;
             this.setSize(_width, _height, false);
         };
-        this.getSize = function(target) {
+        /**
+		 * Returns the renderer's size in logical pixels. This method does not honor the pixel ratio.
+		 *
+		 * @param {Vector2} target - The method writes the result in this target object.
+		 * @return {Vector2} The renderer's size in logical pixels.
+		 */ this.getSize = function(target) {
             return target.set(_width, _height);
         };
-        this.setSize = function(width, height, updateStyle = true) {
+        /**
+		 * Resizes the output canvas to (width, height) with device pixel ratio taken
+		 * into account, and also sets the viewport to fit that size, starting in (0,
+		 * 0). Setting `updateStyle` to false prevents any style changes to the output canvas.
+		 *
+		 * @param {number} width - The width in logical pixels.
+		 * @param {number} height - The height in logical pixels.
+		 * @param {boolean} [updateStyle=true] - Whether to update the `style` attribute of the canvas or not.
+		 */ this.setSize = function(width, height, updateStyle = true) {
             if (xr.isPresenting) {
                 console.warn('THREE.WebGLRenderer: Can\'t change size while VR device is presenting.');
                 return;
@@ -42702,10 +50228,27 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             }
             this.setViewport(0, 0, width, height);
         };
-        this.getDrawingBufferSize = function(target) {
+        /**
+		 * Returns the drawing buffer size in physical pixels. This method honors the pixel ratio.
+		 *
+		 * @param {Vector2} target - The method writes the result in this target object.
+		 * @return {Vector2} The drawing buffer size.
+		 */ this.getDrawingBufferSize = function(target) {
             return target.set(_width * _pixelRatio, _height * _pixelRatio).floor();
         };
-        this.setDrawingBufferSize = function(width, height, pixelRatio) {
+        /**
+		 * This method allows to define the drawing buffer size by specifying
+		 * width, height and pixel ratio all at once. The size of the drawing
+		 * buffer is computed with this formula:
+		 * ```js
+		 * size.x = width * pixelRatio;
+		 * size.y = height * pixelRatio;
+		 * ```
+		 *
+		 * @param {number} width - The width in logical pixels.
+		 * @param {number} height - The height in logical pixels.
+		 * @param {number} pixelRatio - The pixel ratio.
+		 */ this.setDrawingBufferSize = function(width, height, pixelRatio) {
             _width = width;
             _height = height;
             _pixelRatio = pixelRatio;
@@ -42713,51 +50256,127 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             canvas.height = Math.floor(height * pixelRatio);
             this.setViewport(0, 0, width, height);
         };
-        this.getCurrentViewport = function(target) {
+        /**
+		 * Returns the current viewport definition.
+		 *
+		 * @param {Vector2} target - The method writes the result in this target object.
+		 * @return {Vector2} The current viewport definition.
+		 */ this.getCurrentViewport = function(target) {
             return target.copy(_currentViewport);
         };
-        this.getViewport = function(target) {
+        /**
+		 * Returns the viewport definition.
+		 *
+		 * @param {Vector4} target - The method writes the result in this target object.
+		 * @return {Vector4} The viewport definition.
+		 */ this.getViewport = function(target) {
             return target.copy(_viewport);
         };
-        this.setViewport = function(x, y, width, height) {
+        /**
+		 * Sets the viewport to render from `(x, y)` to `(x + width, y + height)`.
+		 *
+		 * @param {number | Vector4} x - The horizontal coordinate for the lower left corner of the viewport origin in logical pixel unit.
+		 * Or alternatively a four-component vector specifying all the parameters of the viewport.
+		 * @param {number} y - The vertical coordinate for the lower left corner of the viewport origin  in logical pixel unit.
+		 * @param {number} width - The width of the viewport in logical pixel unit.
+		 * @param {number} height - The height of the viewport in logical pixel unit.
+		 */ this.setViewport = function(x, y, width, height) {
             if (x.isVector4) _viewport.set(x.x, x.y, x.z, x.w);
             else _viewport.set(x, y, width, height);
             state.viewport(_currentViewport.copy(_viewport).multiplyScalar(_pixelRatio).round());
         };
-        this.getScissor = function(target) {
+        /**
+		 * Returns the scissor region.
+		 *
+		 * @param {Vector4} target - The method writes the result in this target object.
+		 * @return {Vector4} The scissor region.
+		 */ this.getScissor = function(target) {
             return target.copy(_scissor);
         };
-        this.setScissor = function(x, y, width, height) {
+        /**
+		 * Sets the scissor region to render from `(x, y)` to `(x + width, y + height)`.
+		 *
+		 * @param {number | Vector4} x - The horizontal coordinate for the lower left corner of the scissor region origin in logical pixel unit.
+		 * Or alternatively a four-component vector specifying all the parameters of the scissor region.
+		 * @param {number} y - The vertical coordinate for the lower left corner of the scissor region origin  in logical pixel unit.
+		 * @param {number} width - The width of the scissor region in logical pixel unit.
+		 * @param {number} height - The height of the scissor region in logical pixel unit.
+		 */ this.setScissor = function(x, y, width, height) {
             if (x.isVector4) _scissor.set(x.x, x.y, x.z, x.w);
             else _scissor.set(x, y, width, height);
             state.scissor(_currentScissor.copy(_scissor).multiplyScalar(_pixelRatio).round());
         };
-        this.getScissorTest = function() {
+        /**
+		 * Returns `true` if the scissor test is enabled.
+		 *
+		 * @return {boolean} Whether the scissor test is enabled or not.
+		 */ this.getScissorTest = function() {
             return _scissorTest;
         };
-        this.setScissorTest = function(boolean) {
+        /**
+		 * Enable or disable the scissor test. When this is enabled, only the pixels
+		 * within the defined scissor area will be affected by further renderer
+		 * actions.
+		 *
+		 * @param {boolean} boolean - Whether the scissor test is enabled or not.
+		 */ this.setScissorTest = function(boolean) {
             state.setScissorTest(_scissorTest = boolean);
         };
-        this.setOpaqueSort = function(method) {
+        /**
+		 * Sets a custom opaque sort function for the render lists. Pass `null`
+		 * to use the default `painterSortStable` function.
+		 *
+		 * @param {?Function} method - The opaque sort function.
+		 */ this.setOpaqueSort = function(method) {
             _opaqueSort = method;
         };
-        this.setTransparentSort = function(method) {
+        /**
+		 * Sets a custom transparent sort function for the render lists. Pass `null`
+		 * to use the default `reversePainterSortStable` function.
+		 *
+		 * @param {?Function} method - The opaque sort function.
+		 */ this.setTransparentSort = function(method) {
             _transparentSort = method;
         };
         // Clearing
-        this.getClearColor = function(target) {
+        /**
+		 * Returns the clear color.
+		 *
+		 * @param {Color} target - The method writes the result in this target object.
+		 * @return {Color} The clear color.
+		 */ this.getClearColor = function(target) {
             return target.copy(background.getClearColor());
         };
-        this.setClearColor = function() {
+        /**
+		 * Sets the clear color and alpha.
+		 *
+		 * @param {Color} color - The clear color.
+		 * @param {number} [alpha=1] - The clear alpha.
+		 */ this.setClearColor = function() {
             background.setClearColor(...arguments);
         };
-        this.getClearAlpha = function() {
+        /**
+		 * Returns the clear alpha. Ranges within `[0,1]`.
+		 *
+		 * @return {number} The clear alpha.
+		 */ this.getClearAlpha = function() {
             return background.getClearAlpha();
         };
-        this.setClearAlpha = function() {
+        /**
+		 * Sets the clear alpha.
+		 *
+		 * @param {number} alpha - The clear alpha.
+		 */ this.setClearAlpha = function() {
             background.setClearAlpha(...arguments);
         };
-        this.clear = function(color = true, depth = true, stencil = true) {
+        /**
+		 * Tells the renderer to clear its color, depth or stencil drawing buffer(s).
+		 * This method initializes the buffers to the current clear color values.
+		 *
+		 * @param {boolean} [color=true] - Whether the color buffer should be cleared or not.
+		 * @param {boolean} [depth=true] - Whether the depth buffer should be cleared or not.
+		 * @param {boolean} [stencil=true] - Whether the stencil buffer should be cleared or not.
+		 */ this.clear = function(color = true, depth = true, stencil = true) {
             let bits = 0;
             if (color) {
                 // check if we're trying to clear an integer target
@@ -42798,17 +50417,25 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             }
             _gl.clear(bits);
         };
-        this.clearColor = function() {
+        /**
+		 * Clears the color buffer. Equivalent to calling `renderer.clear( true, false, false )`.
+		 */ this.clearColor = function() {
             this.clear(true, false, false);
         };
-        this.clearDepth = function() {
+        /**
+		 * Clears the depth buffer. Equivalent to calling `renderer.clear( false, true, false )`.
+		 */ this.clearDepth = function() {
             this.clear(false, true, false);
         };
-        this.clearStencil = function() {
+        /**
+		 * Clears the stencil buffer. Equivalent to calling `renderer.clear( false, false, true )`.
+		 */ this.clearStencil = function() {
             this.clear(false, false, true);
         };
-        //
-        this.dispose = function() {
+        /**
+		 * Frees the GPU-related resources allocated by this instance. Call this
+		 * method whenever this instance is no longer used in your app.
+		 */ this.dispose = function() {
             canvas.removeEventListener('webglcontextlost', onContextLost, false);
             canvas.removeEventListener('webglcontextrestored', onContextRestore, false);
             canvas.removeEventListener('webglcontextcreationerror', onContextCreationError, false);
@@ -42961,7 +50588,18 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
                 material.side = (0, $ded5eecc0cd20cc2$export$3b296b6f144d5b03);
             } else getProgram(material, scene, object);
         }
-        this.compile = function(scene, camera, targetScene = null) {
+        /**
+		 * Compiles all materials in the scene with the camera. This is useful to precompile shaders
+		 * before the first rendering. If you want to add a 3D object to an existing scene, use the third
+		 * optional parameter for applying the target scene.
+		 *
+		 * Note that the (target) scene's lighting and environment must be configured before calling this method.
+		 *
+		 * @param {Object3D} scene - The scene or another type of 3D object to precompile.
+		 * @param {Camera} camera - The camera.
+		 * @param {?Scene} [targetScene=null] - The target scene.
+		 * @return {?Set} The precompiled materials.
+		 */ this.compile = function(scene, camera, targetScene = null) {
             if (targetScene === null) targetScene = scene;
             currentRenderState = renderStates.get(targetScene);
             currentRenderState.init(camera);
@@ -43001,7 +50639,18 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             return materials;
         };
         // compileAsync
-        this.compileAsync = function(scene, camera, targetScene = null) {
+        /**
+		 * Asynchronous version of {@link WebGLRenderer#compile}.
+		 *
+		 * This method makes use of the `KHR_parallel_shader_compile` WebGL extension. Hence,
+		 * it is recommended to use this version of `compile()` whenever possible.
+		 *
+		 * @async
+		 * @param {Object3D} scene - The scene or another type of 3D object to precompile.
+		 * @param {Camera} camera - The camera.
+		 * @param {?Scene} [targetScene=null] - The target scene.
+		 * @return {Promise} A Promise that resolves when the given scene can be rendered without unnecessary stalling due to shader compilation.
+		 */ this.compileAsync = function(scene, camera, targetScene = null) {
             const materials = this.compile(scene, camera, targetScene);
             // Wait for all the materials in the new object to indicate that they're
             // ready to be used before resolving the promise.
@@ -43051,7 +50700,20 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
         xr.addEventListener('sessionstart', onXRSessionStart);
         xr.addEventListener('sessionend', onXRSessionEnd);
         // Rendering
-        this.render = function(scene, camera) {
+        /**
+		 * Renders the given scene (or other type of 3D object) using the given camera.
+		 *
+		 * The render is done to a previously specified render target set by calling {@link WebGLRenderer#setRenderTarget}
+		 * or to the canvas as usual.
+		 *
+		 * By default render buffers are cleared before rendering but you can prevent
+		 * this by setting the property `autoClear` to `false`. If you want to prevent
+		 * only certain buffers being cleared you can `autoClearColor`, `autoClearDepth`
+		 * or `autoClearStencil` to `false`. To force a clear, use {@link WebGLRenderer#clear}.
+		 *
+		 * @param {Object3D} scene - The scene to render.
+		 * @param {Camera} camera - The camera.
+		 */ this.render = function(scene, camera) {
             if (camera !== undefined && camera.isCamera !== true) {
                 console.error('THREE.WebGLRenderer.render: camera is not an instance of THREE.Camera.');
                 return;
@@ -43268,8 +50930,9 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
                 const renderItem = renderList[i];
                 const object = renderItem.object;
                 const geometry = renderItem.geometry;
-                const material = overrideMaterial === null ? renderItem.material : overrideMaterial;
                 const group = renderItem.group;
+                let material = renderItem.material;
+                if (material.allowOverride === true && overrideMaterial !== null) material = overrideMaterial;
                 if (object.layers.test(camera.layers)) renderObject(object, scene, camera, geometry, material, group);
             }
         }
@@ -43565,29 +51228,37 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
         function materialNeedsLights(material) {
             return material.isMeshLambertMaterial || material.isMeshToonMaterial || material.isMeshPhongMaterial || material.isMeshStandardMaterial || material.isShadowMaterial || material.isShaderMaterial && material.lights === true;
         }
-        this.getActiveCubeFace = function() {
+        /**
+		 * Returns the active cube face.
+		 *
+		 * @return {number} The active cube face.
+		 */ this.getActiveCubeFace = function() {
             return _currentActiveCubeFace;
         };
-        this.getActiveMipmapLevel = function() {
+        /**
+		 * Returns the active mipmap level.
+		 *
+		 * @return {number} The active mipmap level.
+		 */ this.getActiveMipmapLevel = function() {
             return _currentActiveMipmapLevel;
         };
-        this.getRenderTarget = function() {
+        /**
+		 * Returns the active render target.
+		 *
+		 * @return {?WebGLRenderTarget} The active render target. Returns `null` if no render target
+		 * is currently set.
+		 */ this.getRenderTarget = function() {
             return _currentRenderTarget;
         };
         this.setRenderTargetTextures = function(renderTarget, colorTexture, depthTexture) {
-            properties.get(renderTarget.texture).__webglTexture = colorTexture;
-            properties.get(renderTarget.depthTexture).__webglTexture = depthTexture;
             const renderTargetProperties = properties.get(renderTarget);
-            renderTargetProperties.__hasExternalTextures = true;
-            renderTargetProperties.__autoAllocateDepthBuffer = depthTexture === undefined;
-            if (!renderTargetProperties.__autoAllocateDepthBuffer) // The multisample_render_to_texture extension doesn't work properly if there
+            renderTargetProperties.__autoAllocateDepthBuffer = renderTarget.resolveDepthBuffer === false;
+            if (renderTargetProperties.__autoAllocateDepthBuffer === false) // The multisample_render_to_texture extension doesn't work properly if there
             // are midframe flushes and an external depth buffer. Disable use of the extension.
-            {
-                if (extensions.has('WEBGL_multisampled_render_to_texture') === true) {
-                    console.warn('THREE.WebGLRenderer: Render-to-texture extension was disabled because an external texture was provided');
-                    renderTargetProperties.__useRenderToTexture = false;
-                }
-            }
+            renderTargetProperties.__useRenderToTexture = false;
+            properties.get(renderTarget.texture).__webglTexture = colorTexture;
+            properties.get(renderTarget.depthTexture).__webglTexture = renderTargetProperties.__autoAllocateDepthBuffer ? undefined : depthTexture;
+            renderTargetProperties.__hasExternalTextures = true;
         };
         this.setRenderTargetFramebuffer = function(renderTarget, defaultFramebuffer) {
             const renderTargetProperties = properties.get(renderTarget);
@@ -43595,7 +51266,15 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             renderTargetProperties.__useDefaultFramebuffer = defaultFramebuffer === undefined;
         };
         const _scratchFrameBuffer = _gl.createFramebuffer();
-        this.setRenderTarget = function(renderTarget, activeCubeFace = 0, activeMipmapLevel = 0) {
+        /**
+		 * Sets the active rendertarget.
+		 *
+		 * @param {?WebGLRenderTarget} renderTarget - The render target to set. When `null` is given,
+		 * the canvas is set as the active render target instead.
+		 * @param {number} [activeCubeFace=0] - The active cube face when using a cube render target.
+		 * Indicates the z layer to render in to when using 3D or array render targets.
+		 * @param {number} [activeMipmapLevel=0] - The active mipmap level.
+		 */ this.setRenderTarget = function(renderTarget, activeCubeFace = 0, activeMipmapLevel = 0) {
             _currentRenderTarget = renderTarget;
             _currentActiveCubeFace = activeCubeFace;
             _currentActiveMipmapLevel = activeMipmapLevel;
@@ -43663,7 +51342,17 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             }
             _currentMaterialId = -1; // reset current material to ensure correct uniform bindings
         };
-        this.readRenderTargetPixels = function(renderTarget, x, y, width, height, buffer, activeCubeFaceIndex) {
+        /**
+		 * Reads the pixel data from the given render target into the given buffer.
+		 *
+		 * @param {WebGLRenderTarget} renderTarget - The render target to read from.
+		 * @param {number} x - The `x` coordinate of the copy region's origin.
+		 * @param {number} y - The `y` coordinate of the copy region's origin.
+		 * @param {number} width - The width of the copy region.
+		 * @param {number} height - The height of the copy region.
+		 * @param {TypedArray} buffer - The result buffer.
+		 * @param {number} [activeCubeFaceIndex] - The active cube face index.
+		 */ this.readRenderTargetPixels = function(renderTarget, x, y, width, height, buffer, activeCubeFaceIndex) {
             if (!(renderTarget && renderTarget.isWebGLRenderTarget)) {
                 console.error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not THREE.WebGLRenderTarget.');
                 return;
@@ -43693,20 +51382,34 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
                 }
             }
         };
-        this.readRenderTargetPixelsAsync = async function(renderTarget, x, y, width, height, buffer, activeCubeFaceIndex) {
+        /**
+		 * Asynchronous, non-blocking version of {@link WebGLRenderer#readRenderTargetPixels}.
+		 *
+		 * It is recommended to use this version of `readRenderTargetPixels()` whenever possible.
+		 *
+		 * @async
+		 * @param {WebGLRenderTarget} renderTarget - The render target to read from.
+		 * @param {number} x - The `x` coordinate of the copy region's origin.
+		 * @param {number} y - The `y` coordinate of the copy region's origin.
+		 * @param {number} width - The width of the copy region.
+		 * @param {number} height - The height of the copy region.
+		 * @param {TypedArray} buffer - The result buffer.
+		 * @param {number} [activeCubeFaceIndex] - The active cube face index.
+		 * @return {Promise<TypedArray>} A Promise that resolves when the read has been finished. The resolve provides the read data as a typed array.
+		 */ this.readRenderTargetPixelsAsync = async function(renderTarget, x, y, width, height, buffer, activeCubeFaceIndex) {
             if (!(renderTarget && renderTarget.isWebGLRenderTarget)) throw new Error('THREE.WebGLRenderer.readRenderTargetPixels: renderTarget is not THREE.WebGLRenderTarget.');
             let framebuffer = properties.get(renderTarget).__webglFramebuffer;
             if (renderTarget.isWebGLCubeRenderTarget && activeCubeFaceIndex !== undefined) framebuffer = framebuffer[activeCubeFaceIndex];
             if (framebuffer) {
-                const texture = renderTarget.texture;
-                const textureFormat = texture.format;
-                const textureType = texture.type;
-                if (!capabilities.textureFormatReadable(textureFormat)) throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in RGBA or implementation defined format.');
-                if (!capabilities.textureTypeReadable(textureType)) throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in UnsignedByteType or implementation defined type.');
                 // the following if statement ensures valid read requests (no out-of-bounds pixels, see #8604)
                 if (x >= 0 && x <= renderTarget.width - width && y >= 0 && y <= renderTarget.height - height) {
                     // set the active frame buffer to the one we want to read
                     state.bindFramebuffer(_gl.FRAMEBUFFER, framebuffer);
+                    const texture = renderTarget.texture;
+                    const textureFormat = texture.format;
+                    const textureType = texture.type;
+                    if (!capabilities.textureFormatReadable(textureFormat)) throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in RGBA or implementation defined format.');
+                    if (!capabilities.textureTypeReadable(textureType)) throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: renderTarget is not in UnsignedByteType or implementation defined type.');
                     const glBuffer = _gl.createBuffer();
                     _gl.bindBuffer(_gl.PIXEL_PACK_BUFFER, glBuffer);
                     _gl.bufferData(_gl.PIXEL_PACK_BUFFER, buffer.byteLength, _gl.STREAM_READ);
@@ -43727,14 +51430,13 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
                 } else throw new Error('THREE.WebGLRenderer.readRenderTargetPixelsAsync: requested read bounds are out of range.');
             }
         };
-        this.copyFramebufferToTexture = function(texture, position = null, level = 0) {
-            // support previous signature with position first
-            if (texture.isTexture !== true) {
-                // @deprecated, r165
-                (0, $ded5eecc0cd20cc2$export$5b28268982f175ba)('WebGLRenderer: copyFramebufferToTexture function signature has changed.');
-                position = arguments[0] || null;
-                texture = arguments[1];
-            }
+        /**
+		 * Copies pixels from the current bound framebuffer into the given texture.
+		 *
+		 * @param {FramebufferTexture} texture - The texture.
+		 * @param {Vector2} position - The start position of the copy operation.
+		 * @param {number} [level=0] - The mip level. The default represents the base mip.
+		 */ this.copyFramebufferToTexture = function(texture, position = null, level = 0) {
             const levelScale = Math.pow(2, -level);
             const width = Math.floor(texture.image.width * levelScale);
             const height = Math.floor(texture.image.height * levelScale);
@@ -43746,17 +51448,19 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
         };
         const _srcFramebuffer = _gl.createFramebuffer();
         const _dstFramebuffer = _gl.createFramebuffer();
-        this.copyTextureToTexture = function(srcTexture, dstTexture, srcRegion = null, dstPosition = null, srcLevel = 0, dstLevel = null) {
-            // support previous signature with dstPosition first
-            if (srcTexture.isTexture !== true) {
-                // @deprecated, r165
-                (0, $ded5eecc0cd20cc2$export$5b28268982f175ba)('WebGLRenderer: copyTextureToTexture function signature has changed.');
-                dstPosition = arguments[0] || null;
-                srcTexture = arguments[1];
-                dstTexture = arguments[2];
-                dstLevel = arguments[3] || 0;
-                srcRegion = null;
-            }
+        /**
+		 * Copies data of the given source texture into a destination texture.
+		 *
+		 * When using render target textures as `srcTexture` and `dstTexture`, you must make sure both render targets are initialized
+		 * {@link WebGLRenderer#initRenderTarget}.
+		 *
+		 * @param {Texture} srcTexture - The source texture.
+		 * @param {Texture} dstTexture - The destination texture.
+		 * @param {Box2|Box3} [srcRegion=null] - A bounding box which describes the source region. Can be two or three-dimensional.
+		 * @param {Vector2|Vector3} [dstPosition=null] - A vector that represents the origin of the destination region. Can be two or three-dimensional.
+		 * @param {number} srcLevel - The source mipmap level to copy.
+		 * @param {number} dstLevel - The destination mipmap level.
+		 */ this.copyTextureToTexture = function(srcTexture, dstTexture, srcRegion = null, dstPosition = null, srcLevel = 0, dstLevel = null) {
             // support the previous signature with just a single dst mipmap level
             if (dstLevel === null) {
                 if (srcLevel !== 0) {
@@ -43888,31 +51592,36 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             state.unbindTexture();
         };
         this.copyTextureToTexture3D = function(srcTexture, dstTexture, srcRegion = null, dstPosition = null, level = 0) {
-            // support previous signature with source box first
-            if (srcTexture.isTexture !== true) {
-                // @deprecated, r165
-                (0, $ded5eecc0cd20cc2$export$5b28268982f175ba)('WebGLRenderer: copyTextureToTexture3D function signature has changed.');
-                srcRegion = arguments[0] || null;
-                dstPosition = arguments[1] || null;
-                srcTexture = arguments[2];
-                dstTexture = arguments[3];
-                level = arguments[4] || 0;
-            }
             // @deprecated, r170
             (0, $ded5eecc0cd20cc2$export$5b28268982f175ba)('WebGLRenderer: copyTextureToTexture3D function has been deprecated. Use "copyTextureToTexture" instead.');
             return this.copyTextureToTexture(srcTexture, dstTexture, srcRegion, dstPosition, level);
         };
-        this.initRenderTarget = function(target) {
+        /**
+		 * Initializes the given WebGLRenderTarget memory. Useful for initializing a render target so data
+		 * can be copied into it using {@link WebGLRenderer#copyTextureToTexture} before it has been
+		 * rendered to.
+		 *
+		 * @param {WebGLRenderTarget} target - The render target.
+		 */ this.initRenderTarget = function(target) {
             if (properties.get(target).__webglFramebuffer === undefined) textures.setupRenderTarget(target);
         };
-        this.initTexture = function(texture) {
+        /**
+		 * Initializes the given texture. Useful for preloading a texture rather than waiting until first
+		 * render (which can cause noticeable lags due to decode and GPU upload overhead).
+		 *
+		 * @param {Texture} texture - The texture.
+		 */ this.initTexture = function(texture) {
             if (texture.isCubeTexture) textures.setTextureCube(texture, 0);
             else if (texture.isData3DTexture) textures.setTexture3D(texture, 0);
             else if (texture.isDataArrayTexture || texture.isCompressedArrayTexture) textures.setTexture2DArray(texture, 0);
             else textures.setTexture2D(texture, 0);
             state.unbindTexture();
         };
-        this.resetState = function() {
+        /**
+		 * Can be used to reset the internal WebGL state. This method is mostly
+		 * relevant for applications which share a single WebGL context across
+		 * multiple WebGL libraries.
+		 */ this.resetState = function() {
             _currentActiveCubeFace = 0;
             _currentActiveMipmapLevel = 0;
             _currentRenderTarget = null;
@@ -43923,16 +51632,29 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
             detail: this
         }));
     }
-    get coordinateSystem() {
+    /**
+	 * Defines the coordinate system of the renderer.
+	 *
+	 * In `WebGLRenderer`, the value is always `WebGLCoordinateSystem`.
+	 *
+	 * @type {WebGLCoordinateSystem|WebGPUCoordinateSystem}
+	 * @default WebGLCoordinateSystem
+	 * @readonly
+	 */ get coordinateSystem() {
         return 0, $ded5eecc0cd20cc2$export$5a0e9190d10875d3;
     }
-    get outputColorSpace() {
+    /**
+	 * Defines the output color space of the renderer.
+	 *
+	 * @type {SRGBColorSpace|LinearSRGBColorSpace}
+	 * @default SRGBColorSpace
+	 */ get outputColorSpace() {
         return this._outputColorSpace;
     }
     set outputColorSpace(colorSpace) {
         this._outputColorSpace = colorSpace;
         const gl = this.getContext();
-        gl.drawingBufferColorspace = (0, $ded5eecc0cd20cc2$export$5e6fd513f44698c)._getDrawingBufferColorSpace(colorSpace);
+        gl.drawingBufferColorSpace = (0, $ded5eecc0cd20cc2$export$5e6fd513f44698c)._getDrawingBufferColorSpace(colorSpace);
         gl.unpackColorSpace = (0, $ded5eecc0cd20cc2$export$5e6fd513f44698c)._getUnpackColorSpace();
     }
 }
@@ -43940,8 +51662,42 @@ class $ea01ff4a5048cd08$export$f6cc00ef28d7cf97 {
 
 
 const $f955691db66a79db$var$_taskCache = new WeakMap();
-class $f955691db66a79db$export$45c25de53be259ac extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
-    constructor(manager){
+/**
+ * A loader for the Draco format.
+ *
+ * [Draco]{@link https://google.github.io/draco/} is an open source library for compressing
+ * and decompressing 3D meshes and point clouds. Compressed geometry can be significantly smaller,
+ * at the cost of additional decoding time on the client device.
+ *
+ * Standalone Draco files have a `.drc` extension, and contain vertex positions, normals, colors,
+ * and other attributes. Draco files do not contain materials, textures, animation, or node hierarchies –
+ * to use these features, embed Draco geometry inside of a glTF file. A normal glTF file can be converted
+ * to a Draco-compressed glTF file using [glTF-Pipeline]{@link https://github.com/CesiumGS/gltf-pipeline}.
+ * When using Draco with glTF, an instance of `DRACOLoader` will be used internally by {@link GLTFLoader}.
+ *
+ * It is recommended to create one DRACOLoader instance and reuse it to avoid loading and creating
+ * multiple decoder instances.
+ *
+ * `DRACOLoader` will automatically use either the JS or the WASM decoding library, based on
+ * browser capabilities.
+ *
+ * ```js
+ * const loader = new DRACOLoader();
+ * loader.setDecoderPath( '/examples/jsm/libs/draco/' );
+ *
+ * const geometry = await dracoLoader.loadAsync( 'models/draco/bunny.drc' );
+ * geometry.computeVertexNormals(); // optional
+ *
+ * dracoLoader.dispose();
+ * ```
+ *
+ * @augments Loader
+ */ class $f955691db66a79db$export$45c25de53be259ac extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
+    /**
+	 * Constructs a new Draco loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
         this.decoderPath = '';
         this.decoderConfig = {};
@@ -43964,19 +51720,43 @@ class $f955691db66a79db$export$45c25de53be259ac extends (0, $ded5eecc0cd20cc2$ex
             uv: 'Float32Array'
         };
     }
-    setDecoderPath(path) {
+    /**
+	 * Provides configuration for the decoder libraries. Configuration cannot be changed after decoding begins.
+	 *
+	 * @param {string} path - The decoder path.
+	 * @return {DRACOLoader} A reference to this loader.
+	 */ setDecoderPath(path) {
         this.decoderPath = path;
         return this;
     }
-    setDecoderConfig(config) {
+    /**
+	 * Provides configuration for the decoder libraries. Configuration cannot be changed after decoding begins.
+	 *
+	 * @param {{type:('js'|'wasm')}} config - The decoder config.
+	 * @return {DRACOLoader} A reference to this loader.
+	 */ setDecoderConfig(config) {
         this.decoderConfig = config;
         return this;
     }
-    setWorkerLimit(workerLimit) {
+    /**
+	 * Sets the maximum number of Web Workers to be used during decoding.
+	 * A lower limit may be preferable if workers are also for other tasks in the application.
+	 *
+	 * @param {number} workerLimit - The worker limit.
+	 * @return {DRACOLoader} A reference to this loader.
+	 */ setWorkerLimit(workerLimit) {
         this.workerLimit = workerLimit;
         return this;
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and passes the loaded Draco asset
+	 * to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(BufferGeometry)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const loader = new (0, $ded5eecc0cd20cc2$export$98435a25b5cf7b2b)(this.manager);
         loader.setPath(this.path);
         loader.setResponseType('arraybuffer');
@@ -43986,9 +51766,16 @@ class $f955691db66a79db$export$45c25de53be259ac extends (0, $ded5eecc0cd20cc2$ex
             this.parse(buffer, onLoad, onError);
         }, onProgress, onError);
     }
-    parse(buffer, onLoad, onError = ()=>{}) {
+    /**
+	 * Parses the given Draco data.
+	 *
+	 * @param {ArrayBuffer} buffer - The raw Draco data as an array buffer.
+	 * @param {function(BufferGeometry)} onLoad - Executed when the loading/parsing process has been finished.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ parse(buffer, onLoad, onError = ()=>{}) {
         this.decodeDracoFile(buffer, onLoad, null, null, (0, $ded5eecc0cd20cc2$export$561f394b24edfcaa), onError).catch(onError);
     }
+    //
     decodeDracoFile(buffer, callback, attributeIDs, attributeTypes, vertexColorSpace = (0, $ded5eecc0cd20cc2$export$42429b3acfb233a4), onError = ()=>{}) {
         const taskConfig = {
             attributeIDs: attributeIDs || this.defaultAttributeIDs,
@@ -44308,7 +52095,25 @@ class $f955691db66a79db$export$45c25de53be259ac extends (0, $ded5eecc0cd20cc2$ex
 
 
 
-function $7b5fb6f0863f30ef$export$676e3e70c930f774(geometry, MikkTSpace, negateSign = true) {
+/** @module BufferGeometryUtils */ /**
+ * Computes vertex tangents using the MikkTSpace algorithm. MikkTSpace generates the same tangents consistently,
+ * and is used in most modelling tools and normal map bakers. Use MikkTSpace for materials with normal maps,
+ * because inconsistent tangents may lead to subtle visual issues in the normal map, particularly around mirrored
+ * UV seams.
+ *
+ * In comparison to this method, {@link BufferGeometry#computeTangents} (a custom algorithm) generates tangents that
+ * probably will not match the tangents in other software. The custom algorithm is sufficient for general use with a
+ * custom material, and may be faster than MikkTSpace.
+ *
+ * Returns the original BufferGeometry. Indexed geometries will be de-indexed. Requires position, normal, and uv attributes.
+ *
+ * @param {BufferGeometry} geometry - The geometry to compute tangents for.
+ * @param {Object} MikkTSpace - Instance of `examples/jsm/libs/mikktspace.module.js`, or `mikktspace` npm package.
+ * Await `MikkTSpace.ready` before use.
+ * @param {boolean} [negateSign=true] - Whether to negate the sign component (.w) of each tangent.
+ * Required for normal map conventions in some formats, including glTF.
+ * @return {BufferGeometry} The updated geometry.
+ */ function $7b5fb6f0863f30ef$export$676e3e70c930f774(geometry, MikkTSpace, negateSign = true) {
     if (!MikkTSpace || !MikkTSpace.isReady) throw new Error('BufferGeometryUtils: Initialized MikkTSpace library required.');
     if (!geometry.hasAttribute('position') || !geometry.hasAttribute('normal') || !geometry.hasAttribute('uv')) throw new Error('BufferGeometryUtils: Tangents require "position", "normal", and "uv" attributes.');
     function getAttributeArray(attribute) {
@@ -44337,9 +52142,11 @@ function $7b5fb6f0863f30ef$export$676e3e70c930f774(geometry, MikkTSpace, negateS
     return geometry;
 }
 /**
- * @param  {Array<BufferGeometry>} geometries
- * @param  {boolean} useGroups
- * @return {BufferGeometry}
+ * Merges a set of geometries into a single instance. All geometries must have compatible attributes.
+ *
+ * @param {Array<BufferGeometry>} geometries - The geometries to merge.
+ * @param {boolean} [useGroups=false] - Whether to use groups or not.
+ * @return {?BufferGeometry} The merged geometry. Returns `null` if the merge does not succeed.
  */ function $7b5fb6f0863f30ef$export$f06f69b3bf41d25c(geometries, useGroups = false) {
     const isIndexed = geometries[0].index !== null;
     const attributesUsed = new Set(Object.keys(geometries[0].attributes));
@@ -44437,8 +52244,11 @@ function $7b5fb6f0863f30ef$export$676e3e70c930f774(geometry, MikkTSpace, negateS
     return mergedGeometry;
 }
 /**
- * @param {Array<BufferAttribute>} attributes
- * @return {BufferAttribute}
+ * Merges a set of attributes into a single instance. All attributes must have compatible properties and types.
+ * Instances of {@link InterleavedBufferAttribute} are not supported.
+ *
+ * @param {Array<BufferAttribute>} attributes - The attributes to merge.
+ * @return {?BufferAttribute} The merged attribute. Returns `null` if the merge does not succeed.
  */ function $7b5fb6f0863f30ef$export$9f98db6234c4bd78(attributes) {
     let TypedArray;
     let itemSize;
@@ -44486,14 +52296,22 @@ function $7b5fb6f0863f30ef$export$676e3e70c930f774(geometry, MikkTSpace, negateS
     if (gpuType !== undefined) result.gpuType = gpuType;
     return result;
 }
-function $7b5fb6f0863f30ef$export$4848639a9adff548(attribute) {
+/**
+ * Performs a deep clone of the given buffer attribute.
+ *
+ * @param {BufferAttribute} attribute - The attribute to clone.
+ * @return {BufferAttribute} The cloned attribute.
+ */ function $7b5fb6f0863f30ef$export$4848639a9adff548(attribute) {
     if (attribute.isInstancedInterleavedBufferAttribute || attribute.isInterleavedBufferAttribute) return $7b5fb6f0863f30ef$export$4b7aa2f2134b7e19(attribute);
     if (attribute.isInstancedBufferAttribute) return new (0, $ded5eecc0cd20cc2$export$32ea87a8b54d744a)().copy(attribute);
     return new (0, $ded5eecc0cd20cc2$export$8dea267bd6bde117)().copy(attribute);
 }
 /**
- * @param {Array<BufferAttribute>} attributes
- * @return {Array<InterleavedBufferAttribute>}
+ * Interleaves a set of attributes and returns a new array of corresponding attributes that share a
+ * single {@link InterleavedBuffer} instance. All attributes must have compatible types.
+ *
+ * @param {Array<BufferAttribute>} attributes - The attributes to interleave.
+ * @return {Array<InterleavedBufferAttribute>} An array of interleaved attributes. If interleave does not succeed, the method returns `null`.
  */ function $7b5fb6f0863f30ef$export$308f9509e428a845(attributes) {
     // Interleaves the provided attributes into an InterleavedBuffer and returns
     // a set of InterleavedBufferAttributes for each attribute
@@ -44540,7 +52358,12 @@ function $7b5fb6f0863f30ef$export$4848639a9adff548(attribute) {
     }
     return res;
 }
-function $7b5fb6f0863f30ef$export$4b7aa2f2134b7e19(attribute) {
+/**
+ * Returns a new, non-interleaved version of the given attribute.
+ *
+ * @param {InterleavedBufferAttribute} attribute - The interleaved attribute.
+ * @return {BufferAttribute} The non-interleaved attribute.
+ */ function $7b5fb6f0863f30ef$export$4b7aa2f2134b7e19(attribute) {
     const cons = attribute.data.array.constructor;
     const count = attribute.count;
     const itemSize = attribute.itemSize;
@@ -44557,7 +52380,11 @@ function $7b5fb6f0863f30ef$export$4b7aa2f2134b7e19(attribute) {
     }
     return newAttribute;
 }
-function $7b5fb6f0863f30ef$export$e7413b17bfaaa80b(geometry) {
+/**
+ * Deinterleaves all attributes on the given geometry.
+ *
+ * @param {BufferGeometry} geometry - The geometry to deinterleave.
+ */ function $7b5fb6f0863f30ef$export$e7413b17bfaaa80b(geometry) {
     const attributes = geometry.attributes;
     const morphTargets = geometry.morphTargets;
     const attrMap = new Map();
@@ -44577,8 +52404,10 @@ function $7b5fb6f0863f30ef$export$e7413b17bfaaa80b(geometry) {
     }
 }
 /**
- * @param {BufferGeometry} geometry
- * @return {number}
+ * Returns the amount of bytes used by all attributes to represent the geometry.
+ *
+ * @param {BufferGeometry} geometry - The geometry.
+ * @return {number} The estimate bytes used.
  */ function $7b5fb6f0863f30ef$export$35bee7999e19754d(geometry) {
     // Return the estimated memory used by this geometry in bytes
     // Calculate using itemSize, count, and BYTES_PER_ELEMENT to account
@@ -44593,9 +52422,11 @@ function $7b5fb6f0863f30ef$export$e7413b17bfaaa80b(geometry) {
     return mem;
 }
 /**
- * @param {BufferGeometry} geometry
- * @param {number} tolerance
- * @return {BufferGeometry}
+ * Returns a new geometry with vertices for which all similar vertex attributes (within tolerance) are merged.
+ *
+ * @param {BufferGeometry} geometry - The geometry to merge vertices for.
+ * @param {number} [tolerance=1e-4] - The tolerance value.
+ * @return {BufferGeometry} - The new geometry with merged vertices.
  */ function $7b5fb6f0863f30ef$export$e36bb98c4c944f9(geometry, tolerance = 1e-4) {
     tolerance = Math.max(tolerance, Number.EPSILON);
     // Generate an index buffer if the geometry doesn't have one, or optimize it
@@ -44694,9 +52525,12 @@ function $7b5fb6f0863f30ef$export$e7413b17bfaaa80b(geometry) {
     return result;
 }
 /**
- * @param {BufferGeometry} geometry
- * @param {number} drawMode
- * @return {BufferGeometry}
+ * Returns a new indexed geometry based on `TrianglesDrawMode` draw mode.
+ * This mode corresponds to the `gl.TRIANGLES` primitive in WebGL.
+ *
+ * @param {BufferGeometry} geometry - The geometry to convert.
+ * @param {number} drawMode - The current draw mode.
+ * @return {BufferGeometry} The new geometry using `TrianglesDrawMode`.
  */ function $7b5fb6f0863f30ef$export$5492ca6e5c0c7aa0(geometry, drawMode) {
     if (drawMode === (0, $ded5eecc0cd20cc2$export$4c28c87c2dc84758)) {
         console.warn('THREE.BufferGeometryUtils.toTrianglesDrawMode(): Geometry already defined as triangles.');
@@ -44751,9 +52585,13 @@ function $7b5fb6f0863f30ef$export$e7413b17bfaaa80b(geometry) {
 }
 /**
  * Calculates the morphed attributes of a morphed/skinned BufferGeometry.
- * Helpful for Raytracing or Decals.
- * @param {Mesh | Line | Points} object An instance of Mesh, Line or Points.
- * @return {Object} An Object with original position/normal attributes and morphed ones.
+ *
+ * Helpful for Raytracing or Decals (i.e. a `DecalGeometry` applied to a morphed Object with a `BufferGeometry`
+ * will use the original `BufferGeometry`, not the morphed/skinned one, generating an incorrect result.
+ * Using this function to create a shadow `Object3`D the `DecalGeometry` can be correctly generated).
+ *
+ * @param {Mesh|Line|Points} object - The 3D object to compute morph attributes for.
+ * @return {Object} An object with original position/normal attributes and morphed ones.
  */ function $7b5fb6f0863f30ef$export$29e54e2e4ab904e7(object) {
     const _vA = new (0, $ded5eecc0cd20cc2$export$64b5c384219d3699)();
     const _vB = new (0, $ded5eecc0cd20cc2$export$64b5c384219d3699)();
@@ -44885,7 +52723,12 @@ function $7b5fb6f0863f30ef$export$e7413b17bfaaa80b(geometry) {
         morphedNormalAttribute: morphedNormalAttribute
     };
 }
-function $7b5fb6f0863f30ef$export$8babbf41197098b1(geometry) {
+/**
+ * Merges the {@link BufferGeometry#groups} for the given geometry.
+ *
+ * @param {BufferGeometry} geometry - The geometry to modify.
+ * @return {BufferGeometry} - The updated geometry
+ */ function $7b5fb6f0863f30ef$export$8babbf41197098b1(geometry) {
     if (geometry.groups.length === 0) {
         console.warn('THREE.BufferGeometryUtils.mergeGroups(): No groups are defined. Nothing to merge.');
         return geometry;
@@ -44941,9 +52784,9 @@ function $7b5fb6f0863f30ef$export$8babbf41197098b1(geometry) {
  * non-indexed geometry. Returns the geometry with smooth normals everywhere except
  * faces that meet at an angle greater than the crease angle.
  *
- * @param {BufferGeometry} geometry
- * @param {number} [creaseAngle]
- * @return {BufferGeometry}
+ * @param {BufferGeometry} geometry - The geometry to modify.
+ * @param {number} [creaseAngle=Math.PI/3] - The crease angle in radians.
+ * @return {BufferGeometry} - The updated geometry
  */ function $7b5fb6f0863f30ef$export$b525764477fc001f(geometry, creaseAngle = Math.PI / 3 /* 60 degrees */ ) {
     const creaseDot = Math.cos(creaseAngle);
     const hashMultiplier = (1 + 1e-10) * 1e2;
@@ -45018,8 +52861,60 @@ function $7b5fb6f0863f30ef$export$8babbf41197098b1(geometry) {
 }
 
 
-class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
-    constructor(manager){
+/**
+ * A loader for the glTF 2.0 format.
+ *
+ * [glTF]{@link https://www.khronos.org/gltf/} (GL Transmission Format) is an [open format specification]{@link https://github.com/KhronosGroup/glTF/tree/main/specification/2.0}
+ * for efficient delivery and loading of 3D content. Assets may be provided either in JSON (.gltf) or binary (.glb)
+ * format. External files store textures (.jpg, .png) and additional binary data (.bin). A glTF asset may deliver
+ * one or more scenes, including meshes, materials, textures, skins, skeletons, morph targets, animations, lights,
+ * and/or cameras.
+ *
+ * `GLTFLoader` uses {@link ImageBitmapLoader} whenever possible. Be advised that image bitmaps are not
+ * automatically GC-collected when they are no longer referenced, and they require special handling during
+ * the disposal process.
+ *
+ * `GLTFLoader` supports the following glTF 2.0 extensions:
+ * - KHR_draco_mesh_compression
+ * - KHR_materials_clearcoat
+ * - KHR_materials_dispersion
+ * - KHR_materials_ior
+ * - KHR_materials_specular
+ * - KHR_materials_transmission
+ * - KHR_materials_iridescence
+ * - KHR_materials_unlit
+ * - KHR_materials_volume
+ * - KHR_mesh_quantization
+ * - KHR_lights_punctual
+ * - KHR_texture_basisu
+ * - KHR_texture_transform
+ * - EXT_texture_webp
+ * - EXT_meshopt_compression
+ * - EXT_mesh_gpu_instancing
+ *
+ * The following glTF 2.0 extension is supported by an external user plugin:
+ * - [KHR_materials_variants]{@link https://github.com/takahirox/three-gltf-extensions}
+ * - [MSFT_texture_dds]{@link https://github.com/takahirox/three-gltf-extensions}
+ *
+ * ```js
+ * const loader = new GLTFLoader();
+ *
+ * // Optional: Provide a DRACOLoader instance to decode compressed mesh data
+ * const dracoLoader = new DRACOLoader();
+ * dracoLoader.setDecoderPath( '/examples/jsm/libs/draco/' );
+ * loader.setDRACOLoader( dracoLoader );
+ *
+ * const gltf = await loader.loadAsync( 'models/gltf/duck/duck.gltf' );
+ * scene.add( gltf.scene );
+ * ```
+ *
+ * @augments Loader
+ */ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
+    /**
+	 * Constructs a new glTF loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
         this.dracoLoader = null;
         this.ktx2Loader = null;
@@ -45077,7 +52972,15 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
             return new $b4376e703aa0850c$var$GLTFMeshGpuInstancing(parser);
         });
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and passes the loaded glTF asset
+	 * to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(GLTFLoader~LoadObject)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         let resourcePath;
         if (this.resourcePath !== '') resourcePath = this.resourcePath;
@@ -45116,27 +53019,64 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
             }
         }, onProgress, _onError);
     }
-    setDRACOLoader(dracoLoader) {
+    /**
+	 * Sets the given Draco loader to this loader. Required for decoding assets
+	 * compressed with the `KHR_draco_mesh_compression` extension.
+	 *
+	 * @param {DRACOLoader} dracoLoader - The Draco loader to set.
+	 * @return {GLTFLoader} A reference to this loader.
+	 */ setDRACOLoader(dracoLoader) {
         this.dracoLoader = dracoLoader;
         return this;
     }
-    setKTX2Loader(ktx2Loader) {
+    /**
+	 * Sets the given KTX2 loader to this loader. Required for loading KTX2
+	 * compressed textures.
+	 *
+	 * @param {KTX2Loader} ktx2Loader - The KTX2 loader to set.
+	 * @return {GLTFLoader} A reference to this loader.
+	 */ setKTX2Loader(ktx2Loader) {
         this.ktx2Loader = ktx2Loader;
         return this;
     }
-    setMeshoptDecoder(meshoptDecoder) {
+    /**
+	 * Sets the given meshopt decoder. Required for decoding assets
+	 * compressed with the `EXT_meshopt_compression` extension.
+	 *
+	 * @param {Object} meshoptDecoder - The meshopt decoder to set.
+	 * @return {GLTFLoader} A reference to this loader.
+	 */ setMeshoptDecoder(meshoptDecoder) {
         this.meshoptDecoder = meshoptDecoder;
         return this;
     }
-    register(callback) {
+    /**
+	 * Registers a plugin callback. This API is internally used to implement the various
+	 * glTF extensions but can also used by third-party code to add additional logic
+	 * to the loader.
+	 *
+	 * @param {function(parser:GLTFParser)} callback - The callback function to register.
+	 * @return {GLTFLoader} A reference to this loader.
+	 */ register(callback) {
         if (this.pluginCallbacks.indexOf(callback) === -1) this.pluginCallbacks.push(callback);
         return this;
     }
-    unregister(callback) {
+    /**
+	 * Unregisters a plugin callback.
+	 *
+	 * @param {Function} callback - The callback function to unregister.
+	 * @return {GLTFLoader} A reference to this loader.
+	 */ unregister(callback) {
         if (this.pluginCallbacks.indexOf(callback) !== -1) this.pluginCallbacks.splice(this.pluginCallbacks.indexOf(callback), 1);
         return this;
     }
-    parse(data, path, onLoad, onError) {
+    /**
+	 * Parses the given FBX data and returns the resulting group.
+	 *
+	 * @param {string|ArrayBuffer} data - The raw glTF data.
+	 * @param {string} path - The URL base path.
+	 * @param {function(GLTFLoader~LoadObject)} onLoad - Executed when the loading process has been finished.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ parse(data, path, onLoad, onError) {
         let json;
         const extensions = {};
         const plugins = {};
@@ -45201,7 +53141,14 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
         parser.setPlugins(plugins);
         parser.parse(onLoad, onError);
     }
-    parseAsync(data, path) {
+    /**
+	 * Async version of {@link GLTFLoader#parse}.
+	 *
+	 * @async
+	 * @param {string|ArrayBuffer} data - The raw glTF data.
+	 * @param {string} path - The URL base path.
+	 * @return {Promise<GLTFLoader~LoadObject>} A Promise that resolves with the loaded glTF when the parsing has been finished.
+	 */ parseAsync(data, path) {
         const scope = this;
         return new Promise(function(resolve, reject) {
             scope.parse(data, path, resolve, reject);
@@ -45253,6 +53200,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Punctual Lights Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_lights_punctual
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFLightsExtension {
     constructor(parser){
         this.parser = parser;
@@ -45340,6 +53289,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Unlit Materials Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_unlit
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsUnlitExtension {
     constructor(){
         this.name = $b4376e703aa0850c$var$EXTENSIONS.KHR_MATERIALS_UNLIT;
@@ -45367,6 +53318,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Materials Emissive Strength Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/blob/5768b3ce0ef32bc39cdf1bef10b948586635ead3/extensions/2.0/Khronos/KHR_materials_emissive_strength/README.md
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsEmissiveStrengthExtension {
     constructor(parser){
         this.parser = parser;
@@ -45385,6 +53338,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Clearcoat Materials Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_clearcoat
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsClearcoatExtension {
     constructor(parser){
         this.parser = parser;
@@ -45420,6 +53375,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Materials dispersion Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_dispersion
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsDispersionExtension {
     constructor(parser){
         this.parser = parser;
@@ -45444,6 +53401,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Iridescence Materials Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_iridescence
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsIridescenceExtension {
     constructor(parser){
         this.parser = parser;
@@ -45478,6 +53437,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Sheen Materials Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Khronos/KHR_materials_sheen
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsSheenExtension {
     constructor(parser){
         this.parser = parser;
@@ -45513,6 +53474,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_transmission
  * Draft: https://github.com/KhronosGroup/glTF/pull/1698
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsTransmissionExtension {
     constructor(parser){
         this.parser = parser;
@@ -45539,6 +53502,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Materials Volume Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_volume
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsVolumeExtension {
     constructor(parser){
         this.parser = parser;
@@ -45572,6 +53537,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Materials ior Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_ior
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsIorExtension {
     constructor(parser){
         this.parser = parser;
@@ -45596,6 +53563,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Materials specular Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_specular
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsSpecularExtension {
     constructor(parser){
         this.parser = parser;
@@ -45629,6 +53598,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Materials bump Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/EXT_materials_bump
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsBumpExtension {
     constructor(parser){
         this.parser = parser;
@@ -45655,6 +53626,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * Materials anisotropy Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_materials_anisotropy
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMaterialsAnisotropyExtension {
     constructor(parser){
         this.parser = parser;
@@ -45682,6 +53655,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * BasisU Texture Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_texture_basisu
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFTextureBasisUExtension {
     constructor(parser){
         this.parser = parser;
@@ -45706,6 +53681,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * WebP Texture Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/EXT_texture_webp
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFTextureWebPExtension {
     constructor(parser){
         this.parser = parser;
@@ -45749,6 +53726,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * AVIF Texture Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/EXT_texture_avif
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFTextureAVIFExtension {
     constructor(parser){
         this.parser = parser;
@@ -45791,6 +53770,8 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  * meshopt BufferView Compression Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/EXT_meshopt_compression
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMeshoptCompression {
     constructor(parser){
         this.name = $b4376e703aa0850c$var$EXTENSIONS.EXT_MESHOPT_COMPRESSION;
@@ -45832,6 +53813,7 @@ class $b4376e703aa0850c$export$aa93f11e7884f0f4 extends (0, $ded5eecc0cd20cc2$ex
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Vendor/EXT_mesh_gpu_instancing
  *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMeshGpuInstancing {
     constructor(parser){
         this.name = $b4376e703aa0850c$var$EXTENSIONS.EXT_MESH_GPU_INSTANCING;
@@ -45943,6 +53925,8 @@ class $b4376e703aa0850c$var$GLTFBinaryExtension {
  * DRACO Mesh Compression Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_draco_mesh_compression
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFDracoMeshCompressionExtension {
     constructor(json, dracoLoader){
         if (!dracoLoader) throw new Error('THREE.GLTFLoader: No DRACOLoader instance provided.');
@@ -45990,6 +53974,8 @@ class $b4376e703aa0850c$var$GLTFBinaryExtension {
  * Texture Transform Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_texture_transform
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFTextureTransformExtension {
     constructor(){
         this.name = $b4376e703aa0850c$var$EXTENSIONS.KHR_TEXTURE_TRANSFORM;
@@ -46010,6 +53996,8 @@ class $b4376e703aa0850c$var$GLTFBinaryExtension {
  * Mesh Quantization Extension
  *
  * Specification: https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_mesh_quantization
+ *
+ * @private
  */ class $b4376e703aa0850c$var$GLTFMeshQuantizationExtension {
     constructor(){
         this.name = $b4376e703aa0850c$var$EXTENSIONS.KHR_MESH_QUANTIZATION;
@@ -46147,6 +54135,7 @@ const $b4376e703aa0850c$var$ALPHA_MODES = {
 /**
  * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#default-material
  *
+ * @private
  * @param {Object<string, Material>} cache
  * @return {Material}
  */ function $b4376e703aa0850c$var$createDefaultMaterial(cache) {
@@ -46169,7 +54158,9 @@ function $b4376e703aa0850c$var$addUnknownExtensionsToUserData(knownExtensions, o
     }
 }
 /**
- * @param {Object3D|Material|BufferGeometry} object
+ *
+ * @private
+ * @param {Object3D|Material|BufferGeometry|Object} object
  * @param {GLTF.definition} gltfDef
  */ function $b4376e703aa0850c$var$assignExtrasToUserData(object, gltfDef) {
     if (gltfDef.extras !== undefined) {
@@ -46180,6 +54171,7 @@ function $b4376e703aa0850c$var$addUnknownExtensionsToUserData(knownExtensions, o
 /**
  * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#morph-targets
  *
+ * @private
  * @param {BufferGeometry} geometry
  * @param {Array<GLTF.Target>} targets
  * @param {GLTFParser} parser
@@ -46230,6 +54222,8 @@ function $b4376e703aa0850c$var$addUnknownExtensionsToUserData(knownExtensions, o
     });
 }
 /**
+ *
+ * @private
  * @param {Mesh} mesh
  * @param {GLTF.Mesh} meshDef
  */ function $b4376e703aa0850c$var$updateMorphTargets(mesh, meshDef) {
@@ -46381,6 +54375,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Marks the special nodes/meshes in json for efficient parse.
+	 *
+	 * @private
 	 */ _markDefs() {
         const nodeDefs = this.json.nodes || [];
         const skinDefs = this.json.skins || [];
@@ -46414,6 +54410,7 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
 	 *
 	 * Example: CesiumMilkTruck sample model reuses "Wheel" meshes.
 	 *
+	 * @private
 	 * @param {Object} cache
 	 * @param {Object3D} index
 	 */ _addNodeRef(cache, index) {
@@ -46424,6 +54421,7 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     /**
 	 * Returns a reference to a shared resource, cloning it if necessary.
 	 *
+	 * @private
 	 * @param {Object} cache
 	 * @param {number} index
 	 * @param {Object} object
@@ -46463,6 +54461,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Requests the specified dependency asynchronously, with caching.
+	 *
+	 * @private
 	 * @param {string} type
 	 * @param {number} index
 	 * @return {Promise<Object3D|Material|THREE.Texture|AnimationClip|ArrayBuffer|Object>}
@@ -46529,6 +54529,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Requests all dependencies of the specified type asynchronously, with caching.
+	 *
+	 * @private
 	 * @param {string} type
 	 * @return {Promise<Array<Object>>}
 	 */ getDependencies(type) {
@@ -46545,6 +54547,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#buffers-and-buffer-views
+	 *
+	 * @private
 	 * @param {number} bufferIndex
 	 * @return {Promise<ArrayBuffer>}
 	 */ loadBuffer(bufferIndex) {
@@ -46562,6 +54566,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#buffers-and-buffer-views
+	 *
+	 * @private
 	 * @param {number} bufferViewIndex
 	 * @return {Promise<ArrayBuffer>}
 	 */ loadBufferView(bufferViewIndex) {
@@ -46574,6 +54580,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#accessors
+	 *
+	 * @private
 	 * @param {number} accessorIndex
 	 * @return {Promise<BufferAttribute|InterleavedBufferAttribute>}
 	 */ loadAccessor(accessorIndex) {
@@ -46651,6 +54659,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#textures
+	 *
+	 * @private
 	 * @param {number} textureIndex
 	 * @return {Promise<THREE.Texture|null>}
 	 */ loadTexture(textureIndex) {
@@ -46742,10 +54752,11 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     /**
 	 * Asynchronously assigns a texture to the given material parameters.
 	 *
+	 * @private
 	 * @param {Object} materialParams
 	 * @param {string} mapName
 	 * @param {Object} mapDef
-	 * @param {string} colorSpace
+	 * @param {string} [colorSpace]
 	 * @return {Promise<Texture>}
 	 */ assignTexture(materialParams, mapName, mapDef, colorSpace) {
         const parser = this;
@@ -46774,7 +54785,9 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
 	 * but reuse of the same glTF material may require multiple threejs materials
 	 * to accommodate different primitive types, defines, etc. New materials will
 	 * be created if necessary, and reused from a cache.
-	 * @param  {Object3D} mesh Mesh, Line, or Points instance.
+	 *
+	 * @private
+	 * @param {Object3D} mesh Mesh, Line, or Points instance.
 	 */ assignFinalMaterial(mesh) {
         const geometry = mesh.geometry;
         let material = mesh.material;
@@ -46833,6 +54846,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#materials
+	 *
+	 * @private
 	 * @param {number} materialIndex
 	 * @return {Promise<Material>}
 	 */ loadMaterial(materialIndex) {
@@ -46914,6 +54929,7 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     /**
 	 * When Object3D instances are targeted by animation, they need unique names.
 	 *
+	 * @private
 	 * @param {string} originalName
 	 * @return {string}
 	 */ createUniqueName(originalName) {
@@ -46929,6 +54945,7 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
 	 *
 	 * Creates BufferGeometries from primitives.
 	 *
+	 * @private
 	 * @param {Array<GLTF.Primitive>} primitives
 	 * @return {Promise<Array<BufferGeometry>>}
 	 */ loadGeometries(primitives) {
@@ -46966,8 +54983,10 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/blob/master/specification/2.0/README.md#meshes
+	 *
+	 * @private
 	 * @param {number} meshIndex
-	 * @return {Promise<Group|Mesh|SkinnedMesh>}
+	 * @return {Promise<Group|Mesh|SkinnedMesh|Line|Points>}
 	 */ loadMesh(meshIndex) {
         const parser = this;
         const json = this.json;
@@ -47028,6 +55047,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#cameras
+	 *
+	 * @private
 	 * @param {number} cameraIndex
 	 * @return {Promise<THREE.Camera>}
 	 */ loadCamera(cameraIndex) {
@@ -47046,6 +55067,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#skins
+	 *
+	 * @private
 	 * @param {number} skinIndex
 	 * @return {Promise<Skeleton>}
 	 */ loadSkin(skinIndex) {
@@ -47075,6 +55098,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#animations
+	 *
+	 * @private
 	 * @param {number} animationIndex
 	 * @return {Promise<AnimationClip>}
 	 */ loadAnimation(animationIndex) {
@@ -47145,6 +55170,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#nodes-and-hierarchy
+	 *
+	 * @private
 	 * @param {number} nodeIndex
 	 * @return {Promise<Object3D>}
 	 */ loadNode(nodeIndex) {
@@ -47230,6 +55257,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
     /**
 	 * Specification: https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#scenes
+	 *
+	 * @private
 	 * @param {number} sceneIndex
 	 * @return {Promise<Group>}
 	 */ loadScene(sceneIndex) {
@@ -47278,7 +55307,7 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
             case $b4376e703aa0850c$var$PATH_PROPERTIES.rotation:
                 TypedKeyframeTrack = (0, $ded5eecc0cd20cc2$export$b8043f12b5aafbd7);
                 break;
-            case $b4376e703aa0850c$var$PATH_PROPERTIES.position:
+            case $b4376e703aa0850c$var$PATH_PROPERTIES.translation:
             case $b4376e703aa0850c$var$PATH_PROPERTIES.scale:
                 TypedKeyframeTrack = (0, $ded5eecc0cd20cc2$export$5ce2dcb4cc9f2bff);
                 break;
@@ -47328,6 +55357,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     }
 }
 /**
+ *
+ * @private
  * @param {BufferGeometry} geometry
  * @param {GLTF.Primitive} primitiveDef
  * @param {GLTFParser} parser
@@ -47389,6 +55420,8 @@ const $b4376e703aa0850c$var$_identityMatrix = new (0, $ded5eecc0cd20cc2$export$2
     geometry.boundingSphere = sphere;
 }
 /**
+ *
+ * @private
  * @param {BufferGeometry} geometry
  * @param {GLTF.Primitive} primitiveDef
  * @param {GLTFParser} parser
@@ -47661,13 +55694,44 @@ function $21fa36e3a39b221c$var$ParserState() {
     state.startObject('', false);
     return state;
 }
-//
-class $21fa36e3a39b221c$export$7ae31604ad04b4a7 extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
-    constructor(manager){
+/**
+ * A loader for the OBJ format.
+ *
+ * The [OBJ format]{@link https://en.wikipedia.org/wiki/Wavefront_.obj_file} is a simple data-format that
+ * represents 3D geometry in a human readable format as the position of each vertex, the UV position of
+ * each texture coordinate vertex, vertex normals, and the faces that make each polygon defined as a list
+ * of vertices, and texture vertices.
+ *
+ * ```js
+ * const loader = new OBJLoader();
+ * const object = await loader.loadAsync( 'models/monster.obj' );
+ * scene.add( object );
+ * ```
+ *
+ * @augments Loader
+ */ class $21fa36e3a39b221c$export$7ae31604ad04b4a7 extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
+    /**
+	 * Constructs a new OBJ loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
-        this.materials = null;
+        /**
+		 * A reference to a material creator.
+		 *
+		 * @type {?MaterialCreator}
+		 * @default null
+		 */ this.materials = null;
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and passes the loaded OBJ asset
+	 * to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(Group)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const loader = new (0, $ded5eecc0cd20cc2$export$98435a25b5cf7b2b)(this.manager);
         loader.setPath(this.path);
@@ -47683,11 +55747,21 @@ class $21fa36e3a39b221c$export$7ae31604ad04b4a7 extends (0, $ded5eecc0cd20cc2$ex
             }
         }, onProgress, onError);
     }
-    setMaterials(materials) {
+    /**
+	 * Sets the material creator for this OBJ. This object is loaded via {@link MTLLoader}.
+	 *
+	 * @param {MaterialCreator} materials - An object that creates the materials for this OBJ.
+	 * @return {OBJLoader} A reference to this loader.
+	 */ setMaterials(materials) {
         this.materials = materials;
         return this;
     }
-    parse(text) {
+    /**
+	 * Parses the given OBJ data and returns the resulting group.
+	 *
+	 * @param {string} text - The raw OBJ data as a string.
+	 * @return {Group} The parsed OBJ.
+	 */ parse(text) {
         const state = new $21fa36e3a39b221c$var$ParserState();
         if (text.indexOf('\r\n') !== -1) // This is faster than String.split with regex that splits on both
         text = text.replace(/\r\n/g, '\n');
@@ -47898,23 +55972,33 @@ class $21fa36e3a39b221c$export$7ae31604ad04b4a7 extends (0, $ded5eecc0cd20cc2$ex
 
 
 /**
- * Loads a Wavefront .mtl file specifying materials
+ * A loader for the MTL format.
+ *
+ * The Material Template Library format (MTL) or .MTL File Format is a companion file format
+ * to OBJ that describes surface shading (material) properties of objects within one or more
+ * OBJ files.
+ *
+ * ```js
+ * const loader = new MTLLoader();
+ * const materials = await loader.loadAsync( 'models/obj/male02/male02.mtl' );
+ *
+ * const objLoader = new OBJLoader();
+ * objLoader.setMaterials( materials );
+ * ```
+ *
+ * @augments Loader
  */ class $ce7bc923ffd72333$export$2a0ca4746a43f1f8 extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
     constructor(manager){
         super(manager);
     }
     /**
-	 * Loads and parses a MTL asset from a URL.
+	 * Starts loading from the given URL and passes the loaded MTL asset
+	 * to the `onLoad()` callback.
 	 *
-	 * @param {string} url - URL to the MTL file.
-	 * @param {Function} [onLoad] - Callback invoked with the loaded object.
-	 * @param {Function} [onProgress] - Callback for download progress.
-	 * @param {Function} [onError] - Callback for download errors.
-	 *
-	 * @see {@link FileLoader#setPath} {@link FileLoader#setResourcePath}
-	 *
-	 * @note In order for relative texture references to resolve correctly
-	 * you must call setResourcePath() explicitly prior to load.
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(MaterialCreator)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
 	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const path = this.path === '' ? (0, $ded5eecc0cd20cc2$export$b5d2dc08d867e41a).extractUrlBase(url) : this.path;
@@ -47932,21 +56016,21 @@ class $21fa36e3a39b221c$export$7ae31604ad04b4a7 extends (0, $ded5eecc0cd20cc2$ex
             }
         }, onProgress, onError);
     }
-    setMaterialOptions(value) {
+    /**
+	 * Sets the material options.
+	 *
+	 * @param {MTLLoader~MaterialOptions} value - The material options.
+	 * @return {MTLLoader} A reference to this loader.
+	 */ setMaterialOptions(value) {
         this.materialOptions = value;
         return this;
     }
     /**
-	 * Parses a MTL file.
+	 * Parses the given MTL data and returns the resulting material creator.
 	 *
-	 * @param {string} text - Content of MTL file
-	 * @param {string} path
-	 * @return {MaterialCreator}
-	 *
-	 * @see {@link FileLoader#setPath} {@link FileLoader#setResourcePath}
-	 *
-	 * @note In order for relative texture references to resolve correctly
-	 * you must call setResourcePath() explicitly prior to parse.
+	 * @param {string} text - The raw MTL data as a string.
+	 * @param {string} path - The URL base path.
+	 * @return {MaterialCreator} The material creator.
 	 */ parse(text, path) {
         const lines = text.split('\n');
         let info = {};
@@ -47984,18 +56068,13 @@ class $21fa36e3a39b221c$export$7ae31604ad04b4a7 extends (0, $ded5eecc0cd20cc2$ex
     }
 }
 /**
- * Create a new MTLLoader.MaterialCreator
- * @param baseUrl - Url relative to which textures are loaded
- * @param options - Set of options on how to construct the materials
- *                  side: Which side to apply the material
- *                        FrontSide (default), THREE.BackSide, THREE.DoubleSide
- *                  wrap: What type of wrapping to apply for textures
- *                        RepeatWrapping (default), THREE.ClampToEdgeWrapping, THREE.MirroredRepeatWrapping
- *                  normalizeRGB: RGBs need to be normalized to 0-1 from 0-255
- *                                Default: false, assumed to be already normalized
- *                  ignoreZeroRGBs: Ignore values of RGBs (Ka,Kd,Ks) that are all 0's
- *                                  Default: false
- * @constructor
+ * Material options of `MTLLoader`.
+ *
+ * @typedef {Object} MTLLoader~MaterialOptions
+ * @property {(FrontSide|BackSide|DoubleSide)} [side=FrontSide] - Which side to apply the material.
+ * @property {(RepeatWrapping|ClampToEdgeWrapping|MirroredRepeatWrapping)} [wrap=RepeatWrapping] - What type of wrapping to apply for textures.
+ * @property {boolean} [normalizeRGB=false] - Whether RGB colors should be normalized to `0-1` from `0-255`.
+ * @property {boolean} [ignoreZeroRGBs=false] - Ignore values of RGBs (Ka,Kd,Ks) that are all 0's.
  */ class $ce7bc923ffd72333$var$MaterialCreator {
     constructor(baseUrl = '', options = {}){
         this.baseUrl = baseUrl;
@@ -50803,21 +58882,14 @@ function $550ca672a3f483a3$export$c757709326bb5901(data, opts) {
 
 
 
-/**
- * NURBS utils
+/** @module NURBSUtils */ /**
+ * Finds knot vector span.
  *
- * See NURBSCurve and NURBSSurface.
- **/ /**************************************************************
- *	NURBS Utils
- **************************************************************/ /*
-Finds knot vector span.
-
-p : degree
-u : parametric value
-U : knot vector
-
-returns the span
-*/ function $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U) {
+ * @param {number} p - The degree.
+ * @param {number} u - The parametric value.
+ * @param {Array<number>} U - The knot vector.
+ * @return {number} The span.
+ */ function $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U) {
     const n = U.length - p - 1;
     if (u >= U[n]) return n - 1;
     if (u <= U[p]) return p;
@@ -50831,16 +58903,15 @@ returns the span
     }
     return mid;
 }
-/*
-Calculate basis functions. See The NURBS Book, page 70, algorithm A2.2
-
-span : span in which u lies
-u    : parametric point
-p    : degree
-U    : knot vector
-
-returns array[p+1] with basis functions values.
-*/ function $d96d9caabed772f3$export$bbebd61f407f7f41(span, u, p, U) {
+/**
+ * Calculates basis functions. See The NURBS Book, page 70, algorithm A2.2.
+ *
+ * @param {number} span - The span in which `u` lies.
+ * @param {number} u - The parametric value.
+ * @param {number} p - The degree.
+ * @param {Array<number>} U - The knot vector.
+ * @return {Array<number>} Array[p+1] with basis functions values.
+ */ function $d96d9caabed772f3$export$bbebd61f407f7f41(span, u, p, U) {
     const N = [];
     const left = [];
     const right = [];
@@ -50860,16 +58931,15 @@ returns array[p+1] with basis functions values.
     }
     return N;
 }
-/*
-Calculate B-Spline curve points. See The NURBS Book, page 82, algorithm A3.1.
-
-p : degree of B-Spline
-U : knot vector
-P : control points (x, y, z, w)
-u : parametric point
-
-returns point for given u
-*/ function $d96d9caabed772f3$export$3672a5d5ca534534(p, U, P, u) {
+/**
+ * Calculates B-Spline curve points. See The NURBS Book, page 82, algorithm A3.1.
+ *
+ * @param {number} p - The degree of the B-Spline.
+ * @param {Array<number>} U - The knot vector.
+ * @param {Array<Vector4>} P - The control points
+ * @param {number} u - The parametric point.
+ * @return {Vector4} The point for given `u`.
+ */ function $d96d9caabed772f3$export$3672a5d5ca534534(p, U, P, u) {
     const span = $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U);
     const N = $d96d9caabed772f3$export$bbebd61f407f7f41(span, u, p, U);
     const C = new (0, $ded5eecc0cd20cc2$export$fa7daccca11cdbe3)(0, 0, 0, 0);
@@ -50884,17 +58954,16 @@ returns point for given u
     }
     return C;
 }
-/*
-Calculate basis functions derivatives. See The NURBS Book, page 72, algorithm A2.3.
-
-span : span in which u lies
-u    : parametric point
-p    : degree
-n    : number of derivatives to calculate
-U    : knot vector
-
-returns array[n+1][p+1] with basis functions derivatives
-*/ function $d96d9caabed772f3$export$70bfab2ede47286(span, u, p, n, U) {
+/**
+ * Calculates basis functions derivatives. See The NURBS Book, page 72, algorithm A2.3.
+ *
+ * @param {number} span - The span in which `u` lies.
+ * @param {number} u - The parametric point.
+ * @param {number} p - The degree.
+ * @param {number} n - number of derivatives to calculate
+ * @param {Array<number>} U - The knot vector.
+ * @return {Array<Array<number>>} An array[n+1][p+1] with basis functions derivatives.
+ */ function $d96d9caabed772f3$export$70bfab2ede47286(span, u, p, n, U) {
     const zeroArr = [];
     for(let i = 0; i <= p; ++i)zeroArr[i] = 0.0;
     const ders = [];
@@ -50956,17 +59025,16 @@ returns array[n+1][p+1] with basis functions derivatives
     }
     return ders;
 }
-/*
-	Calculate derivatives of a B-Spline. See The NURBS Book, page 93, algorithm A3.2.
-
-	p  : degree
-	U  : knot vector
-	P  : control points
-	u  : Parametric points
-	nd : number of derivatives
-
-	returns array[d+1] with derivatives
-	*/ function $d96d9caabed772f3$export$ae5bff7435823e13(p, U, P, u, nd) {
+/**
+ * Calculates derivatives of a B-Spline. See The NURBS Book, page 93, algorithm A3.2.
+ *
+ * @param {number} p - The degree.
+ * @param {Array<number>} U - The knot vector.
+ * @param {Array<Vector4>} P - The control points
+ * @param {number} u - The parametric point.
+ * @param {number} nd - The number of derivatives.
+ * @return {Array<Vector4>} An array[d+1] with derivatives.
+ */ function $d96d9caabed772f3$export$ae5bff7435823e13(p, U, P, u, nd) {
     const du = nd < p ? nd : p;
     const CK = [];
     const span = $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U);
@@ -50988,11 +59056,13 @@ returns array[n+1][p+1] with basis functions derivatives
     for(let k = du + 1; k <= nd + 1; ++k)CK[k] = new (0, $ded5eecc0cd20cc2$export$fa7daccca11cdbe3)(0, 0, 0);
     return CK;
 }
-/*
-Calculate "K over I"
-
-returns k!/(i!(k-i)!)
-*/ function $d96d9caabed772f3$export$3c88b91ac9312187(k, i) {
+/**
+ * Calculates "K over I".
+ *
+ * @param {number} k - The K value.
+ * @param {number} i - The I value.
+ * @return {number} k!/(i!(k-i)!)
+ */ function $d96d9caabed772f3$export$3c88b91ac9312187(k, i) {
     let nom = 1;
     for(let j = 2; j <= k; ++j)nom *= j;
     let denom = 1;
@@ -51000,13 +59070,12 @@ returns k!/(i!(k-i)!)
     for(let j = 2; j <= k - i; ++j)denom *= j;
     return nom / denom;
 }
-/*
-Calculate derivatives (0-nd) of rational curve. See The NURBS Book, page 127, algorithm A4.2.
-
-Pders : result of function calcBSplineDerivatives
-
-returns array with derivatives for rational curve.
-*/ function $d96d9caabed772f3$export$66805edec2c1a55d(Pders) {
+/**
+ * Calculates derivatives (0-nd) of rational curve. See The NURBS Book, page 127, algorithm A4.2.
+ *
+ * @param {Array<Vector4>} Pders - Array with derivatives.
+ * @return {Array<Vector3>} An array with derivatives for rational curve.
+ */ function $d96d9caabed772f3$export$66805edec2c1a55d(Pders) {
     const nd = Pders.length;
     const Aders = [];
     const wders = [];
@@ -51023,30 +59092,31 @@ returns array with derivatives for rational curve.
     }
     return CK;
 }
-/*
-Calculate NURBS curve derivatives. See The NURBS Book, page 127, algorithm A4.2.
-
-p  : degree
-U  : knot vector
-P  : control points in homogeneous space
-u  : parametric points
-nd : number of derivatives
-
-returns array with derivatives.
-*/ function $d96d9caabed772f3$export$692f68f163c8f6b(p, U, P, u, nd) {
+/**
+ * Calculates NURBS curve derivatives. See The NURBS Book, page 127, algorithm A4.2.
+ *
+ * @param {number} p - The degree.
+ * @param {Array<number>} U - The knot vector.
+ * @param {Array<Vector4>} P - The control points in homogeneous space.
+ * @param {number} u - The parametric point.
+ * @param {number} nd - The number of derivatives.
+ * @return {Array<Vector3>} array with derivatives for rational curve.
+ */ function $d96d9caabed772f3$export$692f68f163c8f6b(p, U, P, u, nd) {
     const Pders = $d96d9caabed772f3$export$ae5bff7435823e13(p, U, P, u, nd);
     return $d96d9caabed772f3$export$66805edec2c1a55d(Pders);
 }
-/*
-Calculate rational B-Spline surface point. See The NURBS Book, page 134, algorithm A4.3.
-
-p, q : degrees of B-Spline surface
-U, V : knot vectors
-P    : control points (x, y, z, w)
-u, v : parametric values
-
-returns point for given (u, v)
-*/ function $d96d9caabed772f3$export$6574b03464941be7(p, q, U, V, P, u, v, target) {
+/**
+ * Calculates a rational B-Spline surface point. See The NURBS Book, page 134, algorithm A4.3.
+ *
+ * @param {number} p - The first degree of B-Spline surface.
+ * @param {number} q - The second degree of B-Spline surface.
+ * @param {Array<number>} U - The first knot vector.
+ * @param {Array<number>} V - The second knot vector.
+ * @param {Array<Array<Vector4>>} P - The control points in homogeneous space.
+ * @param {number} u - The first parametric point.
+ * @param {number} v - The second parametric point.
+ * @param {Vector3} target - The target vector.
+ */ function $d96d9caabed772f3$export$6574b03464941be7(p, q, U, V, P, u, v, target) {
     const uspan = $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U);
     const vspan = $d96d9caabed772f3$export$5d44f085c0641ab4(q, v, V);
     const Nu = $d96d9caabed772f3$export$bbebd61f407f7f41(uspan, u, p, U);
@@ -51068,16 +59138,21 @@ returns point for given (u, v)
     Sw.divideScalar(Sw.w);
     target.set(Sw.x, Sw.y, Sw.z);
 }
-/*
-Calculate rational B-Spline volume point. See The NURBS Book, page 134, algorithm A4.3.
-
-p, q, r   : degrees of B-Splinevolume
-U, V, W   : knot vectors
-P         : control points (x, y, z, w)
-u, v, w   : parametric values
-
-returns point for given (u, v, w)
-*/ function $d96d9caabed772f3$export$6557862bbd4bd02b(p, q, r, U, V, W, P, u, v, w, target) {
+/**
+ * Calculates a rational B-Spline volume point. See The NURBS Book, page 134, algorithm A4.3.
+ *
+ * @param {number} p - The first degree of B-Spline surface.
+ * @param {number} q - The second degree of B-Spline surface.
+ * @param {number} r - The third degree of B-Spline surface.
+ * @param {Array<number>} U - The first knot vector.
+ * @param {Array<number>} V - The second knot vector.
+ * @param {Array<number>} W - The third knot vector.
+ * @param {Array<Array<Array<Vector4>>>} P - The control points in homogeneous space.
+ * @param {number} u - The first parametric point.
+ * @param {number} v - The second parametric point.
+ * @param {number} w - The third parametric point.
+ * @param {Vector3} target - The target vector.
+ */ function $d96d9caabed772f3$export$6557862bbd4bd02b(p, q, r, U, V, W, P, u, v, w, target) {
     const uspan = $d96d9caabed772f3$export$5d44f085c0641ab4(p, u, U);
     const vspan = $d96d9caabed772f3$export$5d44f085c0641ab4(q, v, V);
     const wspan = $d96d9caabed772f3$export$5d44f085c0641ab4(r, w, W);
@@ -51107,30 +59182,62 @@ returns point for given (u, v, w)
 
 
 /**
- * NURBS curve object
+ * This class represents a NURBS curve.
  *
- * Derives from Curve, overriding getPoint and getTangent.
+ * Implementation is based on `(x, y [, z=0 [, w=1]])` control points with `w=weight`.
  *
- * Implementation is based on (x, y [, z=0 [, w=1]]) control points with w=weight.
- *
- **/ class $10d2d5414403be6f$export$12efb26d7429b049 extends (0, $ded5eecc0cd20cc2$export$b0e83c3ef8d2db1) {
-    constructor(degree, knots /* array of reals */ , controlPoints /* array of Vector(2|3|4) */ , startKnot /* index in knots */ , endKnot /* index in knots */ ){
+ * @augments Curve
+ */ class $10d2d5414403be6f$export$12efb26d7429b049 extends (0, $ded5eecc0cd20cc2$export$b0e83c3ef8d2db1) {
+    /**
+	 * Constructs a new NURBS curve.
+	 *
+	 * @param {number} degree - The NURBS degree.
+	 * @param {Array<number>} knots - The knots as a flat array of numbers.
+	 * @param {Array<Vector2|Vector3|Vector4>} controlPoints - An array holding control points.
+	 * @param {number} [startKnot] - Index of the start knot into the `knots` array.
+	 * @param {number} [endKnot] - Index of the end knot into the `knots` array.
+	 */ constructor(degree, knots, controlPoints, startKnot, endKnot){
         super();
         const knotsLength = knots ? knots.length - 1 : 0;
         const pointsLength = controlPoints ? controlPoints.length : 0;
-        this.degree = degree;
-        this.knots = knots;
-        this.controlPoints = [];
-        // Used by periodic NURBS to remove hidden spans
-        this.startKnot = startKnot || 0;
-        this.endKnot = endKnot || knotsLength;
+        /**
+		 * The NURBS degree.
+		 *
+		 * @type {number}
+		 */ this.degree = degree;
+        /**
+		 * The knots as a flat array of numbers.
+		 *
+		 * @type {Array<number>}
+		 */ this.knots = knots;
+        /**
+		 * An array of control points.
+		 *
+		 * @type {Array<Vector4>}
+		 */ this.controlPoints = [];
+        /**
+		 * Index of the start knot into the `knots` array.
+		 *
+		 * @type {number}
+		 */ this.startKnot = startKnot || 0;
+        /**
+		 * Index of the end knot into the `knots` array.
+		 *
+		 * @type {number}
+		 */ this.endKnot = endKnot || knotsLength;
         for(let i = 0; i < pointsLength; ++i){
             // ensure Vector4 for control points
             const point = controlPoints[i];
             this.controlPoints[i] = new (0, $ded5eecc0cd20cc2$export$fa7daccca11cdbe3)(point.x, point.y, point.z, point.w);
         }
     }
-    getPoint(t, optionalTarget = new (0, $ded5eecc0cd20cc2$export$64b5c384219d3699)()) {
+    /**
+	 * This method returns a vector in 3D space for the given interpolation factor.
+	 *
+	 * @param {number} t - A interpolation factor representing a position on the curve. Must be in the range `[0,1]`.
+	 * @param {Vector3} [optionalTarget] - The optional target vector the result is written to.
+	 * @return {Vector3} The position on the curve.
+	 */ getPoint(t, optionalTarget = new (0, $ded5eecc0cd20cc2$export$64b5c384219d3699)()) {
         const point = optionalTarget;
         const u = this.knots[this.startKnot] + t * (this.knots[this.endKnot] - this.knots[this.startKnot]); // linear mapping t->u
         // following results in (wx, wy, wz, w) homogeneous point
@@ -51139,7 +59246,13 @@ returns point for given (u, v, w)
         hpoint.divideScalar(hpoint.w);
         return point.set(hpoint.x, hpoint.y, hpoint.z);
     }
-    getTangent(t, optionalTarget = new (0, $ded5eecc0cd20cc2$export$64b5c384219d3699)()) {
+    /**
+	 * Returns a unit vector tangent for the given interpolation factor.
+	 *
+	 * @param {number} t - The interpolation factor.
+	 * @param {Vector3} [optionalTarget] - The optional target vector the result is written to.
+	 * @return {Vector3} The tangent vector.
+	 */ getTangent(t, optionalTarget = new (0, $ded5eecc0cd20cc2$export$64b5c384219d3699)()) {
         const tangent = optionalTarget;
         const u = this.knots[0] + t * (this.knots[this.knots.length - 1] - this.knots[0]);
         const ders = $d96d9caabed772f3$export$692f68f163c8f6b(this.degree, this.knots, this.controlPoints, u, 1);
@@ -51171,27 +59284,48 @@ returns point for given (u, v, w)
 }
 
 
-/**
- * Loader loads FBX file and generates Group representing FBX scene.
- * Requires FBX file to be >= 7.0 and in ASCII or >= 6400 in Binary format
- * Versions lower than this may load but will probably have errors
- *
- * Needs Support:
- *  Morph normals / blend shape normals
- *
- * FBX format references:
- * 	https://help.autodesk.com/view/FBX/2017/ENU/?guid=__cpp_ref_index_html (C++ SDK reference)
- *
- * Binary format specification:
- *	https://code.blender.org/2013/08/fbx-binary-file-format-specification/
- */ let $4299b50047f4476c$var$fbxTree;
+let $4299b50047f4476c$var$fbxTree;
 let $4299b50047f4476c$var$connections;
 let $4299b50047f4476c$var$sceneGraph;
-class $4299b50047f4476c$export$60c52e42bb04b96 extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
-    constructor(manager){
+/**
+ * A loader for the FBX format.
+ *
+ * Requires FBX file to be >= 7.0 and in ASCII or >= 6400 in Binary format.
+ * Versions lower than this may load but will probably have errors.
+ *
+ * Needs Support:
+ * - Morph normals / blend shape normals
+ *
+ * FBX format references:
+ * - [C++ SDK reference]{@link https://help.autodesk.com/view/FBX/2017/ENU/?guid=__cpp_ref_index_html}
+ *
+ * Binary format specification:
+ * - [FBX binary file format specification]{@link https://code.blender.org/2013/08/fbx-binary-file-format-specification/}
+ *
+ * ```js
+ * const loader = new FBXLoader();
+ * const object = await loader.loadAsync( 'models/fbx/stanford-bunny.fbx' );
+ * scene.add( object );
+ * ```
+ *
+ * @augments Loader
+ */ class $4299b50047f4476c$export$60c52e42bb04b96 extends (0, $ded5eecc0cd20cc2$export$3b0d6d7590275603) {
+    /**
+	 * Constructs a new FBX loader.
+	 *
+	 * @param {LoadingManager} [manager] - The loading manager.
+	 */ constructor(manager){
         super(manager);
     }
-    load(url, onLoad, onProgress, onError) {
+    /**
+	 * Starts loading from the given URL and passes the loaded FBX asset
+	 * to the `onLoad()` callback.
+	 *
+	 * @param {string} url - The path/URL of the file to be loaded. This can also be a data URI.
+	 * @param {function(Group)} onLoad - Executed when the loading process has been finished.
+	 * @param {onProgressCallback} onProgress - Executed while the loading is in progress.
+	 * @param {onErrorCallback} onError - Executed when errors occur.
+	 */ load(url, onLoad, onProgress, onError) {
         const scope = this;
         const path = scope.path === '' ? (0, $ded5eecc0cd20cc2$export$b5d2dc08d867e41a).extractUrlBase(url) : scope.path;
         const loader = new (0, $ded5eecc0cd20cc2$export$98435a25b5cf7b2b)(this.manager);
@@ -51209,7 +59343,13 @@ class $4299b50047f4476c$export$60c52e42bb04b96 extends (0, $ded5eecc0cd20cc2$exp
             }
         }, onProgress, onError);
     }
-    parse(FBXBuffer, path) {
+    /**
+	 * Parses the given FBX data and returns the resulting group.
+	 *
+	 * @param {Array} FBXBuffer - The raw FBX data as an array buffer.
+	 * @param {string} path - The URL base path.
+	 * @return {Group} An object representing the parsed asset.
+	 */ parse(FBXBuffer, path) {
         if ($4299b50047f4476c$var$isFbxFormatBinary(FBXBuffer)) $4299b50047f4476c$var$fbxTree = new $4299b50047f4476c$var$BinaryParser().parse(FBXBuffer);
         else {
             const FBXText = $4299b50047f4476c$var$convertArrayBufferToString(FBXBuffer);
@@ -51707,7 +59847,7 @@ class $4299b50047f4476c$var$FBXTreeParser {
                         bone.ID = id;
                         skeleton.bones[i] = bone;
                         // In cases where a bone is shared between multiple meshes
-                        // duplicate the bone here and and it as a child of the first bone
+                        // duplicate the bone here and add it as a child of the first bone
                         if (subBone !== null) bone.add(subBone);
                     }
                 });
@@ -52652,7 +60792,7 @@ class $4299b50047f4476c$var$AnimationParser {
         return layersMap;
     }
     // parse nodes in FBXTree.Objects.AnimationStack. These are the top level node in the animation
-    // hierarchy. Each Stack node will be used to create a AnimationClip
+    // hierarchy. Each Stack node will be used to create an AnimationClip
     parseAnimStacks(layersMap) {
         const rawStacks = $4299b50047f4476c$var$fbxTree.Objects.AnimationStack;
         // connect the stacks (clips) up to the layers
@@ -58160,7 +66300,7 @@ class $5a163a5102e7cfa5$export$2b011a5b12963d65 {
             if (association === undefined || association.meshes === undefined) return;
             const mesh = json.meshes[association.meshes];
             mesh.primitives.forEach((prim)=>{
-                if (!prim.material) return;
+                if (prim.material === null || prim.material === undefined) return;
                 const material = json.materials[prim.material];
                 const extensionsDef = material.extensions;
                 if (!extensionsDef || !(extensionsDef[this.name] || extensionsDef[this.altName])) {
@@ -62421,7 +70561,7 @@ class $9693dce9b2f91688$var$Component {
     /**
    * @param {Object} xrInputSource - The XRInputSource to build the MotionController around
    * @param {Object} profile - The best matched profile description for the supplied xrInputSource
-   * @param {Object} assetUrl
+   * @param {string} assetUrl
    */ constructor(xrInputSource, profile, assetUrl){
         if (!xrInputSource) throw new Error('No xrInputSource supplied');
         if (!profile) throw new Error('No profile supplied');
@@ -62465,13 +70605,34 @@ class $9693dce9b2f91688$var$Component {
 
 const $66472e2cd73a5392$var$DEFAULT_PROFILES_PATH = 'https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles';
 const $66472e2cd73a5392$var$DEFAULT_PROFILE = 'generic-trigger';
-class $66472e2cd73a5392$var$XRControllerModel extends (0, $ded5eecc0cd20cc2$export$e4dd07dff30cc924) {
-    constructor(){
+/**
+ * Represents a XR controller model.
+ *
+ * @augments Object3D
+ */ class $66472e2cd73a5392$var$XRControllerModel extends (0, $ded5eecc0cd20cc2$export$e4dd07dff30cc924) {
+    /**
+	 * Constructs a new XR controller model.
+	 */ constructor(){
         super();
-        this.motionController = null;
-        this.envMap = null;
+        /**
+		 * The motion controller.
+		 *
+		 * @type {?MotionController}
+		 * @default null
+		 */ this.motionController = null;
+        /**
+		 * The controller's environment map.
+		 *
+		 * @type {?Texture}
+		 * @default null
+		 */ this.envMap = null;
     }
-    setEnvironmentMap(envMap) {
+    /**
+	 * Sets an environment map that is applied to the controller model.
+	 *
+	 * @param {?Texture} envMap - The environment map to apply.
+	 * @return {XRControllerModel} A reference to this instance.
+	 */ setEnvironmentMap(envMap) {
         if (this.envMap == envMap) return this;
         this.envMap = envMap;
         this.traverse((child)=>{
@@ -62483,10 +70644,11 @@ class $66472e2cd73a5392$var$XRControllerModel extends (0, $ded5eecc0cd20cc2$expo
         return this;
     }
     /**
-	 * Polls data from the XRInputSource and updates the model's components to match
-	 * the real world data
+	 * Overwritten with a custom implementation. Polls data from the XRInputSource and updates the
+	 * model's components to match the real world data.
 	 *
-	 * @param {boolean} force
+	 * @param {boolean} [force=false] - When set to `true`, a recomputation of world matrices is forced even
+	 * when {@link Object3D#matrixWorldAutoUpdate} is set to `false`.
 	 */ updateMatrixWorld(force) {
         super.updateMatrixWorld(force);
         if (!this.motionController) return;
@@ -62515,6 +70677,7 @@ class $66472e2cd73a5392$var$XRControllerModel extends (0, $ded5eecc0cd20cc2$expo
  * saves them to the motionController components for use in the frame loop. When
  * touchpads are found, attaches a touch dot to them.
  *
+ * @private
  * @param {MotionController} motionController
  * @param {Object3D} scene
  */ function $66472e2cd73a5392$var$findNodes(motionController, scene) {
@@ -62569,20 +70732,66 @@ function $66472e2cd73a5392$var$addAssetSceneToControllerModel(controllerModel, s
     // Add the glTF scene to the controllerModel.
     controllerModel.add(scene);
 }
-class $66472e2cd73a5392$export$100331f925a5e0de {
-    constructor(gltfLoader = null, onLoad = null){
-        this.gltfLoader = gltfLoader;
-        this.path = $66472e2cd73a5392$var$DEFAULT_PROFILES_PATH;
+/**
+ * Allows to create controller models for WebXR controllers that can be added as a visual
+ * representation to your scene. `XRControllerModelFactory` will automatically fetch controller
+ * models that match what the user is holding as closely as possible. The models should be
+ * attached to the object returned from getControllerGrip in order to match the orientation of
+ * the held device.
+ *
+ * This module depends on the [motion-controllers]{@link https://github.com/immersive-web/webxr-input-profiles/blob/main/packages/motion-controllers/README.md}
+ * third-part library.
+ *
+ * ```js
+ * const controllerModelFactory = new XRControllerModelFactory();
+ *
+ * const controllerGrip = renderer.xr.getControllerGrip( 0 );
+ * controllerGrip.add( controllerModelFactory.createControllerModel( controllerGrip ) );
+ * scene.add( controllerGrip );
+ * ```
+ */ class $66472e2cd73a5392$export$100331f925a5e0de {
+    /**
+	 * Constructs a new XR controller model factory.
+	 *
+	 * @param {?GLTFLoader} [gltfLoader=null] - A glTF loader that is used to load controller models.
+	 * @param {?Function} [onLoad=null] - A callback that is executed when a controller model has been loaded.
+	 */ constructor(gltfLoader = null, onLoad = null){
+        /**
+		 * A glTF loader that is used to load controller models.
+		 *
+		 * @type {?GLTFLoader}
+		 * @default null
+		 */ this.gltfLoader = gltfLoader;
+        /**
+		 * The path to the model repository.
+		 *
+		 * @type {string}
+		 */ this.path = $66472e2cd73a5392$var$DEFAULT_PROFILES_PATH;
         this._assetCache = {};
-        this.onLoad = onLoad;
+        /**
+		 * A callback that is executed when a controller model has been loaded.
+		 *
+		 * @type {?Function}
+		 * @default null
+		 */ this.onLoad = onLoad;
         // If a GLTFLoader wasn't supplied to the constructor create a new one.
         if (!this.gltfLoader) this.gltfLoader = new (0, $b4376e703aa0850c$export$aa93f11e7884f0f4)();
     }
-    setPath(path) {
+    /**
+	 * Sets the path to the model repository.
+	 *
+	 * @param {string} path - The path to set.
+	 * @return {XRControllerModelFactory} A reference to this instance.
+	 */ setPath(path) {
         this.path = path;
         return this;
     }
-    createControllerModel(controller) {
+    /**
+	 * Creates a controller model for the given WebXR controller.
+	 *
+	 * @param {Group} controller - The controller.
+	 * @return {XRControllerModel} The XR controller model.
+	 */ createControllerModel(controller) {
         const controllerModel = new $66472e2cd73a5392$var$XRControllerModel();
         let scene = null;
         controller.addEventListener('connected', (event)=>{
