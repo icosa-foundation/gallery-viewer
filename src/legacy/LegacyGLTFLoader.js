@@ -149,7 +149,7 @@ export class LegacyGLTFLoader extends Loader {
         var content;
         var extensions = {};
 
-        var magic = LoaderUtils.decodeText( new Uint8Array( data, 0, 4 ) );
+        var magic = new TextDecoder( ).decode( new Uint8Array( data, 0, 4 ) );
 
         if ( magic === BINARY_EXTENSION_HEADER_DEFAULTS.magic ) {
 
@@ -158,7 +158,7 @@ export class LegacyGLTFLoader extends Loader {
 
         } else {
 
-            content = LoaderUtils.decodeText( new Uint8Array( data ) );
+            content = new TextDecoder( ).decode( new Uint8Array( data ) );
 
         }
 
@@ -412,7 +412,7 @@ class GLTFBinaryExtension {
         var headerView = new DataView( data, 0, BINARY_EXTENSION_HEADER_LENGTH );
 
         var header = {
-            magic: LoaderUtils.decodeText( new Uint8Array( data.slice( 0, 4 ) ) ),
+            magic: new TextDecoder( ).decode( new Uint8Array( data.slice( 0, 4 ) ) ),
             version: headerView.getUint32( 4, true ),
             length: headerView.getUint32( 8, true ),
             contentLength: headerView.getUint32( 12, true ),
@@ -434,7 +434,7 @@ class GLTFBinaryExtension {
         var contentArray = new Uint8Array( data, BINARY_EXTENSION_HEADER_LENGTH, header.contentLength );
 
         this.header = header;
-        this.content = LoaderUtils.decodeText( contentArray );
+        this.content = new TextDecoder( ).decode( contentArray );
         this.body = data.slice( BINARY_EXTENSION_HEADER_LENGTH + header.contentLength, header.length );
     }
 
@@ -443,7 +443,7 @@ class GLTFBinaryExtension {
         var bufferView = bufferViews[ shader.extensions[ EXTENSIONS.KHR_BINARY_GLTF ].bufferView ];
         var array = new Uint8Array( bufferView );
 
-        return LoaderUtils.decodeText( array );
+        return new TextDecoder( ).decode( array );
 
     };
 }
