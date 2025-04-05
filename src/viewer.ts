@@ -20,6 +20,10 @@ import {GLTF, GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {MTLLoader} from 'three/examples/jsm/loaders/MTLLoader.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
+import {PLYLoader} from 'three/examples/jsm/loaders/PLYLoader.js';
+import {STLLoader} from 'three/examples/jsm/loaders/STLLoader.js';
+import {USDZLoader} from 'three/examples/jsm/loaders/USDZLoader.js';
+import {VOXLoader, VOXMesh} from 'three/examples/jsm/loaders/VOXLoader.js';
 import { XRButton } from './IcosaXRButton.js';
 import { GLTFGoogleTiltBrushTechniquesExtension } from 'three-icosa';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
@@ -197,6 +201,10 @@ export class Viewer {
     public objLoader: OBJLoader;
     public fbxLoader: FBXLoader;
     public mtlLoader: MTLLoader;
+    public plyLoader: PLYLoader;
+    public stlLoader: STLLoader;
+    public usdzLoader: USDZLoader;
+    public voxLoader: VOXLoader;
     public three : any;
     public captureThumbnail : (width : number, height : number) => string;
     public dataURLtoBlob : (dataURL : string) => Blob;
@@ -294,6 +302,10 @@ export class Viewer {
         this.objLoader = new OBJLoader(manager);
         this.mtlLoader = new MTLLoader(manager);
         this.fbxLoader = new FBXLoader(manager);
+        this.plyLoader = new PLYLoader(manager);
+        this.stlLoader = new STLLoader(manager);
+        this.usdzLoader = new USDZLoader(manager);
+        this.voxLoader = new VOXLoader(manager);
 
         this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
         this.gltfLoader = new GLTFLoader(manager);
@@ -2060,6 +2072,51 @@ export class Viewer {
         this.loadedModel = fbxData;
         this.setupSketchMetaData(fbxData);
         this.initializeScene(overrides);
+        this.frameScene();
+    }
+
+    public async loadPly(url: string, overrides : any) {
+        const plyData = await this.plyLoader.loadAsync(url);
+        plyData.computeVertexNormals();
+        const material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
+        const plyModel = new THREE.Mesh(plyData, material);
+        this.loadedModel = plyModel;
+        this.setupSketchMetaData(plyModel);
+        this.initializeScene(overrides);
+        this.frameScene();
+    }
+
+    public async loadStl(url: string, overrides : any) {
+        const stlData = await this.stlLoader.loadAsync(url);
+        const material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
+        const stlModel = new THREE.Mesh(stlData, material);
+        this.loadedModel = stlModel;
+        this.setupSketchMetaData(stlModel);
+        this.initializeScene(overrides);
+        this.frameScene();
+    }
+
+    public async loadUsdz(url: string, overrides : any) {
+        const usdzData = await this.usdzLoader.loadAsync(url);
+        this.loadedModel = usdzData;
+        this.setupSketchMetaData(usdzData);
+        this.initializeScene(overrides);
+        this.frameScene();
+    }
+
+    public async loadVox(url: string, overrides : any) {
+        let voxModel = new THREE.Group();
+        let chunks = await this.voxLoader.loadAsync(url);
+        for ( let i = 0; i < chunks.length; i ++ ) {
+            const chunk = chunks[ i ];
+            const mesh = new VOXMesh( chunk );
+            mesh.scale.setScalar( 0.0015 );
+            voxModel.add( mesh );
+        }
+        this.loadedModel = voxModel;
+        this.setupSketchMetaData(voxModel);
+        this.initializeScene(overrides);
+        this.frameScene();
     }
 
     private async assignEnvironment(scene : Object3D<THREE.Object3DEventMap>) {
@@ -2160,7 +2217,6 @@ export class Viewer {
                 }
             }
             let visualCenterPoint = new THREE.Vector3(vp[0], vp[1], vp[2]);
-            console.log(visualCenterPoint);
             cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
             cameraTarget = cameraTarget || visualCenterPoint;
         }
