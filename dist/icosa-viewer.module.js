@@ -74455,9 +74455,13 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     }
     async loadStl(url, overrides) {
         const stlData = await this.stlLoader.loadAsync(url);
-        const material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
+        let material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
             color: 0xffffff,
             metalness: 0
+        });
+        if (stlData.hasColors) material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
+            opacity: stlData.alpha,
+            vertexColors: true
         });
         const stlModel = new $ea01ff4a5048cd08$exports.Mesh(stlData, material);
         this.loadedModel = stlModel;

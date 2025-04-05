@@ -2088,7 +2088,10 @@ export class Viewer {
 
     public async loadStl(url: string, overrides : any) {
         const stlData = await this.stlLoader.loadAsync(url);
-        const material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
+        let material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
+        if (stlData.hasColors) {
+            material = new THREE.MeshStandardMaterial( { opacity: stlData.alpha, vertexColors: true } );
+        }
         const stlModel = new THREE.Mesh(stlData, material);
         this.loadedModel = stlModel;
         this.setupSketchMetaData(stlModel);
