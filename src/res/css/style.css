@@ -75,6 +75,11 @@
     animation: load-anim 1s steps(24) infinite;
 }
 
+.loaderror .loadlogo {
+    background: url("../img/error-logo.png");
+    animation: none;
+}
+
 @keyframes load-anim {
     100% {
         background-position: -6144px;

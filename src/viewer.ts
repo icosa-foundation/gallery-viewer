@@ -231,6 +231,7 @@ export class Viewer {
     private overrides: any;
     private cameraRig: THREE.Group;
     public selectedNode: THREE.Object3D | null;
+    public showErrorIcon: () => void;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.icosa_frame = frame;
@@ -272,6 +273,12 @@ export class Viewer {
             }
         });
 
+        this.showErrorIcon = () => {
+            let loadscreen = document.getElementById('loadscreen');
+            loadscreen?.classList.remove('fade-out');
+            loadscreen?.classList.add('loaderror');
+        }
+
         const clock = new THREE.Clock();
 
         this.scene = new THREE.Scene();
@@ -286,7 +293,11 @@ export class Viewer {
         };
 
         manager.onLoad = function () {
-            document.getElementById('loadscreen')?.classList.add('fade-out');
+            let loadscreen = document.getElementById('loadscreen');
+            if (!loadscreen?.classList.contains('loaderror'))
+            {
+                loadscreen?.classList.add('fade-out');
+            }
         };
 
         this.brushPath = new URL('brushes/', assetBaseUrl);
@@ -1981,11 +1992,27 @@ export class Viewer {
     }
 
     public async loadGltf1(url : string, loadEnvironment : boolean, overrides : any) {
-        await this._loadGltf(url, loadEnvironment, overrides, true);
+        try {
+            await this._loadGltf(url, loadEnvironment, overrides, true);
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading glTFv1 model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
 
     public async loadGltf(url : string, loadEnvironment : boolean, overrides : any) {
-        await this._loadGltf(url, loadEnvironment, overrides, false);
+        try {
+            await this._loadGltf(url, loadEnvironment, overrides, false);
+        } catch (error) {
+            console.error("Error loading glTFv2 model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+            this.showErrorIcon();
+        }
     }
 
     private async _loadGltf(url : string, loadEnvironment : boolean, overrides : any, isV1: boolean) {
@@ -2007,10 +2034,18 @@ export class Viewer {
     }
 
     public async loadTilt(url: string, overrides : any) {
-        const tiltData = await this.tiltLoader.loadAsync(url);
-        this.loadedModel = tiltData;
-        this.setupSketchMetaData(tiltData);
-        this.initializeScene(overrides);
+        try {
+            const tiltData = await this.tiltLoader.loadAsync(url);
+            this.loadedModel = tiltData;
+            this.setupSketchMetaData(tiltData);
+            this.initializeScene(overrides);
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Tilt model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
 
     private setAllVertexColors(model : Object3D<THREE.Object3DEventMap>) {
@@ -2027,29 +2062,9 @@ export class Viewer {
 
     // Defaults to assuming materials are vertex colored
     public async loadObj(url: string, overrides: any) {
+        try {
+            this.objLoader.loadAsync(url).then((objData) => {
 
-        this.objLoader.loadAsync(url).then((objData) => {
-
-            this.loadedModel = objData;
-
-            let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-            if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
-            this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
-
-            let withVertexColors = overrides?.["withVertexColors"];
-            if (withVertexColors) {
-                this.setAllVertexColors(this.loadedModel);
-            }
-            this.setupSketchMetaData(this.loadedModel);
-            this.initializeScene(overrides);
-        });
-    }
-
-    public async loadObjWithMtl(objUrl: string, mtlUrl: string, overrides: any) {
-        this.mtlLoader.loadAsync(mtlUrl).then((materials) => {
-            materials.preload();
-            this.objLoader.setMaterials(materials);
-            this.objLoader.loadAsync(objUrl).then((objData) => {
                 this.loadedModel = objData;
 
                 let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
@@ -2062,64 +2077,139 @@ export class Viewer {
                 }
                 this.setupSketchMetaData(this.loadedModel);
                 this.initializeScene(overrides);
-                this.frameScene(); // Not sure why the standard viewpoint heuristic isn't working here
             });
-        });
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Obj model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
+    }
+
+    public async loadObjWithMtl(objUrl: string, mtlUrl: string, overrides: any) {
+        try {
+            this.mtlLoader.loadAsync(mtlUrl).then((materials) => {
+                materials.preload();
+                this.objLoader.setMaterials(materials);
+                this.objLoader.loadAsync(objUrl).then((objData) => {
+                    this.loadedModel = objData;
+
+                    let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
+                    if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
+                    this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
+
+                    let withVertexColors = overrides?.["withVertexColors"];
+                    if (withVertexColors) {
+                        this.setAllVertexColors(this.loadedModel);
+                    }
+                    this.setupSketchMetaData(this.loadedModel);
+                    this.initializeScene(overrides);
+                    this.frameScene(); // Not sure why the standard viewpoint heuristic isn't working here
+                });
+            });
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Obj/Mtl model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
 
     public async loadFbx(url: string, overrides : any) {
-        const fbxData = await this.fbxLoader.loadAsync(url);
-        this.loadedModel = fbxData;
-        this.setupSketchMetaData(fbxData);
-        this.initializeScene(overrides);
-        this.frameScene();
+        try {
+            const fbxData = await this.fbxLoader.loadAsync(url);
+            this.loadedModel = fbxData;
+            this.setupSketchMetaData(fbxData);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Fbx model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
 
     public async loadPly(url: string, overrides : any) {
-        const plyData = await this.plyLoader.loadAsync(url);
-        plyData.computeVertexNormals();
-        const material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
-        const plyModel = new THREE.Mesh(plyData, material);
-        this.loadedModel = plyModel;
-        this.setupSketchMetaData(plyModel);
-        this.initializeScene(overrides);
-        this.frameScene();
+        try {
+            const plyData = await this.plyLoader.loadAsync(url);
+            plyData.computeVertexNormals();
+            const material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
+            const plyModel = new THREE.Mesh(plyData, material);
+            this.loadedModel = plyModel;
+            this.setupSketchMetaData(plyModel);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Ply model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
 
     public async loadStl(url: string, overrides : any) {
-        const stlData = await this.stlLoader.loadAsync(url);
-        let material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
-        if (stlData.hasColors) {
-            material = new THREE.MeshStandardMaterial( { opacity: stlData.alpha, vertexColors: true } );
+        try {
+            const stlData = await this.stlLoader.loadAsync(url);
+            let material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
+            if (stlData.hasColors) {
+                material = new THREE.MeshStandardMaterial( { opacity: stlData.alpha, vertexColors: true } );
+            }
+            const stlModel = new THREE.Mesh(stlData, material);
+            this.loadedModel = stlModel;
+            this.setupSketchMetaData(stlModel);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Stl model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
         }
-        const stlModel = new THREE.Mesh(stlData, material);
-        this.loadedModel = stlModel;
-        this.setupSketchMetaData(stlModel);
-        this.initializeScene(overrides);
-        this.frameScene();
     }
 
     public async loadUsdz(url: string, overrides : any) {
-        const usdzData = await this.usdzLoader.loadAsync(url);
-        this.loadedModel = usdzData;
-        this.setupSketchMetaData(usdzData);
-        this.initializeScene(overrides);
-        this.frameScene();
+        try {
+            const usdzData = await this.usdzLoader.loadAsync(url);
+            this.loadedModel = usdzData;
+            this.setupSketchMetaData(usdzData);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Usdz model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
 
     public async loadVox(url: string, overrides : any) {
-        let voxModel = new THREE.Group();
-        let chunks = await this.voxLoader.loadAsync(url);
-        for ( let i = 0; i < chunks.length; i ++ ) {
-            const chunk = chunks[ i ];
-            const mesh = new VOXMesh( chunk );
-            mesh.scale.setScalar( 0.0015 );
-            voxModel.add( mesh );
+        try {
+            let voxModel = new THREE.Group();
+            let chunks = await this.voxLoader.loadAsync(url);
+            for ( let i = 0; i < chunks.length; i ++ ) {
+                const chunk = chunks[ i ];
+                const mesh = new VOXMesh( chunk );
+                mesh.scale.setScalar( 0.0015 );
+                voxModel.add( mesh );
+            }
+            this.loadedModel = voxModel;
+            this.setupSketchMetaData(voxModel);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Vox model");
+            setTimeout(() => {
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
         }
-        this.loadedModel = voxModel;
-        this.setupSketchMetaData(voxModel);
-        this.initializeScene(overrides);
-        this.frameScene();
     }
 
     private async assignEnvironment(scene : Object3D<THREE.Object3DEventMap>) {
