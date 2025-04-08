@@ -63723,6 +63723,8 @@ class $5a163a5102e7cfa5$export$bcc22bf437a07d8f extends (0, $ded5eecc0cd20cc2$ex
         return $5a163a5102e7cfa5$var$$cf098bb13503440d$var$tiltBrushMaterialParams[name];
     }
     lookupMaterialName(nameOrGuid) {
+        // Open Brush "new glb" exports prefix the material names
+        if (nameOrGuid.startsWith("ob-")) nameOrGuid = nameOrGuid.substring(3);
         switch(nameOrGuid){
             case "BlocksBasic:":
             case "0e87b49c-6546-3a34-3a44-8a556d7d6c3e":
@@ -72752,6 +72754,11 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             const opacity = window.getComputedStyle(loadscreen).opacity;
             if (parseFloat(opacity) < 0.2) loadscreen.classList.add('loaded');
         });
+        this.showErrorIcon = ()=>{
+            let loadscreen = document.getElementById('loadscreen');
+            loadscreen?.classList.remove('fade-out');
+            loadscreen?.classList.add('loaderror');
+        };
         const clock = new $ea01ff4a5048cd08$exports.Clock();
         this.scene = new $ea01ff4a5048cd08$exports.Scene();
         this.three = $ea01ff4a5048cd08$exports;
@@ -72762,7 +72769,8 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
             document.getElementById('loadscreen')?.classList.remove('loaded');
         };
         manager.onLoad = function() {
-            document.getElementById('loadscreen')?.classList.add('fade-out');
+            let loadscreen = document.getElementById('loadscreen');
+            if (!loadscreen?.classList.contains('loaderror')) loadscreen?.classList.add('fade-out');
         };
         this.brushPath = new URL('brushes/', assetBaseUrl);
         this.environmentPath = new URL('environments/', assetBaseUrl);
@@ -74370,10 +74378,26 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         })[guid];
     }
     async loadGltf1(url, loadEnvironment, overrides) {
-        await this._loadGltf(url, loadEnvironment, overrides, true);
+        try {
+            await this._loadGltf(url, loadEnvironment, overrides, true);
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading glTFv1 model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
     async loadGltf(url, loadEnvironment, overrides) {
-        await this._loadGltf(url, loadEnvironment, overrides, false);
+        try {
+            await this._loadGltf(url, loadEnvironment, overrides, false);
+        } catch (error) {
+            console.error("Error loading glTFv2 model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+            this.showErrorIcon();
+        }
     }
     async _loadGltf(url, loadEnvironment, overrides, isV1) {
         let sceneGltf;
@@ -74390,10 +74414,18 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
         this.initializeScene(overrides);
     }
     async loadTilt(url, overrides) {
-        const tiltData = await this.tiltLoader.loadAsync(url);
-        this.loadedModel = tiltData;
-        this.setupSketchMetaData(tiltData);
-        this.initializeScene(overrides);
+        try {
+            const tiltData = await this.tiltLoader.loadAsync(url);
+            this.loadedModel = tiltData;
+            this.setupSketchMetaData(tiltData);
+            this.initializeScene(overrides);
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Tilt model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
     setAllVertexColors(model) {
         model.traverse((node)=>{
@@ -74405,22 +74437,8 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
     }
     // Defaults to assuming materials are vertex colored
     async loadObj(url, overrides) {
-        this.objLoader.loadAsync(url).then((objData)=>{
-            this.loadedModel = objData;
-            let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-            if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-            this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
-            let withVertexColors = overrides?.["withVertexColors"];
-            if (withVertexColors) this.setAllVertexColors(this.loadedModel);
-            this.setupSketchMetaData(this.loadedModel);
-            this.initializeScene(overrides);
-        });
-    }
-    async loadObjWithMtl(objUrl, mtlUrl, overrides) {
-        this.mtlLoader.loadAsync(mtlUrl).then((materials)=>{
-            materials.preload();
-            this.objLoader.setMaterials(materials);
-            this.objLoader.loadAsync(objUrl).then((objData)=>{
+        try {
+            this.objLoader.loadAsync(url).then((objData)=>{
                 this.loadedModel = objData;
                 let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
                 if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
@@ -74429,66 +74447,136 @@ class $3c43f222267ed54b$export$2ec4afd9b3c16a85 {
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                 this.setupSketchMetaData(this.loadedModel);
                 this.initializeScene(overrides);
-                this.frameScene(); // Not sure why the standard viewpoint heuristic isn't working here
             });
-        });
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Obj model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
+    }
+    async loadObjWithMtl(objUrl, mtlUrl, overrides) {
+        try {
+            this.mtlLoader.loadAsync(mtlUrl).then((materials)=>{
+                materials.preload();
+                this.objLoader.setMaterials(materials);
+                this.objLoader.loadAsync(objUrl).then((objData)=>{
+                    this.loadedModel = objData;
+                    let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
+                    if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
+                    this.defaultBackgroundColor = new $ea01ff4a5048cd08$exports.Color(defaultBackgroundColor);
+                    let withVertexColors = overrides?.["withVertexColors"];
+                    if (withVertexColors) this.setAllVertexColors(this.loadedModel);
+                    this.setupSketchMetaData(this.loadedModel);
+                    this.initializeScene(overrides);
+                    this.frameScene(); // Not sure why the standard viewpoint heuristic isn't working here
+                });
+            });
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Obj/Mtl model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
     async loadFbx(url, overrides) {
-        const fbxData = await this.fbxLoader.loadAsync(url);
-        this.loadedModel = fbxData;
-        this.setupSketchMetaData(fbxData);
-        this.initializeScene(overrides);
-        this.frameScene();
+        try {
+            const fbxData = await this.fbxLoader.loadAsync(url);
+            this.loadedModel = fbxData;
+            this.setupSketchMetaData(fbxData);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Fbx model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
     async loadPly(url, overrides) {
-        const plyData = await this.plyLoader.loadAsync(url);
-        plyData.computeVertexNormals();
-        const material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
-            color: 0xffffff,
-            metalness: 0
-        });
-        const plyModel = new $ea01ff4a5048cd08$exports.Mesh(plyData, material);
-        this.loadedModel = plyModel;
-        this.setupSketchMetaData(plyModel);
-        this.initializeScene(overrides);
-        this.frameScene();
+        try {
+            const plyData = await this.plyLoader.loadAsync(url);
+            plyData.computeVertexNormals();
+            const material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
+                color: 0xffffff,
+                metalness: 0
+            });
+            const plyModel = new $ea01ff4a5048cd08$exports.Mesh(plyData, material);
+            this.loadedModel = plyModel;
+            this.setupSketchMetaData(plyModel);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Ply model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
     async loadStl(url, overrides) {
-        const stlData = await this.stlLoader.loadAsync(url);
-        let material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
-            color: 0xffffff,
-            metalness: 0
-        });
-        if (stlData.hasColors) material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
-            opacity: stlData.alpha,
-            vertexColors: true
-        });
-        const stlModel = new $ea01ff4a5048cd08$exports.Mesh(stlData, material);
-        this.loadedModel = stlModel;
-        this.setupSketchMetaData(stlModel);
-        this.initializeScene(overrides);
-        this.frameScene();
+        try {
+            const stlData = await this.stlLoader.loadAsync(url);
+            let material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
+                color: 0xffffff,
+                metalness: 0
+            });
+            if (stlData.hasColors) material = new $ea01ff4a5048cd08$exports.MeshStandardMaterial({
+                opacity: stlData.alpha,
+                vertexColors: true
+            });
+            const stlModel = new $ea01ff4a5048cd08$exports.Mesh(stlData, material);
+            this.loadedModel = stlModel;
+            this.setupSketchMetaData(stlModel);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Stl model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
     async loadUsdz(url, overrides) {
-        const usdzData = await this.usdzLoader.loadAsync(url);
-        this.loadedModel = usdzData;
-        this.setupSketchMetaData(usdzData);
-        this.initializeScene(overrides);
-        this.frameScene();
+        try {
+            const usdzData = await this.usdzLoader.loadAsync(url);
+            this.loadedModel = usdzData;
+            this.setupSketchMetaData(usdzData);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Usdz model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
+        }
     }
     async loadVox(url, overrides) {
-        let voxModel = new $ea01ff4a5048cd08$exports.Group();
-        let chunks = await this.voxLoader.loadAsync(url);
-        for(let i = 0; i < chunks.length; i++){
-            const chunk = chunks[i];
-            const mesh = new (0, $17b8d88ee67604ce$export$b340c52937452837)(chunk);
-            mesh.scale.setScalar(0.0015);
-            voxModel.add(mesh);
+        try {
+            let voxModel = new $ea01ff4a5048cd08$exports.Group();
+            let chunks = await this.voxLoader.loadAsync(url);
+            for(let i = 0; i < chunks.length; i++){
+                const chunk = chunks[i];
+                const mesh = new (0, $17b8d88ee67604ce$export$b340c52937452837)(chunk);
+                mesh.scale.setScalar(0.0015);
+                voxModel.add(mesh);
+            }
+            this.loadedModel = voxModel;
+            this.setupSketchMetaData(voxModel);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Vox model");
+            setTimeout(()=>{
+                throw error; // Rethrow the exception after DOM updates
+            }, 0);
         }
-        this.loadedModel = voxModel;
-        this.setupSketchMetaData(voxModel);
-        this.initializeScene(overrides);
-        this.frameScene();
     }
     async assignEnvironment(scene) {
         const guid = this.sketchMetadata?.EnvironmentGuid;
