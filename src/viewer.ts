@@ -232,8 +232,10 @@ export class Viewer {
     private cameraRig: THREE.Group;
     public selectedNode: THREE.Object3D | null;
     public showErrorIcon: () => void;
+    public loadingError: boolean;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
+        this.loadingError = false;
         this.icosa_frame = frame;
 
         // Attempt to find viewer frame if not assigned
@@ -1997,9 +1999,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading glTFv1 model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
@@ -2007,11 +2007,9 @@ export class Viewer {
         try {
             await this._loadGltf(url, loadEnvironment, overrides, false);
         } catch (error) {
-            console.error("Error loading glTFv2 model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
             this.showErrorIcon();
+            console.error("Error loading glTFv2 model");
+            this.loadingError = true;
         }
     }
 
@@ -2042,9 +2040,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Tilt model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
@@ -2081,9 +2077,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Obj model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
@@ -2111,9 +2105,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Obj/Mtl model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
@@ -2127,9 +2119,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Fbx model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
@@ -2146,9 +2136,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Ply model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
@@ -2167,9 +2155,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Stl model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
@@ -2183,9 +2169,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Usdz model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
@@ -2206,9 +2190,7 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Vox model");
-            setTimeout(() => {
-                throw error; // Rethrow the exception after DOM updates
-            }, 0);
+            this.loadingError = true;
         }
     }
 
