@@ -506,9 +506,7 @@ var WEBGL_WRAPPINGS = {
 var WEBGL_TEXTURE_FORMATS = {
     6406: AlphaFormat,
     6407: RGBFormat,
-    6408: RGBAFormat,
-    6409: LuminanceFormat,
-    6410: LuminanceAlphaFormat
+    6408: RGBAFormat
 };
 
 var WEBGL_TEXTURE_DATATYPES = {

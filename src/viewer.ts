@@ -2298,7 +2298,7 @@ export class Viewer {
 
         CameraControls.install({THREE: THREE});
         this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
-        this.cameraControls.dampingFactor = 0.1;
+        this.cameraControls.smoothTime = 1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
         this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
         this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
