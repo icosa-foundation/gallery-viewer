@@ -2198,7 +2198,9 @@ export class Viewer {
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
             const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
-            const envGltf = await this.gltfLoader.loadAsync(envUrl.toString());
+            // Use the standard GLTFLoader for environments
+            const standardLoader = new GLTFLoader();
+            const envGltf = await standardLoader.loadAsync(envUrl.toString());
             envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
             envGltf.scene.scale.set(.1, .1, .1);
             scene.attach(envGltf.scene);
