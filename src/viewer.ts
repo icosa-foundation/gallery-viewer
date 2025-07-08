@@ -58,6 +58,8 @@ class SketchMetadata {
     public PoseTranslation : THREE.Vector3;
     public PoseRotation : THREE.Quaternion;
     public PoseScale : number;
+    public CameraTranslation: THREE.Vector3;
+    public CameraRotation: THREE.Quaternion;
     public EnvironmentPreset: EnvironmentPreset;
     public SkyTexture: string;
     public ReflectionTexture: string;
@@ -120,6 +122,9 @@ class SketchMetadata {
         this.PoseTranslation = this.parseTBVector3Obj(userData['TB_PoseTranslation']);
         this.PoseRotation = this.parseTBRotationObj(userData['TB_PoseRotation']);
         this.PoseScale = userData['TB_PoseScale'] ?? 1;
+
+        this.CameraTranslation = this.parseTBVector3Obj(userData['TB_CameraTranslation'])
+        this.CameraRotation = this.parseTBRotationObj(userData['TB_CameraRotation']);
     }
 
     private parseTBRotation(vectorString: string) {
@@ -2281,8 +2286,9 @@ export class Viewer {
     private initCameras() {
 
         let cameraOverrides = this.overrides?.camera;
-        let cameraPos = cameraOverrides?.translation || [0, 1, -1];
-        let cameraRot = cameraOverrides?.rotation || [1, 0, 0, 0];
+
+        let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation.toArray() || [0, 1, -1];
+        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation.toArray() || [1, 0, 0, 0];
 
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
         const aspect = 2;
