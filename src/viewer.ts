@@ -92,11 +92,11 @@ class SketchMetadata {
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
-        this.SkyColorA = this.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
-        this.SkyColorB = this.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
-        this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
-        this.AmbientLightColor = this.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
-        this.FogColor = this.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
+        this.SkyColorA = this.parseTBColorObj(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
+        this.SkyColorB = this.parseTBColorObj(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
+        this.SkyGradientDirection = this.parseTBVector3Obj(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
+        this.AmbientLightColor = this.parseTBColorObj(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
+        this.FogColor = this.parseTBColorObj(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
         this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
@@ -120,8 +120,8 @@ class SketchMetadata {
         this.SceneLight0Color = new THREE.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new THREE.Color(light1col.r, light1col.g, light1col.b);
 
-        this.PoseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
-        this.PoseRotation = this.parseTBRotation(userData['TB_PoseRotation']);
+        this.PoseTranslation = this.parseTBVector3Obj(userData['TB_PoseTranslation']);
+        this.PoseRotation = this.parseTBRotationObj(userData['TB_PoseRotation']);
         this.PoseScale = userData['TB_PoseScale'] ?? 1;
     }
 
