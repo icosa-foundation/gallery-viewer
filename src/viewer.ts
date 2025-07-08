@@ -29,7 +29,7 @@ import { GLTFGoogleTiltBrushTechniquesExtension } from 'three-icosa';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
 import { TiltLoader } from 'three-tiltloader';
 import * as holdEvent from "hold-event";
-import {CanvasTexture, Object3D} from "three";
+import {CanvasTexture, Object3D, Object3DEventMap} from "three";
 // import { EffectComposer } from 'three/addons';
 // import { RenderPass } from 'three/addons';
 import { setupNavigation } from './helpers/Navigation';
