@@ -2239,7 +2239,7 @@ export class Viewer {
         const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
         material.fog = false;
         material.toneMapped = false;
-        const geometry = new THREE.SphereGeometry(1000, 64, 64);
+        const geometry = new THREE.SphereGeometry(5000, 64, 64);
         const skysphere = new THREE.Mesh(geometry, material);
         skysphere.name = "environmentSky"
         const defaultUp = new THREE.Vector3(0, 1, 0);
