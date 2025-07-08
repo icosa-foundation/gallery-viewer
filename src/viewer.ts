@@ -2264,7 +2264,20 @@ export class Viewer {
         let cameraOverrides = this.overrides?.camera;
 
         let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation.toArray() || [0, 1, -1];
-        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation.toArray() || [1, 0, 0, 0];
+        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
+
+        // Fix handedness between Unity and gltf/three.js
+        // Should we fix this on export?
+        if (cameraRot.length == 3) {
+            // Assume euler angles in degrees
+            cameraRot[0] += 0;
+            cameraRot[1] += 180;
+            cameraRot[2] += 0;
+
+            cameraRot[0] = THREE.MathUtils.degToRad(cameraRot[0]);
+            cameraRot[1] = THREE.MathUtils.degToRad(cameraRot[1]);
+            cameraRot[2] = THREE.MathUtils.degToRad(cameraRot[2]);
+        }
 
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
         const aspect = 2;
@@ -2273,7 +2286,11 @@ export class Viewer {
 
         this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
-        this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
+        if (cameraRot.length == 3) { // euler angles
+            this.flatCamera.rotation.setFromVector3(new THREE.Vector3(cameraRot[0], cameraRot[1], cameraRot[2]));
+        } else { // quaternion
+            this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
+        }
         this.flatCamera.updateProjectionMatrix();
 
         this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -2281,6 +2298,7 @@ export class Viewer {
         this.scene.add(this.cameraRig);
         this.cameraRig.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
         this.cameraRig.rotation.y = this.flatCamera.rotation.y;
+        this.cameraRig.rotation.setFromQuaternion(this.flatCamera.quaternion);
         this.cameraRig.add(this.xrCamera);
         this.xrCamera.updateProjectionMatrix();
 
