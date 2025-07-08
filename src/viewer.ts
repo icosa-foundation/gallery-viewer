@@ -2269,6 +2269,12 @@ export class Viewer {
         return skysphere;
     }
 
+    private setupSketchMetaDataFromScene(scene: Object3D<THREE.Object3DEventMap>, userData: any) {
+        let sketchMetaData = new SketchMetadata(scene, userData);
+        this.modelBoundingBox = new THREE.Box3().setFromObject(scene);
+        this.sketchMetadata = sketchMetaData;
+    }
+
     private setupSketchMetaData(model: Object3D<THREE.Object3DEventMap>) {
         let sketchMetaData = new SketchMetadata(model);
         this.modelBoundingBox = new THREE.Box3().setFromObject(model);
