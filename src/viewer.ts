@@ -2197,7 +2197,8 @@ export class Viewer {
             const standardLoader = new GLTFLoader();
             const envGltf = await standardLoader.loadAsync(envUrl.toString());
             envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
-            envGltf.scene.scale.set(.1, .1, .1);
+            // Not sure why the environment models are 2x larger than they should be
+            envGltf.scene.scale.set(2, 2, 2);
             scene.attach(envGltf.scene);
             this.environmentObject = envGltf.scene;
         }
