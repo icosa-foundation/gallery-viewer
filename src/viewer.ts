@@ -63,10 +63,7 @@ class SketchMetadata {
     public ReflectionTexture: string;
     public ReflectionIntensity : number
 
-    constructor()
-    constructor(userData: any)
-    constructor(scene?: THREE.Scene) {
-        let userData = scene?.userData ?? {};
+    constructor(scene: Object3D, userData: any) {
 
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
         let sceneLights: any[] = [];
@@ -2044,7 +2041,7 @@ export class Viewer {
             sceneGltf = <GLTF>await this.gltfLoader.loadAsync(url);
         }
 
-        this.setupSketchMetaData(sceneGltf.scene);
+        this.setupSketchMetaDataFromScene(sceneGltf.scene, sceneGltf.userData);
         if (loadEnvironment) {await this.assignEnvironment(sceneGltf.scene);}
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
@@ -2276,7 +2273,7 @@ export class Viewer {
     }
 
     private setupSketchMetaData(model: Object3D<THREE.Object3DEventMap>) {
-        let sketchMetaData = new SketchMetadata(model);
+        let sketchMetaData = new SketchMetadata(model, model.userData);
         this.modelBoundingBox = new THREE.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
