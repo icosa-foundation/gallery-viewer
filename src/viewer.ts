@@ -145,7 +145,28 @@ class SketchMetadata {
         } else {
             return defaultValue;
         }
+    }
 
+    private parseTBRotationObj(vectorVals: object) {
+        if (!vectorVals) {
+            return new THREE.Quaternion()
+        }
+        return new THREE.Quaternion().setFromEuler(new THREE.Euler(vectorVals.x, vectorVals.y, vectorVals.z));
+    }
+
+    private parseTBVector3Obj(vectorVals: object, defaultValue?: THREE.Vector3) {
+        if (!vectorVals) {
+            return defaultValue ?? new THREE.Vector3()
+        }
+        return new THREE.Vector3(vectorVals.x, vectorVals.y, vectorVals.z);
+    }
+
+    private parseTBColorObj(colorVals: object, defaultValue: THREE.Color) {
+        if (colorVals) {
+            return new THREE.Color(colorVals.r, colorVals.g, colorVals.b, colorVals.a);
+        } else {
+            return defaultValue;
+        }
     }
 }
 
