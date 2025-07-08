@@ -56,9 +56,9 @@ class SketchMetadata {
     public SceneLight1Color: THREE.Color;
     public SceneLight1Rotation: THREE.Vector3;
     public PoseTranslation: THREE.Vector3;
-    public PoseRotation: THREE.Quaternion;
+    public PoseRotation: THREE.Vector3;
     public CameraTranslation: THREE.Vector3;
-    public CameraRotation: THREE.Quaternion;
+    public CameraRotation: THREE.Vector3;
     public PoseScale: number;
     public EnvironmentPreset: EnvironmentPreset;
     public SkyTexture: string;
@@ -91,11 +91,11 @@ class SketchMetadata {
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
-        this.SkyColorA = this.parseTBColorObj(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
-        this.SkyColorB = this.parseTBColorObj(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
-        this.SkyGradientDirection = this.parseTBVector3Obj(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
-        this.AmbientLightColor = this.parseTBColorObj(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
-        this.FogColor = this.parseTBColorObj(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
+        this.SkyColorA = this.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
+        this.SkyColorB = this.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
+        this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
+        this.AmbientLightColor = this.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
+        this.FogColor = this.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
         this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
@@ -119,18 +119,12 @@ class SketchMetadata {
         this.SceneLight0Color = new THREE.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new THREE.Color(light1col.r, light1col.g, light1col.b);
 
-        this.PoseTranslation = this.parseTBVector3Obj(userData['TB_PoseTranslation']);
-        this.PoseRotation = this.parseTBRotationObj(userData['TB_PoseRotation']);
+        this.PoseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
+        this.PoseRotation = this.parseTBVector3(userData['TB_PoseRotation']);
         this.PoseScale = userData['TB_PoseScale'] ?? 1;
 
-        this.CameraTranslation = this.parseTBVector3Obj(userData['TB_CameraTranslation'])
-        this.CameraRotation = this.parseTBRotationObj(userData['TB_CameraRotation']);
-    }
-
-    private parseTBRotation(vectorString: string) {
-        if (!vectorString) {return new THREE.Quaternion()}
-        let [x, y, z] = vectorString.split(',').map(parseFloat);
-        return new THREE.Quaternion().setFromEuler(new THREE.Euler(x, y, z));
+        this.CameraTranslation = this.parseTBVector3(userData['TB_CameraTranslation'])
+        this.CameraRotation = this.parseTBVector3(userData['TB_CameraRotation']);
     }
 
     private parseTBVector3(vectorString: string, defaultValue? : THREE.Vector3) {
@@ -144,28 +138,6 @@ class SketchMetadata {
         if (colorString) {
             [r, g, b] = colorString.split(',').map(parseFloat);
             return new THREE.Color(r, g, b);
-        } else {
-            return defaultValue;
-        }
-    }
-
-    private parseTBRotationObj(vectorVals: object) {
-        if (!vectorVals) {
-            return new THREE.Quaternion()
-        }
-        return new THREE.Quaternion().setFromEuler(new THREE.Euler(vectorVals.x, vectorVals.y, vectorVals.z));
-    }
-
-    private parseTBVector3Obj(vectorVals: object, defaultValue?: THREE.Vector3) {
-        if (!vectorVals) {
-            return defaultValue ?? new THREE.Vector3()
-        }
-        return new THREE.Vector3(vectorVals.x, vectorVals.y, vectorVals.z);
-    }
-
-    private parseTBColorObj(colorVals: object, defaultValue: THREE.Color) {
-        if (colorVals) {
-            return new THREE.Color(colorVals.r, colorVals.g, colorVals.b, colorVals.a);
         } else {
             return defaultValue;
         }
