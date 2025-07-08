@@ -2018,7 +2018,10 @@ export class Viewer {
             sceneGltf = <GLTF>await this.gltfLoader.loadAsync(url);
         }
 
-        this.setupSketchMetaDataFromScene(sceneGltf.scene, sceneGltf.userData);
+        // The legacy loader has the latter structure
+        let userData = sceneGltf.userData ?? sceneGltf.scene.userData;
+
+        this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         if (loadEnvironment) {await this.assignEnvironment(sceneGltf.scene);}
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
