@@ -4,7 +4,8 @@
   "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
     "watch": "parcel watch",
-    "build": "parcel build --no-cache"
+    "build": "parcel build --no-cache",
+    "test": "npm run build && node test.js"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,6 @@
   "targets": {
     "module": {
       "includeNodeModules": [
-        "three",
         "@depasquale/three-immersive-controls",
         "camera-controls",
         "three-icosa",

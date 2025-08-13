@@ -21,3 +21,19 @@ The viewer is still a work in progress and subject to change. Please join the [D
 ## Installation
 
 `npm install --save icosa-viewer`
+
+### three.js peer dependency
+
+`gallery-viewer` expects [`three`](https://threejs.org/) to be provided by the consuming application. Load a compatible `three.js` version (>=0.165 <0.166.0) before importing the viewer. When using ES modules in the browser, supply an import map:
+
+```html
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+  }
+}
+</script>
+```
+
