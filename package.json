@@ -4,7 +4,8 @@
   "description": "Viewer for Tilt Brush / Open Brush files and derivatives",
   "scripts": {
     "watch": "parcel watch",
-    "build": "parcel build --no-cache"
+    "build": "parcel build --no-cache",
+    "test": "node npm-test.js"
   },
   "repository": {
     "type": "git",
