@@ -15,7 +15,9 @@
                 "imports": {
                     "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
                     "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/",
-                    "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/"
+                    "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/",
+                    "three-icosa": "./three-icosa.module.js",
+                    "three-tiltloader": "https://cdn.jsdelivr.net/npm/three-tiltloader@0.4.2-alpha.4/dist/three-tiltloader.module.js"
                 }
             }
         </script>
@@ -81,10 +83,10 @@
         <script type="module">
             import { Viewer } from "./icosa-viewer.module.js";
             import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+            import * as THREE from "three";
 
             let viewer = new Viewer("https://icosa-foundation.github.io/icosa-sketch-assets/");
             // viewer.crossOrigin = "no-cors";
-            let THREE = viewer.three;
             window.viewer = viewer;
             window.THREE = THREE;
 

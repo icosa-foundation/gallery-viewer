@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
     "baseUrl": "src",
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "outDir": "./dist",
     "target": "es6",
-    "strict": true,
+    "strict": false,
     "removeComments": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
+    "noImplicitAny": false,
+    "noImplicitThis": false,
+    "noImplicitReturns": false,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node"
+    "moduleResolution": "bundler",
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

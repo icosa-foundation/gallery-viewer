@@ -5,6 +5,9 @@
   "scripts": {
     "watch": "parcel watch",
     "build": "parcel build --no-cache",
+    "build:local": "parcel build --no-cache && cp \"../three-icosa-main/dist/three-icosa.module.js\" \"dist/three-icosa.module.js\"",
+    "download-three-icosa": "curl -o dist/three-icosa.module.js https://cdn.jsdelivr.net/npm/three-icosa@0.4.2-alpha.18/dist/three-icosa.module.js",
+    "setup-cdn": "node scripts/setup-cdn-importmap.js",
     "test": "node npm-test.js"
   },
   "repository": {
@@ -19,14 +22,13 @@
   "sourceMaps": true,
   "targets": {
     "module": {
-      "includeNodeModules": [
-        "three",
-        "@depasquale/three-immersive-controls",
-        "camera-controls",
-        "three-icosa",
-        "three-tiltloader",
-        "hold-event"
-      ]
+      "outputFormat": "esmodule",
+      "isLibrary": true,
+      "includeNodeModules": {
+        "three": false,
+        "three-tiltloader": false,
+        "three-icosa": false
+      }
     }
   },
   "bugs": {

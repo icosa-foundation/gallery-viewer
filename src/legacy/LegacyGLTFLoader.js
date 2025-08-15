@@ -1,105 +1,7 @@
 // Adapted from original GLTF 1.0 Loader in three.js r86
 // https://github.com/mrdoob/three.js/blob/r86/examples/js/loaders/GLTFLoader.js
 
-import {
-    Vector2,
-    Vector3,
-    Vector4,
-    Matrix3,
-    Matrix4,
-    Loader,
-    LoaderUtils,
-    FileLoader,
-    Color,
-    DirectionalLight,
-    SpotLight,
-    PointLight,
-    AmbientLight,
-    InterpolateLinear,
-    InterpolateDiscrete,
-    Texture,
-    Skeleton,
-    SkinnedMesh,
-    Object3D,
-    Bone,
-    QuaternionKeyframeTrack,
-    VectorKeyframeTrack,
-    OrthographicCamera,
-    PerspectiveCamera,
-    BufferGeometry,
-    Group,
-
-    AnimationClip,
-    AnimationUtils,
-
-    NearestFilter,
-    LinearFilter,
-    NearestMipmapNearestFilter,
-    LinearMipmapNearestFilter,
-    NearestMipmapLinearFilter,
-    LinearMipmapLinearFilter,
-    ClampToEdgeWrapping,
-    MirroredRepeatWrapping,
-    RepeatWrapping,
-
-    AlphaFormat,
-    RGBFormat,
-    RGBAFormat,
-    LuminanceFormat,
-    LuminanceAlphaFormat,
-
-    UnsignedByteType,
-    UnsignedShort4444Type,
-    UnsignedShort5551Type,
-    Mesh,
-    LineLoop,
-    Line,
-    LineSegments,
-    BackSide, // Culling front
-    FrontSide, // Culling back
-
-    NeverDepth,
-    LessDepth,
-    EqualDepth,
-    LessEqualDepth,
-    GreaterEqualDepth,
-    NotEqualDepth,
-    AlwaysDepth,
-
-    AddEquation,
-    SubtractEquation,
-    ReverseSubtractEquation,
-
-    ZeroFactor,
-    OneFactor,
-    SrcColorFactor,
-    OneMinusSrcColorFactor,
-    SrcAlphaFactor,
-    OneMinusSrcAlphaFactor,
-    DstAlphaFactor,
-    OneMinusDstAlphaFactor,
-    DstColorFactor,
-    OneMinusDstColorFactor,
-    SrcAlphaSaturateFactor,
-
-    MeshPhongMaterial,
-    UniformsUtils,
-    RawShaderMaterial,
-
-    InterleavedBuffer,
-    InterleavedBufferAttribute,
-    BufferAttribute,
-
-    TextureLoader,
-    MeshLambertMaterial,
-    MeshBasicMaterial,
-    DoubleSide,
-
-    CustomBlending,
-    NoBlending,
-    Scene
-} from 'three';
-import * as THREE from "three";
+import * as THREE from 'three';
 
 
 const FS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; const float environmentStrength = 1.5; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; uniform vec3 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform mat4 u_modelMatrix; uniform sampler2D u_reflectionCube; uniform sampler2D u_reflectionCubeBlur; const float u_noiseIntensity = 0.015; const float colorNoiseAmount = 0.015; const float noiseScale = 700.0; uniform vec3 cameraPosition; // Noise functions from https://github.com/ashima/webgl-noise // Used under the MIT license - license text in MITLICENSE // Copyright (C) 2011 by Ashima Arts (Simplex noise) // Copyright (C) 2011-2016 by Stefan Gustavson (Classic noise and others) vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); } vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; } float snoise(vec3 v, out vec3 gradient) { const vec2 C = vec2(1.0/6.0, 1.0/3.0) ; const vec4 D = vec4(0.0, 0.5, 1.0, 2.0); // First corner vec3 i = floor(v + dot(v, C.yyy) ); vec3 x0 = v - i + dot(i, C.xxx) ; // Other corners vec3 g = step(x0.yzx, x0.xyz); vec3 l = 1.0 - g; vec3 i1 = min( g.xyz, l.zxy ); vec3 i2 = max( g.xyz, l.zxy ); // x0 = x0 - 0.0 + 0.0 * C.xxx; // x1 = x0 - i1 + 1.0 * C.xxx; // x2 = x0 - i2 + 2.0 * C.xxx; // x3 = x0 - 1.0 + 3.0 * C.xxx; vec3 x1 = x0 - i1 + C.xxx; vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y vec3 x3 = x0 - D.yyy; // -1.0+3.0*C.x = -0.5 = -D.y // Permutations i = mod289(i); vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 )); // Gradients: 7x7 points over a square, mapped onto an octahedron. // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294) float n_ = 0.142857142857; // 1.0/7.0 vec3 ns = n_ * D.wyz - D.xzx; vec4 j = p - 49.0 * floor(p * ns.z * ns.z); // mod(p,7*7) vec4 x_ = floor(j * ns.z); vec4 y_ = floor(j - 7.0 * x_ ); // mod(j,N) vec4 x = x_ *ns.x + ns.yyyy; vec4 y = y_ *ns.x + ns.yyyy; vec4 h = 1.0 - abs(x) - abs(y); vec4 b0 = vec4( x.xy, y.xy ); vec4 b1 = vec4( x.zw, y.zw ); //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0; //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0; vec4 s0 = floor(b0)*2.0 + 1.0; vec4 s1 = floor(b1)*2.0 + 1.0; vec4 sh = -step(h, vec4(0.0)); vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ; vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ; vec3 p0 = vec3(a0.xy,h.x); vec3 p1 = vec3(a0.zw,h.y); vec3 p2 = vec3(a1.xy,h.z); vec3 p3 = vec3(a1.zw,h.w); //Normalise gradients vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3))); p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w; // Mix final noise value vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0); vec4 m2 = m * m; vec4 m4 = m2 * m2; vec4 pdotx = vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)); // Determine noise gradient vec4 temp = m2 * m * pdotx; gradient = -8.0 * (temp.x * x0 + temp.y * x1 + temp.z * x2 + temp.w * x3); gradient += m4.x * p0 + m4.y * p1 + m4.z * p2 + m4.w * p3; gradient *= 42.0; return 42.0 * dot(m4, pdotx); } // End of noise code float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void generatePapercraftColorNormal(vec3 normal, vec3 tangent, vec3 binormal, vec3 noisePos, inout vec4 outColorMult, inout vec3 outNormal) { mat3 tangentToObject; tangentToObject[0] = vec3(tangent.x, tangent.y, tangent.z); tangentToObject[1] = vec3(binormal.x, binormal.y, binormal.z); tangentToObject[2] = vec3(normal.x, normal.y, normal.z); mat3 objectToTangent = transpose(tangentToObject); vec3 intensificator = vec3(u_noiseIntensity, u_noiseIntensity, 1.0); vec3 tangentPos = objectToTangent * noisePos; vec3 gradient = vec3(0.0); float noiseOut = snoise(tangentPos * noiseScale, gradient); vec3 tangentSpaceNormal = normalize(intensificator * vec3(gradient.xy, 1.0)); outNormal = tangentToObject * tangentSpaceNormal; outColorMult = vec4(vec3(1.0 + noiseOut * colorNoiseAmount), 1.0); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; generatePapercraftColorNormal(v_normal, v_tangent, v_binormal, v_position, outColorMult, normalisedNormal); setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor * outColorMult.rgb, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = (1.0 - u_metallic) * materialColor * outColorMult.rgb * 0.0; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor * outColorMult.rgb, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.7); evaluatePBRLight(materialColor * outColorMult.rgb, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.25); gl_FragColor = vec4(specular + diffuse * materialColor, 1.0); }";
@@ -109,7 +11,8 @@ const GEMVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMat
 const GLASSFS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; // Always default to Olive Oil. const float _Metallic = 0.5; const float environmentStrength = 1.0; varying vec3 v_normal; varying vec3 v_position; uniform vec4 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform vec3 cameraPosition; // camera position world float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color.rgb; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = materialColor * 0.3; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.5); evaluatePBRLight(materialColor, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.2); gl_FragColor = vec4(ambient + specular + diffuse * materialColor, u_color.a); } "
 const GLASSVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; void main() { vec4 worldPosition = vec4(a_position, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0); } "
 
-export class LegacyGLTFLoader extends Loader {
+const { Loader: ThreeLoader } = THREE;
+export class LegacyGLTFLoader extends ThreeLoader {
 
 
     load ( url, onLoad, onProgress, onError ) {
@@ -128,10 +31,10 @@ export class LegacyGLTFLoader extends Loader {
 
         } else {
 
-            resourcePath = LoaderUtils.extractUrlBase( url );
+            resourcePath = THREE.LoaderUtils.extractUrlBase( url );
 
         }
-        var loader = new FileLoader( scope.manager );
+        var loader = new THREE.FileLoader( scope.manager );
 
         loader.setPath( this.path );
         loader.setResponseType( 'arraybuffer' );
@@ -280,7 +183,7 @@ class GLTFShader {
         }
 
         this.boundUniforms = boundUniforms;
-        this._m4 = new Matrix4();
+        this._m4 = new THREE.Matrix4();
     }
 
     update ( scene, camera ) {
@@ -365,26 +268,26 @@ function GLTFMaterialsCommonExtension( json ) {
         var lightNode;
 
         var lightParams = light[ light.type ];
-        var color = new Color().fromArray( lightParams.color );
+        var color = new THREE.Color().fromArray( lightParams.color );
 
         switch ( light.type ) {
 
             case "directional":
-                lightNode = new DirectionalLight( color );
+                lightNode = new THREE.DirectionalLight( color );
                 lightNode.position.set( 0, 0, 1 );
                 break;
 
             case "point":
-                lightNode = new PointLight( color );
+                lightNode = new THREE.PointLight( color );
                 break;
 
             case "spot":
-                lightNode = new SpotLight( color );
+                lightNode = new THREE.SpotLight( color );
                 lightNode.position.set( 0, 0, 1 );
                 break;
 
             case "ambient":
-                lightNode = new AmbientLight( color );
+                lightNode = new THREE.AmbientLight( color );
                 break;
 
         }
@@ -471,12 +374,12 @@ var WEBGL_CONSTANTS = {
 var WEBGL_TYPE = {
     5126: Number,
     //35674: Matrix2,
-    35675: Matrix3,
-    35676: Matrix4,
-    35664: Vector2,
-    35665: Vector3,
-    35666: Vector4,
-    35678: Texture
+    35675: THREE.Matrix3,
+    35676: THREE.Matrix4,
+    35664: THREE.Vector2,
+    35665: THREE.Vector3,
+    35666: THREE.Vector4,
+    35678: THREE.Texture
 };
 
 var WEBGL_COMPONENT_TYPES = {
@@ -489,67 +392,67 @@ var WEBGL_COMPONENT_TYPES = {
 };
 
 var WEBGL_FILTERS = {
-    9728: NearestFilter,
-    9729: LinearFilter,
-    9984: NearestMipmapNearestFilter,
-    9985: LinearMipmapNearestFilter,
-    9986: NearestMipmapLinearFilter,
-    9987: LinearMipmapLinearFilter
+    9728: THREE.NearestFilter,
+    9729: THREE.LinearFilter,
+    9984: THREE.NearestMipmapNearestFilter,
+    9985: THREE.LinearMipmapNearestFilter,
+    9986: THREE.NearestMipmapLinearFilter,
+    9987: THREE.LinearMipmapLinearFilter
 };
 
 var WEBGL_WRAPPINGS = {
-    33071: ClampToEdgeWrapping,
-    33648: MirroredRepeatWrapping,
-    10497: RepeatWrapping
+    33071: THREE.ClampToEdgeWrapping,
+    33648: THREE.MirroredRepeatWrapping,
+    10497: THREE.RepeatWrapping
 };
 
 var WEBGL_TEXTURE_FORMATS = {
-    6406: AlphaFormat,
-    6407: RGBFormat,
-    6408: RGBAFormat
+    6406: THREE.AlphaFormat,
+    6407: THREE.RGBFormat,
+    6408: THREE.RGBAFormat
 };
 
 var WEBGL_TEXTURE_DATATYPES = {
-    5121: UnsignedByteType,
-    32819: UnsignedShort4444Type,
-    32820: UnsignedShort5551Type
+    5121: THREE.UnsignedByteType,
+    32819: THREE.UnsignedShort4444Type,
+    32820: THREE.UnsignedShort5551Type
 };
 
 var WEBGL_SIDES = {
-    1028: BackSide, // Culling front
-    1029: FrontSide // Culling back
+    1028: THREE.BackSide, // Culling front
+    1029: THREE.FrontSide // Culling back
     //1032: NoSide   // Culling front and back, what to do?
 };
 
 var WEBGL_DEPTH_FUNCS = {
-    512: NeverDepth,
-    513: LessDepth,
-    514: EqualDepth,
-    515: LessEqualDepth,
-    516: GreaterEqualDepth,
-    517: NotEqualDepth,
-    518: GreaterEqualDepth,
-    519: AlwaysDepth
+    512: THREE.NeverDepth,
+    513: THREE.LessDepth,
+    514: THREE.EqualDepth,
+    515: THREE.LessEqualDepth,
+    516: THREE.GreaterEqualDepth,
+    517: THREE.NotEqualDepth,
+    518: THREE.GreaterEqualDepth,
+    519: THREE.AlwaysDepth
 };
 
 var WEBGL_BLEND_EQUATIONS = {
-    32774: AddEquation,
-    32778: SubtractEquation,
-    32779: ReverseSubtractEquation
+    32774: THREE.AddEquation,
+    32778: THREE.SubtractEquation,
+    32779: THREE.ReverseSubtractEquation
 };
 
 var WEBGL_BLEND_FUNCS = {
-    0: ZeroFactor,
-    1: OneFactor,
-    768: SrcColorFactor,
-    769: OneMinusSrcColorFactor,
-    770: SrcAlphaFactor,
-    771: OneMinusSrcAlphaFactor,
-    772: DstAlphaFactor,
-    773: OneMinusDstAlphaFactor,
-    774: DstColorFactor,
-    775: OneMinusDstColorFactor,
-    776: SrcAlphaSaturateFactor
+    0: THREE.ZeroFactor,
+    1: THREE.OneFactor,
+    768: THREE.SrcColorFactor,
+    769: THREE.OneMinusSrcColorFactor,
+    770: THREE.SrcAlphaFactor,
+    771: THREE.OneMinusSrcAlphaFactor,
+    772: THREE.DstAlphaFactor,
+    773: THREE.OneMinusDstAlphaFactor,
+    774: THREE.DstColorFactor,
+    775: THREE.OneMinusDstColorFactor,
+    776: THREE.SrcAlphaSaturateFactor
     // The followings are not supported by js yet
     //32769: CONSTANT_COLOR,
     //32770: ONE_MINUS_CONSTANT_COLOR,
@@ -574,8 +477,8 @@ var PATH_PROPERTIES = {
 };
 
 var INTERPOLATION = {
-    LINEAR: InterpolateLinear,
-    STEP: InterpolateDiscrete
+    LINEAR: THREE.InterpolateLinear,
+    STEP: THREE.InterpolateDiscrete
 };
 
 var STATES_ENABLES = {
@@ -805,14 +708,14 @@ function replaceTHREEShaderAttributes( shaderText, technique ) {
 
 function createDefaultMaterial() {
 
-    return new MeshPhongMaterial( {
+    return new THREE.MeshPhongMaterial( {
         color: 0x00000,
         emissive: 0x888888,
         specular: 0x000000,
         shininess: 0,
         transparent: false,
         depthTest: true,
-        side: FrontSide
+        side: THREE.FrontSide
     } );
 
 }
@@ -826,13 +729,13 @@ class DeferredShaderMaterial {
 
     create() {
 
-        var uniforms = UniformsUtils.clone( this.params.uniforms );
+        var uniforms = THREE.UniformsUtils.clone( this.params.uniforms );
 
         for ( var uniformId in this.params.uniforms ) {
 
             var originalUniform = this.params.uniforms[ uniformId ];
 
-            if ( originalUniform.value instanceof Texture ) {
+            if ( originalUniform.value instanceof THREE.Texture ) {
 
                 uniforms[ uniformId ].value = originalUniform.value;
                 uniforms[ uniformId ].value.needsUpdate = true;
@@ -846,7 +749,7 @@ class DeferredShaderMaterial {
 
         this.params.uniforms = uniforms;
 
-        return new RawShaderMaterial( this.params );
+        return new THREE.RawShaderMaterial( this.params );
     }
 }
 
@@ -965,7 +868,7 @@ class GLTFParser {
 
                 return new Promise( function ( resolve ) {
 
-                    var loader = new FileLoader( options.manager );
+                    var loader = new THREE.FileLoader( options.manager );
 
                     // Common google urls to save pointless requests
                     if (shader.uri === 'https://vr.google.com/shaders/w/fs.glsl') {return FS_GLSL}
@@ -1012,7 +915,7 @@ class GLTFParser {
 
                 return new Promise( function ( resolve ) {
 
-                    var loader = new FileLoader( options.manager );
+                    var loader = new THREE.FileLoader( options.manager );
                     loader.setResponseType( 'arraybuffer' );
                     loader.setCrossOrigin('no-cors');
                     loader.load( resolveURL( buffer.uri, options.path ), function ( buffer ) {
@@ -1084,15 +987,15 @@ class GLTFParser {
                     var array = new TypedArray( arraybuffer );
 
                     // Integer parameters to IB/IBA are in array elements, not bytes.
-                    var ib = new InterleavedBuffer( array, accessor.byteStride / elementBytes );
+                    var ib = new THREE.InterleavedBuffer( array, accessor.byteStride / elementBytes );
 
-                    return new InterleavedBufferAttribute( ib, itemSize, accessor.byteOffset / elementBytes );
+                    return new THREE.InterleavedBufferAttribute( ib, itemSize, accessor.byteOffset / elementBytes );
 
                 } else {
 
                     array = new TypedArray( arraybuffer, accessor.byteOffset, accessor.count * itemSize );
 
-                    return new BufferAttribute( array, itemSize );
+                    return new THREE.BufferAttribute( array, itemSize );
 
                 }
 
@@ -1140,7 +1043,7 @@ class GLTFParser {
 
                         if ( textureLoader === null ) {
 
-                            textureLoader = new TextureLoader( options.manager );
+                            textureLoader = new THREE.TextureLoader( options.manager );
 
                         }
 
@@ -1154,7 +1057,7 @@ class GLTFParser {
 
                             if ( texture.name !== undefined ) _texture.name = texture.name;
 
-                            _texture.format = texture.format !== undefined ? WEBGL_TEXTURE_FORMATS[ texture.format ] : RGBAFormat;
+                            _texture.format = texture.format !== undefined ? WEBGL_TEXTURE_FORMATS[ texture.format ] : THREE.RGBAFormat;
 
                             if ( texture.internalFormat !== undefined && _texture.format !== WEBGL_TEXTURE_FORMATS[ texture.internalFormat ] ) {
 
@@ -1163,16 +1066,16 @@ class GLTFParser {
 
                             }
 
-                            _texture.type = texture.type !== undefined ? WEBGL_TEXTURE_DATATYPES[ texture.type ] : UnsignedByteType;
+                            _texture.type = texture.type !== undefined ? WEBGL_TEXTURE_DATATYPES[ texture.type ] : THREE.UnsignedByteType;
 
                             if ( texture.sampler ) {
 
                                 var sampler = json.samplers[ texture.sampler ];
 
-                                _texture.magFilter = WEBGL_FILTERS[ sampler.magFilter ] || LinearFilter;
-                                _texture.minFilter = WEBGL_FILTERS[ sampler.minFilter ] || NearestMipmapLinearFilter;
-                                _texture.wrapS = WEBGL_WRAPPINGS[ sampler.wrapS ] || RepeatWrapping;
-                                _texture.wrapT = WEBGL_WRAPPINGS[ sampler.wrapT ] || RepeatWrapping;
+                                _texture.magFilter = WEBGL_FILTERS[ sampler.magFilter ] || THREE.LinearFilter;
+                                _texture.minFilter = WEBGL_FILTERS[ sampler.minFilter ] || THREE.NearestMipmapLinearFilter;
+                                _texture.wrapS = WEBGL_WRAPPINGS[ sampler.wrapS ] || THREE.RepeatWrapping;
+                                _texture.wrapT = WEBGL_WRAPPINGS[ sampler.wrapT ] || THREE.RepeatWrapping;
 
                             }
 
@@ -1230,18 +1133,18 @@ class GLTFParser {
 
                         case 'BLINN' :
                         case 'PHONG' :
-                            materialType = MeshPhongMaterial;
+                            materialType = THREE.MeshPhongMaterial;
                             keys.push( 'diffuse', 'specular', 'shininess' );
                             break;
 
                         case 'LAMBERT' :
-                            materialType = MeshLambertMaterial;
+                            materialType = THREE.MeshLambertMaterial;
                             keys.push( 'diffuse' );
                             break;
 
                         case 'CONSTANT' :
                         default :
-                            materialType = MeshBasicMaterial;
+                            materialType = THREE.MeshBasicMaterial;
                             break;
 
                     }
@@ -1254,7 +1157,7 @@ class GLTFParser {
 
                     if ( khr_material.doubleSided || materialValues.doubleSided ) {
 
-                        materialParams.side = DoubleSide;
+                        materialParams.side = THREE.DoubleSide;
 
                     }
 
@@ -1267,7 +1170,7 @@ class GLTFParser {
 
                 } else if ( material.technique === undefined ) {
 
-                    materialType = MeshPhongMaterial;
+                    materialType = THREE.MeshPhongMaterial;
 
                     Object.assign( materialValues, material.values );
 
@@ -1288,7 +1191,7 @@ class GLTFParser {
                         if ( ! materialParams.fragmentShader ) {
 
                             console.warn( "ERROR: Missing fragment shader definition:", program.fragmentShader );
-                            materialType = MeshPhongMaterial;
+                            materialType = THREE.MeshPhongMaterial;
 
                         }
 
@@ -1297,7 +1200,7 @@ class GLTFParser {
                         if ( ! vertexShader ) {
 
                             console.warn( "ERROR: Missing vertex shader definition:", program.vertexShader );
-                            materialType = MeshPhongMaterial;
+                            materialType = THREE.MeshPhongMaterial;
 
                         }
 
@@ -1496,19 +1399,19 @@ class GLTFParser {
 
                         if ( enableCullFace ) {
 
-                            materialParams.side = functions.cullFace !== undefined ? WEBGL_SIDES[ functions.cullFace ] : FrontSide;
+                            materialParams.side = functions.cullFace !== undefined ? WEBGL_SIDES[ functions.cullFace ] : THREE.FrontSide;
 
                         } else {
 
-                            materialParams.side = DoubleSide;
+                            materialParams.side = THREE.DoubleSide;
 
                         }
 
                         materialParams.depthTest = enableDepthTest;
-                        materialParams.depthFunc = functions.depthFunc !== undefined ? WEBGL_DEPTH_FUNCS[ functions.depthFunc ] : LessDepth;
+                        materialParams.depthFunc = functions.depthFunc !== undefined ? WEBGL_DEPTH_FUNCS[ functions.depthFunc ] : THREE.LessDepth;
                         materialParams.depthWrite = functions.depthMask !== undefined ? functions.depthMask[ 0 ] : true;
 
-                        materialParams.blending = enableBlend ? CustomBlending : NoBlending;
+                        materialParams.blending = enableBlend ? THREE.CustomBlending : THREE.NoBlending;
                         materialParams.transparent = enableBlend;
 
                         var blendEquationSeparate = functions.blendEquationSeparate;
@@ -1520,8 +1423,8 @@ class GLTFParser {
 
                         } else {
 
-                            materialParams.blendEquation = AddEquation;
-                            materialParams.blendEquationAlpha = AddEquation;
+                            materialParams.blendEquation = THREE.AddEquation;
+                            materialParams.blendEquationAlpha = THREE.AddEquation;
 
                         }
 
@@ -1536,10 +1439,10 @@ class GLTFParser {
 
                         } else {
 
-                            materialParams.blendSrc = OneFactor;
-                            materialParams.blendDst = ZeroFactor;
-                            materialParams.blendSrcAlpha = OneFactor;
-                            materialParams.blendDstAlpha = ZeroFactor;
+                            materialParams.blendSrc = THREE.OneFactor;
+                            materialParams.blendDst = THREE.ZeroFactor;
+                            materialParams.blendSrcAlpha = THREE.OneFactor;
+                            materialParams.blendDstAlpha = THREE.ZeroFactor;
 
                         }
 
@@ -1549,7 +1452,7 @@ class GLTFParser {
 
                 if ( Array.isArray( materialValues.diffuse ) ) {
 
-                    materialParams.color = new Color().fromArray( materialValues.diffuse );
+                    materialParams.color = new THREE.Color().fromArray( materialValues.diffuse );
 
                 } else if ( typeof ( materialValues.diffuse ) === 'string' ) {
 
@@ -1573,19 +1476,19 @@ class GLTFParser {
 
                 if ( Array.isArray( materialValues.emission ) ) {
 
-                    if ( materialType === MeshBasicMaterial ) {
+                    if ( materialType === THREE.MeshBasicMaterial ) {
 
-                        materialParams.color = new Color().fromArray( materialValues.emission );
+                        materialParams.color = new THREE.Color().fromArray( materialValues.emission );
 
                     } else {
 
-                        materialParams.emissive = new Color().fromArray( materialValues.emission );
+                        materialParams.emissive = new THREE.Color().fromArray( materialValues.emission );
 
                     }
 
                 } else if ( typeof ( materialValues.emission ) === 'string' ) {
 
-                    if ( materialType === MeshBasicMaterial ) {
+                    if ( materialType === THREE.MeshBasicMaterial ) {
 
                         materialParams.map = dependencies.textures[ materialValues.emission ];
 
@@ -1599,7 +1502,7 @@ class GLTFParser {
 
                 if ( Array.isArray( materialValues.specular ) ) {
 
-                    materialParams.specular = new Color().fromArray( materialValues.specular );
+                    materialParams.specular = new THREE.Color().fromArray( materialValues.specular );
 
                 } else if ( typeof ( materialValues.specular ) === 'string' ) {
 
@@ -1637,7 +1540,7 @@ class GLTFParser {
 
             return _each( json.meshes, function ( mesh ) {
 
-                var group = new Group();
+                var group = new THREE.Group();
                 if ( mesh.name !== undefined ) group.name = mesh.name;
 
                 if ( mesh.extras ) group.userData = mesh.extras;
@@ -1650,7 +1553,7 @@ class GLTFParser {
 
                     if ( primitive.mode === WEBGL_CONSTANTS.TRIANGLES || primitive.mode === undefined ) {
 
-                        var geometry = new BufferGeometry();
+                        var geometry = new THREE.BufferGeometry();
 
                         var attributes = primitive.attributes;
 
@@ -1728,7 +1631,7 @@ class GLTFParser {
 
                         var material = dependencies.materials !== undefined ? dependencies.materials[ primitive.material ] : createDefaultMaterial();
 
-                        var meshNode = new Mesh( geometry, material );
+                        var meshNode = new THREE.Mesh( geometry, material );
                         meshNode.castShadow = true;
                         meshNode.name = ( name === "0" ? group.name : group.name + name );
 
@@ -1738,7 +1641,7 @@ class GLTFParser {
 
                     } else if ( primitive.mode === WEBGL_CONSTANTS.LINES ) {
 
-                        var geometry = new BufferGeometry();
+                        var geometry = new THREE.BufferGeometry();
 
                         var attributes = primitive.attributes;
 
@@ -1774,11 +1677,11 @@ class GLTFParser {
 
                             geometry.setIndex( dependencies.accessors[ primitive.indices ] );
 
-                            meshNode = new LineSegments( geometry, material );
+                            meshNode = new THREE.LineSegments( geometry, material );
 
                         } else {
 
-                            meshNode = new Line( geometry, material );
+                            meshNode = new THREE.Line( geometry, material );
 
                         }
 
@@ -1819,7 +1722,7 @@ class GLTFParser {
                 // aspectRatio = xfov / yfov
                 var xfov = yfov * aspectRatio;
 
-                var _camera = new PerspectiveCamera( THREE.MathUtils.radToDeg( xfov ), aspectRatio, camera.perspective.znear || 1, camera.perspective.zfar || 2e6 );
+                var _camera = new THREE.PerspectiveCamera( THREE.MathUtils.radToDeg( xfov ), aspectRatio, camera.perspective.znear || 1, camera.perspective.zfar || 2e6 );
                 if ( camera.name !== undefined ) _camera.name = camera.name;
 
                 if ( camera.extras ) _camera.userData = camera.extras;
@@ -1828,7 +1731,7 @@ class GLTFParser {
 
             } else if ( camera.type == "orthographic" && camera.orthographic ) {
 
-                var _camera = new OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, camera.orthographic.znear, camera.orthographic.zfar );
+                var _camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, camera.orthographic.znear, camera.orthographic.zfar );
                 if ( camera.name !== undefined ) _camera.name = camera.name;
 
                 if ( camera.extras ) _camera.userData = camera.extras;
@@ -1853,7 +1756,7 @@ class GLTFParser {
 
             return _each( json.skins, function ( skin ) {
 
-                var bindShapeMatrix = new Matrix4();
+                var bindShapeMatrix = new THREE.Matrix4();
 
                 if ( skin.bindShapeMatrix !== undefined ) bindShapeMatrix.fromArray( skin.bindShapeMatrix );
 
@@ -1909,19 +1812,19 @@ class GLTFParser {
                             node.matrixAutoUpdate = true;
 
                             var TypedKeyframeTrack = PATH_PROPERTIES[ target.path ] === PATH_PROPERTIES.rotation
-                                ? QuaternionKeyframeTrack
-                                : VectorKeyframeTrack;
+                                ? THREE.QuaternionKeyframeTrack
+                                : THREE.VectorKeyframeTrack;
 
                             var targetName = node.name ? node.name : node.uuid;
-                            var interpolation = sampler.interpolation !== undefined ? INTERPOLATION[ sampler.interpolation ] : InterpolateLinear;
+                            var interpolation = sampler.interpolation !== undefined ? INTERPOLATION[ sampler.interpolation ] : THREE.InterpolateLinear;
 
                             // KeyframeTrack.optimize() will modify given 'times' and 'values'
                             // buffers before creating a truncated copy to keep. Because buffers may
                             // be reused by other tracks, make copies here.
                             tracks.push( new TypedKeyframeTrack(
                                 targetName + '.' + PATH_PROPERTIES[ target.path ],
-                                AnimationUtils.arraySlice( inputAccessor.array, 0 ),
-                                AnimationUtils.arraySlice( outputAccessor.array, 0 ),
+                                THREE.AnimationUtils.arraySlice( inputAccessor.array, 0 ),
+                                THREE.AnimationUtils.arraySlice( outputAccessor.array, 0 ),
                                 interpolation
                             ) );
 
@@ -1933,7 +1836,7 @@ class GLTFParser {
 
                 var name = animation.name !== undefined ? animation.name : "animation_" + animationId;
 
-                return new AnimationClip( name, undefined, tracks );
+                return new THREE.AnimationClip( name, undefined, tracks );
 
             } );
 
@@ -1949,19 +1852,19 @@ class GLTFParser {
 
         return _each( json.nodes, function ( node ) {
 
-            var matrix = new Matrix4();
+            var matrix = new THREE.Matrix4();
 
             var _node;
 
             if ( node.jointName ) {
 
-                _node = new Bone();
+                _node = new THREE.Bone();
                 _node.name = node.name !== undefined ? node.name : node.jointName;
                 _node.jointName = node.jointName;
 
             } else {
 
-                _node = new Object3D();
+                _node = new THREE.Object3D();
                 if ( node.name !== undefined ) _node.name = node.name;
 
             }
@@ -2051,19 +1954,19 @@ class GLTFParser {
                                 switch ( child.type ) {
 
                                     case 'LineSegments':
-                                        child = new LineSegments( originalGeometry, material );
+                                        child = new THREE.LineSegments( originalGeometry, material );
                                         break;
 
                                     case 'LineLoop':
-                                        child = new LineLoop( originalGeometry, material );
+                                        child = new THREE.LineLoop( originalGeometry, material );
                                         break;
 
                                     case 'Line':
-                                        child = new Line( originalGeometry, material );
+                                        child = new THREE.Line( originalGeometry, material );
                                         break;
 
                                     default:
-                                        child = new Mesh( originalGeometry, material );
+                                        child = new THREE.Mesh( originalGeometry, material );
 
                                 }
 
@@ -2102,7 +2005,7 @@ class GLTFParser {
                                     var material = originalMaterial;
                                     material.skinning = true;
 
-                                    child = new SkinnedMesh( geometry, material );
+                                    child = new THREE.SkinnedMesh( geometry, material );
                                     child.castShadow = true;
                                     child.userData = originalUserData;
                                     child.name = originalName;
@@ -2120,7 +2023,7 @@ class GLTFParser {
                                             bones.push( jointNode );
 
                                             var m = skinEntry.inverseBindMatrices.array;
-                                            var mat = new Matrix4().fromArray( m, i * 16 );
+                                            var mat = new THREE.Matrix4().fromArray( m, i * 16 );
                                             boneInverses.push( mat );
 
                                         } else {
@@ -2131,7 +2034,7 @@ class GLTFParser {
 
                                     }
 
-                                    child.bind( new Skeleton( bones, boneInverses ), skinEntry.bindShapeMatrix );
+                                    child.bind( new THREE.Skeleton( bones, boneInverses ), skinEntry.bindShapeMatrix );
 
                                     var buildBoneGraph = function ( parentJson, parentObject, property ) {
 
@@ -2233,7 +2136,7 @@ class GLTFParser {
 
             return _each( json.scenes, function ( scene ) {
 
-                var _scene = new Scene();
+                var _scene = new THREE.Scene();
                 if ( scene.name !== undefined ) _scene.name = scene.name;
 
                 if ( scene.extras ) _scene.userData = scene.extras;
