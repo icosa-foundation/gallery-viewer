@@ -24,7 +24,6 @@ import {PLYLoader} from 'three/examples/jsm/loaders/PLYLoader.js';
 import {STLLoader} from 'three/examples/jsm/loaders/STLLoader.js';
 import {USDZLoader} from 'three/examples/jsm/loaders/USDZLoader.js';
 import {VOXLoader, VOXMesh} from 'three/examples/jsm/loaders/VOXLoader.js';
-import { SplatMesh } from '@sparkjsdev/spark';
 import { XRButton } from './IcosaXRButton.js';
 import { GLTFGoogleTiltBrushTechniquesExtension } from 'three-icosa';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
@@ -2193,18 +2192,53 @@ export class Viewer {
         }
     }
 
+    private async loadSparkModule() {
+        try {
+            // Construct module name at runtime to avoid bundler processing
+            const moduleName = '@sparkjsdev' + '/' + 'spark';
+            const sparkModule = await import(/* webpackIgnore: true */ moduleName);
+            
+            if (!sparkModule.SplatMesh) {
+                throw new Error("SplatMesh not found in Spark module exports");
+            }
+            
+            return sparkModule.SplatMesh;
+        } catch (error) {
+            throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error.message}`);
+        }
+    }
+
     public async loadSplat(url: string, overrides : any) {
         try {
+            // Dynamic import for optional Spark dependency
+            let SplatMesh;
+            try {
+                SplatMesh = await this.loadSparkModule();
+            } catch (importError) {
+                console.error(importError.message);
+                this.showErrorIcon();
+                this.loadingError = true;
+                return;
+            }
+
             const splatModel = new SplatMesh({ url });
             await splatModel.initialized;
+            
             this.loadedModel = splatModel;
             this.setupSketchMetaData(splatModel);
             this.modelBoundingBox = splatModel.getBoundingBox(false);
+            this.scene.add(this.loadedModel);
             this.initializeScene(overrides);
             this.frameScene();
+            
+            // Manually trigger loading screen fade-out since SplatMesh doesn't use LoadingManager
+            let loadscreen = document.getElementById('loadscreen');
+            if (loadscreen && !loadscreen.classList.contains('loaderror')) {
+                loadscreen.classList.add('fade-out');
+            }
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading Splat model");
+            console.error("Error loading Splat model:", error);
             this.loadingError = true;
         }
     }

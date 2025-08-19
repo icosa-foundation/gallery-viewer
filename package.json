@@ -27,7 +27,8 @@
       "includeNodeModules": {
         "three": false,
         "three-tiltloader": false,
-        "three-icosa": false
+        "three-icosa": false,
+        "@sparkjsdev/spark": false
       }
     }
   },
@@ -45,14 +46,19 @@
   },
   "dependencies": {
     "@depasquale/three-immersive-controls": "^0.0.15",
-    "@sparkjsdev/spark": "^0.1.8",
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
     "three-icosa": "^0.4.2-alpha.18",
     "three-tiltloader": "^0.4.2-alpha.4"
   },
   "peerDependencies": {
-    "three": ">=0.165 <0.166.0"
+    "three": ">=0.165 <0.166.0",
+    "@sparkjsdev/spark": "^0.1.8"
+  },
+  "peerDependenciesMeta": {
+    "@sparkjsdev/spark": {
+      "optional": true
+    }
   },
   "files": [
     "dist",

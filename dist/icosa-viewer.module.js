@@ -1,16 +1,16 @@
-import * as $5fn1n$three from "three";
-import {DRACOLoader as $5fn1n$DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader.js";
-import {GLTFLoader as $5fn1n$GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
-import {OBJLoader as $5fn1n$OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
-import {MTLLoader as $5fn1n$MTLLoader} from "three/examples/jsm/loaders/MTLLoader.js";
-import {FBXLoader as $5fn1n$FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js";
-import {PLYLoader as $5fn1n$PLYLoader} from "three/examples/jsm/loaders/PLYLoader.js";
-import {STLLoader as $5fn1n$STLLoader} from "three/examples/jsm/loaders/STLLoader.js";
-import {USDZLoader as $5fn1n$USDZLoader} from "three/examples/jsm/loaders/USDZLoader.js";
-import {VOXLoader as $5fn1n$VOXLoader, VOXMesh as $5fn1n$VOXMesh} from "three/examples/jsm/loaders/VOXLoader.js";
-import {GLTFGoogleTiltBrushMaterialExtension as $5fn1n$GLTFGoogleTiltBrushMaterialExtension, TiltShaderLoader as $5fn1n$TiltShaderLoader} from "three-icosa";
-import {TiltLoader as $5fn1n$TiltLoader} from "three-tiltloader";
-import {XRControllerModelFactory as $5fn1n$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
+import * as $hBQxr$three from "three";
+import {DRACOLoader as $hBQxr$DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader.js";
+import {GLTFLoader as $hBQxr$GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
+import {OBJLoader as $hBQxr$OBJLoader} from "three/examples/jsm/loaders/OBJLoader.js";
+import {MTLLoader as $hBQxr$MTLLoader} from "three/examples/jsm/loaders/MTLLoader.js";
+import {FBXLoader as $hBQxr$FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js";
+import {PLYLoader as $hBQxr$PLYLoader} from "three/examples/jsm/loaders/PLYLoader.js";
+import {STLLoader as $hBQxr$STLLoader} from "three/examples/jsm/loaders/STLLoader.js";
+import {USDZLoader as $hBQxr$USDZLoader} from "three/examples/jsm/loaders/USDZLoader.js";
+import {VOXLoader as $hBQxr$VOXLoader, VOXMesh as $hBQxr$VOXMesh} from "three/examples/jsm/loaders/VOXLoader.js";
+import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension, TiltShaderLoader as $hBQxr$TiltShaderLoader} from "three-icosa";
+import {TiltLoader as $hBQxr$TiltLoader} from "three-tiltloader";
+import {XRControllerModelFactory as $hBQxr$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
 
 // Copyright 2021-2022 Icosa Gallery
 //
@@ -31,12 +31,12 @@ import {XRControllerModelFactory as $5fn1n$XRControllerModelFactory} from "three
  * (c) 2017 @yomotsu
  * Released under the MIT License.
  */ // see https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/buttons#value
-const $d882b6cfe45cb358$var$MOUSE_BUTTON = {
+const $e1f901905a002d12$var$MOUSE_BUTTON = {
     LEFT: 1,
     RIGHT: 2,
     MIDDLE: 4
 };
-const $d882b6cfe45cb358$var$ACTION = Object.freeze({
+const $e1f901905a002d12$var$ACTION = Object.freeze({
     NONE: 0,
     ROTATE: 1,
     TRUCK: 2,
@@ -59,45 +59,45 @@ const $d882b6cfe45cb358$var$ACTION = Object.freeze({
     TOUCH_ZOOM_SCREEN_PAN: 262144,
     TOUCH_ZOOM_ROTATE: 524288
 });
-const $d882b6cfe45cb358$var$DOLLY_DIRECTION = {
+const $e1f901905a002d12$var$DOLLY_DIRECTION = {
     NONE: 0,
     IN: 1,
     OUT: -1
 };
-function $d882b6cfe45cb358$var$isPerspectiveCamera(camera) {
+function $e1f901905a002d12$var$isPerspectiveCamera(camera) {
     return camera.isPerspectiveCamera;
 }
-function $d882b6cfe45cb358$var$isOrthographicCamera(camera) {
+function $e1f901905a002d12$var$isOrthographicCamera(camera) {
     return camera.isOrthographicCamera;
 }
-const $d882b6cfe45cb358$var$PI_2 = Math.PI * 2;
-const $d882b6cfe45cb358$var$PI_HALF = Math.PI / 2;
-const $d882b6cfe45cb358$var$EPSILON = 1e-5;
-const $d882b6cfe45cb358$var$DEG2RAD = Math.PI / 180;
-function $d882b6cfe45cb358$var$clamp(value, min, max) {
+const $e1f901905a002d12$var$PI_2 = Math.PI * 2;
+const $e1f901905a002d12$var$PI_HALF = Math.PI / 2;
+const $e1f901905a002d12$var$EPSILON = 1e-5;
+const $e1f901905a002d12$var$DEG2RAD = Math.PI / 180;
+function $e1f901905a002d12$var$clamp(value, min, max) {
     return Math.max(min, Math.min(max, value));
 }
-function $d882b6cfe45cb358$var$approxZero(number, error = $d882b6cfe45cb358$var$EPSILON) {
+function $e1f901905a002d12$var$approxZero(number, error = $e1f901905a002d12$var$EPSILON) {
     return Math.abs(number) < error;
 }
-function $d882b6cfe45cb358$var$approxEquals(a, b, error = $d882b6cfe45cb358$var$EPSILON) {
-    return $d882b6cfe45cb358$var$approxZero(a - b, error);
+function $e1f901905a002d12$var$approxEquals(a, b, error = $e1f901905a002d12$var$EPSILON) {
+    return $e1f901905a002d12$var$approxZero(a - b, error);
 }
-function $d882b6cfe45cb358$var$roundToStep(value, step) {
+function $e1f901905a002d12$var$roundToStep(value, step) {
     return Math.round(value / step) * step;
 }
-function $d882b6cfe45cb358$var$infinityToMaxNumber(value) {
+function $e1f901905a002d12$var$infinityToMaxNumber(value) {
     if (isFinite(value)) return value;
     if (value < 0) return -Number.MAX_VALUE;
     return Number.MAX_VALUE;
 }
-function $d882b6cfe45cb358$var$maxNumberToInfinity(value) {
+function $e1f901905a002d12$var$maxNumberToInfinity(value) {
     if (Math.abs(value) < Number.MAX_VALUE) return value;
     return value * Infinity;
 }
 // https://docs.unity3d.com/ScriptReference/Mathf.SmoothDamp.html
 // https://github.com/Unity-Technologies/UnityCsReference/blob/a2bdfe9b3c4cd4476f44bf52f848063bfaf7b6b9/Runtime/Export/Math/Mathf.cs#L308
-function $d882b6cfe45cb358$var$smoothDamp(current, target, currentVelocityRef, smoothTime, maxSpeed = Infinity, deltaTime) {
+function $e1f901905a002d12$var$smoothDamp(current, target, currentVelocityRef, smoothTime, maxSpeed = Infinity, deltaTime) {
     // Based on Game Programming Gems 4 Chapter 1.10
     smoothTime = Math.max(0.0001, smoothTime);
     const omega = 2 / smoothTime;
@@ -107,7 +107,7 @@ function $d882b6cfe45cb358$var$smoothDamp(current, target, currentVelocityRef, s
     const originalTo = target;
     // Clamp maximum speed
     const maxChange = maxSpeed * smoothTime;
-    change = $d882b6cfe45cb358$var$clamp(change, -maxChange, maxChange);
+    change = $e1f901905a002d12$var$clamp(change, -maxChange, maxChange);
     target = current - change;
     const temp = (currentVelocityRef.value + omega * change) * deltaTime;
     currentVelocityRef.value = (currentVelocityRef.value - omega * temp) * exp;
@@ -121,7 +121,7 @@ function $d882b6cfe45cb358$var$smoothDamp(current, target, currentVelocityRef, s
 }
 // https://docs.unity3d.com/ScriptReference/Vector3.SmoothDamp.html
 // https://github.com/Unity-Technologies/UnityCsReference/blob/a2bdfe9b3c4cd4476f44bf52f848063bfaf7b6b9/Runtime/Export/Math/Vector3.cs#L97
-function $d882b6cfe45cb358$var$smoothDampVec3(current, target, currentVelocityRef, smoothTime, maxSpeed = Infinity, deltaTime, out) {
+function $e1f901905a002d12$var$smoothDampVec3(current, target, currentVelocityRef, smoothTime, maxSpeed = Infinity, deltaTime, out) {
     // Based on Game Programming Gems 4 Chapter 1.10
     smoothTime = Math.max(0.0001, smoothTime);
     const omega = 2 / smoothTime;
@@ -175,7 +175,7 @@ function $d882b6cfe45cb358$var$smoothDampVec3(current, target, currentVelocityRe
     }
     return out;
 }
-function $d882b6cfe45cb358$var$extractClientCoordFromEvent(pointers, out) {
+function $e1f901905a002d12$var$extractClientCoordFromEvent(pointers, out) {
     out.set(0, 0);
     pointers.forEach((pointer)=>{
         out.x += pointer.clientX;
@@ -184,14 +184,14 @@ function $d882b6cfe45cb358$var$extractClientCoordFromEvent(pointers, out) {
     out.x /= pointers.length;
     out.y /= pointers.length;
 }
-function $d882b6cfe45cb358$var$notSupportedInOrthographicCamera(camera, message) {
-    if ($d882b6cfe45cb358$var$isOrthographicCamera(camera)) {
+function $e1f901905a002d12$var$notSupportedInOrthographicCamera(camera, message) {
+    if ($e1f901905a002d12$var$isOrthographicCamera(camera)) {
         console.warn(`${message} is not supported in OrthographicCamera`);
         return true;
     }
     return false;
 }
-class $d882b6cfe45cb358$export$ec8b666c5fe2c75a {
+class $e1f901905a002d12$export$ec8b666c5fe2c75a {
     constructor(){
         this._listeners = {};
     }
@@ -252,34 +252,34 @@ class $d882b6cfe45cb358$export$ec8b666c5fe2c75a {
         }
     }
 }
-var $d882b6cfe45cb358$var$_a;
-const $d882b6cfe45cb358$var$VERSION = '2.10.1'; // will be replaced with `version` in package.json during the build process.
-const $d882b6cfe45cb358$var$TOUCH_DOLLY_FACTOR = 1 / 8;
-const $d882b6cfe45cb358$var$isMac = /Mac/.test(($d882b6cfe45cb358$var$_a = globalThis === null || globalThis === void 0 ? void 0 : globalThis.navigator) === null || $d882b6cfe45cb358$var$_a === void 0 ? void 0 : $d882b6cfe45cb358$var$_a.platform);
-let $d882b6cfe45cb358$var$THREE;
-let $d882b6cfe45cb358$var$_ORIGIN;
-let $d882b6cfe45cb358$var$_AXIS_Y;
-let $d882b6cfe45cb358$var$_AXIS_Z;
-let $d882b6cfe45cb358$var$_v2;
-let $d882b6cfe45cb358$var$_v3A;
-let $d882b6cfe45cb358$var$_v3B;
-let $d882b6cfe45cb358$var$_v3C;
-let $d882b6cfe45cb358$var$_cameraDirection;
-let $d882b6cfe45cb358$var$_xColumn;
-let $d882b6cfe45cb358$var$_yColumn;
-let $d882b6cfe45cb358$var$_zColumn;
-let $d882b6cfe45cb358$var$_deltaTarget;
-let $d882b6cfe45cb358$var$_deltaOffset;
-let $d882b6cfe45cb358$var$_sphericalA;
-let $d882b6cfe45cb358$var$_sphericalB;
-let $d882b6cfe45cb358$var$_box3A;
-let $d882b6cfe45cb358$var$_box3B;
-let $d882b6cfe45cb358$var$_sphere;
-let $d882b6cfe45cb358$var$_quaternionA;
-let $d882b6cfe45cb358$var$_quaternionB;
-let $d882b6cfe45cb358$var$_rotationMatrix;
-let $d882b6cfe45cb358$var$_raycaster;
-class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$ec8b666c5fe2c75a {
+var $e1f901905a002d12$var$_a;
+const $e1f901905a002d12$var$VERSION = '2.10.1'; // will be replaced with `version` in package.json during the build process.
+const $e1f901905a002d12$var$TOUCH_DOLLY_FACTOR = 1 / 8;
+const $e1f901905a002d12$var$isMac = /Mac/.test(($e1f901905a002d12$var$_a = globalThis === null || globalThis === void 0 ? void 0 : globalThis.navigator) === null || $e1f901905a002d12$var$_a === void 0 ? void 0 : $e1f901905a002d12$var$_a.platform);
+let $e1f901905a002d12$var$THREE;
+let $e1f901905a002d12$var$_ORIGIN;
+let $e1f901905a002d12$var$_AXIS_Y;
+let $e1f901905a002d12$var$_AXIS_Z;
+let $e1f901905a002d12$var$_v2;
+let $e1f901905a002d12$var$_v3A;
+let $e1f901905a002d12$var$_v3B;
+let $e1f901905a002d12$var$_v3C;
+let $e1f901905a002d12$var$_cameraDirection;
+let $e1f901905a002d12$var$_xColumn;
+let $e1f901905a002d12$var$_yColumn;
+let $e1f901905a002d12$var$_zColumn;
+let $e1f901905a002d12$var$_deltaTarget;
+let $e1f901905a002d12$var$_deltaOffset;
+let $e1f901905a002d12$var$_sphericalA;
+let $e1f901905a002d12$var$_sphericalB;
+let $e1f901905a002d12$var$_box3A;
+let $e1f901905a002d12$var$_box3B;
+let $e1f901905a002d12$var$_sphere;
+let $e1f901905a002d12$var$_quaternionA;
+let $e1f901905a002d12$var$_quaternionB;
+let $e1f901905a002d12$var$_rotationMatrix;
+let $e1f901905a002d12$var$_raycaster;
+class $e1f901905a002d12$export$2e2bcd8739ae039 extends $e1f901905a002d12$export$ec8b666c5fe2c75a {
     /**
      * Injects THREE as the dependency. You can then proceed to use CameraControls.
      *
@@ -320,35 +320,35 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * ```
      * @category Statics
      */ static install(libs) {
-        $d882b6cfe45cb358$var$THREE = libs.THREE;
-        $d882b6cfe45cb358$var$_ORIGIN = Object.freeze(new $d882b6cfe45cb358$var$THREE.Vector3(0, 0, 0));
-        $d882b6cfe45cb358$var$_AXIS_Y = Object.freeze(new $d882b6cfe45cb358$var$THREE.Vector3(0, 1, 0));
-        $d882b6cfe45cb358$var$_AXIS_Z = Object.freeze(new $d882b6cfe45cb358$var$THREE.Vector3(0, 0, 1));
-        $d882b6cfe45cb358$var$_v2 = new $d882b6cfe45cb358$var$THREE.Vector2();
-        $d882b6cfe45cb358$var$_v3A = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_v3B = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_v3C = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_cameraDirection = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_xColumn = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_yColumn = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_zColumn = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_deltaTarget = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_deltaOffset = new $d882b6cfe45cb358$var$THREE.Vector3();
-        $d882b6cfe45cb358$var$_sphericalA = new $d882b6cfe45cb358$var$THREE.Spherical();
-        $d882b6cfe45cb358$var$_sphericalB = new $d882b6cfe45cb358$var$THREE.Spherical();
-        $d882b6cfe45cb358$var$_box3A = new $d882b6cfe45cb358$var$THREE.Box3();
-        $d882b6cfe45cb358$var$_box3B = new $d882b6cfe45cb358$var$THREE.Box3();
-        $d882b6cfe45cb358$var$_sphere = new $d882b6cfe45cb358$var$THREE.Sphere();
-        $d882b6cfe45cb358$var$_quaternionA = new $d882b6cfe45cb358$var$THREE.Quaternion();
-        $d882b6cfe45cb358$var$_quaternionB = new $d882b6cfe45cb358$var$THREE.Quaternion();
-        $d882b6cfe45cb358$var$_rotationMatrix = new $d882b6cfe45cb358$var$THREE.Matrix4();
-        $d882b6cfe45cb358$var$_raycaster = new $d882b6cfe45cb358$var$THREE.Raycaster();
+        $e1f901905a002d12$var$THREE = libs.THREE;
+        $e1f901905a002d12$var$_ORIGIN = Object.freeze(new $e1f901905a002d12$var$THREE.Vector3(0, 0, 0));
+        $e1f901905a002d12$var$_AXIS_Y = Object.freeze(new $e1f901905a002d12$var$THREE.Vector3(0, 1, 0));
+        $e1f901905a002d12$var$_AXIS_Z = Object.freeze(new $e1f901905a002d12$var$THREE.Vector3(0, 0, 1));
+        $e1f901905a002d12$var$_v2 = new $e1f901905a002d12$var$THREE.Vector2();
+        $e1f901905a002d12$var$_v3A = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_v3B = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_v3C = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_cameraDirection = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_xColumn = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_yColumn = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_zColumn = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_deltaTarget = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_deltaOffset = new $e1f901905a002d12$var$THREE.Vector3();
+        $e1f901905a002d12$var$_sphericalA = new $e1f901905a002d12$var$THREE.Spherical();
+        $e1f901905a002d12$var$_sphericalB = new $e1f901905a002d12$var$THREE.Spherical();
+        $e1f901905a002d12$var$_box3A = new $e1f901905a002d12$var$THREE.Box3();
+        $e1f901905a002d12$var$_box3B = new $e1f901905a002d12$var$THREE.Box3();
+        $e1f901905a002d12$var$_sphere = new $e1f901905a002d12$var$THREE.Sphere();
+        $e1f901905a002d12$var$_quaternionA = new $e1f901905a002d12$var$THREE.Quaternion();
+        $e1f901905a002d12$var$_quaternionB = new $e1f901905a002d12$var$THREE.Quaternion();
+        $e1f901905a002d12$var$_rotationMatrix = new $e1f901905a002d12$var$THREE.Matrix4();
+        $e1f901905a002d12$var$_raycaster = new $e1f901905a002d12$var$THREE.Raycaster();
     }
     /**
      * list all ACTIONs
      * @category Statics
      */ static get ACTION() {
-        return $d882b6cfe45cb358$var$ACTION;
+        return $e1f901905a002d12$var$ACTION;
     }
     /**
      * @deprecated Use `cameraControls.mouseButtons.left = CameraControls.ACTION.SCREEN_PAN` instead.
@@ -499,7 +499,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
          */ // cancel will be overwritten in the constructor.
         this.cancel = ()=>{};
         this._enabled = true;
-        this._state = $d882b6cfe45cb358$var$ACTION.NONE;
+        this._state = $e1f901905a002d12$var$ACTION.NONE;
         this._viewport = null;
         this._changedDolly = 0;
         this._changedZoom = 0;
@@ -521,7 +521,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         this._isUserControllingTruck = false;
         this._isUserControllingOffset = false;
         this._isUserControllingZoom = false;
-        this._lastDollyDirection = $d882b6cfe45cb358$var$DOLLY_DIRECTION.NONE;
+        this._lastDollyDirection = $e1f901905a002d12$var$DOLLY_DIRECTION.NONE;
         // velocities for smoothDamp
         this._thetaVelocity = {
             value: 0
@@ -532,22 +532,22 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         this._radiusVelocity = {
             value: 0
         };
-        this._targetVelocity = new $d882b6cfe45cb358$var$THREE.Vector3();
-        this._focalOffsetVelocity = new $d882b6cfe45cb358$var$THREE.Vector3();
+        this._targetVelocity = new $e1f901905a002d12$var$THREE.Vector3();
+        this._focalOffsetVelocity = new $e1f901905a002d12$var$THREE.Vector3();
         this._zoomVelocity = {
             value: 0
         };
         this._truckInternal = (deltaX, deltaY, dragToOffset, screenSpacePanning)=>{
             let truckX;
             let pedestalY;
-            if ($d882b6cfe45cb358$var$isPerspectiveCamera(this._camera)) {
-                const offset = $d882b6cfe45cb358$var$_v3A.copy(this._camera.position).sub(this._target);
+            if ($e1f901905a002d12$var$isPerspectiveCamera(this._camera)) {
+                const offset = $e1f901905a002d12$var$_v3A.copy(this._camera.position).sub(this._target);
                 // half of the fov is center to top of screen
-                const fov = this._camera.getEffectiveFOV() * $d882b6cfe45cb358$var$DEG2RAD;
+                const fov = this._camera.getEffectiveFOV() * $e1f901905a002d12$var$DEG2RAD;
                 const targetDistance = offset.length() * Math.tan(fov * 0.5);
                 truckX = this.truckSpeed * deltaX * targetDistance / this._elementRect.height;
                 pedestalY = this.truckSpeed * deltaY * targetDistance / this._elementRect.height;
-            } else if ($d882b6cfe45cb358$var$isOrthographicCamera(this._camera)) {
+            } else if ($e1f901905a002d12$var$isOrthographicCamera(this._camera)) {
                 const camera = this._camera;
                 truckX = this.truckSpeed * deltaX * (camera.right - camera.left) / camera.zoom / this._elementRect.width;
                 pedestalY = this.truckSpeed * deltaY * (camera.top - camera.bottom) / camera.zoom / this._elementRect.height;
@@ -558,15 +558,15 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             } else dragToOffset ? this.setFocalOffset(this._focalOffsetEnd.x + truckX, this._focalOffsetEnd.y + pedestalY, this._focalOffsetEnd.z, true) : this.truck(truckX, pedestalY, true);
         };
         this._rotateInternal = (deltaX, deltaY)=>{
-            const theta = $d882b6cfe45cb358$var$PI_2 * this.azimuthRotateSpeed * deltaX / this._elementRect.height; // divide by *height* to refer the resolution
-            const phi = $d882b6cfe45cb358$var$PI_2 * this.polarRotateSpeed * deltaY / this._elementRect.height;
+            const theta = $e1f901905a002d12$var$PI_2 * this.azimuthRotateSpeed * deltaX / this._elementRect.height; // divide by *height* to refer the resolution
+            const phi = $e1f901905a002d12$var$PI_2 * this.polarRotateSpeed * deltaY / this._elementRect.height;
             this.rotate(theta, phi, true);
         };
         this._dollyInternal = (delta, x, y)=>{
             const dollyScale = Math.pow(0.95, -delta * this.dollySpeed);
             const lastDistance = this._sphericalEnd.radius;
             const distance = this._sphericalEnd.radius * dollyScale;
-            const clampedDistance = $d882b6cfe45cb358$var$clamp(distance, this.minDistance, this.maxDistance);
+            const clampedDistance = $e1f901905a002d12$var$clamp(distance, this.minDistance, this.maxDistance);
             const overflowedDistance = clampedDistance - distance;
             if (this.infinityDolly && this.dollyToCursor) this._dollyToNoClamp(distance, true);
             else if (this.infinityDolly && !this.dollyToCursor) {
@@ -591,18 +591,18 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             }
         };
         // Check if the user has installed THREE
-        if (typeof $d882b6cfe45cb358$var$THREE === 'undefined') console.error('camera-controls: `THREE` is undefined. You must first run `CameraControls.install( { THREE: THREE } )`. Check the docs for further information.');
+        if (typeof $e1f901905a002d12$var$THREE === 'undefined') console.error('camera-controls: `THREE` is undefined. You must first run `CameraControls.install( { THREE: THREE } )`. Check the docs for further information.');
         this._camera = camera;
-        this._yAxisUpSpace = new $d882b6cfe45cb358$var$THREE.Quaternion().setFromUnitVectors(this._camera.up, $d882b6cfe45cb358$var$_AXIS_Y);
+        this._yAxisUpSpace = new $e1f901905a002d12$var$THREE.Quaternion().setFromUnitVectors(this._camera.up, $e1f901905a002d12$var$_AXIS_Y);
         this._yAxisUpSpaceInverse = this._yAxisUpSpace.clone().invert();
-        this._state = $d882b6cfe45cb358$var$ACTION.NONE;
+        this._state = $e1f901905a002d12$var$ACTION.NONE;
         // the location
-        this._target = new $d882b6cfe45cb358$var$THREE.Vector3();
+        this._target = new $e1f901905a002d12$var$THREE.Vector3();
         this._targetEnd = this._target.clone();
-        this._focalOffset = new $d882b6cfe45cb358$var$THREE.Vector3();
+        this._focalOffset = new $e1f901905a002d12$var$THREE.Vector3();
         this._focalOffsetEnd = this._focalOffset.clone();
         // rotation
-        this._spherical = new $d882b6cfe45cb358$var$THREE.Spherical().setFromVector3($d882b6cfe45cb358$var$_v3A.copy(this._camera.position).applyQuaternion(this._yAxisUpSpace));
+        this._spherical = new $e1f901905a002d12$var$THREE.Spherical().setFromVector3($e1f901905a002d12$var$_v3A.copy(this._camera.position).applyQuaternion(this._yAxisUpSpace));
         this._sphericalEnd = this._spherical.clone();
         this._lastDistance = this._spherical.radius;
         this._zoom = this._camera.zoom;
@@ -610,36 +610,36 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         this._lastZoom = this._zoom;
         // collisionTest uses nearPlane.s
         this._nearPlaneCorners = [
-            new $d882b6cfe45cb358$var$THREE.Vector3(),
-            new $d882b6cfe45cb358$var$THREE.Vector3(),
-            new $d882b6cfe45cb358$var$THREE.Vector3(),
-            new $d882b6cfe45cb358$var$THREE.Vector3()
+            new $e1f901905a002d12$var$THREE.Vector3(),
+            new $e1f901905a002d12$var$THREE.Vector3(),
+            new $e1f901905a002d12$var$THREE.Vector3(),
+            new $e1f901905a002d12$var$THREE.Vector3()
         ];
         this._updateNearPlaneCorners();
         // Target cannot move outside of this box
-        this._boundary = new $d882b6cfe45cb358$var$THREE.Box3(new $d882b6cfe45cb358$var$THREE.Vector3(-Infinity, -Infinity, -Infinity), new $d882b6cfe45cb358$var$THREE.Vector3(Infinity, Infinity, Infinity));
+        this._boundary = new $e1f901905a002d12$var$THREE.Box3(new $e1f901905a002d12$var$THREE.Vector3(-Infinity, -Infinity, -Infinity), new $e1f901905a002d12$var$THREE.Vector3(Infinity, Infinity, Infinity));
         // reset
         this._cameraUp0 = this._camera.up.clone();
         this._target0 = this._target.clone();
         this._position0 = this._camera.position.clone();
         this._zoom0 = this._zoom;
         this._focalOffset0 = this._focalOffset.clone();
-        this._dollyControlCoord = new $d882b6cfe45cb358$var$THREE.Vector2();
+        this._dollyControlCoord = new $e1f901905a002d12$var$THREE.Vector2();
         // configs
         this.mouseButtons = {
-            left: $d882b6cfe45cb358$var$ACTION.ROTATE,
-            middle: $d882b6cfe45cb358$var$ACTION.DOLLY,
-            right: $d882b6cfe45cb358$var$ACTION.TRUCK,
-            wheel: $d882b6cfe45cb358$var$isPerspectiveCamera(this._camera) ? $d882b6cfe45cb358$var$ACTION.DOLLY : $d882b6cfe45cb358$var$isOrthographicCamera(this._camera) ? $d882b6cfe45cb358$var$ACTION.ZOOM : $d882b6cfe45cb358$var$ACTION.NONE
+            left: $e1f901905a002d12$var$ACTION.ROTATE,
+            middle: $e1f901905a002d12$var$ACTION.DOLLY,
+            right: $e1f901905a002d12$var$ACTION.TRUCK,
+            wheel: $e1f901905a002d12$var$isPerspectiveCamera(this._camera) ? $e1f901905a002d12$var$ACTION.DOLLY : $e1f901905a002d12$var$isOrthographicCamera(this._camera) ? $e1f901905a002d12$var$ACTION.ZOOM : $e1f901905a002d12$var$ACTION.NONE
         };
         this.touches = {
-            one: $d882b6cfe45cb358$var$ACTION.TOUCH_ROTATE,
-            two: $d882b6cfe45cb358$var$isPerspectiveCamera(this._camera) ? $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK : $d882b6cfe45cb358$var$isOrthographicCamera(this._camera) ? $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK : $d882b6cfe45cb358$var$ACTION.NONE,
-            three: $d882b6cfe45cb358$var$ACTION.TOUCH_TRUCK
+            one: $e1f901905a002d12$var$ACTION.TOUCH_ROTATE,
+            two: $e1f901905a002d12$var$isPerspectiveCamera(this._camera) ? $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK : $e1f901905a002d12$var$isOrthographicCamera(this._camera) ? $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK : $e1f901905a002d12$var$ACTION.NONE,
+            three: $e1f901905a002d12$var$ACTION.TOUCH_TRUCK
         };
-        const dragStartPosition = new $d882b6cfe45cb358$var$THREE.Vector2();
-        const lastDragPosition = new $d882b6cfe45cb358$var$THREE.Vector2();
-        const dollyStart = new $d882b6cfe45cb358$var$THREE.Vector2();
+        const dragStartPosition = new $e1f901905a002d12$var$THREE.Vector2();
+        const lastDragPosition = new $e1f901905a002d12$var$THREE.Vector2();
+        const dollyStart = new $e1f901905a002d12$var$THREE.Vector2();
         const onPointerDown = (event)=>{
             if (!this._enabled || !this._domElement) return;
             if (this._interactiveArea.left !== 0 || this._interactiveArea.top !== 0 || this._interactiveArea.width !== 1 || this._interactiveArea.height !== 1) {
@@ -652,12 +652,12 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             // Don't call `event.preventDefault()` on the pointerdown event
             // to keep receiving pointermove evens outside dragging iframe
             // https://taye.me/blog/tips/2015/11/16/mouse-drag-outside-iframe/
-            const mouseButton = event.pointerType !== 'mouse' ? null : (event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT) === $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT ? $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT : (event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.MIDDLE) === $d882b6cfe45cb358$var$MOUSE_BUTTON.MIDDLE ? $d882b6cfe45cb358$var$MOUSE_BUTTON.MIDDLE : (event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.RIGHT) === $d882b6cfe45cb358$var$MOUSE_BUTTON.RIGHT ? $d882b6cfe45cb358$var$MOUSE_BUTTON.RIGHT : null;
+            const mouseButton = event.pointerType !== 'mouse' ? null : (event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.LEFT) === $e1f901905a002d12$var$MOUSE_BUTTON.LEFT ? $e1f901905a002d12$var$MOUSE_BUTTON.LEFT : (event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.MIDDLE) === $e1f901905a002d12$var$MOUSE_BUTTON.MIDDLE ? $e1f901905a002d12$var$MOUSE_BUTTON.MIDDLE : (event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.RIGHT) === $e1f901905a002d12$var$MOUSE_BUTTON.RIGHT ? $e1f901905a002d12$var$MOUSE_BUTTON.RIGHT : null;
             if (mouseButton !== null) {
                 const zombiePointer = this._findPointerByMouseButton(mouseButton);
                 zombiePointer && this._disposePointer(zombiePointer);
             }
-            if ((event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT) === $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT && this._lockedPointer) return;
+            if ((event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.LEFT) === $e1f901905a002d12$var$MOUSE_BUTTON.LEFT && this._lockedPointer) return;
             const pointer = {
                 pointerId: event.pointerId,
                 clientX: event.clientX,
@@ -701,9 +701,9 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
                     break;
             }
             else {
-                if (!this._isDragging && this._lockedPointer || this._isDragging && (event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT) === $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT) this._state = this._state | this.mouseButtons.left;
-                if (this._isDragging && (event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.MIDDLE) === $d882b6cfe45cb358$var$MOUSE_BUTTON.MIDDLE) this._state = this._state | this.mouseButtons.middle;
-                if (this._isDragging && (event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.RIGHT) === $d882b6cfe45cb358$var$MOUSE_BUTTON.RIGHT) this._state = this._state | this.mouseButtons.right;
+                if (!this._isDragging && this._lockedPointer || this._isDragging && (event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.LEFT) === $e1f901905a002d12$var$MOUSE_BUTTON.LEFT) this._state = this._state | this.mouseButtons.left;
+                if (this._isDragging && (event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.MIDDLE) === $e1f901905a002d12$var$MOUSE_BUTTON.MIDDLE) this._state = this._state | this.mouseButtons.middle;
+                if (this._isDragging && (event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.RIGHT) === $e1f901905a002d12$var$MOUSE_BUTTON.RIGHT) this._state = this._state | this.mouseButtons.right;
             }
             dragging();
         };
@@ -713,7 +713,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             pointer && this._disposePointer(pointer);
             if (event.pointerType === 'touch') switch(this._activePointers.length){
                 case 0:
-                    this._state = $d882b6cfe45cb358$var$ACTION.NONE;
+                    this._state = $e1f901905a002d12$var$ACTION.NONE;
                     break;
                 case 1:
                     this._state = this.touches.one;
@@ -725,13 +725,13 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
                     this._state = this.touches.three;
                     break;
             }
-            else this._state = $d882b6cfe45cb358$var$ACTION.NONE;
+            else this._state = $e1f901905a002d12$var$ACTION.NONE;
             endDragging();
         };
         let lastScrollTimeStamp = -1;
         const onMouseWheel = (event)=>{
             if (!this._domElement) return;
-            if (!this._enabled || this.mouseButtons.wheel === $d882b6cfe45cb358$var$ACTION.NONE) return;
+            if (!this._enabled || this.mouseButtons.wheel === $e1f901905a002d12$var$ACTION.NONE) return;
             if (this._interactiveArea.left !== 0 || this._interactiveArea.top !== 0 || this._interactiveArea.width !== 1 || this._interactiveArea.height !== 1) {
                 const elRect = this._domElement.getBoundingClientRect();
                 const left = event.clientX / elRect.width;
@@ -740,40 +740,40 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
                 if (left < this._interactiveArea.left || left > this._interactiveArea.right || top < this._interactiveArea.top || top > this._interactiveArea.bottom) return;
             }
             event.preventDefault();
-            if (this.dollyToCursor || this.mouseButtons.wheel === $d882b6cfe45cb358$var$ACTION.ROTATE || this.mouseButtons.wheel === $d882b6cfe45cb358$var$ACTION.TRUCK) {
+            if (this.dollyToCursor || this.mouseButtons.wheel === $e1f901905a002d12$var$ACTION.ROTATE || this.mouseButtons.wheel === $e1f901905a002d12$var$ACTION.TRUCK) {
                 const now = performance.now();
                 // only need to fire this at scroll start.
                 if (lastScrollTimeStamp - now < 1000) this._getClientRect(this._elementRect);
                 lastScrollTimeStamp = now;
             }
             // Ref: https://github.com/cedricpinson/osgjs/blob/00e5a7e9d9206c06fdde0436e1d62ab7cb5ce853/sources/osgViewer/input/source/InputSourceMouse.js#L89-L103
-            const deltaYFactor = $d882b6cfe45cb358$var$isMac ? -1 : -3;
+            const deltaYFactor = $e1f901905a002d12$var$isMac ? -1 : -3;
             // Checks event.ctrlKey to detect multi-touch gestures on a trackpad.
             const delta = event.deltaMode === 1 || event.ctrlKey ? event.deltaY / deltaYFactor : event.deltaY / (deltaYFactor * 10);
             const x = this.dollyToCursor ? (event.clientX - this._elementRect.x) / this._elementRect.width * 2 - 1 : 0;
             const y = this.dollyToCursor ? (event.clientY - this._elementRect.y) / this._elementRect.height * -2 + 1 : 0;
             switch(this.mouseButtons.wheel){
-                case $d882b6cfe45cb358$var$ACTION.ROTATE:
+                case $e1f901905a002d12$var$ACTION.ROTATE:
                     this._rotateInternal(event.deltaX, event.deltaY);
                     this._isUserControllingRotate = true;
                     break;
-                case $d882b6cfe45cb358$var$ACTION.TRUCK:
+                case $e1f901905a002d12$var$ACTION.TRUCK:
                     this._truckInternal(event.deltaX, event.deltaY, false, false);
                     this._isUserControllingTruck = true;
                     break;
-                case $d882b6cfe45cb358$var$ACTION.SCREEN_PAN:
+                case $e1f901905a002d12$var$ACTION.SCREEN_PAN:
                     this._truckInternal(event.deltaX, event.deltaY, false, true);
                     this._isUserControllingTruck = true;
                     break;
-                case $d882b6cfe45cb358$var$ACTION.OFFSET:
+                case $e1f901905a002d12$var$ACTION.OFFSET:
                     this._truckInternal(event.deltaX, event.deltaY, true, false);
                     this._isUserControllingOffset = true;
                     break;
-                case $d882b6cfe45cb358$var$ACTION.DOLLY:
+                case $e1f901905a002d12$var$ACTION.DOLLY:
                     this._dollyInternal(-delta, x, y);
                     this._isUserControllingDolly = true;
                     break;
-                case $d882b6cfe45cb358$var$ACTION.ZOOM:
+                case $e1f901905a002d12$var$ACTION.ZOOM:
                     this._zoomInternal(-delta, x, y);
                     this._isUserControllingZoom = true;
                     break;
@@ -786,7 +786,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             if (!this._domElement || !this._enabled) return;
             // contextmenu event is fired right after pointerdown
             // remove attached handlers and active pointer, if interrupted by contextmenu.
-            if (this.mouseButtons.right === $d882b6cfe45cb358$export$2e2bcd8739ae039.ACTION.NONE) {
+            if (this.mouseButtons.right === $e1f901905a002d12$export$2e2bcd8739ae039.ACTION.NONE) {
                 const pointerId = event instanceof PointerEvent ? event.pointerId : 0;
                 const pointer = this._findPointerById(pointerId);
                 pointer && this._disposePointer(pointer);
@@ -801,15 +801,15 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         };
         const startDragging = (event)=>{
             if (!this._enabled) return;
-            $d882b6cfe45cb358$var$extractClientCoordFromEvent(this._activePointers, $d882b6cfe45cb358$var$_v2);
+            $e1f901905a002d12$var$extractClientCoordFromEvent(this._activePointers, $e1f901905a002d12$var$_v2);
             this._getClientRect(this._elementRect);
-            dragStartPosition.copy($d882b6cfe45cb358$var$_v2);
-            lastDragPosition.copy($d882b6cfe45cb358$var$_v2);
+            dragStartPosition.copy($e1f901905a002d12$var$_v2);
+            lastDragPosition.copy($e1f901905a002d12$var$_v2);
             const isMultiTouch = this._activePointers.length >= 2;
             if (isMultiTouch) {
                 // 2 finger pinch
-                const dx = $d882b6cfe45cb358$var$_v2.x - this._activePointers[1].clientX;
-                const dy = $d882b6cfe45cb358$var$_v2.y - this._activePointers[1].clientY;
+                const dx = $e1f901905a002d12$var$_v2.x - this._activePointers[1].clientX;
+                const dy = $e1f901905a002d12$var$_v2.y - this._activePointers[1].clientY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 dollyStart.set(0, distance);
                 // center coords of 2 finger truck
@@ -832,35 +832,35 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
                     break;
             }
             else {
-                if (!this._lockedPointer && (event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT) === $d882b6cfe45cb358$var$MOUSE_BUTTON.LEFT) this._state = this._state | this.mouseButtons.left;
-                if ((event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.MIDDLE) === $d882b6cfe45cb358$var$MOUSE_BUTTON.MIDDLE) this._state = this._state | this.mouseButtons.middle;
-                if ((event.buttons & $d882b6cfe45cb358$var$MOUSE_BUTTON.RIGHT) === $d882b6cfe45cb358$var$MOUSE_BUTTON.RIGHT) this._state = this._state | this.mouseButtons.right;
+                if (!this._lockedPointer && (event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.LEFT) === $e1f901905a002d12$var$MOUSE_BUTTON.LEFT) this._state = this._state | this.mouseButtons.left;
+                if ((event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.MIDDLE) === $e1f901905a002d12$var$MOUSE_BUTTON.MIDDLE) this._state = this._state | this.mouseButtons.middle;
+                if ((event.buttons & $e1f901905a002d12$var$MOUSE_BUTTON.RIGHT) === $e1f901905a002d12$var$MOUSE_BUTTON.RIGHT) this._state = this._state | this.mouseButtons.right;
             }
             // stop current movement on drag start
             // - rotate
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.ROTATE) === $d882b6cfe45cb358$var$ACTION.ROTATE || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_ROTATE || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_ROTATE) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.ROTATE) === $e1f901905a002d12$var$ACTION.ROTATE || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_ROTATE || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_ROTATE) {
                 this._sphericalEnd.theta = this._spherical.theta;
                 this._sphericalEnd.phi = this._spherical.phi;
                 this._thetaVelocity.value = 0;
                 this._phiVelocity.value = 0;
             }
             // - truck and screen-pan
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.TRUCK) === $d882b6cfe45cb358$var$ACTION.TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.TRUCK) === $e1f901905a002d12$var$ACTION.TRUCK || (this._state & $e1f901905a002d12$var$ACTION.SCREEN_PAN) === $e1f901905a002d12$var$ACTION.SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) {
                 this._targetEnd.copy(this._target);
                 this._targetVelocity.set(0, 0, 0);
             }
             // - dolly
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.DOLLY) === $d882b6cfe45cb358$var$ACTION.DOLLY || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.DOLLY) === $e1f901905a002d12$var$ACTION.DOLLY || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE) {
                 this._sphericalEnd.radius = this._spherical.radius;
                 this._radiusVelocity.value = 0;
             }
             // - zoom
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.ZOOM) === $d882b6cfe45cb358$var$ACTION.ZOOM || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_ROTATE) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.ZOOM) === $e1f901905a002d12$var$ACTION.ZOOM || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_ROTATE) {
                 this._zoomEnd = this._zoom;
                 this._zoomVelocity.value = 0;
             }
             // - offset
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.OFFSET) === $d882b6cfe45cb358$var$ACTION.OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_OFFSET) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.OFFSET) === $e1f901905a002d12$var$ACTION.OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_OFFSET) {
                 this._focalOffsetEnd.copy(this._focalOffset);
                 this._focalOffsetVelocity.set(0, 0, 0);
             }
@@ -871,61 +871,61 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         const dragging = ()=>{
             if (!this._enabled || !this._dragNeedsUpdate) return;
             this._dragNeedsUpdate = false;
-            $d882b6cfe45cb358$var$extractClientCoordFromEvent(this._activePointers, $d882b6cfe45cb358$var$_v2);
+            $e1f901905a002d12$var$extractClientCoordFromEvent(this._activePointers, $e1f901905a002d12$var$_v2);
             // When pointer lock is enabled clientX, clientY, screenX, and screenY remain 0.
             // If pointer lock is enabled, use the Delta directory, and assume active-pointer is not multiple.
             const isPointerLockActive = this._domElement && this._domElement.ownerDocument.pointerLockElement === this._domElement;
             const lockedPointer = isPointerLockActive ? this._lockedPointer || this._activePointers[0] : null;
-            const deltaX = lockedPointer ? -lockedPointer.deltaX : lastDragPosition.x - $d882b6cfe45cb358$var$_v2.x;
-            const deltaY = lockedPointer ? -lockedPointer.deltaY : lastDragPosition.y - $d882b6cfe45cb358$var$_v2.y;
-            lastDragPosition.copy($d882b6cfe45cb358$var$_v2);
+            const deltaX = lockedPointer ? -lockedPointer.deltaX : lastDragPosition.x - $e1f901905a002d12$var$_v2.x;
+            const deltaY = lockedPointer ? -lockedPointer.deltaY : lastDragPosition.y - $e1f901905a002d12$var$_v2.y;
+            lastDragPosition.copy($e1f901905a002d12$var$_v2);
             // rotate
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.ROTATE) === $d882b6cfe45cb358$var$ACTION.ROTATE || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_ROTATE || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_ROTATE) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.ROTATE) === $e1f901905a002d12$var$ACTION.ROTATE || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_ROTATE || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_ROTATE) {
                 this._rotateInternal(deltaX, deltaY);
                 this._isUserControllingRotate = true;
             }
             // mouse dolly or zoom
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.DOLLY) === $d882b6cfe45cb358$var$ACTION.DOLLY || (this._state & $d882b6cfe45cb358$var$ACTION.ZOOM) === $d882b6cfe45cb358$var$ACTION.ZOOM) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.DOLLY) === $e1f901905a002d12$var$ACTION.DOLLY || (this._state & $e1f901905a002d12$var$ACTION.ZOOM) === $e1f901905a002d12$var$ACTION.ZOOM) {
                 const dollyX = this.dollyToCursor ? (dragStartPosition.x - this._elementRect.x) / this._elementRect.width * 2 - 1 : 0;
                 const dollyY = this.dollyToCursor ? (dragStartPosition.y - this._elementRect.y) / this._elementRect.height * -2 + 1 : 0;
                 const dollyDirection = this.dollyDragInverted ? -1 : 1;
-                if ((this._state & $d882b6cfe45cb358$var$ACTION.DOLLY) === $d882b6cfe45cb358$var$ACTION.DOLLY) {
-                    this._dollyInternal(dollyDirection * deltaY * $d882b6cfe45cb358$var$TOUCH_DOLLY_FACTOR, dollyX, dollyY);
+                if ((this._state & $e1f901905a002d12$var$ACTION.DOLLY) === $e1f901905a002d12$var$ACTION.DOLLY) {
+                    this._dollyInternal(dollyDirection * deltaY * $e1f901905a002d12$var$TOUCH_DOLLY_FACTOR, dollyX, dollyY);
                     this._isUserControllingDolly = true;
                 } else {
-                    this._zoomInternal(dollyDirection * deltaY * $d882b6cfe45cb358$var$TOUCH_DOLLY_FACTOR, dollyX, dollyY);
+                    this._zoomInternal(dollyDirection * deltaY * $e1f901905a002d12$var$TOUCH_DOLLY_FACTOR, dollyX, dollyY);
                     this._isUserControllingZoom = true;
                 }
             }
             // touch dolly or zoom
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_ROTATE) {
-                const dx = $d882b6cfe45cb358$var$_v2.x - this._activePointers[1].clientX;
-                const dy = $d882b6cfe45cb358$var$_v2.y - this._activePointers[1].clientY;
+            if ((this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_ROTATE) {
+                const dx = $e1f901905a002d12$var$_v2.x - this._activePointers[1].clientX;
+                const dy = $e1f901905a002d12$var$_v2.y - this._activePointers[1].clientY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 const dollyDelta = dollyStart.y - distance;
                 dollyStart.set(0, distance);
                 const dollyX = this.dollyToCursor ? (lastDragPosition.x - this._elementRect.x) / this._elementRect.width * 2 - 1 : 0;
                 const dollyY = this.dollyToCursor ? (lastDragPosition.y - this._elementRect.y) / this._elementRect.height * -2 + 1 : 0;
-                if ((this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_ROTATE || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET) {
-                    this._dollyInternal(dollyDelta * $d882b6cfe45cb358$var$TOUCH_DOLLY_FACTOR, dollyX, dollyY);
+                if ((this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_ROTATE || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET) {
+                    this._dollyInternal(dollyDelta * $e1f901905a002d12$var$TOUCH_DOLLY_FACTOR, dollyX, dollyY);
                     this._isUserControllingDolly = true;
                 } else {
-                    this._zoomInternal(dollyDelta * $d882b6cfe45cb358$var$TOUCH_DOLLY_FACTOR, dollyX, dollyY);
+                    this._zoomInternal(dollyDelta * $e1f901905a002d12$var$TOUCH_DOLLY_FACTOR, dollyX, dollyY);
                     this._isUserControllingZoom = true;
                 }
             }
             // truck
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.TRUCK) === $d882b6cfe45cb358$var$ACTION.TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_TRUCK) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.TRUCK) === $e1f901905a002d12$var$ACTION.TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_TRUCK || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_TRUCK) {
                 this._truckInternal(deltaX, deltaY, false, false);
                 this._isUserControllingTruck = true;
             }
             // screen-pan
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.SCREEN_PAN) === $e1f901905a002d12$var$ACTION.SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_SCREEN_PAN || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_SCREEN_PAN) {
                 this._truckInternal(deltaX, deltaY, false, true);
                 this._isUserControllingTruck = true;
             }
             // offset
-            if ((this._state & $d882b6cfe45cb358$var$ACTION.OFFSET) === $d882b6cfe45cb358$var$ACTION.OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_DOLLY_OFFSET || (this._state & $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_OFFSET) === $d882b6cfe45cb358$var$ACTION.TOUCH_ZOOM_OFFSET) {
+            if ((this._state & $e1f901905a002d12$var$ACTION.OFFSET) === $e1f901905a002d12$var$ACTION.OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_DOLLY_OFFSET || (this._state & $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_OFFSET) === $e1f901905a002d12$var$ACTION.TOUCH_ZOOM_OFFSET) {
                 this._truckInternal(deltaX, deltaY, true, false);
                 this._isUserControllingOffset = true;
             }
@@ -934,8 +934,8 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             });
         };
         const endDragging = ()=>{
-            $d882b6cfe45cb358$var$extractClientCoordFromEvent(this._activePointers, $d882b6cfe45cb358$var$_v2);
-            lastDragPosition.copy($d882b6cfe45cb358$var$_v2);
+            $e1f901905a002d12$var$extractClientCoordFromEvent(this._activePointers, $e1f901905a002d12$var$_v2);
+            lastDragPosition.copy($e1f901905a002d12$var$_v2);
             this._dragNeedsUpdate = false;
             if (this._activePointers.length === 0 || this._activePointers.length === 1 && this._activePointers[0] === this._lockedPointer) this._isDragging = false;
             if (this._activePointers.length === 0 && this._domElement) {
@@ -1030,8 +1030,8 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             this._domElement.ownerDocument.removeEventListener('pointerlockerror', onPointerLockError);
         };
         this.cancel = ()=>{
-            if (this._state === $d882b6cfe45cb358$var$ACTION.NONE) return;
-            this._state = $d882b6cfe45cb358$var$ACTION.NONE;
+            if (this._state === $e1f901905a002d12$var$ACTION.NONE) return;
+            this._state = $e1f901905a002d12$var$ACTION.NONE;
             this._activePointers.length = 0;
             endDragging();
         };
@@ -1141,10 +1141,10 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * e.g. `{ x: 0, y: 0, width: 1, height: 1 }` for entire area.
      * @category Properties
      */ set interactiveArea(interactiveArea) {
-        this._interactiveArea.width = $d882b6cfe45cb358$var$clamp(interactiveArea.width, 0, 1);
-        this._interactiveArea.height = $d882b6cfe45cb358$var$clamp(interactiveArea.height, 0, 1);
-        this._interactiveArea.x = $d882b6cfe45cb358$var$clamp(interactiveArea.x, 0, 1 - this._interactiveArea.width);
-        this._interactiveArea.y = $d882b6cfe45cb358$var$clamp(interactiveArea.y, 0, 1 - this._interactiveArea.height);
+        this._interactiveArea.width = $e1f901905a002d12$var$clamp(interactiveArea.width, 0, 1);
+        this._interactiveArea.height = $e1f901905a002d12$var$clamp(interactiveArea.height, 0, 1);
+        this._interactiveArea.x = $e1f901905a002d12$var$clamp(interactiveArea.x, 0, 1 - this._interactiveArea.width);
+        this._interactiveArea.y = $e1f901905a002d12$var$clamp(interactiveArea.y, 0, 1 - this._interactiveArea.height);
     }
     /**
      * Adds the specified event listener.
@@ -1260,8 +1260,8 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @category Methods
      */ rotateTo(azimuthAngle, polarAngle, enableTransition = false) {
         this._isUserControllingRotate = false;
-        const theta = $d882b6cfe45cb358$var$clamp(azimuthAngle, this.minAzimuthAngle, this.maxAzimuthAngle);
-        const phi = $d882b6cfe45cb358$var$clamp(polarAngle, this.minPolarAngle, this.maxPolarAngle);
+        const theta = $e1f901905a002d12$var$clamp(azimuthAngle, this.minAzimuthAngle, this.maxAzimuthAngle);
+        const phi = $e1f901905a002d12$var$clamp(polarAngle, this.minPolarAngle, this.maxPolarAngle);
         this._sphericalEnd.theta = theta;
         this._sphericalEnd.phi = phi;
         this._sphericalEnd.makeSafe();
@@ -1270,7 +1270,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             this._spherical.theta = this._sphericalEnd.theta;
             this._spherical.phi = this._sphericalEnd.phi;
         }
-        const resolveImmediately = !enableTransition || $d882b6cfe45cb358$var$approxEquals(this._spherical.theta, this._sphericalEnd.theta, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._spherical.phi, this._sphericalEnd.phi, this.restThreshold);
+        const resolveImmediately = !enableTransition || $e1f901905a002d12$var$approxEquals(this._spherical.theta, this._sphericalEnd.theta, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._spherical.phi, this._sphericalEnd.phi, this.restThreshold);
         return this._createOnRestPromise(resolveImmediately);
     }
     /**
@@ -1288,23 +1288,23 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @category Methods
      */ dollyTo(distance, enableTransition = false) {
         this._isUserControllingDolly = false;
-        this._lastDollyDirection = $d882b6cfe45cb358$var$DOLLY_DIRECTION.NONE;
+        this._lastDollyDirection = $e1f901905a002d12$var$DOLLY_DIRECTION.NONE;
         this._changedDolly = 0;
-        return this._dollyToNoClamp($d882b6cfe45cb358$var$clamp(distance, this.minDistance, this.maxDistance), enableTransition);
+        return this._dollyToNoClamp($e1f901905a002d12$var$clamp(distance, this.minDistance, this.maxDistance), enableTransition);
     }
     _dollyToNoClamp(distance, enableTransition = false) {
         const lastRadius = this._sphericalEnd.radius;
         const hasCollider = this.colliderMeshes.length >= 1;
         if (hasCollider) {
             const maxDistanceByCollisionTest = this._collisionTest();
-            const isCollided = $d882b6cfe45cb358$var$approxEquals(maxDistanceByCollisionTest, this._spherical.radius);
+            const isCollided = $e1f901905a002d12$var$approxEquals(maxDistanceByCollisionTest, this._spherical.radius);
             const isDollyIn = lastRadius > distance;
             if (!isDollyIn && isCollided) return Promise.resolve();
             this._sphericalEnd.radius = Math.min(distance, maxDistanceByCollisionTest);
         } else this._sphericalEnd.radius = distance;
         this._needsUpdate = true;
         if (!enableTransition) this._spherical.radius = this._sphericalEnd.radius;
-        const resolveImmediately = !enableTransition || $d882b6cfe45cb358$var$approxEquals(this._spherical.radius, this._sphericalEnd.radius, this.restThreshold);
+        const resolveImmediately = !enableTransition || $e1f901905a002d12$var$approxEquals(this._spherical.radius, this._sphericalEnd.radius, this.restThreshold);
         return this._createOnRestPromise(resolveImmediately);
     }
     /**
@@ -1314,9 +1314,9 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param enableTransition Whether to move smoothly or immediately.
      * @category Methods
      */ dollyInFixed(distance, enableTransition = false) {
-        this._targetEnd.add(this._getCameraDirection($d882b6cfe45cb358$var$_cameraDirection).multiplyScalar(distance));
+        this._targetEnd.add(this._getCameraDirection($e1f901905a002d12$var$_cameraDirection).multiplyScalar(distance));
         if (!enableTransition) this._target.copy(this._targetEnd);
-        const resolveImmediately = !enableTransition || $d882b6cfe45cb358$var$approxEquals(this._target.x, this._targetEnd.x, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._target.y, this._targetEnd.y, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._target.z, this._targetEnd.z, this.restThreshold);
+        const resolveImmediately = !enableTransition || $e1f901905a002d12$var$approxEquals(this._target.x, this._targetEnd.x, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._target.y, this._targetEnd.y, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._target.z, this._targetEnd.z, this.restThreshold);
         return this._createOnRestPromise(resolveImmediately);
     }
     /**
@@ -1336,10 +1336,10 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @category Methods
      */ zoomTo(zoom, enableTransition = false) {
         this._isUserControllingZoom = false;
-        this._zoomEnd = $d882b6cfe45cb358$var$clamp(zoom, this.minZoom, this.maxZoom);
+        this._zoomEnd = $e1f901905a002d12$var$clamp(zoom, this.minZoom, this.maxZoom);
         this._needsUpdate = true;
         if (!enableTransition) this._zoom = this._zoomEnd;
-        const resolveImmediately = !enableTransition || $d882b6cfe45cb358$var$approxEquals(this._zoom, this._zoomEnd, this.restThreshold);
+        const resolveImmediately = !enableTransition || $e1f901905a002d12$var$approxEquals(this._zoom, this._zoomEnd, this.restThreshold);
         this._changedZoom = 0;
         return this._createOnRestPromise(resolveImmediately);
     }
@@ -1358,12 +1358,12 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @category Methods
      */ truck(x, y, enableTransition = false) {
         this._camera.updateMatrix();
-        $d882b6cfe45cb358$var$_xColumn.setFromMatrixColumn(this._camera.matrix, 0);
-        $d882b6cfe45cb358$var$_yColumn.setFromMatrixColumn(this._camera.matrix, 1);
-        $d882b6cfe45cb358$var$_xColumn.multiplyScalar(x);
-        $d882b6cfe45cb358$var$_yColumn.multiplyScalar(-y);
-        const offset = $d882b6cfe45cb358$var$_v3A.copy($d882b6cfe45cb358$var$_xColumn).add($d882b6cfe45cb358$var$_yColumn);
-        const to = $d882b6cfe45cb358$var$_v3B.copy(this._targetEnd).add(offset);
+        $e1f901905a002d12$var$_xColumn.setFromMatrixColumn(this._camera.matrix, 0);
+        $e1f901905a002d12$var$_yColumn.setFromMatrixColumn(this._camera.matrix, 1);
+        $e1f901905a002d12$var$_xColumn.multiplyScalar(x);
+        $e1f901905a002d12$var$_yColumn.multiplyScalar(-y);
+        const offset = $e1f901905a002d12$var$_v3A.copy($e1f901905a002d12$var$_xColumn).add($e1f901905a002d12$var$_yColumn);
+        const to = $e1f901905a002d12$var$_v3B.copy(this._targetEnd).add(offset);
         return this.moveTo(to.x, to.y, to.z, enableTransition);
     }
     /**
@@ -1372,10 +1372,10 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param enableTransition Whether to move smoothly or immediately
      * @category Methods
      */ forward(distance, enableTransition = false) {
-        $d882b6cfe45cb358$var$_v3A.setFromMatrixColumn(this._camera.matrix, 0);
-        $d882b6cfe45cb358$var$_v3A.crossVectors(this._camera.up, $d882b6cfe45cb358$var$_v3A);
-        $d882b6cfe45cb358$var$_v3A.multiplyScalar(distance);
-        const to = $d882b6cfe45cb358$var$_v3B.copy(this._targetEnd).add($d882b6cfe45cb358$var$_v3A);
+        $e1f901905a002d12$var$_v3A.setFromMatrixColumn(this._camera.matrix, 0);
+        $e1f901905a002d12$var$_v3A.crossVectors(this._camera.up, $e1f901905a002d12$var$_v3A);
+        $e1f901905a002d12$var$_v3A.multiplyScalar(distance);
+        const to = $e1f901905a002d12$var$_v3B.copy(this._targetEnd).add($e1f901905a002d12$var$_v3A);
         return this.moveTo(to.x, to.y, to.z, enableTransition);
     }
     /**
@@ -1384,8 +1384,8 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param enableTransition Whether to move smoothly or immediately
      * @category Methods
      */ elevate(height, enableTransition = false) {
-        $d882b6cfe45cb358$var$_v3A.copy(this._camera.up).multiplyScalar(height);
-        return this.moveTo(this._targetEnd.x + $d882b6cfe45cb358$var$_v3A.x, this._targetEnd.y + $d882b6cfe45cb358$var$_v3A.y, this._targetEnd.z + $d882b6cfe45cb358$var$_v3A.z, enableTransition);
+        $e1f901905a002d12$var$_v3A.copy(this._camera.up).multiplyScalar(height);
+        return this.moveTo(this._targetEnd.x + $e1f901905a002d12$var$_v3A.x, this._targetEnd.y + $e1f901905a002d12$var$_v3A.y, this._targetEnd.z + $e1f901905a002d12$var$_v3A.z, enableTransition);
     }
     /**
      * Move target position to given point.
@@ -1396,11 +1396,11 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @category Methods
      */ moveTo(x, y, z, enableTransition = false) {
         this._isUserControllingTruck = false;
-        const offset = $d882b6cfe45cb358$var$_v3A.set(x, y, z).sub(this._targetEnd);
+        const offset = $e1f901905a002d12$var$_v3A.set(x, y, z).sub(this._targetEnd);
         this._encloseToBoundary(this._targetEnd, offset, this.boundaryFriction);
         this._needsUpdate = true;
         if (!enableTransition) this._target.copy(this._targetEnd);
-        const resolveImmediately = !enableTransition || $d882b6cfe45cb358$var$approxEquals(this._target.x, this._targetEnd.x, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._target.y, this._targetEnd.y, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._target.z, this._targetEnd.z, this.restThreshold);
+        const resolveImmediately = !enableTransition || $e1f901905a002d12$var$approxEquals(this._target.x, this._targetEnd.x, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._target.y, this._targetEnd.y, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._target.z, this._targetEnd.z, this.restThreshold);
         return this._createOnRestPromise(resolveImmediately);
     }
     /**
@@ -1412,7 +1412,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @returns Transition end promise
      * @category Methods
      */ lookInDirectionOf(x, y, z, enableTransition = false) {
-        const point = $d882b6cfe45cb358$var$_v3A.set(x, y, z);
+        const point = $e1f901905a002d12$var$_v3A.set(x, y, z);
         const direction = point.sub(this._targetEnd).normalize();
         const position = direction.multiplyScalar(-this._sphericalEnd.radius).add(this._targetEnd);
         return this.setPosition(position.x, position.y, position.z, enableTransition);
@@ -1431,62 +1431,62 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @category Methods
      */ fitToBox(box3OrObject, enableTransition, { cover: cover = false, paddingLeft: paddingLeft = 0, paddingRight: paddingRight = 0, paddingBottom: paddingBottom = 0, paddingTop: paddingTop = 0 } = {}) {
         const promises = [];
-        const aabb = box3OrObject.isBox3 ? $d882b6cfe45cb358$var$_box3A.copy(box3OrObject) : $d882b6cfe45cb358$var$_box3A.setFromObject(box3OrObject);
+        const aabb = box3OrObject.isBox3 ? $e1f901905a002d12$var$_box3A.copy(box3OrObject) : $e1f901905a002d12$var$_box3A.setFromObject(box3OrObject);
         if (aabb.isEmpty()) {
             console.warn('camera-controls: fitTo() cannot be used with an empty box. Aborting');
             Promise.resolve();
         }
         // round to closest axis ( forward | backward | right | left | top | bottom )
-        const theta = $d882b6cfe45cb358$var$roundToStep(this._sphericalEnd.theta, $d882b6cfe45cb358$var$PI_HALF);
-        const phi = $d882b6cfe45cb358$var$roundToStep(this._sphericalEnd.phi, $d882b6cfe45cb358$var$PI_HALF);
+        const theta = $e1f901905a002d12$var$roundToStep(this._sphericalEnd.theta, $e1f901905a002d12$var$PI_HALF);
+        const phi = $e1f901905a002d12$var$roundToStep(this._sphericalEnd.phi, $e1f901905a002d12$var$PI_HALF);
         promises.push(this.rotateTo(theta, phi, enableTransition));
-        const normal = $d882b6cfe45cb358$var$_v3A.setFromSpherical(this._sphericalEnd).normalize();
-        const rotation = $d882b6cfe45cb358$var$_quaternionA.setFromUnitVectors(normal, $d882b6cfe45cb358$var$_AXIS_Z);
-        const viewFromPolar = $d882b6cfe45cb358$var$approxEquals(Math.abs(normal.y), 1);
-        if (viewFromPolar) rotation.multiply($d882b6cfe45cb358$var$_quaternionB.setFromAxisAngle($d882b6cfe45cb358$var$_AXIS_Y, theta));
+        const normal = $e1f901905a002d12$var$_v3A.setFromSpherical(this._sphericalEnd).normalize();
+        const rotation = $e1f901905a002d12$var$_quaternionA.setFromUnitVectors(normal, $e1f901905a002d12$var$_AXIS_Z);
+        const viewFromPolar = $e1f901905a002d12$var$approxEquals(Math.abs(normal.y), 1);
+        if (viewFromPolar) rotation.multiply($e1f901905a002d12$var$_quaternionB.setFromAxisAngle($e1f901905a002d12$var$_AXIS_Y, theta));
         rotation.multiply(this._yAxisUpSpaceInverse);
         // make oriented bounding box
-        const bb = $d882b6cfe45cb358$var$_box3B.makeEmpty();
+        const bb = $e1f901905a002d12$var$_box3B.makeEmpty();
         // left bottom back corner
-        $d882b6cfe45cb358$var$_v3B.copy(aabb.min).applyQuaternion(rotation);
-        bb.expandByPoint($d882b6cfe45cb358$var$_v3B);
+        $e1f901905a002d12$var$_v3B.copy(aabb.min).applyQuaternion(rotation);
+        bb.expandByPoint($e1f901905a002d12$var$_v3B);
         // right bottom back corner
-        $d882b6cfe45cb358$var$_v3B.copy(aabb.min).setX(aabb.max.x).applyQuaternion(rotation);
-        bb.expandByPoint($d882b6cfe45cb358$var$_v3B);
+        $e1f901905a002d12$var$_v3B.copy(aabb.min).setX(aabb.max.x).applyQuaternion(rotation);
+        bb.expandByPoint($e1f901905a002d12$var$_v3B);
         // left top back corner
-        $d882b6cfe45cb358$var$_v3B.copy(aabb.min).setY(aabb.max.y).applyQuaternion(rotation);
-        bb.expandByPoint($d882b6cfe45cb358$var$_v3B);
+        $e1f901905a002d12$var$_v3B.copy(aabb.min).setY(aabb.max.y).applyQuaternion(rotation);
+        bb.expandByPoint($e1f901905a002d12$var$_v3B);
         // right top back corner
-        $d882b6cfe45cb358$var$_v3B.copy(aabb.max).setZ(aabb.min.z).applyQuaternion(rotation);
-        bb.expandByPoint($d882b6cfe45cb358$var$_v3B);
+        $e1f901905a002d12$var$_v3B.copy(aabb.max).setZ(aabb.min.z).applyQuaternion(rotation);
+        bb.expandByPoint($e1f901905a002d12$var$_v3B);
         // left bottom front corner
-        $d882b6cfe45cb358$var$_v3B.copy(aabb.min).setZ(aabb.max.z).applyQuaternion(rotation);
-        bb.expandByPoint($d882b6cfe45cb358$var$_v3B);
+        $e1f901905a002d12$var$_v3B.copy(aabb.min).setZ(aabb.max.z).applyQuaternion(rotation);
+        bb.expandByPoint($e1f901905a002d12$var$_v3B);
         // right bottom front corner
-        $d882b6cfe45cb358$var$_v3B.copy(aabb.max).setY(aabb.min.y).applyQuaternion(rotation);
-        bb.expandByPoint($d882b6cfe45cb358$var$_v3B);
+        $e1f901905a002d12$var$_v3B.copy(aabb.max).setY(aabb.min.y).applyQuaternion(rotation);
+        bb.expandByPoint($e1f901905a002d12$var$_v3B);
         // left top front corner
-        $d882b6cfe45cb358$var$_v3B.copy(aabb.max).setX(aabb.min.x).applyQuaternion(rotation);
-        bb.expandByPoint($d882b6cfe45cb358$var$_v3B);
+        $e1f901905a002d12$var$_v3B.copy(aabb.max).setX(aabb.min.x).applyQuaternion(rotation);
+        bb.expandByPoint($e1f901905a002d12$var$_v3B);
         // right top front corner
-        $d882b6cfe45cb358$var$_v3B.copy(aabb.max).applyQuaternion(rotation);
-        bb.expandByPoint($d882b6cfe45cb358$var$_v3B);
+        $e1f901905a002d12$var$_v3B.copy(aabb.max).applyQuaternion(rotation);
+        bb.expandByPoint($e1f901905a002d12$var$_v3B);
         // add padding
         bb.min.x -= paddingLeft;
         bb.min.y -= paddingBottom;
         bb.max.x += paddingRight;
         bb.max.y += paddingTop;
-        rotation.setFromUnitVectors($d882b6cfe45cb358$var$_AXIS_Z, normal);
-        if (viewFromPolar) rotation.premultiply($d882b6cfe45cb358$var$_quaternionB.invert());
+        rotation.setFromUnitVectors($e1f901905a002d12$var$_AXIS_Z, normal);
+        if (viewFromPolar) rotation.premultiply($e1f901905a002d12$var$_quaternionB.invert());
         rotation.premultiply(this._yAxisUpSpace);
-        const bbSize = bb.getSize($d882b6cfe45cb358$var$_v3A);
-        const center = bb.getCenter($d882b6cfe45cb358$var$_v3B).applyQuaternion(rotation);
-        if ($d882b6cfe45cb358$var$isPerspectiveCamera(this._camera)) {
+        const bbSize = bb.getSize($e1f901905a002d12$var$_v3A);
+        const center = bb.getCenter($e1f901905a002d12$var$_v3B).applyQuaternion(rotation);
+        if ($e1f901905a002d12$var$isPerspectiveCamera(this._camera)) {
             const distance = this.getDistanceToFitBox(bbSize.x, bbSize.y, bbSize.z, cover);
             promises.push(this.moveTo(center.x, center.y, center.z, enableTransition));
             promises.push(this.dollyTo(distance, enableTransition));
             promises.push(this.setFocalOffset(0, 0, 0, enableTransition));
-        } else if ($d882b6cfe45cb358$var$isOrthographicCamera(this._camera)) {
+        } else if ($e1f901905a002d12$var$isOrthographicCamera(this._camera)) {
             const camera = this._camera;
             const width = camera.right - camera.left;
             const height = camera.top - camera.bottom;
@@ -1505,12 +1505,12 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      */ fitToSphere(sphereOrMesh, enableTransition) {
         const promises = [];
         const isObject3D = 'isObject3D' in sphereOrMesh;
-        const boundingSphere = isObject3D ? $d882b6cfe45cb358$export$2e2bcd8739ae039.createBoundingSphere(sphereOrMesh, $d882b6cfe45cb358$var$_sphere) : $d882b6cfe45cb358$var$_sphere.copy(sphereOrMesh);
+        const boundingSphere = isObject3D ? $e1f901905a002d12$export$2e2bcd8739ae039.createBoundingSphere(sphereOrMesh, $e1f901905a002d12$var$_sphere) : $e1f901905a002d12$var$_sphere.copy(sphereOrMesh);
         promises.push(this.moveTo(boundingSphere.center.x, boundingSphere.center.y, boundingSphere.center.z, enableTransition));
-        if ($d882b6cfe45cb358$var$isPerspectiveCamera(this._camera)) {
+        if ($e1f901905a002d12$var$isPerspectiveCamera(this._camera)) {
             const distanceToFit = this.getDistanceToFitSphere(boundingSphere.radius);
             promises.push(this.dollyTo(distanceToFit, enableTransition));
-        } else if ($d882b6cfe45cb358$var$isOrthographicCamera(this._camera)) {
+        } else if ($e1f901905a002d12$var$isOrthographicCamera(this._camera)) {
             const width = this._camera.right - this._camera.left;
             const height = this._camera.top - this._camera.bottom;
             const diameter = 2 * boundingSphere.radius;
@@ -1534,10 +1534,10 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         this._isUserControllingRotate = false;
         this._isUserControllingDolly = false;
         this._isUserControllingTruck = false;
-        this._lastDollyDirection = $d882b6cfe45cb358$var$DOLLY_DIRECTION.NONE;
+        this._lastDollyDirection = $e1f901905a002d12$var$DOLLY_DIRECTION.NONE;
         this._changedDolly = 0;
-        const target = $d882b6cfe45cb358$var$_v3B.set(targetX, targetY, targetZ);
-        const position = $d882b6cfe45cb358$var$_v3A.set(positionX, positionY, positionZ);
+        const target = $e1f901905a002d12$var$_v3B.set(targetX, targetY, targetZ);
+        const position = $e1f901905a002d12$var$_v3A.set(positionX, positionY, positionZ);
         this._targetEnd.copy(target);
         this._sphericalEnd.setFromVector3(position.sub(target).applyQuaternion(this._yAxisUpSpace));
         this.normalizeRotations();
@@ -1546,7 +1546,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             this._target.copy(this._targetEnd);
             this._spherical.copy(this._sphericalEnd);
         }
-        const resolveImmediately = !enableTransition || $d882b6cfe45cb358$var$approxEquals(this._target.x, this._targetEnd.x, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._target.y, this._targetEnd.y, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._target.z, this._targetEnd.z, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._spherical.theta, this._sphericalEnd.theta, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._spherical.phi, this._sphericalEnd.phi, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._spherical.radius, this._sphericalEnd.radius, this.restThreshold);
+        const resolveImmediately = !enableTransition || $e1f901905a002d12$var$approxEquals(this._target.x, this._targetEnd.x, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._target.y, this._targetEnd.y, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._target.z, this._targetEnd.z, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._spherical.theta, this._sphericalEnd.theta, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._spherical.phi, this._sphericalEnd.phi, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._spherical.radius, this._sphericalEnd.radius, this.restThreshold);
         return this._createOnRestPromise(resolveImmediately);
     }
     /**
@@ -1570,26 +1570,26 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         this._isUserControllingRotate = false;
         this._isUserControllingDolly = false;
         this._isUserControllingTruck = false;
-        this._lastDollyDirection = $d882b6cfe45cb358$var$DOLLY_DIRECTION.NONE;
+        this._lastDollyDirection = $e1f901905a002d12$var$DOLLY_DIRECTION.NONE;
         this._changedDolly = 0;
-        const targetA = $d882b6cfe45cb358$var$_v3A.set(targetAX, targetAY, targetAZ);
-        const positionA = $d882b6cfe45cb358$var$_v3B.set(positionAX, positionAY, positionAZ);
-        $d882b6cfe45cb358$var$_sphericalA.setFromVector3(positionA.sub(targetA).applyQuaternion(this._yAxisUpSpace));
-        const targetB = $d882b6cfe45cb358$var$_v3C.set(targetBX, targetBY, targetBZ);
-        const positionB = $d882b6cfe45cb358$var$_v3B.set(positionBX, positionBY, positionBZ);
-        $d882b6cfe45cb358$var$_sphericalB.setFromVector3(positionB.sub(targetB).applyQuaternion(this._yAxisUpSpace));
+        const targetA = $e1f901905a002d12$var$_v3A.set(targetAX, targetAY, targetAZ);
+        const positionA = $e1f901905a002d12$var$_v3B.set(positionAX, positionAY, positionAZ);
+        $e1f901905a002d12$var$_sphericalA.setFromVector3(positionA.sub(targetA).applyQuaternion(this._yAxisUpSpace));
+        const targetB = $e1f901905a002d12$var$_v3C.set(targetBX, targetBY, targetBZ);
+        const positionB = $e1f901905a002d12$var$_v3B.set(positionBX, positionBY, positionBZ);
+        $e1f901905a002d12$var$_sphericalB.setFromVector3(positionB.sub(targetB).applyQuaternion(this._yAxisUpSpace));
         this._targetEnd.copy(targetA.lerp(targetB, t)); // tricky
-        const deltaTheta = $d882b6cfe45cb358$var$_sphericalB.theta - $d882b6cfe45cb358$var$_sphericalA.theta;
-        const deltaPhi = $d882b6cfe45cb358$var$_sphericalB.phi - $d882b6cfe45cb358$var$_sphericalA.phi;
-        const deltaRadius = $d882b6cfe45cb358$var$_sphericalB.radius - $d882b6cfe45cb358$var$_sphericalA.radius;
-        this._sphericalEnd.set($d882b6cfe45cb358$var$_sphericalA.radius + deltaRadius * t, $d882b6cfe45cb358$var$_sphericalA.phi + deltaPhi * t, $d882b6cfe45cb358$var$_sphericalA.theta + deltaTheta * t);
+        const deltaTheta = $e1f901905a002d12$var$_sphericalB.theta - $e1f901905a002d12$var$_sphericalA.theta;
+        const deltaPhi = $e1f901905a002d12$var$_sphericalB.phi - $e1f901905a002d12$var$_sphericalA.phi;
+        const deltaRadius = $e1f901905a002d12$var$_sphericalB.radius - $e1f901905a002d12$var$_sphericalA.radius;
+        this._sphericalEnd.set($e1f901905a002d12$var$_sphericalA.radius + deltaRadius * t, $e1f901905a002d12$var$_sphericalA.phi + deltaPhi * t, $e1f901905a002d12$var$_sphericalA.theta + deltaTheta * t);
         this.normalizeRotations();
         this._needsUpdate = true;
         if (!enableTransition) {
             this._target.copy(this._targetEnd);
             this._spherical.copy(this._sphericalEnd);
         }
-        const resolveImmediately = !enableTransition || $d882b6cfe45cb358$var$approxEquals(this._target.x, this._targetEnd.x, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._target.y, this._targetEnd.y, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._target.z, this._targetEnd.z, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._spherical.theta, this._sphericalEnd.theta, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._spherical.phi, this._sphericalEnd.phi, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._spherical.radius, this._sphericalEnd.radius, this.restThreshold);
+        const resolveImmediately = !enableTransition || $e1f901905a002d12$var$approxEquals(this._target.x, this._targetEnd.x, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._target.y, this._targetEnd.y, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._target.z, this._targetEnd.z, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._spherical.theta, this._sphericalEnd.theta, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._spherical.phi, this._sphericalEnd.phi, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._spherical.radius, this._sphericalEnd.radius, this.restThreshold);
         return this._createOnRestPromise(resolveImmediately);
     }
     /**
@@ -1612,10 +1612,10 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param enableTransition
      * @category Methods
      */ setTarget(targetX, targetY, targetZ, enableTransition = false) {
-        const pos = this.getPosition($d882b6cfe45cb358$var$_v3A);
+        const pos = this.getPosition($e1f901905a002d12$var$_v3A);
         const promise = this.setLookAt(pos.x, pos.y, pos.z, targetX, targetY, targetZ, enableTransition);
         // see https://github.com/yomotsu/camera-controls/issues/335
-        this._sphericalEnd.phi = $d882b6cfe45cb358$var$clamp(this._sphericalEnd.phi, this.minPolarAngle, this.maxPolarAngle);
+        this._sphericalEnd.phi = $e1f901905a002d12$var$clamp(this._sphericalEnd.phi, this.minPolarAngle, this.maxPolarAngle);
         return promise;
     }
     /**
@@ -1630,7 +1630,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         this._focalOffsetEnd.set(x, y, z);
         this._needsUpdate = true;
         if (!enableTransition) this._focalOffset.copy(this._focalOffsetEnd);
-        const resolveImmediately = !enableTransition || $d882b6cfe45cb358$var$approxEquals(this._focalOffset.x, this._focalOffsetEnd.x, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._focalOffset.y, this._focalOffsetEnd.y, this.restThreshold) && $d882b6cfe45cb358$var$approxEquals(this._focalOffset.z, this._focalOffsetEnd.z, this.restThreshold);
+        const resolveImmediately = !enableTransition || $e1f901905a002d12$var$approxEquals(this._focalOffset.x, this._focalOffsetEnd.x, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._focalOffset.y, this._focalOffsetEnd.y, this.restThreshold) && $e1f901905a002d12$var$approxEquals(this._focalOffset.z, this._focalOffsetEnd.z, this.restThreshold);
         return this._createOnRestPromise(resolveImmediately);
     }
     /**
@@ -1642,19 +1642,19 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @category Methods
      */ setOrbitPoint(targetX, targetY, targetZ) {
         this._camera.updateMatrixWorld();
-        $d882b6cfe45cb358$var$_xColumn.setFromMatrixColumn(this._camera.matrixWorldInverse, 0);
-        $d882b6cfe45cb358$var$_yColumn.setFromMatrixColumn(this._camera.matrixWorldInverse, 1);
-        $d882b6cfe45cb358$var$_zColumn.setFromMatrixColumn(this._camera.matrixWorldInverse, 2);
-        const position = $d882b6cfe45cb358$var$_v3A.set(targetX, targetY, targetZ);
+        $e1f901905a002d12$var$_xColumn.setFromMatrixColumn(this._camera.matrixWorldInverse, 0);
+        $e1f901905a002d12$var$_yColumn.setFromMatrixColumn(this._camera.matrixWorldInverse, 1);
+        $e1f901905a002d12$var$_zColumn.setFromMatrixColumn(this._camera.matrixWorldInverse, 2);
+        const position = $e1f901905a002d12$var$_v3A.set(targetX, targetY, targetZ);
         const distance = position.distanceTo(this._camera.position);
         const cameraToPoint = position.sub(this._camera.position);
-        $d882b6cfe45cb358$var$_xColumn.multiplyScalar(cameraToPoint.x);
-        $d882b6cfe45cb358$var$_yColumn.multiplyScalar(cameraToPoint.y);
-        $d882b6cfe45cb358$var$_zColumn.multiplyScalar(cameraToPoint.z);
-        $d882b6cfe45cb358$var$_v3A.copy($d882b6cfe45cb358$var$_xColumn).add($d882b6cfe45cb358$var$_yColumn).add($d882b6cfe45cb358$var$_zColumn);
-        $d882b6cfe45cb358$var$_v3A.z = $d882b6cfe45cb358$var$_v3A.z + distance;
+        $e1f901905a002d12$var$_xColumn.multiplyScalar(cameraToPoint.x);
+        $e1f901905a002d12$var$_yColumn.multiplyScalar(cameraToPoint.y);
+        $e1f901905a002d12$var$_zColumn.multiplyScalar(cameraToPoint.z);
+        $e1f901905a002d12$var$_v3A.copy($e1f901905a002d12$var$_xColumn).add($e1f901905a002d12$var$_yColumn).add($e1f901905a002d12$var$_zColumn);
+        $e1f901905a002d12$var$_v3A.z = $e1f901905a002d12$var$_v3A.z + distance;
         this.dollyTo(distance, false);
-        this.setFocalOffset(-$d882b6cfe45cb358$var$_v3A.x, $d882b6cfe45cb358$var$_v3A.y, -$d882b6cfe45cb358$var$_v3A.z, false);
+        this.setFocalOffset(-$e1f901905a002d12$var$_v3A.x, $e1f901905a002d12$var$_v3A.y, -$e1f901905a002d12$var$_v3A.z, false);
         this.moveTo(targetX, targetY, targetZ, false);
     }
     /**
@@ -1685,7 +1685,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             this._viewport = null;
             return;
         }
-        this._viewport = this._viewport || new $d882b6cfe45cb358$var$THREE.Vector4();
+        this._viewport = this._viewport || new $e1f901905a002d12$var$THREE.Vector4();
         if (typeof viewportOrX === 'number') this._viewport.set(viewportOrX, y, width, height);
         else this._viewport.copy(viewportOrX);
     }
@@ -1697,9 +1697,9 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @returns distance
      * @category Methods
      */ getDistanceToFitBox(width, height, depth, cover = false) {
-        if ($d882b6cfe45cb358$var$notSupportedInOrthographicCamera(this._camera, 'getDistanceToFitBox')) return this._spherical.radius;
+        if ($e1f901905a002d12$var$notSupportedInOrthographicCamera(this._camera, 'getDistanceToFitBox')) return this._spherical.radius;
         const boundingRectAspect = width / height;
-        const fov = this._camera.getEffectiveFOV() * $d882b6cfe45cb358$var$DEG2RAD;
+        const fov = this._camera.getEffectiveFOV() * $e1f901905a002d12$var$DEG2RAD;
         const aspect = this._camera.aspect;
         const heightToFit = (cover ? boundingRectAspect > aspect : boundingRectAspect < aspect) ? height : width / aspect;
         return heightToFit * 0.5 / Math.tan(fov * 0.5) + depth * 0.5;
@@ -1710,9 +1710,9 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @returns distance
      * @category Methods
      */ getDistanceToFitSphere(radius) {
-        if ($d882b6cfe45cb358$var$notSupportedInOrthographicCamera(this._camera, 'getDistanceToFitSphere')) return this._spherical.radius;
+        if ($e1f901905a002d12$var$notSupportedInOrthographicCamera(this._camera, 'getDistanceToFitSphere')) return this._spherical.radius;
         // https://stackoverflow.com/a/44849975
-        const vFOV = this._camera.getEffectiveFOV() * $d882b6cfe45cb358$var$DEG2RAD;
+        const vFOV = this._camera.getEffectiveFOV() * $e1f901905a002d12$var$DEG2RAD;
         const hFOV = Math.atan(Math.tan(vFOV * 0.5) * this._camera.aspect) * 2;
         const fov = 1 < this._camera.aspect ? vFOV : hFOV;
         return radius / Math.sin(fov * 0.5);
@@ -1723,7 +1723,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param receiveEndValue Whether receive the transition end coords or current. default is `true`
      * @category Methods
      */ getTarget(out, receiveEndValue = true) {
-        const _out = !!out && out.isVector3 ? out : new $d882b6cfe45cb358$var$THREE.Vector3();
+        const _out = !!out && out.isVector3 ? out : new $e1f901905a002d12$var$THREE.Vector3();
         return _out.copy(receiveEndValue ? this._targetEnd : this._target);
     }
     /**
@@ -1732,7 +1732,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param receiveEndValue Whether receive the transition end coords or current. default is `true`
      * @category Methods
      */ getPosition(out, receiveEndValue = true) {
-        const _out = !!out && out.isVector3 ? out : new $d882b6cfe45cb358$var$THREE.Vector3();
+        const _out = !!out && out.isVector3 ? out : new $e1f901905a002d12$var$THREE.Vector3();
         return _out.setFromSpherical(receiveEndValue ? this._sphericalEnd : this._spherical).applyQuaternion(this._yAxisUpSpaceInverse).add(receiveEndValue ? this._targetEnd : this._target);
     }
     /**
@@ -1741,7 +1741,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param receiveEndValue Whether receive the transition end coords or current. default is `true`
      * @category Methods
      */ getSpherical(out, receiveEndValue = true) {
-        const _out = out || new $d882b6cfe45cb358$var$THREE.Spherical();
+        const _out = out || new $e1f901905a002d12$var$THREE.Spherical();
         return _out.copy(receiveEndValue ? this._sphericalEnd : this._spherical);
     }
     /**
@@ -1750,16 +1750,16 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param receiveEndValue Whether receive the transition end coords or current. default is `true`
      * @category Methods
      */ getFocalOffset(out, receiveEndValue = true) {
-        const _out = !!out && out.isVector3 ? out : new $d882b6cfe45cb358$var$THREE.Vector3();
+        const _out = !!out && out.isVector3 ? out : new $e1f901905a002d12$var$THREE.Vector3();
         return _out.copy(receiveEndValue ? this._focalOffsetEnd : this._focalOffset);
     }
     /**
      * Normalize camera azimuth angle rotation between 0 and 360 degrees.
      * @category Methods
      */ normalizeRotations() {
-        this._sphericalEnd.theta = this._sphericalEnd.theta % $d882b6cfe45cb358$var$PI_2;
-        if (this._sphericalEnd.theta < 0) this._sphericalEnd.theta += $d882b6cfe45cb358$var$PI_2;
-        this._spherical.theta += $d882b6cfe45cb358$var$PI_2 * Math.round((this._sphericalEnd.theta - this._spherical.theta) / $d882b6cfe45cb358$var$PI_2);
+        this._sphericalEnd.theta = this._sphericalEnd.theta % $e1f901905a002d12$var$PI_2;
+        if (this._sphericalEnd.theta < 0) this._sphericalEnd.theta += $e1f901905a002d12$var$PI_2;
+        this._spherical.theta += $e1f901905a002d12$var$PI_2 * Math.round((this._sphericalEnd.theta - this._spherical.theta) / $e1f901905a002d12$var$PI_2);
     }
     /**
      * stop all transitions.
@@ -1774,9 +1774,9 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * @param enableTransition
      * @category Methods
      */ reset(enableTransition = false) {
-        if (!$d882b6cfe45cb358$var$approxEquals(this._camera.up.x, this._cameraUp0.x) || !$d882b6cfe45cb358$var$approxEquals(this._camera.up.y, this._cameraUp0.y) || !$d882b6cfe45cb358$var$approxEquals(this._camera.up.z, this._cameraUp0.z)) {
+        if (!$e1f901905a002d12$var$approxEquals(this._camera.up.x, this._cameraUp0.x) || !$e1f901905a002d12$var$approxEquals(this._camera.up.y, this._cameraUp0.y) || !$e1f901905a002d12$var$approxEquals(this._camera.up.z, this._cameraUp0.z)) {
             this._camera.up.copy(this._cameraUp0);
-            const position = this.getPosition($d882b6cfe45cb358$var$_v3A);
+            const position = this.getPosition($e1f901905a002d12$var$_v3A);
             this.updateCameraUp();
             this.setPosition(position.x, position.y, position.z);
         }
@@ -1802,7 +1802,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * When camera-up vector is changed, `.updateCameraUp()` must be called.
      * @category Methods
      */ updateCameraUp() {
-        this._yAxisUpSpace.setFromUnitVectors(this._camera.up, $d882b6cfe45cb358$var$_AXIS_Y);
+        this._yAxisUpSpace.setFromUnitVectors(this._camera.up, $e1f901905a002d12$var$_AXIS_Y);
         this._yAxisUpSpaceInverse.copy(this._yAxisUpSpace).invert();
     }
     /**
@@ -1810,15 +1810,15 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      * The orbit system will be re-initialized with the current position.
      * @category Methods
      */ applyCameraUp() {
-        const cameraDirection = $d882b6cfe45cb358$var$_v3A.subVectors(this._target, this._camera.position).normalize();
+        const cameraDirection = $e1f901905a002d12$var$_v3A.subVectors(this._target, this._camera.position).normalize();
         // So first find the vector off to the side, orthogonal to both this.object.up and
         // the "view" vector.
-        const side = $d882b6cfe45cb358$var$_v3B.crossVectors(cameraDirection, this._camera.up);
+        const side = $e1f901905a002d12$var$_v3B.crossVectors(cameraDirection, this._camera.up);
         // Then find the vector orthogonal to both this "side" vector and the "view" vector.
         // This vector will be the new "up" vector.
         this._camera.up.crossVectors(side, cameraDirection).normalize();
         this._camera.updateMatrixWorld();
-        const position = this.getPosition($d882b6cfe45cb358$var$_v3A);
+        const position = this.getPosition($e1f901905a002d12$var$_v3A);
         this.updateCameraUp();
         this.setPosition(position.x, position.y, position.z);
     }
@@ -1832,116 +1832,116 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         const deltaTheta = this._sphericalEnd.theta - this._spherical.theta;
         const deltaPhi = this._sphericalEnd.phi - this._spherical.phi;
         const deltaRadius = this._sphericalEnd.radius - this._spherical.radius;
-        const deltaTarget = $d882b6cfe45cb358$var$_deltaTarget.subVectors(this._targetEnd, this._target);
-        const deltaOffset = $d882b6cfe45cb358$var$_deltaOffset.subVectors(this._focalOffsetEnd, this._focalOffset);
+        const deltaTarget = $e1f901905a002d12$var$_deltaTarget.subVectors(this._targetEnd, this._target);
+        const deltaOffset = $e1f901905a002d12$var$_deltaOffset.subVectors(this._focalOffsetEnd, this._focalOffset);
         const deltaZoom = this._zoomEnd - this._zoom;
         // update theta
-        if ($d882b6cfe45cb358$var$approxZero(deltaTheta)) {
+        if ($e1f901905a002d12$var$approxZero(deltaTheta)) {
             this._thetaVelocity.value = 0;
             this._spherical.theta = this._sphericalEnd.theta;
         } else {
             const smoothTime = this._isUserControllingRotate ? this.draggingSmoothTime : this.smoothTime;
-            this._spherical.theta = $d882b6cfe45cb358$var$smoothDamp(this._spherical.theta, this._sphericalEnd.theta, this._thetaVelocity, smoothTime, Infinity, delta);
+            this._spherical.theta = $e1f901905a002d12$var$smoothDamp(this._spherical.theta, this._sphericalEnd.theta, this._thetaVelocity, smoothTime, Infinity, delta);
             this._needsUpdate = true;
         }
         // update phi
-        if ($d882b6cfe45cb358$var$approxZero(deltaPhi)) {
+        if ($e1f901905a002d12$var$approxZero(deltaPhi)) {
             this._phiVelocity.value = 0;
             this._spherical.phi = this._sphericalEnd.phi;
         } else {
             const smoothTime = this._isUserControllingRotate ? this.draggingSmoothTime : this.smoothTime;
-            this._spherical.phi = $d882b6cfe45cb358$var$smoothDamp(this._spherical.phi, this._sphericalEnd.phi, this._phiVelocity, smoothTime, Infinity, delta);
+            this._spherical.phi = $e1f901905a002d12$var$smoothDamp(this._spherical.phi, this._sphericalEnd.phi, this._phiVelocity, smoothTime, Infinity, delta);
             this._needsUpdate = true;
         }
         // update distance
-        if ($d882b6cfe45cb358$var$approxZero(deltaRadius)) {
+        if ($e1f901905a002d12$var$approxZero(deltaRadius)) {
             this._radiusVelocity.value = 0;
             this._spherical.radius = this._sphericalEnd.radius;
         } else {
             const smoothTime = this._isUserControllingDolly ? this.draggingSmoothTime : this.smoothTime;
-            this._spherical.radius = $d882b6cfe45cb358$var$smoothDamp(this._spherical.radius, this._sphericalEnd.radius, this._radiusVelocity, smoothTime, this.maxSpeed, delta);
+            this._spherical.radius = $e1f901905a002d12$var$smoothDamp(this._spherical.radius, this._sphericalEnd.radius, this._radiusVelocity, smoothTime, this.maxSpeed, delta);
             this._needsUpdate = true;
         }
         // update target position
-        if ($d882b6cfe45cb358$var$approxZero(deltaTarget.x) && $d882b6cfe45cb358$var$approxZero(deltaTarget.y) && $d882b6cfe45cb358$var$approxZero(deltaTarget.z)) {
+        if ($e1f901905a002d12$var$approxZero(deltaTarget.x) && $e1f901905a002d12$var$approxZero(deltaTarget.y) && $e1f901905a002d12$var$approxZero(deltaTarget.z)) {
             this._targetVelocity.set(0, 0, 0);
             this._target.copy(this._targetEnd);
         } else {
             const smoothTime = this._isUserControllingTruck ? this.draggingSmoothTime : this.smoothTime;
-            $d882b6cfe45cb358$var$smoothDampVec3(this._target, this._targetEnd, this._targetVelocity, smoothTime, this.maxSpeed, delta, this._target);
+            $e1f901905a002d12$var$smoothDampVec3(this._target, this._targetEnd, this._targetVelocity, smoothTime, this.maxSpeed, delta, this._target);
             this._needsUpdate = true;
         }
         // update focalOffset
-        if ($d882b6cfe45cb358$var$approxZero(deltaOffset.x) && $d882b6cfe45cb358$var$approxZero(deltaOffset.y) && $d882b6cfe45cb358$var$approxZero(deltaOffset.z)) {
+        if ($e1f901905a002d12$var$approxZero(deltaOffset.x) && $e1f901905a002d12$var$approxZero(deltaOffset.y) && $e1f901905a002d12$var$approxZero(deltaOffset.z)) {
             this._focalOffsetVelocity.set(0, 0, 0);
             this._focalOffset.copy(this._focalOffsetEnd);
         } else {
             const smoothTime = this._isUserControllingOffset ? this.draggingSmoothTime : this.smoothTime;
-            $d882b6cfe45cb358$var$smoothDampVec3(this._focalOffset, this._focalOffsetEnd, this._focalOffsetVelocity, smoothTime, this.maxSpeed, delta, this._focalOffset);
+            $e1f901905a002d12$var$smoothDampVec3(this._focalOffset, this._focalOffsetEnd, this._focalOffsetVelocity, smoothTime, this.maxSpeed, delta, this._focalOffset);
             this._needsUpdate = true;
         }
         // update zoom
-        if ($d882b6cfe45cb358$var$approxZero(deltaZoom)) {
+        if ($e1f901905a002d12$var$approxZero(deltaZoom)) {
             this._zoomVelocity.value = 0;
             this._zoom = this._zoomEnd;
         } else {
             const smoothTime = this._isUserControllingZoom ? this.draggingSmoothTime : this.smoothTime;
-            this._zoom = $d882b6cfe45cb358$var$smoothDamp(this._zoom, this._zoomEnd, this._zoomVelocity, smoothTime, Infinity, delta);
+            this._zoom = $e1f901905a002d12$var$smoothDamp(this._zoom, this._zoomEnd, this._zoomVelocity, smoothTime, Infinity, delta);
         }
         if (this.dollyToCursor) {
-            if ($d882b6cfe45cb358$var$isPerspectiveCamera(this._camera) && this._changedDolly !== 0) {
+            if ($e1f901905a002d12$var$isPerspectiveCamera(this._camera) && this._changedDolly !== 0) {
                 const dollyControlAmount = this._spherical.radius - this._lastDistance;
                 const camera = this._camera;
-                const cameraDirection = this._getCameraDirection($d882b6cfe45cb358$var$_cameraDirection);
-                const planeX = $d882b6cfe45cb358$var$_v3A.copy(cameraDirection).cross(camera.up).normalize();
+                const cameraDirection = this._getCameraDirection($e1f901905a002d12$var$_cameraDirection);
+                const planeX = $e1f901905a002d12$var$_v3A.copy(cameraDirection).cross(camera.up).normalize();
                 if (planeX.lengthSq() === 0) planeX.x = 1.0;
-                const planeY = $d882b6cfe45cb358$var$_v3B.crossVectors(planeX, cameraDirection);
-                const worldToScreen = this._sphericalEnd.radius * Math.tan(camera.getEffectiveFOV() * $d882b6cfe45cb358$var$DEG2RAD * 0.5);
+                const planeY = $e1f901905a002d12$var$_v3B.crossVectors(planeX, cameraDirection);
+                const worldToScreen = this._sphericalEnd.radius * Math.tan(camera.getEffectiveFOV() * $e1f901905a002d12$var$DEG2RAD * 0.5);
                 const prevRadius = this._sphericalEnd.radius - dollyControlAmount;
                 const lerpRatio = (prevRadius - this._sphericalEnd.radius) / this._sphericalEnd.radius;
-                const cursor = $d882b6cfe45cb358$var$_v3C.copy(this._targetEnd).add(planeX.multiplyScalar(this._dollyControlCoord.x * worldToScreen * camera.aspect)).add(planeY.multiplyScalar(this._dollyControlCoord.y * worldToScreen));
-                const newTargetEnd = $d882b6cfe45cb358$var$_v3A.copy(this._targetEnd).lerp(cursor, lerpRatio);
-                const isMin = this._lastDollyDirection === $d882b6cfe45cb358$var$DOLLY_DIRECTION.IN && this._spherical.radius <= this.minDistance;
-                const isMax = this._lastDollyDirection === $d882b6cfe45cb358$var$DOLLY_DIRECTION.OUT && this.maxDistance <= this._spherical.radius;
+                const cursor = $e1f901905a002d12$var$_v3C.copy(this._targetEnd).add(planeX.multiplyScalar(this._dollyControlCoord.x * worldToScreen * camera.aspect)).add(planeY.multiplyScalar(this._dollyControlCoord.y * worldToScreen));
+                const newTargetEnd = $e1f901905a002d12$var$_v3A.copy(this._targetEnd).lerp(cursor, lerpRatio);
+                const isMin = this._lastDollyDirection === $e1f901905a002d12$var$DOLLY_DIRECTION.IN && this._spherical.radius <= this.minDistance;
+                const isMax = this._lastDollyDirection === $e1f901905a002d12$var$DOLLY_DIRECTION.OUT && this.maxDistance <= this._spherical.radius;
                 if (this.infinityDolly && (isMin || isMax)) {
                     this._sphericalEnd.radius -= dollyControlAmount;
                     this._spherical.radius -= dollyControlAmount;
-                    const dollyAmount = $d882b6cfe45cb358$var$_v3B.copy(cameraDirection).multiplyScalar(-dollyControlAmount);
+                    const dollyAmount = $e1f901905a002d12$var$_v3B.copy(cameraDirection).multiplyScalar(-dollyControlAmount);
                     newTargetEnd.add(dollyAmount);
                 }
                 // target position may be moved beyond boundary.
                 this._boundary.clampPoint(newTargetEnd, newTargetEnd);
-                const targetEndDiff = $d882b6cfe45cb358$var$_v3B.subVectors(newTargetEnd, this._targetEnd);
+                const targetEndDiff = $e1f901905a002d12$var$_v3B.subVectors(newTargetEnd, this._targetEnd);
                 this._targetEnd.copy(newTargetEnd);
                 this._target.add(targetEndDiff);
                 this._changedDolly -= dollyControlAmount;
-                if ($d882b6cfe45cb358$var$approxZero(this._changedDolly)) this._changedDolly = 0;
-            } else if ($d882b6cfe45cb358$var$isOrthographicCamera(this._camera) && this._changedZoom !== 0) {
+                if ($e1f901905a002d12$var$approxZero(this._changedDolly)) this._changedDolly = 0;
+            } else if ($e1f901905a002d12$var$isOrthographicCamera(this._camera) && this._changedZoom !== 0) {
                 const dollyControlAmount = this._zoom - this._lastZoom;
                 const camera = this._camera;
-                const worldCursorPosition = $d882b6cfe45cb358$var$_v3A.set(this._dollyControlCoord.x, this._dollyControlCoord.y, (camera.near + camera.far) / (camera.near - camera.far)).unproject(camera);
-                const quaternion = $d882b6cfe45cb358$var$_v3B.set(0, 0, -1).applyQuaternion(camera.quaternion);
-                const cursor = $d882b6cfe45cb358$var$_v3C.copy(worldCursorPosition).add(quaternion.multiplyScalar(-worldCursorPosition.dot(camera.up)));
+                const worldCursorPosition = $e1f901905a002d12$var$_v3A.set(this._dollyControlCoord.x, this._dollyControlCoord.y, (camera.near + camera.far) / (camera.near - camera.far)).unproject(camera);
+                const quaternion = $e1f901905a002d12$var$_v3B.set(0, 0, -1).applyQuaternion(camera.quaternion);
+                const cursor = $e1f901905a002d12$var$_v3C.copy(worldCursorPosition).add(quaternion.multiplyScalar(-worldCursorPosition.dot(camera.up)));
                 const prevZoom = this._zoom - dollyControlAmount;
                 const lerpRatio = -(prevZoom - this._zoom) / this._zoom;
                 // find the "distance" (aka plane constant in three.js) of Plane
                 // from a given position (this._targetEnd) and normal vector (cameraDirection)
                 // https://www.maplesoft.com/support/help/maple/view.aspx?path=MathApps%2FEquationOfAPlaneNormal#bkmrk0
-                const cameraDirection = this._getCameraDirection($d882b6cfe45cb358$var$_cameraDirection);
+                const cameraDirection = this._getCameraDirection($e1f901905a002d12$var$_cameraDirection);
                 const prevPlaneConstant = this._targetEnd.dot(cameraDirection);
-                const newTargetEnd = $d882b6cfe45cb358$var$_v3A.copy(this._targetEnd).lerp(cursor, lerpRatio);
+                const newTargetEnd = $e1f901905a002d12$var$_v3A.copy(this._targetEnd).lerp(cursor, lerpRatio);
                 const newPlaneConstant = newTargetEnd.dot(cameraDirection);
                 // Pull back the camera depth that has moved, to be the camera stationary as zoom
                 const pullBack = cameraDirection.multiplyScalar(newPlaneConstant - prevPlaneConstant);
                 newTargetEnd.sub(pullBack);
                 // target position may be moved beyond boundary.
                 this._boundary.clampPoint(newTargetEnd, newTargetEnd);
-                const targetEndDiff = $d882b6cfe45cb358$var$_v3B.subVectors(newTargetEnd, this._targetEnd);
+                const targetEndDiff = $e1f901905a002d12$var$_v3B.subVectors(newTargetEnd, this._targetEnd);
                 this._targetEnd.copy(newTargetEnd);
                 this._target.add(targetEndDiff);
                 // this._target.copy( this._targetEnd );
                 this._changedZoom -= dollyControlAmount;
-                if ($d882b6cfe45cb358$var$approxZero(this._changedZoom)) this._changedZoom = 0;
+                if ($e1f901905a002d12$var$approxZero(this._changedZoom)) this._changedZoom = 0;
             }
         }
         if (this._camera.zoom !== this._zoom) {
@@ -1959,19 +1959,19 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         this._camera.position.setFromSpherical(this._spherical).applyQuaternion(this._yAxisUpSpaceInverse).add(this._target);
         this._camera.lookAt(this._target);
         // set offset after the orbit movement
-        const affectOffset = !$d882b6cfe45cb358$var$approxZero(this._focalOffset.x) || !$d882b6cfe45cb358$var$approxZero(this._focalOffset.y) || !$d882b6cfe45cb358$var$approxZero(this._focalOffset.z);
+        const affectOffset = !$e1f901905a002d12$var$approxZero(this._focalOffset.x) || !$e1f901905a002d12$var$approxZero(this._focalOffset.y) || !$e1f901905a002d12$var$approxZero(this._focalOffset.z);
         if (affectOffset) {
-            $d882b6cfe45cb358$var$_xColumn.setFromMatrixColumn(this._camera.matrix, 0);
-            $d882b6cfe45cb358$var$_yColumn.setFromMatrixColumn(this._camera.matrix, 1);
-            $d882b6cfe45cb358$var$_zColumn.setFromMatrixColumn(this._camera.matrix, 2);
-            $d882b6cfe45cb358$var$_xColumn.multiplyScalar(this._focalOffset.x);
-            $d882b6cfe45cb358$var$_yColumn.multiplyScalar(-this._focalOffset.y);
-            $d882b6cfe45cb358$var$_zColumn.multiplyScalar(this._focalOffset.z); // notice: z-offset will not affect in Orthographic.
-            $d882b6cfe45cb358$var$_v3A.copy($d882b6cfe45cb358$var$_xColumn).add($d882b6cfe45cb358$var$_yColumn).add($d882b6cfe45cb358$var$_zColumn);
-            this._camera.position.add($d882b6cfe45cb358$var$_v3A);
+            $e1f901905a002d12$var$_xColumn.setFromMatrixColumn(this._camera.matrix, 0);
+            $e1f901905a002d12$var$_yColumn.setFromMatrixColumn(this._camera.matrix, 1);
+            $e1f901905a002d12$var$_zColumn.setFromMatrixColumn(this._camera.matrix, 2);
+            $e1f901905a002d12$var$_xColumn.multiplyScalar(this._focalOffset.x);
+            $e1f901905a002d12$var$_yColumn.multiplyScalar(-this._focalOffset.y);
+            $e1f901905a002d12$var$_zColumn.multiplyScalar(this._focalOffset.z); // notice: z-offset will not affect in Orthographic.
+            $e1f901905a002d12$var$_v3A.copy($e1f901905a002d12$var$_xColumn).add($e1f901905a002d12$var$_yColumn).add($e1f901905a002d12$var$_zColumn);
+            this._camera.position.add($e1f901905a002d12$var$_v3A);
             this._camera.updateMatrixWorld();
         }
-        if (this._boundaryEnclosesCamera) this._encloseToBoundary(this._camera.position.copy(this._target), $d882b6cfe45cb358$var$_v3A.setFromSpherical(this._spherical).applyQuaternion(this._yAxisUpSpaceInverse), 1.0);
+        if (this._boundaryEnclosesCamera) this._encloseToBoundary(this._camera.position.copy(this._target), $e1f901905a002d12$var$_v3A.setFromSpherical(this._spherical).applyQuaternion(this._yAxisUpSpaceInverse), 1.0);
         const updated = this._needsUpdate;
         if (updated && !this._updatedLastTime) {
             this._hasRested = false;
@@ -1985,7 +1985,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             this.dispatchEvent({
                 type: 'update'
             });
-            if ($d882b6cfe45cb358$var$approxZero(deltaTheta, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaPhi, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaRadius, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaTarget.x, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaTarget.y, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaTarget.z, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaOffset.x, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaOffset.y, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaOffset.z, this.restThreshold) && $d882b6cfe45cb358$var$approxZero(deltaZoom, this.restThreshold) && !this._hasRested) {
+            if ($e1f901905a002d12$var$approxZero(deltaTheta, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaPhi, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaRadius, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaTarget.x, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaTarget.y, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaTarget.z, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaOffset.x, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaOffset.y, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaOffset.z, this.restThreshold) && $e1f901905a002d12$var$approxZero(deltaZoom, this.restThreshold) && !this._hasRested) {
                 this._hasRested = true;
                 this.dispatchEvent({
                     type: 'rest'
@@ -2007,20 +2007,20 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         return JSON.stringify({
             enabled: this._enabled,
             minDistance: this.minDistance,
-            maxDistance: $d882b6cfe45cb358$var$infinityToMaxNumber(this.maxDistance),
+            maxDistance: $e1f901905a002d12$var$infinityToMaxNumber(this.maxDistance),
             minZoom: this.minZoom,
-            maxZoom: $d882b6cfe45cb358$var$infinityToMaxNumber(this.maxZoom),
+            maxZoom: $e1f901905a002d12$var$infinityToMaxNumber(this.maxZoom),
             minPolarAngle: this.minPolarAngle,
-            maxPolarAngle: $d882b6cfe45cb358$var$infinityToMaxNumber(this.maxPolarAngle),
-            minAzimuthAngle: $d882b6cfe45cb358$var$infinityToMaxNumber(this.minAzimuthAngle),
-            maxAzimuthAngle: $d882b6cfe45cb358$var$infinityToMaxNumber(this.maxAzimuthAngle),
+            maxPolarAngle: $e1f901905a002d12$var$infinityToMaxNumber(this.maxPolarAngle),
+            minAzimuthAngle: $e1f901905a002d12$var$infinityToMaxNumber(this.minAzimuthAngle),
+            maxAzimuthAngle: $e1f901905a002d12$var$infinityToMaxNumber(this.maxAzimuthAngle),
             smoothTime: this.smoothTime,
             draggingSmoothTime: this.draggingSmoothTime,
             dollySpeed: this.dollySpeed,
             truckSpeed: this.truckSpeed,
             dollyToCursor: this.dollyToCursor,
             target: this._targetEnd.toArray(),
-            position: $d882b6cfe45cb358$var$_v3A.setFromSpherical(this._sphericalEnd).add(this._targetEnd).toArray(),
+            position: $e1f901905a002d12$var$_v3A.setFromSpherical(this._sphericalEnd).add(this._targetEnd).toArray(),
             zoom: this._zoomEnd,
             focalOffset: this._focalOffsetEnd.toArray(),
             target0: this._target0.toArray(),
@@ -2038,13 +2038,13 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         const obj = JSON.parse(json);
         this.enabled = obj.enabled;
         this.minDistance = obj.minDistance;
-        this.maxDistance = $d882b6cfe45cb358$var$maxNumberToInfinity(obj.maxDistance);
+        this.maxDistance = $e1f901905a002d12$var$maxNumberToInfinity(obj.maxDistance);
         this.minZoom = obj.minZoom;
-        this.maxZoom = $d882b6cfe45cb358$var$maxNumberToInfinity(obj.maxZoom);
+        this.maxZoom = $e1f901905a002d12$var$maxNumberToInfinity(obj.maxZoom);
         this.minPolarAngle = obj.minPolarAngle;
-        this.maxPolarAngle = $d882b6cfe45cb358$var$maxNumberToInfinity(obj.maxPolarAngle);
-        this.minAzimuthAngle = $d882b6cfe45cb358$var$maxNumberToInfinity(obj.minAzimuthAngle);
-        this.maxAzimuthAngle = $d882b6cfe45cb358$var$maxNumberToInfinity(obj.maxAzimuthAngle);
+        this.maxPolarAngle = $e1f901905a002d12$var$maxNumberToInfinity(obj.maxPolarAngle);
+        this.minAzimuthAngle = $e1f901905a002d12$var$maxNumberToInfinity(obj.minAzimuthAngle);
+        this.maxAzimuthAngle = $e1f901905a002d12$var$maxNumberToInfinity(obj.maxAzimuthAngle);
         this.smoothTime = obj.smoothTime;
         this.draggingSmoothTime = obj.draggingSmoothTime;
         this.dollySpeed = obj.dollySpeed;
@@ -2055,9 +2055,9 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         this._zoom0 = obj.zoom0;
         this._focalOffset0.fromArray(obj.focalOffset0);
         this.moveTo(obj.target[0], obj.target[1], obj.target[2], enableTransition);
-        $d882b6cfe45cb358$var$_sphericalA.setFromVector3($d882b6cfe45cb358$var$_v3A.fromArray(obj.position).sub(this._targetEnd).applyQuaternion(this._yAxisUpSpace));
-        this.rotateTo($d882b6cfe45cb358$var$_sphericalA.theta, $d882b6cfe45cb358$var$_sphericalA.phi, enableTransition);
-        this.dollyTo($d882b6cfe45cb358$var$_sphericalA.radius, enableTransition);
+        $e1f901905a002d12$var$_sphericalA.setFromVector3($e1f901905a002d12$var$_v3A.fromArray(obj.position).sub(this._targetEnd).applyQuaternion(this._yAxisUpSpace));
+        this.rotateTo($e1f901905a002d12$var$_sphericalA.theta, $e1f901905a002d12$var$_sphericalA.phi, enableTransition);
+        this.dollyTo($e1f901905a002d12$var$_sphericalA.radius, enableTransition);
         this.zoomTo(obj.zoom, enableTransition);
         this.setFocalOffset(obj.focalOffset[0], obj.focalOffset[1], obj.focalOffset[2], enableTransition);
         this._needsUpdate = true;
@@ -2070,7 +2070,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             console.warn('camera-controls is already connected.');
             return;
         }
-        domElement.setAttribute('data-camera-controls-version', $d882b6cfe45cb358$var$VERSION);
+        domElement.setAttribute('data-camera-controls-version', $e1f901905a002d12$var$VERSION);
         this._addAllEventListeners(domElement);
         this._getClientRect(this._elementRect);
     }
@@ -2115,8 +2115,8 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         const offsetLength2 = offset.lengthSq();
         if (offsetLength2 === 0.0) return position;
         // See: https://twitter.com/FMS_Cat/status/1106508958640988161
-        const newTarget = $d882b6cfe45cb358$var$_v3B.copy(offset).add(position); // target
-        const clampedTarget = this._boundary.clampPoint(newTarget, $d882b6cfe45cb358$var$_v3C); // clamped target
+        const newTarget = $e1f901905a002d12$var$_v3B.copy(offset).add(position); // target
+        const clampedTarget = this._boundary.clampPoint(newTarget, $e1f901905a002d12$var$_v3C); // clamped target
         const deltaClampedTarget = clampedTarget.sub(newTarget); // newTarget -> clampedTarget
         const deltaClampedTargetLength2 = deltaClampedTarget.lengthSq(); // squared length of deltaClampedTarget
         if (deltaClampedTargetLength2 === 0.0) return position.add(offset);
@@ -2124,21 +2124,21 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         else if (friction === 0.0) return position.add(offset).add(deltaClampedTarget);
         else {
             const offsetFactor = 1.0 + friction * deltaClampedTargetLength2 / offset.dot(deltaClampedTarget);
-            return position.add($d882b6cfe45cb358$var$_v3B.copy(offset).multiplyScalar(offsetFactor)).add(deltaClampedTarget.multiplyScalar(1.0 - friction));
+            return position.add($e1f901905a002d12$var$_v3B.copy(offset).multiplyScalar(offsetFactor)).add(deltaClampedTarget.multiplyScalar(1.0 - friction));
         }
     }
     _updateNearPlaneCorners() {
-        if ($d882b6cfe45cb358$var$isPerspectiveCamera(this._camera)) {
+        if ($e1f901905a002d12$var$isPerspectiveCamera(this._camera)) {
             const camera = this._camera;
             const near = camera.near;
-            const fov = camera.getEffectiveFOV() * $d882b6cfe45cb358$var$DEG2RAD;
+            const fov = camera.getEffectiveFOV() * $e1f901905a002d12$var$DEG2RAD;
             const heightHalf = Math.tan(fov * 0.5) * near; // near plain half height
             const widthHalf = heightHalf * camera.aspect; // near plain half width
             this._nearPlaneCorners[0].set(-widthHalf, -heightHalf, 0);
             this._nearPlaneCorners[1].set(widthHalf, -heightHalf, 0);
             this._nearPlaneCorners[2].set(widthHalf, heightHalf, 0);
             this._nearPlaneCorners[3].set(-widthHalf, heightHalf, 0);
-        } else if ($d882b6cfe45cb358$var$isOrthographicCamera(this._camera)) {
+        } else if ($e1f901905a002d12$var$isOrthographicCamera(this._camera)) {
             const camera = this._camera;
             const zoomInv = 1 / camera.zoom;
             const left = camera.left * zoomInv;
@@ -2156,16 +2156,16 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
         let distance = Infinity;
         const hasCollider = this.colliderMeshes.length >= 1;
         if (!hasCollider) return distance;
-        if ($d882b6cfe45cb358$var$notSupportedInOrthographicCamera(this._camera, '_collisionTest')) return distance;
-        const rayDirection = this._getTargetDirection($d882b6cfe45cb358$var$_cameraDirection);
-        $d882b6cfe45cb358$var$_rotationMatrix.lookAt($d882b6cfe45cb358$var$_ORIGIN, rayDirection, this._camera.up);
+        if ($e1f901905a002d12$var$notSupportedInOrthographicCamera(this._camera, '_collisionTest')) return distance;
+        const rayDirection = this._getTargetDirection($e1f901905a002d12$var$_cameraDirection);
+        $e1f901905a002d12$var$_rotationMatrix.lookAt($e1f901905a002d12$var$_ORIGIN, rayDirection, this._camera.up);
         for(let i = 0; i < 4; i++){
-            const nearPlaneCorner = $d882b6cfe45cb358$var$_v3B.copy(this._nearPlaneCorners[i]);
-            nearPlaneCorner.applyMatrix4($d882b6cfe45cb358$var$_rotationMatrix);
-            const origin = $d882b6cfe45cb358$var$_v3C.addVectors(this._target, nearPlaneCorner);
-            $d882b6cfe45cb358$var$_raycaster.set(origin, rayDirection);
-            $d882b6cfe45cb358$var$_raycaster.far = this._spherical.radius + 1;
-            const intersects = $d882b6cfe45cb358$var$_raycaster.intersectObjects(this.colliderMeshes);
+            const nearPlaneCorner = $e1f901905a002d12$var$_v3B.copy(this._nearPlaneCorners[i]);
+            nearPlaneCorner.applyMatrix4($e1f901905a002d12$var$_rotationMatrix);
+            const origin = $e1f901905a002d12$var$_v3C.addVectors(this._target, nearPlaneCorner);
+            $e1f901905a002d12$var$_raycaster.set(origin, rayDirection);
+            $e1f901905a002d12$var$_raycaster.far = this._spherical.radius + 1;
+            const intersects = $e1f901905a002d12$var$_raycaster.intersectObjects(this.colliderMeshes);
             if (intersects.length !== 0 && intersects[0].distance < distance) distance = intersects[0].distance;
         }
         return distance;
@@ -2235,16 +2235,16 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
      */ set draggingDampingFactor(_) {
         console.warn('.draggingDampingFactor has been deprecated. use draggingSmoothTime (in seconds) instead.');
     }
-    static createBoundingSphere(object3d, out = new $d882b6cfe45cb358$var$THREE.Sphere()) {
+    static createBoundingSphere(object3d, out = new $e1f901905a002d12$var$THREE.Sphere()) {
         const boundingSphere = out;
         const center = boundingSphere.center;
-        $d882b6cfe45cb358$var$_box3A.makeEmpty();
+        $e1f901905a002d12$var$_box3A.makeEmpty();
         // find the center
         object3d.traverseVisible((object)=>{
             if (!object.isMesh) return;
-            $d882b6cfe45cb358$var$_box3A.expandByObject(object);
+            $e1f901905a002d12$var$_box3A.expandByObject(object);
         });
-        $d882b6cfe45cb358$var$_box3A.getCenter(center);
+        $e1f901905a002d12$var$_box3A.getCenter(center);
         // find the radius
         let maxRadiusSq = 0;
         object3d.traverseVisible((object)=>{
@@ -2256,8 +2256,8 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
             const bufferGeometry = geometry;
             const position = bufferGeometry.attributes.position;
             for(let i = 0, l = position.count; i < l; i++){
-                $d882b6cfe45cb358$var$_v3A.fromBufferAttribute(position, i);
-                maxRadiusSq = Math.max(maxRadiusSq, center.distanceToSquared($d882b6cfe45cb358$var$_v3A));
+                $e1f901905a002d12$var$_v3A.fromBufferAttribute(position, i);
+                maxRadiusSq = Math.max(maxRadiusSq, center.distanceToSquared($e1f901905a002d12$var$_v3A));
             }
         });
         boundingSphere.radius = Math.sqrt(maxRadiusSq);
@@ -2276,7 +2276,7 @@ class $d882b6cfe45cb358$export$2e2bcd8739ae039 extends $d882b6cfe45cb358$export$
 
 
 
-class $caa409da4139f1cd$export$d1c1e163c7960c6 {
+class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
     static createButton(renderer, sessionInit = {}) {
         const button = document.createElement('button');
         function showStartXR(mode) {
@@ -2409,12 +2409,12 @@ class $caa409da4139f1cd$export$d1c1e163c7960c6 {
  * https://github.com/yomotsu/hold-event
  * (c) 2020 @yomotsu
  * Released under the MIT License.
- */ var $a89116303551eb1d$export$5d78b97103c6f2c7;
+ */ var $8ae143a90d3c4f75$export$5d78b97103c6f2c7;
 (function(HOLD_EVENT_TYPE) {
     HOLD_EVENT_TYPE["HOLD_START"] = "holdStart";
     HOLD_EVENT_TYPE["HOLD_END"] = "holdEnd";
     HOLD_EVENT_TYPE["HOLDING"] = "holding";
-})($a89116303551eb1d$export$5d78b97103c6f2c7 || ($a89116303551eb1d$export$5d78b97103c6f2c7 = {}));
+})($8ae143a90d3c4f75$export$5d78b97103c6f2c7 || ($8ae143a90d3c4f75$export$5d78b97103c6f2c7 = {}));
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -2428,24 +2428,24 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
-***************************************************************************** */ /* global Reflect, Promise */ var $a89116303551eb1d$var$extendStatics = function(d, b) {
-    $a89116303551eb1d$var$extendStatics = Object.setPrototypeOf || ({
+***************************************************************************** */ /* global Reflect, Promise */ var $8ae143a90d3c4f75$var$extendStatics = function(d, b) {
+    $8ae143a90d3c4f75$var$extendStatics = Object.setPrototypeOf || ({
         __proto__: []
     }) instanceof Array && function(d, b) {
         d.__proto__ = b;
     } || function(d, b) {
         for(var p in b)if (b.hasOwnProperty(p)) d[p] = b[p];
     };
-    return $a89116303551eb1d$var$extendStatics(d, b);
+    return $8ae143a90d3c4f75$var$extendStatics(d, b);
 };
-function $a89116303551eb1d$var$__extends(d, b) {
-    $a89116303551eb1d$var$extendStatics(d, b);
+function $8ae143a90d3c4f75$var$__extends(d, b) {
+    $8ae143a90d3c4f75$var$extendStatics(d, b);
     function __() {
         this.constructor = d;
     }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 }
-var $a89116303551eb1d$var$EventDispatcher = function() {
+var $8ae143a90d3c4f75$var$EventDispatcher = function() {
     function EventDispatcher() {
         this._listeners = {};
     }
@@ -2473,8 +2473,8 @@ var $a89116303551eb1d$var$EventDispatcher = function() {
     };
     return EventDispatcher;
 }();
-var $a89116303551eb1d$var$Hold = function(_super) {
-    $a89116303551eb1d$var$__extends(Hold, _super);
+var $8ae143a90d3c4f75$var$Hold = function(_super) {
+    $8ae143a90d3c4f75$var$__extends(Hold, _super);
     function Hold(holdIntervalDelay) {
         if (holdIntervalDelay === void 0) holdIntervalDelay = 100;
         var _this = _super.call(this) || this;
@@ -2492,7 +2492,7 @@ var $a89116303551eb1d$var$Hold = function(_super) {
             _this._elapsedTime = 0;
             _this._lastTime = performance.now();
             _this.dispatchEvent({
-                type: $a89116303551eb1d$export$5d78b97103c6f2c7.HOLD_START,
+                type: $8ae143a90d3c4f75$export$5d78b97103c6f2c7.HOLD_START,
                 deltaTime: _this._deltaTime,
                 elapsedTime: _this._elapsedTime,
                 originalEvent: event
@@ -2504,7 +2504,7 @@ var $a89116303551eb1d$var$Hold = function(_super) {
                 _this._elapsedTime += _this._deltaTime;
                 _this._lastTime = performance.now();
                 _this.dispatchEvent({
-                    type: $a89116303551eb1d$export$5d78b97103c6f2c7.HOLDING,
+                    type: $8ae143a90d3c4f75$export$5d78b97103c6f2c7.HOLDING,
                     deltaTime: _this._deltaTime,
                     elapsedTime: _this._elapsedTime
                 });
@@ -2518,7 +2518,7 @@ var $a89116303551eb1d$var$Hold = function(_super) {
             _this._elapsedTime += _this._deltaTime;
             _this._lastTime = performance.now();
             _this.dispatchEvent({
-                type: $a89116303551eb1d$export$5d78b97103c6f2c7.HOLD_END,
+                type: $8ae143a90d3c4f75$export$5d78b97103c6f2c7.HOLD_END,
                 deltaTime: _this._deltaTime,
                 elapsedTime: _this._elapsedTime,
                 originalEvent: event
@@ -2542,9 +2542,9 @@ var $a89116303551eb1d$var$Hold = function(_super) {
         configurable: true
     });
     return Hold;
-}($a89116303551eb1d$var$EventDispatcher);
-var $a89116303551eb1d$export$6fc5dd9cc392d83f = function(_super) {
-    $a89116303551eb1d$var$__extends(ElementHold, _super);
+}($8ae143a90d3c4f75$var$EventDispatcher);
+var $8ae143a90d3c4f75$export$6fc5dd9cc392d83f = function(_super) {
+    $8ae143a90d3c4f75$var$__extends(ElementHold, _super);
     function ElementHold(element, holdIntervalDelay) {
         if (holdIntervalDelay === void 0) holdIntervalDelay = 100;
         var _this = _super.call(this, holdIntervalDelay) || this;
@@ -2558,16 +2558,16 @@ var $a89116303551eb1d$export$6fc5dd9cc392d83f = function(_super) {
         return _this;
     }
     return ElementHold;
-}($a89116303551eb1d$var$Hold);
-var $a89116303551eb1d$export$b930b29ba9cf39c9 = function(_super) {
-    $a89116303551eb1d$var$__extends(KeyboardKeyHold, _super);
+}($8ae143a90d3c4f75$var$Hold);
+var $8ae143a90d3c4f75$export$b930b29ba9cf39c9 = function(_super) {
+    $8ae143a90d3c4f75$var$__extends(KeyboardKeyHold, _super);
     function KeyboardKeyHold(keyCode, holdIntervalDelay) {
         if (holdIntervalDelay === void 0) holdIntervalDelay = 100;
         var _this = _super.call(this, holdIntervalDelay) || this;
         _this._holdStart = _this._holdStart.bind(_this);
         _this._holdEnd = _this._holdEnd.bind(_this);
         var onKeydown = function(event) {
-            if ($a89116303551eb1d$var$isInputEvent(event)) return;
+            if ($8ae143a90d3c4f75$var$isInputEvent(event)) return;
             if (event.keyCode !== keyCode) return;
             _this._holdStart(event);
         };
@@ -2581,14 +2581,14 @@ var $a89116303551eb1d$export$b930b29ba9cf39c9 = function(_super) {
         return _this;
     }
     return KeyboardKeyHold;
-}($a89116303551eb1d$var$Hold);
-function $a89116303551eb1d$var$isInputEvent(event) {
+}($8ae143a90d3c4f75$var$Hold);
+function $8ae143a90d3c4f75$var$isInputEvent(event) {
     var target = event.target;
     return target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
 }
 
 
-function $2c32d9c40568b16d$export$fc22e28a11679cb8(cameraControls) {
+function $7f098f70bc341b4e$export$fc22e28a11679cb8(cameraControls) {
     const KEYCODE = {
         W: 87,
         A: 65,
@@ -2601,12 +2601,12 @@ function $2c32d9c40568b16d$export$fc22e28a11679cb8(cameraControls) {
         ARROW_RIGHT: 39,
         ARROW_DOWN: 40
     };
-    const wKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.W, 1);
-    const aKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.A, 1);
-    const sKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.S, 1);
-    const dKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.D, 1);
-    const qKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.Q, 1);
-    const eKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.E, 1);
+    const wKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.W, 1);
+    const aKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.A, 1);
+    const sKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.S, 1);
+    const dKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.D, 1);
+    const qKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.Q, 1);
+    const eKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.E, 1);
     aKey.addEventListener('holding', function(event) {
         cameraControls.truck(-0.01 * event?.deltaTime, 0, true);
     });
@@ -2627,21 +2627,21 @@ function $2c32d9c40568b16d$export$fc22e28a11679cb8(cameraControls) {
     });
     // Leaving this here because I hope I can use it later somehow.
     // cameraControls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
-    const leftKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.ARROW_LEFT, 1);
-    const rightKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.ARROW_RIGHT, 1);
-    const upKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.ARROW_UP, 1);
-    const downKey = new $a89116303551eb1d$export$b930b29ba9cf39c9(KEYCODE.ARROW_DOWN, 1);
+    const leftKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_LEFT, 1);
+    const rightKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_RIGHT, 1);
+    const upKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_UP, 1);
+    const downKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_DOWN, 1);
     leftKey.addEventListener('holding', function(event) {
-        cameraControls.rotate(0.1 * (0, $5fn1n$MathUtils).DEG2RAD * event?.deltaTime, 0, true);
+        cameraControls.rotate(0.1 * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, 0, true);
     });
     rightKey.addEventListener('holding', function(event) {
-        cameraControls.rotate(-0.1 * (0, $5fn1n$MathUtils).DEG2RAD * event?.deltaTime, 0, true);
+        cameraControls.rotate(-0.1 * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, 0, true);
     });
     upKey.addEventListener('holding', function(event) {
-        cameraControls.rotate(0, -0.05 * (0, $5fn1n$MathUtils).DEG2RAD * event?.deltaTime, true);
+        cameraControls.rotate(0, -0.05 * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, true);
     });
     downKey.addEventListener('holding', function(event) {
-        cameraControls.rotate(0, 0.05 * (0, $5fn1n$MathUtils).DEG2RAD * event?.deltaTime, true);
+        cameraControls.rotate(0, 0.05 * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, true);
     });
 }
 
@@ -2649,21 +2649,21 @@ function $2c32d9c40568b16d$export$fc22e28a11679cb8(cameraControls) {
 // Adapted from original GLTF 1.0 Loader in three.js r86
 // https://github.com/mrdoob/three.js/blob/r86/examples/js/loaders/GLTFLoader.js
 
-const $2e652b572b4d8884$var$FS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; const float environmentStrength = 1.5; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; uniform vec3 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform mat4 u_modelMatrix; uniform sampler2D u_reflectionCube; uniform sampler2D u_reflectionCubeBlur; const float u_noiseIntensity = 0.015; const float colorNoiseAmount = 0.015; const float noiseScale = 700.0; uniform vec3 cameraPosition; // Noise functions from https://github.com/ashima/webgl-noise // Used under the MIT license - license text in MITLICENSE // Copyright (C) 2011 by Ashima Arts (Simplex noise) // Copyright (C) 2011-2016 by Stefan Gustavson (Classic noise and others) vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); } vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; } float snoise(vec3 v, out vec3 gradient) { const vec2 C = vec2(1.0/6.0, 1.0/3.0) ; const vec4 D = vec4(0.0, 0.5, 1.0, 2.0); // First corner vec3 i = floor(v + dot(v, C.yyy) ); vec3 x0 = v - i + dot(i, C.xxx) ; // Other corners vec3 g = step(x0.yzx, x0.xyz); vec3 l = 1.0 - g; vec3 i1 = min( g.xyz, l.zxy ); vec3 i2 = max( g.xyz, l.zxy ); // x0 = x0 - 0.0 + 0.0 * C.xxx; // x1 = x0 - i1 + 1.0 * C.xxx; // x2 = x0 - i2 + 2.0 * C.xxx; // x3 = x0 - 1.0 + 3.0 * C.xxx; vec3 x1 = x0 - i1 + C.xxx; vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y vec3 x3 = x0 - D.yyy; // -1.0+3.0*C.x = -0.5 = -D.y // Permutations i = mod289(i); vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 )); // Gradients: 7x7 points over a square, mapped onto an octahedron. // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294) float n_ = 0.142857142857; // 1.0/7.0 vec3 ns = n_ * D.wyz - D.xzx; vec4 j = p - 49.0 * floor(p * ns.z * ns.z); // mod(p,7*7) vec4 x_ = floor(j * ns.z); vec4 y_ = floor(j - 7.0 * x_ ); // mod(j,N) vec4 x = x_ *ns.x + ns.yyyy; vec4 y = y_ *ns.x + ns.yyyy; vec4 h = 1.0 - abs(x) - abs(y); vec4 b0 = vec4( x.xy, y.xy ); vec4 b1 = vec4( x.zw, y.zw ); //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0; //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0; vec4 s0 = floor(b0)*2.0 + 1.0; vec4 s1 = floor(b1)*2.0 + 1.0; vec4 sh = -step(h, vec4(0.0)); vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ; vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ; vec3 p0 = vec3(a0.xy,h.x); vec3 p1 = vec3(a0.zw,h.y); vec3 p2 = vec3(a1.xy,h.z); vec3 p3 = vec3(a1.zw,h.w); //Normalise gradients vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3))); p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w; // Mix final noise value vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0); vec4 m2 = m * m; vec4 m4 = m2 * m2; vec4 pdotx = vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)); // Determine noise gradient vec4 temp = m2 * m * pdotx; gradient = -8.0 * (temp.x * x0 + temp.y * x1 + temp.z * x2 + temp.w * x3); gradient += m4.x * p0 + m4.y * p1 + m4.z * p2 + m4.w * p3; gradient *= 42.0; return 42.0 * dot(m4, pdotx); } // End of noise code float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void generatePapercraftColorNormal(vec3 normal, vec3 tangent, vec3 binormal, vec3 noisePos, inout vec4 outColorMult, inout vec3 outNormal) { mat3 tangentToObject; tangentToObject[0] = vec3(tangent.x, tangent.y, tangent.z); tangentToObject[1] = vec3(binormal.x, binormal.y, binormal.z); tangentToObject[2] = vec3(normal.x, normal.y, normal.z); mat3 objectToTangent = transpose(tangentToObject); vec3 intensificator = vec3(u_noiseIntensity, u_noiseIntensity, 1.0); vec3 tangentPos = objectToTangent * noisePos; vec3 gradient = vec3(0.0); float noiseOut = snoise(tangentPos * noiseScale, gradient); vec3 tangentSpaceNormal = normalize(intensificator * vec3(gradient.xy, 1.0)); outNormal = tangentToObject * tangentSpaceNormal; outColorMult = vec4(vec3(1.0 + noiseOut * colorNoiseAmount), 1.0); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; generatePapercraftColorNormal(v_normal, v_tangent, v_binormal, v_position, outColorMult, normalisedNormal); setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor * outColorMult.rgb, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = (1.0 - u_metallic) * materialColor * outColorMult.rgb * 0.0; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor * outColorMult.rgb, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.7); evaluatePBRLight(materialColor * outColorMult.rgb, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.25); gl_FragColor = vec4(specular + diffuse * materialColor, 1.0); }";
-const $2e652b572b4d8884$var$VS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; void main() { vec3 objPosition = a_position; vec4 worldPosition = vec4(objPosition, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; // Looking for an arbitrary vector that isn't parallel to the normal. Avoiding axis directions should improve our chances. vec3 arbitraryVector = normalize(vec3(0.42, -0.21, 0.15)); vec3 alternateArbitraryVector = normalize(vec3(0.43, 1.5, 0.15)); // If arbitrary vector is parallel to the normal, choose a different one. v_tangent = normalize(abs(dot(v_normal, arbitraryVector)) < 1.0 ? cross(v_normal, arbitraryVector) : cross(v_normal, alternateArbitraryVector)); v_binormal = normalize(cross(v_normal, v_tangent)); gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(objPosition, 1.0); }";
-const $2e652b572b4d8884$var$GEMFS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; const float _Metallic = 0.5; const float environmentStrength = 1.5; varying vec3 v_normal; varying vec3 v_position; varying float v_fresnel; uniform sampler2D u_gem; uniform vec4 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform vec3 cameraPosition; float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color.rgb; vec3 normalisedNormal = v_normal; vec3 normalisedView = cameraPosition - v_position; float nDotV; setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = materialColor * 0.3; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = reflect(normalisedView, normalisedNormal); vec4 color = vec4(texture2D( u_gem, vec2(0.5*(INV_PI*atan(R.x, R.z)+1.0),0.5*(R.y+1.0)) ).rgb, u_color.a); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.5); evaluatePBRLight(materialColor, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.25); gl_FragColor = vec4(ambient + specular + diffuse * color.rgb, 1.0); } ";
-const $2e652b572b4d8884$var$GEMVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; void main() { vec4 worldPosition = vec4(a_position, 1.0); v_normal = a_normal; v_position = worldPosition.xyz; gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0); } ";
-const $2e652b572b4d8884$var$GLASSFS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; // Always default to Olive Oil. const float _Metallic = 0.5; const float environmentStrength = 1.0; varying vec3 v_normal; varying vec3 v_position; uniform vec4 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform vec3 cameraPosition; // camera position world float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color.rgb; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = materialColor * 0.3; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.5); evaluatePBRLight(materialColor, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.2); gl_FragColor = vec4(ambient + specular + diffuse * materialColor, u_color.a); } ";
-const $2e652b572b4d8884$var$GLASSVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; void main() { vec4 worldPosition = vec4(a_position, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0); } ";
-const { Loader: $2e652b572b4d8884$var$ThreeLoader } = $5fn1n$three;
-class $2e652b572b4d8884$export$9559c3115faeb0b0 extends $2e652b572b4d8884$var$ThreeLoader {
+const $81e80e8b2d2d5e9f$var$FS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; const float environmentStrength = 1.5; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; uniform vec3 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform mat4 u_modelMatrix; uniform sampler2D u_reflectionCube; uniform sampler2D u_reflectionCubeBlur; const float u_noiseIntensity = 0.015; const float colorNoiseAmount = 0.015; const float noiseScale = 700.0; uniform vec3 cameraPosition; // Noise functions from https://github.com/ashima/webgl-noise // Used under the MIT license - license text in MITLICENSE // Copyright (C) 2011 by Ashima Arts (Simplex noise) // Copyright (C) 2011-2016 by Stefan Gustavson (Classic noise and others) vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; } vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); } vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; } float snoise(vec3 v, out vec3 gradient) { const vec2 C = vec2(1.0/6.0, 1.0/3.0) ; const vec4 D = vec4(0.0, 0.5, 1.0, 2.0); // First corner vec3 i = floor(v + dot(v, C.yyy) ); vec3 x0 = v - i + dot(i, C.xxx) ; // Other corners vec3 g = step(x0.yzx, x0.xyz); vec3 l = 1.0 - g; vec3 i1 = min( g.xyz, l.zxy ); vec3 i2 = max( g.xyz, l.zxy ); // x0 = x0 - 0.0 + 0.0 * C.xxx; // x1 = x0 - i1 + 1.0 * C.xxx; // x2 = x0 - i2 + 2.0 * C.xxx; // x3 = x0 - 1.0 + 3.0 * C.xxx; vec3 x1 = x0 - i1 + C.xxx; vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y vec3 x3 = x0 - D.yyy; // -1.0+3.0*C.x = -0.5 = -D.y // Permutations i = mod289(i); vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 )); // Gradients: 7x7 points over a square, mapped onto an octahedron. // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294) float n_ = 0.142857142857; // 1.0/7.0 vec3 ns = n_ * D.wyz - D.xzx; vec4 j = p - 49.0 * floor(p * ns.z * ns.z); // mod(p,7*7) vec4 x_ = floor(j * ns.z); vec4 y_ = floor(j - 7.0 * x_ ); // mod(j,N) vec4 x = x_ *ns.x + ns.yyyy; vec4 y = y_ *ns.x + ns.yyyy; vec4 h = 1.0 - abs(x) - abs(y); vec4 b0 = vec4( x.xy, y.xy ); vec4 b1 = vec4( x.zw, y.zw ); //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0; //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0; vec4 s0 = floor(b0)*2.0 + 1.0; vec4 s1 = floor(b1)*2.0 + 1.0; vec4 sh = -step(h, vec4(0.0)); vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ; vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ; vec3 p0 = vec3(a0.xy,h.x); vec3 p1 = vec3(a0.zw,h.y); vec3 p2 = vec3(a1.xy,h.z); vec3 p3 = vec3(a1.zw,h.w); //Normalise gradients vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3))); p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w; // Mix final noise value vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0); vec4 m2 = m * m; vec4 m4 = m2 * m2; vec4 pdotx = vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)); // Determine noise gradient vec4 temp = m2 * m * pdotx; gradient = -8.0 * (temp.x * x0 + temp.y * x1 + temp.z * x2 + temp.w * x3); gradient += m4.x * p0 + m4.y * p1 + m4.z * p2 + m4.w * p3; gradient *= 42.0; return 42.0 * dot(m4, pdotx); } // End of noise code float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void generatePapercraftColorNormal(vec3 normal, vec3 tangent, vec3 binormal, vec3 noisePos, inout vec4 outColorMult, inout vec3 outNormal) { mat3 tangentToObject; tangentToObject[0] = vec3(tangent.x, tangent.y, tangent.z); tangentToObject[1] = vec3(binormal.x, binormal.y, binormal.z); tangentToObject[2] = vec3(normal.x, normal.y, normal.z); mat3 objectToTangent = transpose(tangentToObject); vec3 intensificator = vec3(u_noiseIntensity, u_noiseIntensity, 1.0); vec3 tangentPos = objectToTangent * noisePos; vec3 gradient = vec3(0.0); float noiseOut = snoise(tangentPos * noiseScale, gradient); vec3 tangentSpaceNormal = normalize(intensificator * vec3(gradient.xy, 1.0)); outNormal = tangentToObject * tangentSpaceNormal; outColorMult = vec4(vec3(1.0 + noiseOut * colorNoiseAmount), 1.0); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; generatePapercraftColorNormal(v_normal, v_tangent, v_binormal, v_position, outColorMult, normalisedNormal); setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor * outColorMult.rgb, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = (1.0 - u_metallic) * materialColor * outColorMult.rgb * 0.0; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor * outColorMult.rgb, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.7); evaluatePBRLight(materialColor * outColorMult.rgb, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.25); gl_FragColor = vec4(specular + diffuse * materialColor, 1.0); }";
+const $81e80e8b2d2d5e9f$var$VS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; varying vec3 v_binormal; varying vec3 v_tangent; void main() { vec3 objPosition = a_position; vec4 worldPosition = vec4(objPosition, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; // Looking for an arbitrary vector that isn't parallel to the normal. Avoiding axis directions should improve our chances. vec3 arbitraryVector = normalize(vec3(0.42, -0.21, 0.15)); vec3 alternateArbitraryVector = normalize(vec3(0.43, 1.5, 0.15)); // If arbitrary vector is parallel to the normal, choose a different one. v_tangent = normalize(abs(dot(v_normal, arbitraryVector)) < 1.0 ? cross(v_normal, arbitraryVector) : cross(v_normal, alternateArbitraryVector)); v_binormal = normalize(cross(v_normal, v_tangent)); gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(objPosition, 1.0); }";
+const $81e80e8b2d2d5e9f$var$GEMFS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; const float _Metallic = 0.5; const float environmentStrength = 1.5; varying vec3 v_normal; varying vec3 v_position; varying float v_fresnel; uniform sampler2D u_gem; uniform vec4 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform vec3 cameraPosition; float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color.rgb; vec3 normalisedNormal = v_normal; vec3 normalisedView = cameraPosition - v_position; float nDotV; setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = materialColor * 0.3; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = reflect(normalisedView, normalisedNormal); vec4 color = vec4(texture2D( u_gem, vec2(0.5*(INV_PI*atan(R.x, R.z)+1.0),0.5*(R.y+1.0)) ).rgb, u_color.a); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.5); evaluatePBRLight(materialColor, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.25); gl_FragColor = vec4(ambient + specular + diffuse * color.rgb, 1.0); } ";
+const $81e80e8b2d2d5e9f$var$GEMVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; void main() { vec4 worldPosition = vec4(a_position, 1.0); v_normal = a_normal; v_position = worldPosition.xyz; gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0); } ";
+const $81e80e8b2d2d5e9f$var$GLASSFS_GLSL = "precision highp float; const float INV_PI = 0.31830988618; const float PI = 3.141592654; const float _RefractiveIndex = 1.2; // Always default to Olive Oil. const float _Metallic = 0.5; const float environmentStrength = 1.0; varying vec3 v_normal; varying vec3 v_position; uniform vec4 u_color; uniform float u_metallic; uniform float u_roughness; uniform vec3 u_light0Pos; uniform vec3 u_light0Color; uniform vec3 u_light1Pos; uniform vec3 u_light1Color; uniform vec3 cameraPosition; // camera position world float GGX(float nDotH, float roughness2) { float nDotH2 = nDotH * nDotH; float alpha = nDotH2 * roughness2 + 1.0 - nDotH2; float denominator = PI * alpha * alpha; return (nDotH2 > 0.0 ? 1.0 : 0.0) * roughness2 / denominator; } float BlinnPhongNDF(float nDotH) { float exponent = (2.0 / (u_roughness * u_roughness) - 2.0); float coeff = 1.0 / (PI * u_roughness * u_roughness); return coeff * pow(nDotH, exponent); } float CT_GeoAtten(float nDotV, float nDotH, float vDotH, float nDotL, float lDotH) { float a = (2.0 * nDotH * nDotV) / vDotH; float b = (2.0 * nDotH * nDotL) / lDotH; return min(1.0, min(a, b)); } float GeoAtten(float nDotV) { float c = nDotV / (u_roughness * sqrt(1.0 - nDotV * nDotV)); return c >= 1.6 ? 1.0 : (3.535 * c + 2.181 * c * c) / (1.0 + 2.276 * c + 2.577 * c * c); } vec3 evaluateFresnelSchlick(float vDotH, vec3 f0) { return f0 + (1.0 - f0) * pow(1.0 - vDotH, 5.0); } float saturate(float value) { return clamp(value, 0.0, 1.0); } vec3 saturate(vec3 value) { return clamp(value, 0.0, 1.0); } mat3 transpose(mat3 inMat) { return mat3(inMat[0][0], inMat[0][1], inMat[0][2], inMat[1][0], inMat[1][1], inMat[1][2], inMat[2][0], inMat[2][1], inMat[2][2]); } void evaluatePBRLight( vec3 materialColor, vec3 lightColor, float nDotL, float nDotV, float nDotH, float vDotH, float lDotH, inout vec3 diffuseOut, inout vec3 specularOut, inout vec3 debug, float specAmount) { vec3 diffuse = INV_PI * nDotL * lightColor; vec3 d = vec3(GGX(nDotH, u_roughness * u_roughness)); vec3 g = vec3(CT_GeoAtten(nDotV, nDotH, vDotH, nDotL, lDotH)); vec3 f0 = vec3(abs((1.0 - _RefractiveIndex) / (1.0 + _RefractiveIndex))); f0 = f0 * f0; f0 = mix(f0, materialColor, u_metallic); vec3 f = evaluateFresnelSchlick(vDotH, f0); diffuseOut = diffuseOut + (1.0 - saturate(f)) * (1.0 - u_metallic) * lightColor * diffuse; specularOut = specularOut + specAmount * lightColor * saturate((d * g * f) / saturate(4.0 * saturate(nDotH) * nDotV)); debug = saturate(g); } void setParams(vec3 worldPosition, inout vec3 normal, inout vec3 view, inout float nDotV) { normal = normalize(normal); view = normalize(cameraPosition - worldPosition); nDotV = saturate(dot(normal, view)); } void setLightParams(vec3 lightPosition, vec3 worldPosition, vec3 V, vec3 N, inout vec3 L, inout vec3 H, inout float nDotL, inout float nDotH, inout float vDotH, inout float lDotH) { L = normalize(lightPosition - worldPosition); H = normalize(L + V); nDotL = saturate(dot(N, L)); nDotH = saturate(dot(N, H)); vDotH = saturate(dot(V, H)); lDotH = saturate(dot(L, H)); } void main() { vec3 materialColor = u_color.rgb; vec4 outColorMult; vec3 normalisedNormal = v_normal; vec3 normalisedView; float nDotV; setParams(v_position, normalisedNormal, normalisedView, nDotV); vec3 normalisedLight; vec3 normalisedHalf; float nDotL; float nDotH; float vDotH; float lDotH; setLightParams(u_light0Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 diffuse = vec3(0.0, 0.0, 0.0); vec3 specular = vec3(0.0, 0.0, 0.0); vec3 debug = vec3(0.0, 0.0, 0.0); evaluatePBRLight(materialColor, u_light0Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 ambient = materialColor * 0.3; setLightParams(u_light1Pos, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); evaluatePBRLight(materialColor, u_light1Color, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 1.0); vec3 R = -reflect(normalisedView, normalisedNormal); setLightParams(v_position + R, v_position, normalisedView, normalisedNormal, normalisedLight, normalisedHalf, nDotL, nDotH, vDotH, lDotH); vec3 envColor = mix(materialColor, vec3(1.0, 1.0, 1.0), 0.5); evaluatePBRLight(materialColor, envColor * environmentStrength, nDotL, nDotV, nDotH, vDotH, lDotH, diffuse, specular, debug, 0.2); gl_FragColor = vec4(ambient + specular + diffuse * materialColor, u_color.a); } ";
+const $81e80e8b2d2d5e9f$var$GLASSVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; void main() { vec4 worldPosition = vec4(a_position, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0); } ";
+const { Loader: $81e80e8b2d2d5e9f$var$ThreeLoader } = $hBQxr$three;
+class $81e80e8b2d2d5e9f$export$9559c3115faeb0b0 extends $81e80e8b2d2d5e9f$var$ThreeLoader {
     load(url, onLoad, onProgress, onError) {
         var scope = this;
         var resourcePath;
         if (this.resourcePath !== '') resourcePath = this.resourcePath;
         else if (this.path !== '') resourcePath = this.path;
-        else resourcePath = $5fn1n$three.LoaderUtils.extractUrlBase(url);
-        var loader = new $5fn1n$three.FileLoader(scope.manager);
+        else resourcePath = $hBQxr$three.LoaderUtils.extractUrlBase(url);
+        var loader = new $hBQxr$three.FileLoader(scope.manager);
         loader.setPath(this.path);
         loader.setResponseType('arraybuffer');
         loader.load(url, function(data) {
@@ -2674,13 +2674,13 @@ class $2e652b572b4d8884$export$9559c3115faeb0b0 extends $2e652b572b4d8884$var$Th
         var content;
         var extensions = {};
         var magic = new TextDecoder().decode(new Uint8Array(data, 0, 4));
-        if (magic === $2e652b572b4d8884$var$BINARY_EXTENSION_HEADER_DEFAULTS.magic) {
-            extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF] = new $2e652b572b4d8884$var$GLTFBinaryExtension(data);
-            content = extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF].content;
+        if (magic === $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_HEADER_DEFAULTS.magic) {
+            extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF] = new $81e80e8b2d2d5e9f$var$GLTFBinaryExtension(data);
+            content = extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF].content;
         } else content = new TextDecoder().decode(new Uint8Array(data));
         var json = JSON.parse(content);
-        if (json.extensionsUsed && json.extensionsUsed.indexOf($2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON) >= 0) extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON] = new $2e652b572b4d8884$var$GLTFMaterialsCommonExtension(json);
-        var parser = new $2e652b572b4d8884$var$GLTFParser(json, extensions, {
+        if (json.extensionsUsed && json.extensionsUsed.indexOf($81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON) >= 0) extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON] = new $81e80e8b2d2d5e9f$var$GLTFMaterialsCommonExtension(json);
+        var parser = new $81e80e8b2d2d5e9f$var$GLTFParser(json, extensions, {
             crossOrigin: this.crossOrigin,
             manager: this.manager,
             path: path || this.resourcePath || ''
@@ -2696,7 +2696,7 @@ class $2e652b572b4d8884$export$9559c3115faeb0b0 extends $2e652b572b4d8884$var$Th
         });
     }
 }
-function $2e652b572b4d8884$var$GLTFRegistry() {
+function $81e80e8b2d2d5e9f$var$GLTFRegistry() {
     var objects = {};
     return {
         get: function(key) {
@@ -2719,7 +2719,7 @@ function $2e652b572b4d8884$var$GLTFRegistry() {
         }
     };
 }
-class $2e652b572b4d8884$var$GLTFShader {
+class $81e80e8b2d2d5e9f$var$GLTFShader {
     constructor(targetNode, allNodes){
         var boundUniforms = {};
         // bind each uniform to its source node
@@ -2739,7 +2739,7 @@ class $2e652b572b4d8884$var$GLTFShader {
             }
         }
         this.boundUniforms = boundUniforms;
-        this._m4 = new $5fn1n$three.Matrix4();
+        this._m4 = new $hBQxr$three.Matrix4();
     }
     update(scene, camera) {
         var boundUniforms = this.boundUniforms;
@@ -2774,50 +2774,50 @@ class $2e652b572b4d8884$var$GLTFShader {
         }
     }
 }
-var $2e652b572b4d8884$var$EXTENSIONS = {
+var $81e80e8b2d2d5e9f$var$EXTENSIONS = {
     KHR_BINARY_GLTF: 'KHR_binary_glTF',
     KHR_MATERIALS_COMMON: 'KHR_materials_common'
 };
-function $2e652b572b4d8884$var$GLTFMaterialsCommonExtension(json) {
-    this.name = $2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON;
+function $81e80e8b2d2d5e9f$var$GLTFMaterialsCommonExtension(json) {
+    this.name = $81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON;
     this.lights = {};
-    var extension = json.extensions && json.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON] || {};
+    var extension = json.extensions && json.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON] || {};
     var lights = extension.lights || {};
     for(var lightId in lights){
         var light = lights[lightId];
         var lightNode;
         var lightParams = light[light.type];
-        var color = new $5fn1n$three.Color().fromArray(lightParams.color);
+        var color = new $hBQxr$three.Color().fromArray(lightParams.color);
         switch(light.type){
             case "directional":
-                lightNode = new $5fn1n$three.DirectionalLight(color);
+                lightNode = new $hBQxr$three.DirectionalLight(color);
                 lightNode.position.set(0, 0, 1);
                 break;
             case "point":
-                lightNode = new $5fn1n$three.PointLight(color);
+                lightNode = new $hBQxr$three.PointLight(color);
                 break;
             case "spot":
-                lightNode = new $5fn1n$three.SpotLight(color);
+                lightNode = new $hBQxr$three.SpotLight(color);
                 lightNode.position.set(0, 0, 1);
                 break;
             case "ambient":
-                lightNode = new $5fn1n$three.AmbientLight(color);
+                lightNode = new $hBQxr$three.AmbientLight(color);
                 break;
         }
         if (lightNode) this.lights[lightId] = lightNode;
     }
 }
-var $2e652b572b4d8884$var$BINARY_EXTENSION_BUFFER_NAME = 'binary_glTF';
-var $2e652b572b4d8884$var$BINARY_EXTENSION_HEADER_DEFAULTS = {
+var $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_BUFFER_NAME = 'binary_glTF';
+var $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_HEADER_DEFAULTS = {
     magic: 'glTF',
     version: 1,
     contentFormat: 0
 };
-var $2e652b572b4d8884$var$BINARY_EXTENSION_HEADER_LENGTH = 20;
-class $2e652b572b4d8884$var$GLTFBinaryExtension {
+var $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_HEADER_LENGTH = 20;
+class $81e80e8b2d2d5e9f$var$GLTFBinaryExtension {
     constructor(data){
-        this.name = $2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF;
-        var headerView = new DataView(data, 0, $2e652b572b4d8884$var$BINARY_EXTENSION_HEADER_LENGTH);
+        this.name = $81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF;
+        var headerView = new DataView(data, 0, $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_HEADER_LENGTH);
         var header = {
             magic: new TextDecoder().decode(new Uint8Array(data.slice(0, 4))),
             version: headerView.getUint32(4, true),
@@ -2825,22 +2825,22 @@ class $2e652b572b4d8884$var$GLTFBinaryExtension {
             contentLength: headerView.getUint32(12, true),
             contentFormat: headerView.getUint32(16, true)
         };
-        for(var key in $2e652b572b4d8884$var$BINARY_EXTENSION_HEADER_DEFAULTS){
-            var value = $2e652b572b4d8884$var$BINARY_EXTENSION_HEADER_DEFAULTS[key];
+        for(var key in $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_HEADER_DEFAULTS){
+            var value = $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_HEADER_DEFAULTS[key];
             if (header[key] !== value) throw new Error('Unsupported glTF-Binary header: Expected "%s" to be "%s".', key, value);
         }
-        var contentArray = new Uint8Array(data, $2e652b572b4d8884$var$BINARY_EXTENSION_HEADER_LENGTH, header.contentLength);
+        var contentArray = new Uint8Array(data, $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_HEADER_LENGTH, header.contentLength);
         this.header = header;
         this.content = new TextDecoder().decode(contentArray);
-        this.body = data.slice($2e652b572b4d8884$var$BINARY_EXTENSION_HEADER_LENGTH + header.contentLength, header.length);
+        this.body = data.slice($81e80e8b2d2d5e9f$var$BINARY_EXTENSION_HEADER_LENGTH + header.contentLength, header.length);
     }
     loadShader(shader, bufferViews) {
-        var bufferView = bufferViews[shader.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF].bufferView];
+        var bufferView = bufferViews[shader.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF].bufferView];
         var array = new Uint8Array(bufferView);
         return new TextDecoder().decode(array);
     }
 }
-var $2e652b572b4d8884$var$WEBGL_CONSTANTS = {
+var $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS = {
     FLOAT: 5126,
     //FLOAT_MAT2: 35674,
     FLOAT_MAT3: 35675,
@@ -2858,17 +2858,17 @@ var $2e652b572b4d8884$var$WEBGL_CONSTANTS = {
     VERTEX_SHADER: 35633,
     FRAGMENT_SHADER: 35632
 };
-var $2e652b572b4d8884$var$WEBGL_TYPE = {
+var $81e80e8b2d2d5e9f$var$WEBGL_TYPE = {
     5126: Number,
     //35674: Matrix2,
-    35675: $5fn1n$three.Matrix3,
-    35676: $5fn1n$three.Matrix4,
-    35664: $5fn1n$three.Vector2,
-    35665: $5fn1n$three.Vector3,
-    35666: $5fn1n$three.Vector4,
-    35678: $5fn1n$three.Texture
+    35675: $hBQxr$three.Matrix3,
+    35676: $hBQxr$three.Matrix4,
+    35664: $hBQxr$three.Vector2,
+    35665: $hBQxr$three.Vector3,
+    35666: $hBQxr$three.Vector4,
+    35678: $hBQxr$three.Texture
 };
-var $2e652b572b4d8884$var$WEBGL_COMPONENT_TYPES = {
+var $81e80e8b2d2d5e9f$var$WEBGL_COMPONENT_TYPES = {
     5120: Int8Array,
     5121: Uint8Array,
     5122: Int16Array,
@@ -2876,62 +2876,62 @@ var $2e652b572b4d8884$var$WEBGL_COMPONENT_TYPES = {
     5125: Uint32Array,
     5126: Float32Array
 };
-var $2e652b572b4d8884$var$WEBGL_FILTERS = {
-    9728: $5fn1n$three.NearestFilter,
-    9729: $5fn1n$three.LinearFilter,
-    9984: $5fn1n$three.NearestMipmapNearestFilter,
-    9985: $5fn1n$three.LinearMipmapNearestFilter,
-    9986: $5fn1n$three.NearestMipmapLinearFilter,
-    9987: $5fn1n$three.LinearMipmapLinearFilter
+var $81e80e8b2d2d5e9f$var$WEBGL_FILTERS = {
+    9728: $hBQxr$three.NearestFilter,
+    9729: $hBQxr$three.LinearFilter,
+    9984: $hBQxr$three.NearestMipmapNearestFilter,
+    9985: $hBQxr$three.LinearMipmapNearestFilter,
+    9986: $hBQxr$three.NearestMipmapLinearFilter,
+    9987: $hBQxr$three.LinearMipmapLinearFilter
 };
-var $2e652b572b4d8884$var$WEBGL_WRAPPINGS = {
-    33071: $5fn1n$three.ClampToEdgeWrapping,
-    33648: $5fn1n$three.MirroredRepeatWrapping,
-    10497: $5fn1n$three.RepeatWrapping
+var $81e80e8b2d2d5e9f$var$WEBGL_WRAPPINGS = {
+    33071: $hBQxr$three.ClampToEdgeWrapping,
+    33648: $hBQxr$three.MirroredRepeatWrapping,
+    10497: $hBQxr$three.RepeatWrapping
 };
-var $2e652b572b4d8884$var$WEBGL_TEXTURE_FORMATS = {
-    6406: $5fn1n$three.AlphaFormat,
-    6407: $5fn1n$three.RGBFormat,
-    6408: $5fn1n$three.RGBAFormat
+var $81e80e8b2d2d5e9f$var$WEBGL_TEXTURE_FORMATS = {
+    6406: $hBQxr$three.AlphaFormat,
+    6407: $hBQxr$three.RGBFormat,
+    6408: $hBQxr$three.RGBAFormat
 };
-var $2e652b572b4d8884$var$WEBGL_TEXTURE_DATATYPES = {
-    5121: $5fn1n$three.UnsignedByteType,
-    32819: $5fn1n$three.UnsignedShort4444Type,
-    32820: $5fn1n$three.UnsignedShort5551Type
+var $81e80e8b2d2d5e9f$var$WEBGL_TEXTURE_DATATYPES = {
+    5121: $hBQxr$three.UnsignedByteType,
+    32819: $hBQxr$three.UnsignedShort4444Type,
+    32820: $hBQxr$three.UnsignedShort5551Type
 };
-var $2e652b572b4d8884$var$WEBGL_SIDES = {
-    1028: $5fn1n$three.BackSide,
-    1029: $5fn1n$three.FrontSide // Culling back
+var $81e80e8b2d2d5e9f$var$WEBGL_SIDES = {
+    1028: $hBQxr$three.BackSide,
+    1029: $hBQxr$three.FrontSide // Culling back
 };
-var $2e652b572b4d8884$var$WEBGL_DEPTH_FUNCS = {
-    512: $5fn1n$three.NeverDepth,
-    513: $5fn1n$three.LessDepth,
-    514: $5fn1n$three.EqualDepth,
-    515: $5fn1n$three.LessEqualDepth,
-    516: $5fn1n$three.GreaterEqualDepth,
-    517: $5fn1n$three.NotEqualDepth,
-    518: $5fn1n$three.GreaterEqualDepth,
-    519: $5fn1n$three.AlwaysDepth
+var $81e80e8b2d2d5e9f$var$WEBGL_DEPTH_FUNCS = {
+    512: $hBQxr$three.NeverDepth,
+    513: $hBQxr$three.LessDepth,
+    514: $hBQxr$three.EqualDepth,
+    515: $hBQxr$three.LessEqualDepth,
+    516: $hBQxr$three.GreaterEqualDepth,
+    517: $hBQxr$three.NotEqualDepth,
+    518: $hBQxr$three.GreaterEqualDepth,
+    519: $hBQxr$three.AlwaysDepth
 };
-var $2e652b572b4d8884$var$WEBGL_BLEND_EQUATIONS = {
-    32774: $5fn1n$three.AddEquation,
-    32778: $5fn1n$three.SubtractEquation,
-    32779: $5fn1n$three.ReverseSubtractEquation
+var $81e80e8b2d2d5e9f$var$WEBGL_BLEND_EQUATIONS = {
+    32774: $hBQxr$three.AddEquation,
+    32778: $hBQxr$three.SubtractEquation,
+    32779: $hBQxr$three.ReverseSubtractEquation
 };
-var $2e652b572b4d8884$var$WEBGL_BLEND_FUNCS = {
-    0: $5fn1n$three.ZeroFactor,
-    1: $5fn1n$three.OneFactor,
-    768: $5fn1n$three.SrcColorFactor,
-    769: $5fn1n$three.OneMinusSrcColorFactor,
-    770: $5fn1n$three.SrcAlphaFactor,
-    771: $5fn1n$three.OneMinusSrcAlphaFactor,
-    772: $5fn1n$three.DstAlphaFactor,
-    773: $5fn1n$three.OneMinusDstAlphaFactor,
-    774: $5fn1n$three.DstColorFactor,
-    775: $5fn1n$three.OneMinusDstColorFactor,
-    776: $5fn1n$three.SrcAlphaSaturateFactor
+var $81e80e8b2d2d5e9f$var$WEBGL_BLEND_FUNCS = {
+    0: $hBQxr$three.ZeroFactor,
+    1: $hBQxr$three.OneFactor,
+    768: $hBQxr$three.SrcColorFactor,
+    769: $hBQxr$three.OneMinusSrcColorFactor,
+    770: $hBQxr$three.SrcAlphaFactor,
+    771: $hBQxr$three.OneMinusSrcAlphaFactor,
+    772: $hBQxr$three.DstAlphaFactor,
+    773: $hBQxr$three.OneMinusDstAlphaFactor,
+    774: $hBQxr$three.DstColorFactor,
+    775: $hBQxr$three.OneMinusDstColorFactor,
+    776: $hBQxr$three.SrcAlphaSaturateFactor
 };
-var $2e652b572b4d8884$var$WEBGL_TYPE_SIZES = {
+var $81e80e8b2d2d5e9f$var$WEBGL_TYPE_SIZES = {
     'SCALAR': 1,
     'VEC2': 2,
     'VEC3': 3,
@@ -2940,16 +2940,16 @@ var $2e652b572b4d8884$var$WEBGL_TYPE_SIZES = {
     'MAT3': 9,
     'MAT4': 16
 };
-var $2e652b572b4d8884$var$PATH_PROPERTIES = {
+var $81e80e8b2d2d5e9f$var$PATH_PROPERTIES = {
     scale: 'scale',
     translation: 'position',
     rotation: 'quaternion'
 };
-var $2e652b572b4d8884$var$INTERPOLATION = {
-    LINEAR: $5fn1n$three.InterpolateLinear,
-    STEP: $5fn1n$three.InterpolateDiscrete
+var $81e80e8b2d2d5e9f$var$INTERPOLATION = {
+    LINEAR: $hBQxr$three.InterpolateLinear,
+    STEP: $hBQxr$three.InterpolateDiscrete
 };
-var $2e652b572b4d8884$var$STATES_ENABLES = {
+var $81e80e8b2d2d5e9f$var$STATES_ENABLES = {
     2884: 'CULL_FACE',
     2929: 'DEPTH_TEST',
     3042: 'BLEND',
@@ -2957,7 +2957,7 @@ var $2e652b572b4d8884$var$STATES_ENABLES = {
     32823: 'POLYGON_OFFSET_FILL',
     32926: 'SAMPLE_ALPHA_TO_COVERAGE'
 };
-function $2e652b572b4d8884$var$_each(object, callback, thisObj) {
+function $81e80e8b2d2d5e9f$var$_each(object, callback, thisObj) {
     if (!object) return Promise.resolve();
     var results;
     var fns = [];
@@ -2991,7 +2991,7 @@ function $2e652b572b4d8884$var$_each(object, callback, thisObj) {
         return results;
     });
 }
-function $2e652b572b4d8884$var$resolveURL(url, path) {
+function $81e80e8b2d2d5e9f$var$resolveURL(url, path) {
     // Invalid URL
     if (typeof url !== 'string' || url === '') return '';
     // Absolute URL http://,https://,//
@@ -3005,7 +3005,7 @@ function $2e652b572b4d8884$var$resolveURL(url, path) {
 }
 // js seems too dependent on attribute names so globally
 // replace those in the shader code
-function $2e652b572b4d8884$var$replaceTHREEShaderAttributes(shaderText, technique) {
+function $81e80e8b2d2d5e9f$var$replaceTHREEShaderAttributes(shaderText, technique) {
     // Expected technique attributes
     var attributes = {};
     for(var attributeId in technique.attributes){
@@ -3062,27 +3062,27 @@ function $2e652b572b4d8884$var$replaceTHREEShaderAttributes(shaderText, techniqu
     }
     return shaderText;
 }
-function $2e652b572b4d8884$var$createDefaultMaterial() {
-    return new $5fn1n$three.MeshPhongMaterial({
+function $81e80e8b2d2d5e9f$var$createDefaultMaterial() {
+    return new $hBQxr$three.MeshPhongMaterial({
         color: 0x00000,
         emissive: 0x888888,
         specular: 0x000000,
         shininess: 0,
         transparent: false,
         depthTest: true,
-        side: $5fn1n$three.FrontSide
+        side: $hBQxr$three.FrontSide
     });
 }
-class $2e652b572b4d8884$var$DeferredShaderMaterial {
+class $81e80e8b2d2d5e9f$var$DeferredShaderMaterial {
     constructor(params){
         this.isDeferredShaderMaterial = true;
         this.params = params;
     }
     create() {
-        var uniforms = $5fn1n$three.UniformsUtils.clone(this.params.uniforms);
+        var uniforms = $hBQxr$three.UniformsUtils.clone(this.params.uniforms);
         for(var uniformId in this.params.uniforms){
             var originalUniform = this.params.uniforms[uniformId];
-            if (originalUniform.value instanceof $5fn1n$three.Texture) {
+            if (originalUniform.value instanceof $hBQxr$three.Texture) {
                 uniforms[uniformId].value = originalUniform.value;
                 uniforms[uniformId].value.needsUpdate = true;
             }
@@ -3090,16 +3090,16 @@ class $2e652b572b4d8884$var$DeferredShaderMaterial {
             uniforms[uniformId].node = originalUniform.node;
         }
         this.params.uniforms = uniforms;
-        return new $5fn1n$three.RawShaderMaterial(this.params);
+        return new $hBQxr$three.RawShaderMaterial(this.params);
     }
 }
-class $2e652b572b4d8884$var$GLTFParser {
+class $81e80e8b2d2d5e9f$var$GLTFParser {
     constructor(json, extensions, options){
         this.json = json || {};
         this.extensions = extensions || {};
         this.options = options || {};
         // loader object cache
-        this.cache = new $2e652b572b4d8884$var$GLTFRegistry();
+        this.cache = new $81e80e8b2d2d5e9f$var$GLTFRegistry();
     }
     _withDependencies(dependencies) {
         var _dependencies = {};
@@ -3114,7 +3114,7 @@ class $2e652b572b4d8884$var$GLTFParser {
                 _dependencies[dependency] = fn;
             }
         }
-        return $2e652b572b4d8884$var$_each(_dependencies, function(dependency) {
+        return $81e80e8b2d2d5e9f$var$_each(_dependencies, function(dependency) {
             return dependency;
         });
     }
@@ -3148,23 +3148,23 @@ class $2e652b572b4d8884$var$GLTFParser {
         return this._withDependencies([
             "bufferViews"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.shaders, function(shader) {
-                if (shader.extensions && shader.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF]) return extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF].loadShader(shader, dependencies.bufferViews);
+            return $81e80e8b2d2d5e9f$var$_each(json.shaders, function(shader) {
+                if (shader.extensions && shader.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF]) return extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF].loadShader(shader, dependencies.bufferViews);
                 return new Promise(function(resolve) {
-                    var loader = new $5fn1n$three.FileLoader(options.manager);
+                    var loader = new $hBQxr$three.FileLoader(options.manager);
                     // Common google urls to save pointless requests
-                    if (shader.uri === 'https://vr.google.com/shaders/w/fs.glsl') return $2e652b572b4d8884$var$FS_GLSL;
-                    if (shader.uri === 'https://vr.google.com/shaders/w/vs.glsl') return $2e652b572b4d8884$var$VS_GLSL;
-                    if (shader.uri === 'https://vr.google.com/shaders/w/glassVS.glsl') return $2e652b572b4d8884$var$GLASSVS_GLSL;
-                    if (shader.uri === 'https://vr.google.com/shaders/w/glassFS.glsl') return $2e652b572b4d8884$var$GLASSFS_GLSL;
-                    if (shader.uri === 'https://vr.google.com/shaders/w/gemVS.glsl') return $2e652b572b4d8884$var$GEMVS_GLSL;
-                    if (shader.uri === 'https://vr.google.com/shaders/w/gemFS.glsl') return $2e652b572b4d8884$var$GEMFS_GLSL;
+                    if (shader.uri === 'https://vr.google.com/shaders/w/fs.glsl') return $81e80e8b2d2d5e9f$var$FS_GLSL;
+                    if (shader.uri === 'https://vr.google.com/shaders/w/vs.glsl') return $81e80e8b2d2d5e9f$var$VS_GLSL;
+                    if (shader.uri === 'https://vr.google.com/shaders/w/glassVS.glsl') return $81e80e8b2d2d5e9f$var$GLASSVS_GLSL;
+                    if (shader.uri === 'https://vr.google.com/shaders/w/glassFS.glsl') return $81e80e8b2d2d5e9f$var$GLASSFS_GLSL;
+                    if (shader.uri === 'https://vr.google.com/shaders/w/gemVS.glsl') return $81e80e8b2d2d5e9f$var$GEMVS_GLSL;
+                    if (shader.uri === 'https://vr.google.com/shaders/w/gemFS.glsl') return $81e80e8b2d2d5e9f$var$GEMFS_GLSL;
                     let shaderPath = "https://icosa-foundation.github.io/icosa-sketch-assets/";
                     // Catch anything else - it would give a CORS error in any case
                     let url = shader.uri.replace("https://vr.google.com/shaders/w/", shaderPath);
                     url = url.replace(/https:\/\/web\.archive\.org\/web\/\d+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
                     url = url.replace('https://www.tiltbrush.com/shaders/', shaderPath);
-                    loader.load($2e652b572b4d8884$var$resolveURL(url, options.path), function(shaderText) {
+                    loader.load($81e80e8b2d2d5e9f$var$resolveURL(url, options.path), function(shaderText) {
                         resolve(shaderText);
                     });
                 });
@@ -3175,13 +3175,13 @@ class $2e652b572b4d8884$var$GLTFParser {
         var json = this.json;
         var extensions = this.extensions;
         var options = this.options;
-        return $2e652b572b4d8884$var$_each(json.buffers, function(buffer, name) {
-            if (name === $2e652b572b4d8884$var$BINARY_EXTENSION_BUFFER_NAME) return extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF].body;
+        return $81e80e8b2d2d5e9f$var$_each(json.buffers, function(buffer, name) {
+            if (name === $81e80e8b2d2d5e9f$var$BINARY_EXTENSION_BUFFER_NAME) return extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF].body;
             if (buffer.type === 'arraybuffer' || buffer.type === undefined) return new Promise(function(resolve) {
-                var loader = new $5fn1n$three.FileLoader(options.manager);
+                var loader = new $hBQxr$three.FileLoader(options.manager);
                 loader.setResponseType('arraybuffer');
                 loader.setCrossOrigin('no-cors');
-                loader.load($2e652b572b4d8884$var$resolveURL(buffer.uri, options.path), function(buffer) {
+                loader.load($81e80e8b2d2d5e9f$var$resolveURL(buffer.uri, options.path), function(buffer) {
                     resolve(buffer);
                 });
             });
@@ -3193,7 +3193,7 @@ class $2e652b572b4d8884$var$GLTFParser {
         return this._withDependencies([
             "buffers"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.bufferViews, function(bufferView) {
+            return $81e80e8b2d2d5e9f$var$_each(json.bufferViews, function(bufferView) {
                 var arraybuffer = dependencies.buffers[bufferView.buffer];
                 var byteLength = bufferView.byteLength !== undefined ? bufferView.byteLength : 0;
                 return arraybuffer.slice(bufferView.byteOffset, bufferView.byteOffset + byteLength);
@@ -3205,10 +3205,10 @@ class $2e652b572b4d8884$var$GLTFParser {
         return this._withDependencies([
             "bufferViews"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.accessors, function(accessor) {
+            return $81e80e8b2d2d5e9f$var$_each(json.accessors, function(accessor) {
                 var arraybuffer = dependencies.bufferViews[accessor.bufferView];
-                var itemSize = $2e652b572b4d8884$var$WEBGL_TYPE_SIZES[accessor.type];
-                var TypedArray = $2e652b572b4d8884$var$WEBGL_COMPONENT_TYPES[accessor.componentType];
+                var itemSize = $81e80e8b2d2d5e9f$var$WEBGL_TYPE_SIZES[accessor.type];
+                var TypedArray = $81e80e8b2d2d5e9f$var$WEBGL_COMPONENT_TYPES[accessor.componentType];
                 // For VEC3: itemSize is 3, elementBytes is 4, itemBytes is 12.
                 var elementBytes = TypedArray.BYTES_PER_ELEMENT;
                 var itemBytes = elementBytes * itemSize;
@@ -3217,11 +3217,11 @@ class $2e652b572b4d8884$var$GLTFParser {
                     // Use the full buffer if it's interleaved.
                     var array = new TypedArray(arraybuffer);
                     // Integer parameters to IB/IBA are in array elements, not bytes.
-                    var ib = new $5fn1n$three.InterleavedBuffer(array, accessor.byteStride / elementBytes);
-                    return new $5fn1n$three.InterleavedBufferAttribute(ib, itemSize, accessor.byteOffset / elementBytes);
+                    var ib = new $hBQxr$three.InterleavedBuffer(array, accessor.byteStride / elementBytes);
+                    return new $hBQxr$three.InterleavedBufferAttribute(ib, itemSize, accessor.byteOffset / elementBytes);
                 } else {
                     array = new TypedArray(arraybuffer, accessor.byteOffset, accessor.count * itemSize);
-                    return new $5fn1n$three.BufferAttribute(array, itemSize);
+                    return new $hBQxr$three.BufferAttribute(array, itemSize);
                 }
             });
         });
@@ -3232,14 +3232,14 @@ class $2e652b572b4d8884$var$GLTFParser {
         return this._withDependencies([
             "bufferViews"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.textures, function(texture) {
+            return $81e80e8b2d2d5e9f$var$_each(json.textures, function(texture) {
                 if (texture.source) return new Promise(function(resolve) {
                     var source = json.images[texture.source];
                     // TODO Make this configurable
                     var sourceUri = source.uri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
                     var isObjectURL = false;
-                    if (source.extensions && source.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF]) {
-                        var metadata = source.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_BINARY_GLTF];
+                    if (source.extensions && source.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF]) {
+                        var metadata = source.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF];
                         var bufferView = dependencies.bufferViews[metadata.bufferView];
                         var blob = new Blob([
                             bufferView
@@ -3250,21 +3250,21 @@ class $2e652b572b4d8884$var$GLTFParser {
                         isObjectURL = true;
                     }
                     var textureLoader = options.manager.getHandler(sourceUri);
-                    if (textureLoader === null) textureLoader = new $5fn1n$three.TextureLoader(options.manager);
+                    if (textureLoader === null) textureLoader = new $hBQxr$three.TextureLoader(options.manager);
                     textureLoader.setCrossOrigin(options.crossOrigin);
-                    textureLoader.load($2e652b572b4d8884$var$resolveURL(sourceUri, options.path), function(_texture) {
+                    textureLoader.load($81e80e8b2d2d5e9f$var$resolveURL(sourceUri, options.path), function(_texture) {
                         if (isObjectURL) URL.revokeObjectURL(sourceUri);
                         _texture.flipY = false;
                         if (texture.name !== undefined) _texture.name = texture.name;
-                        _texture.format = texture.format !== undefined ? $2e652b572b4d8884$var$WEBGL_TEXTURE_FORMATS[texture.format] : $5fn1n$three.RGBAFormat;
-                        if (texture.internalFormat !== undefined && _texture.format !== $2e652b572b4d8884$var$WEBGL_TEXTURE_FORMATS[texture.internalFormat]) console.warn("THREE.LegacyGLTFLoader: Three.js doesn't support texture internalFormat which is different from texture format. internalFormat will be forced to be the same value as format.");
-                        _texture.type = texture.type !== undefined ? $2e652b572b4d8884$var$WEBGL_TEXTURE_DATATYPES[texture.type] : $5fn1n$three.UnsignedByteType;
+                        _texture.format = texture.format !== undefined ? $81e80e8b2d2d5e9f$var$WEBGL_TEXTURE_FORMATS[texture.format] : $hBQxr$three.RGBAFormat;
+                        if (texture.internalFormat !== undefined && _texture.format !== $81e80e8b2d2d5e9f$var$WEBGL_TEXTURE_FORMATS[texture.internalFormat]) console.warn("THREE.LegacyGLTFLoader: Three.js doesn't support texture internalFormat which is different from texture format. internalFormat will be forced to be the same value as format.");
+                        _texture.type = texture.type !== undefined ? $81e80e8b2d2d5e9f$var$WEBGL_TEXTURE_DATATYPES[texture.type] : $hBQxr$three.UnsignedByteType;
                         if (texture.sampler) {
                             var sampler = json.samplers[texture.sampler];
-                            _texture.magFilter = $2e652b572b4d8884$var$WEBGL_FILTERS[sampler.magFilter] || $5fn1n$three.LinearFilter;
-                            _texture.minFilter = $2e652b572b4d8884$var$WEBGL_FILTERS[sampler.minFilter] || $5fn1n$three.NearestMipmapLinearFilter;
-                            _texture.wrapS = $2e652b572b4d8884$var$WEBGL_WRAPPINGS[sampler.wrapS] || $5fn1n$three.RepeatWrapping;
-                            _texture.wrapT = $2e652b572b4d8884$var$WEBGL_WRAPPINGS[sampler.wrapT] || $5fn1n$three.RepeatWrapping;
+                            _texture.magFilter = $81e80e8b2d2d5e9f$var$WEBGL_FILTERS[sampler.magFilter] || $hBQxr$three.LinearFilter;
+                            _texture.minFilter = $81e80e8b2d2d5e9f$var$WEBGL_FILTERS[sampler.minFilter] || $hBQxr$three.NearestMipmapLinearFilter;
+                            _texture.wrapS = $81e80e8b2d2d5e9f$var$WEBGL_WRAPPINGS[sampler.wrapS] || $hBQxr$three.RepeatWrapping;
+                            _texture.wrapT = $81e80e8b2d2d5e9f$var$WEBGL_WRAPPINGS[sampler.wrapT] || $hBQxr$three.RepeatWrapping;
                         }
                         resolve(_texture);
                     }, undefined, function() {
@@ -3281,12 +3281,12 @@ class $2e652b572b4d8884$var$GLTFParser {
             "shaders",
             "textures"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.materials, function(material) {
+            return $81e80e8b2d2d5e9f$var$_each(json.materials, function(material) {
                 var materialType;
                 var materialValues = {};
                 var materialParams = {};
                 var khr_material;
-                if (material.extensions && material.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON]) khr_material = material.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON];
+                if (material.extensions && material.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON]) khr_material = material.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON];
                 if (khr_material) {
                     // don't copy over unused values to avoid material warning spam
                     var keys = [
@@ -3299,31 +3299,31 @@ class $2e652b572b4d8884$var$GLTFParser {
                     switch(khr_material.technique){
                         case 'BLINN':
                         case 'PHONG':
-                            materialType = $5fn1n$three.MeshPhongMaterial;
+                            materialType = $hBQxr$three.MeshPhongMaterial;
                             keys.push('diffuse', 'specular', 'shininess');
                             break;
                         case 'LAMBERT':
-                            materialType = $5fn1n$three.MeshLambertMaterial;
+                            materialType = $hBQxr$three.MeshLambertMaterial;
                             keys.push('diffuse');
                             break;
                         case 'CONSTANT':
                         default:
-                            materialType = $5fn1n$three.MeshBasicMaterial;
+                            materialType = $hBQxr$three.MeshBasicMaterial;
                             break;
                     }
                     keys.forEach(function(v) {
                         if (khr_material.values[v] !== undefined) materialValues[v] = khr_material.values[v];
                     });
-                    if (khr_material.doubleSided || materialValues.doubleSided) materialParams.side = $5fn1n$three.DoubleSide;
+                    if (khr_material.doubleSided || materialValues.doubleSided) materialParams.side = $hBQxr$three.DoubleSide;
                     if (khr_material.transparent || materialValues.transparent) {
                         materialParams.transparent = true;
                         materialParams.opacity = materialValues.transparency !== undefined ? materialValues.transparency : 1;
                     }
                 } else if (material.technique === undefined) {
-                    materialType = $5fn1n$three.MeshPhongMaterial;
+                    materialType = $hBQxr$three.MeshPhongMaterial;
                     Object.assign(materialValues, material.values);
                 } else {
-                    materialType = $2e652b572b4d8884$var$DeferredShaderMaterial;
+                    materialType = $81e80e8b2d2d5e9f$var$DeferredShaderMaterial;
                     var technique = json.techniques[material.technique];
                     materialParams.uniforms = {};
                     var program = json.programs[technique.program];
@@ -3331,48 +3331,48 @@ class $2e652b572b4d8884$var$GLTFParser {
                         materialParams.fragmentShader = dependencies.shaders[program.fragmentShader];
                         if (!materialParams.fragmentShader) {
                             console.warn("ERROR: Missing fragment shader definition:", program.fragmentShader);
-                            materialType = $5fn1n$three.MeshPhongMaterial;
+                            materialType = $hBQxr$three.MeshPhongMaterial;
                         }
                         var vertexShader = dependencies.shaders[program.vertexShader];
                         if (!vertexShader) {
                             console.warn("ERROR: Missing vertex shader definition:", program.vertexShader);
-                            materialType = $5fn1n$three.MeshPhongMaterial;
+                            materialType = $hBQxr$three.MeshPhongMaterial;
                         }
                         // IMPORTANT: FIX VERTEX SHADER ATTRIBUTE DEFINITIONS
-                        materialParams.vertexShader = $2e652b572b4d8884$var$replaceTHREEShaderAttributes(vertexShader, technique);
+                        materialParams.vertexShader = $81e80e8b2d2d5e9f$var$replaceTHREEShaderAttributes(vertexShader, technique);
                         var uniforms = technique.uniforms;
                         for(var uniformId in uniforms){
                             var pname = uniforms[uniformId];
                             var shaderParam = technique.parameters[pname];
                             var ptype = shaderParam.type;
-                            if ($2e652b572b4d8884$var$WEBGL_TYPE[ptype]) {
+                            if ($81e80e8b2d2d5e9f$var$WEBGL_TYPE[ptype]) {
                                 var pcount = shaderParam.count;
                                 var value;
                                 if (material.values !== undefined) value = material.values[pname];
-                                var uvalue = new $2e652b572b4d8884$var$WEBGL_TYPE[ptype]();
+                                var uvalue = new $81e80e8b2d2d5e9f$var$WEBGL_TYPE[ptype]();
                                 var usemantic = shaderParam.semantic;
                                 var unode = shaderParam.node;
                                 switch(ptype){
-                                    case $2e652b572b4d8884$var$WEBGL_CONSTANTS.FLOAT:
+                                    case $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.FLOAT:
                                         uvalue = shaderParam.value;
                                         if (pname == "transparency") materialParams.transparent = true;
                                         if (value !== undefined) uvalue = value;
                                         break;
-                                    case $2e652b572b4d8884$var$WEBGL_CONSTANTS.FLOAT_VEC2:
-                                    case $2e652b572b4d8884$var$WEBGL_CONSTANTS.FLOAT_VEC3:
-                                    case $2e652b572b4d8884$var$WEBGL_CONSTANTS.FLOAT_VEC4:
-                                    case $2e652b572b4d8884$var$WEBGL_CONSTANTS.FLOAT_MAT3:
+                                    case $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.FLOAT_VEC2:
+                                    case $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.FLOAT_VEC3:
+                                    case $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.FLOAT_VEC4:
+                                    case $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.FLOAT_MAT3:
                                         if (shaderParam && shaderParam.value) uvalue.fromArray(shaderParam.value);
                                         if (value) uvalue.fromArray(value);
                                         break;
-                                    case $2e652b572b4d8884$var$WEBGL_CONSTANTS.FLOAT_MAT2:
+                                    case $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.FLOAT_MAT2:
                                         // what to do?
                                         console.warn("FLOAT_MAT2 is not a supported uniform type");
                                         break;
-                                    case $2e652b572b4d8884$var$WEBGL_CONSTANTS.FLOAT_MAT4:
+                                    case $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.FLOAT_MAT4:
                                         if (pcount) {
                                             uvalue = new Array(pcount);
-                                            for(var mi = 0; mi < pcount; mi++)uvalue[mi] = new $2e652b572b4d8884$var$WEBGL_TYPE[ptype]();
+                                            for(var mi = 0; mi < pcount; mi++)uvalue[mi] = new $81e80e8b2d2d5e9f$var$WEBGL_TYPE[ptype]();
                                             if (shaderParam && shaderParam.value) {
                                                 var m4v = shaderParam.value;
                                                 uvalue.fromArray(m4v);
@@ -3386,7 +3386,7 @@ class $2e652b572b4d8884$var$GLTFParser {
                                             if (value) uvalue.fromArray(value);
                                         }
                                         break;
-                                    case $2e652b572b4d8884$var$WEBGL_CONSTANTS.SAMPLER_2D:
+                                    case $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.SAMPLER_2D:
                                         if (value !== undefined) uvalue = dependencies.textures[value];
                                         else if (shaderParam.value !== undefined) uvalue = dependencies.textures[shaderParam.value];
                                         else uvalue = null;
@@ -3407,7 +3407,7 @@ class $2e652b572b4d8884$var$GLTFParser {
                         var enableBlend = false;
                         for(var i = 0, il = enables.length; i < il; i++){
                             var enable = enables[i];
-                            switch($2e652b572b4d8884$var$STATES_ENABLES[enable]){
+                            switch($81e80e8b2d2d5e9f$var$STATES_ENABLES[enable]){
                                 case 'CULL_FACE':
                                     enableCullFace = true;
                                     break;
@@ -3426,48 +3426,48 @@ class $2e652b572b4d8884$var$GLTFParser {
                                     throw new Error("Unknown technique.states.enable: " + enable);
                             }
                         }
-                        if (enableCullFace) materialParams.side = functions.cullFace !== undefined ? $2e652b572b4d8884$var$WEBGL_SIDES[functions.cullFace] : $5fn1n$three.FrontSide;
-                        else materialParams.side = $5fn1n$three.DoubleSide;
+                        if (enableCullFace) materialParams.side = functions.cullFace !== undefined ? $81e80e8b2d2d5e9f$var$WEBGL_SIDES[functions.cullFace] : $hBQxr$three.FrontSide;
+                        else materialParams.side = $hBQxr$three.DoubleSide;
                         materialParams.depthTest = enableDepthTest;
-                        materialParams.depthFunc = functions.depthFunc !== undefined ? $2e652b572b4d8884$var$WEBGL_DEPTH_FUNCS[functions.depthFunc] : $5fn1n$three.LessDepth;
+                        materialParams.depthFunc = functions.depthFunc !== undefined ? $81e80e8b2d2d5e9f$var$WEBGL_DEPTH_FUNCS[functions.depthFunc] : $hBQxr$three.LessDepth;
                         materialParams.depthWrite = functions.depthMask !== undefined ? functions.depthMask[0] : true;
-                        materialParams.blending = enableBlend ? $5fn1n$three.CustomBlending : $5fn1n$three.NoBlending;
+                        materialParams.blending = enableBlend ? $hBQxr$three.CustomBlending : $hBQxr$three.NoBlending;
                         materialParams.transparent = enableBlend;
                         var blendEquationSeparate = functions.blendEquationSeparate;
                         if (blendEquationSeparate !== undefined) {
-                            materialParams.blendEquation = $2e652b572b4d8884$var$WEBGL_BLEND_EQUATIONS[blendEquationSeparate[0]];
-                            materialParams.blendEquationAlpha = $2e652b572b4d8884$var$WEBGL_BLEND_EQUATIONS[blendEquationSeparate[1]];
+                            materialParams.blendEquation = $81e80e8b2d2d5e9f$var$WEBGL_BLEND_EQUATIONS[blendEquationSeparate[0]];
+                            materialParams.blendEquationAlpha = $81e80e8b2d2d5e9f$var$WEBGL_BLEND_EQUATIONS[blendEquationSeparate[1]];
                         } else {
-                            materialParams.blendEquation = $5fn1n$three.AddEquation;
-                            materialParams.blendEquationAlpha = $5fn1n$three.AddEquation;
+                            materialParams.blendEquation = $hBQxr$three.AddEquation;
+                            materialParams.blendEquationAlpha = $hBQxr$three.AddEquation;
                         }
                         var blendFuncSeparate = functions.blendFuncSeparate;
                         if (blendFuncSeparate !== undefined) {
-                            materialParams.blendSrc = $2e652b572b4d8884$var$WEBGL_BLEND_FUNCS[blendFuncSeparate[0]];
-                            materialParams.blendDst = $2e652b572b4d8884$var$WEBGL_BLEND_FUNCS[blendFuncSeparate[1]];
-                            materialParams.blendSrcAlpha = $2e652b572b4d8884$var$WEBGL_BLEND_FUNCS[blendFuncSeparate[2]];
-                            materialParams.blendDstAlpha = $2e652b572b4d8884$var$WEBGL_BLEND_FUNCS[blendFuncSeparate[3]];
+                            materialParams.blendSrc = $81e80e8b2d2d5e9f$var$WEBGL_BLEND_FUNCS[blendFuncSeparate[0]];
+                            materialParams.blendDst = $81e80e8b2d2d5e9f$var$WEBGL_BLEND_FUNCS[blendFuncSeparate[1]];
+                            materialParams.blendSrcAlpha = $81e80e8b2d2d5e9f$var$WEBGL_BLEND_FUNCS[blendFuncSeparate[2]];
+                            materialParams.blendDstAlpha = $81e80e8b2d2d5e9f$var$WEBGL_BLEND_FUNCS[blendFuncSeparate[3]];
                         } else {
-                            materialParams.blendSrc = $5fn1n$three.OneFactor;
-                            materialParams.blendDst = $5fn1n$three.ZeroFactor;
-                            materialParams.blendSrcAlpha = $5fn1n$three.OneFactor;
-                            materialParams.blendDstAlpha = $5fn1n$three.ZeroFactor;
+                            materialParams.blendSrc = $hBQxr$three.OneFactor;
+                            materialParams.blendDst = $hBQxr$three.ZeroFactor;
+                            materialParams.blendSrcAlpha = $hBQxr$three.OneFactor;
+                            materialParams.blendDstAlpha = $hBQxr$three.ZeroFactor;
                         }
                     }
                 }
-                if (Array.isArray(materialValues.diffuse)) materialParams.color = new $5fn1n$three.Color().fromArray(materialValues.diffuse);
+                if (Array.isArray(materialValues.diffuse)) materialParams.color = new $hBQxr$three.Color().fromArray(materialValues.diffuse);
                 else if (typeof materialValues.diffuse === 'string') materialParams.map = dependencies.textures[materialValues.diffuse];
                 delete materialParams.diffuse;
                 if (typeof materialValues.reflective === 'string') materialParams.envMap = dependencies.textures[materialValues.reflective];
                 if (typeof materialValues.bump === 'string') materialParams.bumpMap = dependencies.textures[materialValues.bump];
                 if (Array.isArray(materialValues.emission)) {
-                    if (materialType === $5fn1n$three.MeshBasicMaterial) materialParams.color = new $5fn1n$three.Color().fromArray(materialValues.emission);
-                    else materialParams.emissive = new $5fn1n$three.Color().fromArray(materialValues.emission);
+                    if (materialType === $hBQxr$three.MeshBasicMaterial) materialParams.color = new $hBQxr$three.Color().fromArray(materialValues.emission);
+                    else materialParams.emissive = new $hBQxr$three.Color().fromArray(materialValues.emission);
                 } else if (typeof materialValues.emission === 'string') {
-                    if (materialType === $5fn1n$three.MeshBasicMaterial) materialParams.map = dependencies.textures[materialValues.emission];
+                    if (materialType === $hBQxr$three.MeshBasicMaterial) materialParams.map = dependencies.textures[materialValues.emission];
                     else materialParams.emissiveMap = dependencies.textures[materialValues.emission];
                 }
-                if (Array.isArray(materialValues.specular)) materialParams.specular = new $5fn1n$three.Color().fromArray(materialValues.specular);
+                if (Array.isArray(materialValues.specular)) materialParams.specular = new $hBQxr$three.Color().fromArray(materialValues.specular);
                 else if (typeof materialValues.specular === 'string') materialParams.specularMap = dependencies.textures[materialValues.specular];
                 if (materialValues.shininess !== undefined) materialParams.shininess = materialValues.shininess;
                 var _material = new materialType(materialParams);
@@ -3482,15 +3482,15 @@ class $2e652b572b4d8884$var$GLTFParser {
             "accessors",
             "materials"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.meshes, function(mesh) {
-                var group = new $5fn1n$three.Group();
+            return $81e80e8b2d2d5e9f$var$_each(json.meshes, function(mesh) {
+                var group = new $hBQxr$three.Group();
                 if (mesh.name !== undefined) group.name = mesh.name;
                 if (mesh.extras) group.userData = mesh.extras;
                 var primitives = mesh.primitives || [];
                 for(var name in primitives){
                     var primitive = primitives[name];
-                    if (primitive.mode === $2e652b572b4d8884$var$WEBGL_CONSTANTS.TRIANGLES || primitive.mode === undefined) {
-                        var geometry = new $5fn1n$three.BufferGeometry();
+                    if (primitive.mode === $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.TRIANGLES || primitive.mode === undefined) {
+                        var geometry = new $hBQxr$three.BufferGeometry();
                         var attributes = primitive.attributes;
                         for(var attributeId in attributes){
                             var attributeEntry = attributes[attributeId];
@@ -3531,14 +3531,14 @@ class $2e652b572b4d8884$var$GLTFParser {
                             }
                         }
                         if (primitive.indices) geometry.setIndex(dependencies.accessors[primitive.indices]);
-                        var material = dependencies.materials !== undefined ? dependencies.materials[primitive.material] : $2e652b572b4d8884$var$createDefaultMaterial();
-                        var meshNode = new $5fn1n$three.Mesh(geometry, material);
+                        var material = dependencies.materials !== undefined ? dependencies.materials[primitive.material] : $81e80e8b2d2d5e9f$var$createDefaultMaterial();
+                        var meshNode = new $hBQxr$three.Mesh(geometry, material);
                         meshNode.castShadow = true;
                         meshNode.name = name === "0" ? group.name : group.name + name;
                         if (primitive.extras) meshNode.userData = primitive.extras;
                         group.add(meshNode);
-                    } else if (primitive.mode === $2e652b572b4d8884$var$WEBGL_CONSTANTS.LINES) {
-                        var geometry = new $5fn1n$three.BufferGeometry();
+                    } else if (primitive.mode === $81e80e8b2d2d5e9f$var$WEBGL_CONSTANTS.LINES) {
+                        var geometry = new $hBQxr$three.BufferGeometry();
                         var attributes = primitive.attributes;
                         for(var attributeId in attributes){
                             var attributeEntry = attributes[attributeId];
@@ -3559,8 +3559,8 @@ class $2e652b572b4d8884$var$GLTFParser {
                         var meshNode;
                         if (primitive.indices) {
                             geometry.setIndex(dependencies.accessors[primitive.indices]);
-                            meshNode = new $5fn1n$three.LineSegments(geometry, material);
-                        } else meshNode = new $5fn1n$three.Line(geometry, material);
+                            meshNode = new $hBQxr$three.LineSegments(geometry, material);
+                        } else meshNode = new $hBQxr$three.Line(geometry, material);
                         meshNode.name = name === "0" ? group.name : group.name + name;
                         if (primitive.extras) meshNode.userData = primitive.extras;
                         group.add(meshNode);
@@ -3572,19 +3572,19 @@ class $2e652b572b4d8884$var$GLTFParser {
     }
     loadCameras() {
         var json = this.json;
-        return $2e652b572b4d8884$var$_each(json.cameras, function(camera) {
+        return $81e80e8b2d2d5e9f$var$_each(json.cameras, function(camera) {
             if (camera.type == "perspective" && camera.perspective) {
                 var yfov = camera.perspective.yfov;
                 var aspectRatio = camera.perspective.aspectRatio !== undefined ? camera.perspective.aspectRatio : 1;
                 // According to COLLADA spec...
                 // aspectRatio = xfov / yfov
                 var xfov = yfov * aspectRatio;
-                var _camera = new $5fn1n$three.PerspectiveCamera($5fn1n$three.MathUtils.radToDeg(xfov), aspectRatio, camera.perspective.znear || 1, camera.perspective.zfar || 2e6);
+                var _camera = new $hBQxr$three.PerspectiveCamera($hBQxr$three.MathUtils.radToDeg(xfov), aspectRatio, camera.perspective.znear || 1, camera.perspective.zfar || 2e6);
                 if (camera.name !== undefined) _camera.name = camera.name;
                 if (camera.extras) _camera.userData = camera.extras;
                 return _camera;
             } else if (camera.type == "orthographic" && camera.orthographic) {
-                var _camera = new $5fn1n$three.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, camera.orthographic.znear, camera.orthographic.zfar);
+                var _camera = new $hBQxr$three.OrthographicCamera(window.innerWidth / -2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / -2, camera.orthographic.znear, camera.orthographic.zfar);
                 if (camera.name !== undefined) _camera.name = camera.name;
                 if (camera.extras) _camera.userData = camera.extras;
                 return _camera;
@@ -3596,8 +3596,8 @@ class $2e652b572b4d8884$var$GLTFParser {
         return this._withDependencies([
             "accessors"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.skins, function(skin) {
-                var bindShapeMatrix = new $5fn1n$three.Matrix4();
+            return $81e80e8b2d2d5e9f$var$_each(json.skins, function(skin) {
+                var bindShapeMatrix = new $hBQxr$three.Matrix4();
                 if (skin.bindShapeMatrix !== undefined) bindShapeMatrix.fromArray(skin.bindShapeMatrix);
                 var _skin = {
                     bindShapeMatrix: bindShapeMatrix,
@@ -3614,7 +3614,7 @@ class $2e652b572b4d8884$var$GLTFParser {
             "accessors",
             "nodes"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.animations, function(animation, animationId) {
+            return $81e80e8b2d2d5e9f$var$_each(json.animations, function(animation, animationId) {
                 var tracks = [];
                 for(var channelId in animation.channels){
                     var channel = animation.channels[channelId];
@@ -3630,18 +3630,18 @@ class $2e652b572b4d8884$var$GLTFParser {
                         if (node) {
                             node.updateMatrix();
                             node.matrixAutoUpdate = true;
-                            var TypedKeyframeTrack = $2e652b572b4d8884$var$PATH_PROPERTIES[target.path] === $2e652b572b4d8884$var$PATH_PROPERTIES.rotation ? $5fn1n$three.QuaternionKeyframeTrack : $5fn1n$three.VectorKeyframeTrack;
+                            var TypedKeyframeTrack = $81e80e8b2d2d5e9f$var$PATH_PROPERTIES[target.path] === $81e80e8b2d2d5e9f$var$PATH_PROPERTIES.rotation ? $hBQxr$three.QuaternionKeyframeTrack : $hBQxr$three.VectorKeyframeTrack;
                             var targetName = node.name ? node.name : node.uuid;
-                            var interpolation = sampler.interpolation !== undefined ? $2e652b572b4d8884$var$INTERPOLATION[sampler.interpolation] : $5fn1n$three.InterpolateLinear;
+                            var interpolation = sampler.interpolation !== undefined ? $81e80e8b2d2d5e9f$var$INTERPOLATION[sampler.interpolation] : $hBQxr$three.InterpolateLinear;
                             // KeyframeTrack.optimize() will modify given 'times' and 'values'
                             // buffers before creating a truncated copy to keep. Because buffers may
                             // be reused by other tracks, make copies here.
-                            tracks.push(new TypedKeyframeTrack(targetName + '.' + $2e652b572b4d8884$var$PATH_PROPERTIES[target.path], $5fn1n$three.AnimationUtils.arraySlice(inputAccessor.array, 0), $5fn1n$three.AnimationUtils.arraySlice(outputAccessor.array, 0), interpolation));
+                            tracks.push(new TypedKeyframeTrack(targetName + '.' + $81e80e8b2d2d5e9f$var$PATH_PROPERTIES[target.path], $hBQxr$three.AnimationUtils.arraySlice(inputAccessor.array, 0), $hBQxr$three.AnimationUtils.arraySlice(outputAccessor.array, 0), interpolation));
                         }
                     }
                 }
                 var name = animation.name !== undefined ? animation.name : "animation_" + animationId;
-                return new $5fn1n$three.AnimationClip(name, undefined, tracks);
+                return new $hBQxr$three.AnimationClip(name, undefined, tracks);
             });
         });
     }
@@ -3649,15 +3649,15 @@ class $2e652b572b4d8884$var$GLTFParser {
         var json = this.json;
         var extensions = this.extensions;
         var scope = this;
-        return $2e652b572b4d8884$var$_each(json.nodes, function(node) {
-            var matrix = new $5fn1n$three.Matrix4();
+        return $81e80e8b2d2d5e9f$var$_each(json.nodes, function(node) {
+            var matrix = new $hBQxr$three.Matrix4();
             var _node;
             if (node.jointName) {
-                _node = new $5fn1n$three.Bone();
+                _node = new $hBQxr$three.Bone();
                 _node.name = node.name !== undefined ? node.name : node.jointName;
                 _node.jointName = node.jointName;
             } else {
-                _node = new $5fn1n$three.Object3D();
+                _node = new $hBQxr$three.Object3D();
                 if (node.name !== undefined) _node.name = node.name;
             }
             if (node.extras) _node.userData = node.extras;
@@ -3676,7 +3676,7 @@ class $2e652b572b4d8884$var$GLTFParser {
                 "skins",
                 "cameras"
             ]).then(function(dependencies) {
-                return $2e652b572b4d8884$var$_each(__nodes, function(_node, nodeId) {
+                return $81e80e8b2d2d5e9f$var$_each(__nodes, function(_node, nodeId) {
                     var node = json.nodes[nodeId];
                     if (node.meshes !== undefined) for(var meshId in node.meshes){
                         var mesh = node.meshes[meshId];
@@ -3697,16 +3697,16 @@ class $2e652b572b4d8884$var$GLTFParser {
                             else material = originalMaterial;
                             switch(child.type){
                                 case 'LineSegments':
-                                    child = new $5fn1n$three.LineSegments(originalGeometry, material);
+                                    child = new $hBQxr$three.LineSegments(originalGeometry, material);
                                     break;
                                 case 'LineLoop':
-                                    child = new $5fn1n$three.LineLoop(originalGeometry, material);
+                                    child = new $hBQxr$three.LineLoop(originalGeometry, material);
                                     break;
                                 case 'Line':
-                                    child = new $5fn1n$three.Line(originalGeometry, material);
+                                    child = new $hBQxr$three.Line(originalGeometry, material);
                                     break;
                                 default:
-                                    child = new $5fn1n$three.Mesh(originalGeometry, material);
+                                    child = new $hBQxr$three.Mesh(originalGeometry, material);
                             }
                             child.castShadow = true;
                             child.userData = originalUserData;
@@ -3726,7 +3726,7 @@ class $2e652b572b4d8884$var$GLTFParser {
                                 var geometry = originalGeometry;
                                 var material = originalMaterial;
                                 material.skinning = true;
-                                child = new $5fn1n$three.SkinnedMesh(geometry, material);
+                                child = new $hBQxr$three.SkinnedMesh(geometry, material);
                                 child.castShadow = true;
                                 child.userData = originalUserData;
                                 child.name = originalName;
@@ -3738,11 +3738,11 @@ class $2e652b572b4d8884$var$GLTFParser {
                                     if (jointNode) {
                                         bones.push(jointNode);
                                         var m = skinEntry.inverseBindMatrices.array;
-                                        var mat = new $5fn1n$three.Matrix4().fromArray(m, i * 16);
+                                        var mat = new $hBQxr$three.Matrix4().fromArray(m, i * 16);
                                         boneInverses.push(mat);
                                     } else console.warn("WARNING: joint: '" + jointId + "' could not be found");
                                 }
-                                child.bind(new $5fn1n$three.Skeleton(bones, boneInverses), skinEntry.bindShapeMatrix);
+                                child.bind(new $hBQxr$three.Skeleton(bones, boneInverses), skinEntry.bindShapeMatrix);
                                 var buildBoneGraph = function(parentJson, parentObject, property) {
                                     var children = parentJson[property];
                                     if (children === undefined) return;
@@ -3765,9 +3765,9 @@ class $2e652b572b4d8884$var$GLTFParser {
                         var camera = dependencies.cameras[node.camera];
                         _node.add(camera);
                     }
-                    if (node.extensions && node.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON] && node.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON].light) {
-                        var extensionLights = extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON].lights;
-                        var light = extensionLights[node.extensions[$2e652b572b4d8884$var$EXTENSIONS.KHR_MATERIALS_COMMON].light];
+                    if (node.extensions && node.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON] && node.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON].light) {
+                        var extensionLights = extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON].lights;
+                        var light = extensionLights[node.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_MATERIALS_COMMON].light];
                         _node.add(light);
                     }
                     return _node;
@@ -3793,8 +3793,8 @@ class $2e652b572b4d8884$var$GLTFParser {
         return this._withDependencies([
             "nodes"
         ]).then(function(dependencies) {
-            return $2e652b572b4d8884$var$_each(json.scenes, function(scene) {
-                var _scene = new $5fn1n$three.Scene();
+            return $81e80e8b2d2d5e9f$var$_each(json.scenes, function(scene) {
+                var _scene = new $hBQxr$three.Scene();
                 if (scene.name !== undefined) _scene.name = scene.name;
                 if (scene.extras) _scene.userData = scene.extras;
                 var nodes = scene.nodes || [];
@@ -3805,7 +3805,7 @@ class $2e652b572b4d8884$var$GLTFParser {
                 _scene.traverse(function(child) {
                     // Register raw material meshes with LegacyGLTFLoader.Shaders
                     if (child.material && child.material.isRawShaderMaterial) {
-                        child.gltfShader = new $2e652b572b4d8884$var$GLTFShader(child, dependencies.nodes);
+                        child.gltfShader = new $81e80e8b2d2d5e9f$var$GLTFShader(child, dependencies.nodes);
                         child.onBeforeRender = function(renderer, scene, camera) {
                             this.gltfShader.update(scene, camera);
                         };
@@ -3833,10 +3833,10 @@ class $2e652b572b4d8884$var$GLTFParser {
 // limitations under the License.
 
 
-async function $49ca0fb96e110b19$export$d51cb1093e099859(brushPath, model) {
-    const tiltShaderLoader = new (0, $5fn1n$TiltShaderLoader)((0, $5fn1n$DefaultLoadingManager));
+async function $594bcd4b482795a1$export$d51cb1093e099859(brushPath, model) {
+    const tiltShaderLoader = new (0, $hBQxr$TiltShaderLoader)((0, $hBQxr$DefaultLoadingManager));
     tiltShaderLoader.setPath(brushPath);
-    const clock = new (0, $5fn1n$Clock)();
+    const clock = new (0, $hBQxr$Clock)();
     model.traverse(async (object)=>{
         if (object.type === "Mesh") {
             const mesh = object;
@@ -4520,7 +4520,7 @@ async function $49ca0fb96e110b19$export$d51cb1093e099859(brushPath, model) {
                     // This assumes we only hit ReplaceLegacyMaterials for old Tilt Brush files
                     // and not any arbitrary glTF v1 file
                     isRawShader = false;
-                    mesh.material = new (0, $5fn1n$MeshBasicMaterial)({
+                    mesh.material = new (0, $hBQxr$MeshBasicMaterial)({
                         vertexColors: true,
                         color: 0x333333
                     });
@@ -4530,7 +4530,7 @@ async function $49ca0fb96e110b19$export$d51cb1093e099859(brushPath, model) {
                 if (material.uniforms["u_time"]) {
                     const elapsedTime = clock.getElapsedTime();
                     // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
-                    const time = new (0, $5fn1n$Vector4)(elapsedTime / 20, elapsedTime, elapsedTime * 2, elapsedTime * 3);
+                    const time = new (0, $hBQxr$Vector4)(elapsedTime / 20, elapsedTime, elapsedTime * 2, elapsedTime * 3);
                     material.uniforms["u_time"].value = time;
                 }
                 if (material.uniforms["cameraPosition"]) material.uniforms["cameraPosition"].value = camera.position;
@@ -4541,7 +4541,7 @@ async function $49ca0fb96e110b19$export$d51cb1093e099859(brushPath, model) {
 
 
 
-class $1a6e733bd4fd211d$var$SketchMetadata {
+class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
         let sceneLights = [];
@@ -4554,7 +4554,7 @@ class $1a6e733bd4fd211d$var$SketchMetadata {
         });
         this.EnvironmentGuid = userData['TB_EnvironmentGuid'] ?? '';
         this.Environment = userData['TB_Environment'] ?? '(None)';
-        this.EnvironmentPreset = new $1a6e733bd4fd211d$var$EnvironmentPreset($1a6e733bd4fd211d$export$2ec4afd9b3c16a85.lookupEnvironment(this.EnvironmentGuid));
+        this.EnvironmentPreset = new $677737c8a5cbea2f$var$EnvironmentPreset($677737c8a5cbea2f$export$2ec4afd9b3c16a85.lookupEnvironment(this.EnvironmentGuid));
         if (userData && userData['TB_UseGradient'] === undefined) {
             // The sketch metadata doesn't specify whether to use a gradient or not,
             // so we'll use the environment preset value (assuming it's not a null preset)
@@ -4563,7 +4563,7 @@ class $1a6e733bd4fd211d$var$SketchMetadata {
         } else this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         this.SkyColorA = this.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
-        this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new $5fn1n$three.Vector3(0, 1, 0));
+        this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new $hBQxr$three.Vector3(0, 1, 0));
         this.AmbientLightColor = this.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
         this.FogColor = this.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
@@ -4572,9 +4572,9 @@ class $1a6e733bd4fd211d$var$SketchMetadata {
         this.ReflectionIntensity = userData['TB_ReflectionIntensity'] ?? this.EnvironmentPreset.ReflectionIntensity;
         function radToDeg3(rot) {
             return {
-                x: $5fn1n$three.MathUtils.radToDeg(rot.x),
-                y: $5fn1n$three.MathUtils.radToDeg(rot.y),
-                z: $5fn1n$three.MathUtils.radToDeg(rot.z)
+                x: $hBQxr$three.MathUtils.radToDeg(rot.x),
+                y: $hBQxr$three.MathUtils.radToDeg(rot.y),
+                z: $hBQxr$three.MathUtils.radToDeg(rot.z)
             };
         }
         let light0rot = sceneLights.length == 1 ? radToDeg3(sceneLights[0].rotation) : null;
@@ -4583,8 +4583,8 @@ class $1a6e733bd4fd211d$var$SketchMetadata {
         this.SceneLight1Rotation = userData['TB_SceneLight1Rotation'] ?? light1rot ?? this.EnvironmentPreset.SceneLight1Rotation;
         let light0col = userData['TB_SceneLight0Color'] ?? this.EnvironmentPreset.SceneLight0Color;
         let light1col = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
-        this.SceneLight0Color = new $5fn1n$three.Color(light0col.r, light0col.g, light0col.b);
-        this.SceneLight1Color = new $5fn1n$three.Color(light1col.r, light1col.g, light1col.b);
+        this.SceneLight0Color = new $hBQxr$three.Color(light0col.r, light0col.g, light0col.b);
+        this.SceneLight1Color = new $hBQxr$three.Color(light1col.r, light1col.g, light1col.b);
         this.PoseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
         this.PoseRotation = this.parseTBVector3(userData['TB_PoseRotation']);
         this.PoseScale = userData['TB_PoseScale'] ?? 1;
@@ -4592,28 +4592,28 @@ class $1a6e733bd4fd211d$var$SketchMetadata {
         this.CameraRotation = this.parseTBVector3(userData['TB_CameraRotation']);
     }
     parseTBVector3(vectorString, defaultValue) {
-        if (!vectorString) return defaultValue ?? new $5fn1n$three.Vector3();
+        if (!vectorString) return defaultValue ?? new $hBQxr$three.Vector3();
         let [x, y, z] = vectorString.split(',').map(parseFloat);
-        return new $5fn1n$three.Vector3(x, y, z);
+        return new $hBQxr$three.Vector3(x, y, z);
     }
     parseTBColorString(colorString, defaultValue) {
         let r, g, b;
         if (colorString) {
             [r, g, b] = colorString.split(',').map(parseFloat);
-            return new $5fn1n$three.Color(r, g, b);
+            return new $hBQxr$three.Color(r, g, b);
         } else return defaultValue;
     }
 }
-class $1a6e733bd4fd211d$var$EnvironmentPreset {
+class $677737c8a5cbea2f$var$EnvironmentPreset {
     constructor(preset){
-        let defaultColor = new $5fn1n$three.Color("#FFF");
-        let defaultRotation = new $5fn1n$three.Vector3(0, 1, 0);
+        let defaultColor = new $hBQxr$three.Color("#FFF");
+        let defaultRotation = new $hBQxr$three.Vector3(0, 1, 0);
         this.Guid = preset?.guid ?? null;
         this.Name = preset?.name ?? "No preset";
         this.AmbientLightColor = preset?.renderSettings.ambientColor ?? defaultColor;
         this.SkyColorA = preset?.skyboxColorA ?? defaultColor;
         this.SkyColorB = preset?.skyboxColorB ?? defaultColor;
-        this.SkyGradientDirection = new $5fn1n$three.Vector3(0, 1, 0);
+        this.SkyGradientDirection = new $hBQxr$three.Vector3(0, 1, 0);
         this.FogColor = preset?.renderSettings.fogColor ?? defaultColor;
         this.FogDensity = preset?.renderSettings.fogDensity ?? 0;
         this.SceneLight0Color = preset?.lights[0].color ?? defaultColor;
@@ -4626,7 +4626,7 @@ class $1a6e733bd4fd211d$var$EnvironmentPreset {
         this.ReflectionIntensity = preset?.renderSettings.reflectionIntensity ?? 1;
     }
 }
-class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
+class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     constructor(assetBaseUrl, frame){
         this.loadingError = false;
         this.icosa_frame = frame;
@@ -4663,11 +4663,11 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
             loadscreen?.classList.remove('fade-out');
             loadscreen?.classList.add('loaderror');
         };
-        const clock = new $5fn1n$three.Clock();
-        this.scene = new $5fn1n$three.Scene();
-        this.three = $5fn1n$three;
+        const clock = new $hBQxr$three.Clock();
+        this.scene = new $hBQxr$three.Scene();
+        this.three = $hBQxr$three;
         const viewer1 = this;
-        const manager = new $5fn1n$three.LoadingManager();
+        const manager = new $hBQxr$three.LoadingManager();
         manager.onStart = function() {
             document.getElementById('loadscreen')?.classList.remove('fade-out');
             document.getElementById('loadscreen')?.classList.remove('loaded');
@@ -4679,21 +4679,21 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         this.brushPath = new URL('brushes/', assetBaseUrl);
         this.environmentPath = new URL('environments/', assetBaseUrl);
         this.texturePath = new URL('textures/', assetBaseUrl);
-        this.defaultBackgroundColor = new $5fn1n$three.Color(0x000000);
-        this.tiltLoader = new (0, $5fn1n$TiltLoader)(manager);
+        this.defaultBackgroundColor = new $hBQxr$three.Color(0x000000);
+        this.tiltLoader = new (0, $hBQxr$TiltLoader)(manager);
         this.tiltLoader.setBrushPath(this.brushPath.toString());
-        this.objLoader = new (0, $5fn1n$OBJLoader)(manager);
-        this.mtlLoader = new (0, $5fn1n$MTLLoader)(manager);
-        this.fbxLoader = new (0, $5fn1n$FBXLoader)(manager);
-        this.plyLoader = new (0, $5fn1n$PLYLoader)(manager);
-        this.stlLoader = new (0, $5fn1n$STLLoader)(manager);
-        this.usdzLoader = new (0, $5fn1n$USDZLoader)(manager);
-        this.voxLoader = new (0, $5fn1n$VOXLoader)(manager);
-        this.gltfLegacyLoader = new (0, $2e652b572b4d8884$export$9559c3115faeb0b0)(manager);
-        this.gltfLoader = new (0, $5fn1n$GLTFLoader)(manager);
+        this.objLoader = new (0, $hBQxr$OBJLoader)(manager);
+        this.mtlLoader = new (0, $hBQxr$MTLLoader)(manager);
+        this.fbxLoader = new (0, $hBQxr$FBXLoader)(manager);
+        this.plyLoader = new (0, $hBQxr$PLYLoader)(manager);
+        this.stlLoader = new (0, $hBQxr$STLLoader)(manager);
+        this.usdzLoader = new (0, $hBQxr$USDZLoader)(manager);
+        this.voxLoader = new (0, $hBQxr$VOXLoader)(manager);
+        this.gltfLegacyLoader = new (0, $81e80e8b2d2d5e9f$export$9559c3115faeb0b0)(manager);
+        this.gltfLoader = new (0, $hBQxr$GLTFLoader)(manager);
         // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
-        this.gltfLoader.register((parser)=>new (0, $5fn1n$GLTFGoogleTiltBrushMaterialExtension)(parser, this.brushPath.toString()));
-        const dracoLoader = new (0, $5fn1n$DRACOLoader)();
+        this.gltfLoader.register((parser)=>new (0, $hBQxr$GLTFGoogleTiltBrushMaterialExtension)(parser, this.brushPath.toString()));
+        const dracoLoader = new (0, $hBQxr$DRACOLoader)();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
         this.gltfLoader.setDRACOLoader(dracoLoader);
         this.canvas = document.createElement('canvas');
@@ -4705,12 +4705,12 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         this.canvas.onmouseup = ()=>{
             this.canvas.classList.remove('grabbed');
         };
-        const renderer = new $5fn1n$three.WebGLRenderer({
+        const renderer = new $hBQxr$three.WebGLRenderer({
             canvas: this.canvas,
             antialias: true
         });
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.outputColorSpace = $5fn1n$three.SRGBColorSpace;
+        renderer.outputColorSpace = $hBQxr$three.SRGBColorSpace;
         renderer.xr.enabled = true;
         function handleController(inputSource) {
             const gamepad = inputSource.gamepad;
@@ -4720,7 +4720,7 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
             };
             return null;
         }
-        this.cameraRig = new $5fn1n$three.Group();
+        this.cameraRig = new $hBQxr$three.Group();
         this.selectedNode = null;
         let controller0;
         let controller1;
@@ -4731,14 +4731,14 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         this.scene.add(controller0);
         controller1 = renderer.xr.getController(1);
         this.scene.add(controller1);
-        const controllerModelFactory = new (0, $5fn1n$XRControllerModelFactory)();
+        const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
         controllerGrip0 = renderer.xr.getControllerGrip(0);
         controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
         this.scene.add(controllerGrip0);
         controllerGrip1 = renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.scene.add(controllerGrip1);
-        let xrButton = (0, $caa409da4139f1cd$export$d1c1e163c7960c6).createButton(renderer);
+        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(renderer);
         this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement('button');
@@ -4791,15 +4791,15 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
                                 const moveX = axes[2] * moveSpeed;
                                 const moveZ = -axes[3] * moveSpeed;
                                 // Get the camera's forward and right vectors
-                                const forward = new $5fn1n$three.Vector3();
+                                const forward = new $hBQxr$three.Vector3();
                                 viewer1.activeCamera.getWorldDirection(forward);
                                 // TODO Make this an option
                                 //forward.y = 0; // Ignore vertical movement
                                 forward.normalize();
-                                const right = new $5fn1n$three.Vector3();
+                                const right = new $hBQxr$three.Vector3();
                                 right.crossVectors(forward, viewer1.activeCamera.up).normalize();
                                 // Calculate the movement vector
-                                const movement = new $5fn1n$three.Vector3();
+                                const movement = new $hBQxr$three.Vector3();
                                 movement.addScaledVector(forward, moveZ);
                                 movement.addScaledVector(right, moveX);
                                 viewer1.cameraRig.position.add(movement);
@@ -4808,8 +4808,8 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
                         if (inputSource.handedness === 'right') {
                             // Rotation (right thumbstick x)
                             if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
-                                if (axes[2] > 0) viewer1.cameraRig.rotation.y -= $5fn1n$three.MathUtils.degToRad(snapAngle);
-                                else viewer1.cameraRig.rotation.y += $5fn1n$three.MathUtils.degToRad(snapAngle);
+                                if (axes[2] > 0) viewer1.cameraRig.rotation.y -= $hBQxr$three.MathUtils.degToRad(snapAngle);
+                                else viewer1.cameraRig.rotation.y += $hBQxr$three.MathUtils.degToRad(snapAngle);
                             }
                             previousLeftThumbstickX = axes[2];
                             // Up/down position right thumbstick y)
@@ -4848,7 +4848,7 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
             const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
-            const thumbnailRenderer = new $5fn1n$three.WebGLRenderer({
+            const thumbnailRenderer = new $hBQxr$three.WebGLRenderer({
                 canvas: canvas,
                 antialias: true,
                 preserveDrawingBuffer: true // Important to allow toDataURL to work
@@ -4886,7 +4886,7 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
     initializeScene(overrides) {
         let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-        this.defaultBackgroundColor = new $5fn1n$three.Color(defaultBackgroundColor);
+        this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
         if (!this.loadedModel) return;
         this.scene.clear();
         this.initSceneBackground();
@@ -6304,7 +6304,7 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         this.overrides = overrides;
         if (isV1) {
             sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
-            (0, $49ca0fb96e110b19$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene);
+            (0, $594bcd4b482795a1$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene);
         } else sceneGltf = await this.gltfLoader.loadAsync(url);
         // The legacy loader has the latter structure
         let userData = sceneGltf.userData ?? sceneGltf.scene.userData;
@@ -6342,7 +6342,7 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
                 this.loadedModel = objData;
                 let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
                 if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-                this.defaultBackgroundColor = new $5fn1n$three.Color(defaultBackgroundColor);
+                this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
                 let withVertexColors = overrides?.["withVertexColors"];
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                 this.setupSketchMetaData(this.loadedModel);
@@ -6363,7 +6363,7 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
                     this.loadedModel = objData;
                     let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
                     if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-                    this.defaultBackgroundColor = new $5fn1n$three.Color(defaultBackgroundColor);
+                    this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
                     let withVertexColors = overrides?.["withVertexColors"];
                     if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                     this.setupSketchMetaData(this.loadedModel);
@@ -6394,11 +6394,11 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         try {
             const plyData = await this.plyLoader.loadAsync(url);
             plyData.computeVertexNormals();
-            const material = new $5fn1n$three.MeshStandardMaterial({
+            const material = new $hBQxr$three.MeshStandardMaterial({
                 color: 0xffffff,
                 metalness: 0
             });
-            const plyModel = new $5fn1n$three.Mesh(plyData, material);
+            const plyModel = new $hBQxr$three.Mesh(plyData, material);
             this.loadedModel = plyModel;
             this.setupSketchMetaData(plyModel);
             this.initializeScene(overrides);
@@ -6412,15 +6412,15 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
     async loadStl(url, overrides) {
         try {
             const stlData = await this.stlLoader.loadAsync(url);
-            let material = new $5fn1n$three.MeshStandardMaterial({
+            let material = new $hBQxr$three.MeshStandardMaterial({
                 color: 0xffffff,
                 metalness: 0
             });
-            if (stlData.hasColors) material = new $5fn1n$three.MeshStandardMaterial({
+            if (stlData.hasColors) material = new $hBQxr$three.MeshStandardMaterial({
                 opacity: stlData.alpha,
                 vertexColors: true
             });
-            const stlModel = new $5fn1n$three.Mesh(stlData, material);
+            const stlModel = new $hBQxr$three.Mesh(stlData, material);
             this.loadedModel = stlModel;
             this.setupSketchMetaData(stlModel);
             this.initializeScene(overrides);
@@ -6446,11 +6446,11 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
     }
     async loadVox(url, overrides) {
         try {
-            let voxModel = new $5fn1n$three.Group();
+            let voxModel = new $hBQxr$three.Group();
             let chunks = await this.voxLoader.loadAsync(url);
             for(let i = 0; i < chunks.length; i++){
                 const chunk = chunks[i];
-                const mesh = new (0, $5fn1n$VOXMesh)(chunk);
+                const mesh = new (0, $hBQxr$VOXMesh)(chunk);
                 mesh.scale.setScalar(0.0015);
                 voxModel.add(mesh);
             }
@@ -6464,14 +6464,56 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
+    async loadSparkModule() {
+        try {
+            // Construct module name at runtime to avoid bundler processing
+            const moduleName = "@sparkjsdev/spark";
+            const sparkModule = await import(/* webpackIgnore: true */ moduleName);
+            if (!sparkModule.SplatMesh) throw new Error("SplatMesh not found in Spark module exports");
+            return sparkModule.SplatMesh;
+        } catch (error) {
+            throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error.message}`);
+        }
+    }
+    async loadSplat(url, overrides) {
+        try {
+            // Dynamic import for optional Spark dependency
+            let SplatMesh;
+            try {
+                SplatMesh = await this.loadSparkModule();
+            } catch (importError) {
+                console.error(importError.message);
+                this.showErrorIcon();
+                this.loadingError = true;
+                return;
+            }
+            const splatModel = new SplatMesh({
+                url: url
+            });
+            await splatModel.initialized;
+            this.loadedModel = splatModel;
+            this.setupSketchMetaData(splatModel);
+            this.modelBoundingBox = splatModel.getBoundingBox(false);
+            this.scene.add(this.loadedModel);
+            this.initializeScene(overrides);
+            this.frameScene();
+            // Manually trigger loading screen fade-out since SplatMesh doesn't use LoadingManager
+            let loadscreen = document.getElementById('loadscreen');
+            if (loadscreen && !loadscreen.classList.contains('loaderror')) loadscreen.classList.add('fade-out');
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Splat model:", error);
+            this.loadingError = true;
+        }
+    }
     async assignEnvironment(scene) {
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
             const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
             // Use the standard GLTFLoader for environments
-            const standardLoader = new (0, $5fn1n$GLTFLoader)();
+            const standardLoader = new (0, $hBQxr$GLTFLoader)();
             const envGltf = await standardLoader.loadAsync(envUrl.toString());
-            envGltf.scene.setRotationFromEuler(new $5fn1n$three.Euler(0, Math.PI, 0));
+            envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
             // Not sure why the environment models are 2x larger than they should be
             envGltf.scene.scale.set(2, 2, 2);
             scene.attach(envGltf.scene);
@@ -6489,40 +6531,40 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         gradient.addColorStop(1, colorA.convertSRGBToLinear().getStyle());
         context.fillStyle = gradient;
         context.fillRect(0, 0, 1, 256);
-        const texture = new $5fn1n$three.CanvasTexture(canvas);
-        texture.wrapS = $5fn1n$three.RepeatWrapping;
-        texture.wrapT = $5fn1n$three.ClampToEdgeWrapping;
+        const texture = new $hBQxr$three.CanvasTexture(canvas);
+        texture.wrapS = $hBQxr$three.RepeatWrapping;
+        texture.wrapT = $hBQxr$three.ClampToEdgeWrapping;
         return this.generateSkyGeometry(texture, direction);
     }
     generateTextureSky(textureName) {
         const textureUrl = new URL(`skies/${textureName}.png`, this.texturePath);
-        let texture = new $5fn1n$three.TextureLoader().load(textureUrl.toString());
-        return this.generateSkyGeometry(texture, new $5fn1n$three.Vector3(0, 1, 0));
+        let texture = new $hBQxr$three.TextureLoader().load(textureUrl.toString());
+        return this.generateSkyGeometry(texture, new $hBQxr$three.Vector3(0, 1, 0));
     }
     generateSkyGeometry(texture, direction) {
-        texture.colorSpace = $5fn1n$three.SRGBColorSpace;
-        const material = new $5fn1n$three.MeshBasicMaterial({
+        texture.colorSpace = $hBQxr$three.SRGBColorSpace;
+        const material = new $hBQxr$three.MeshBasicMaterial({
             map: texture,
-            side: $5fn1n$three.BackSide
+            side: $hBQxr$three.BackSide
         });
         material.fog = false;
         material.toneMapped = false;
-        const geometry = new $5fn1n$three.SphereGeometry(5000, 64, 64);
-        const skysphere = new $5fn1n$three.Mesh(geometry, material);
+        const geometry = new $hBQxr$three.SphereGeometry(5000, 64, 64);
+        const skysphere = new $hBQxr$three.Mesh(geometry, material);
         skysphere.name = "environmentSky";
-        const defaultUp = new $5fn1n$three.Vector3(0, 1, 0);
-        const quaternion = new $5fn1n$three.Quaternion().setFromUnitVectors(defaultUp, direction);
+        const defaultUp = new $hBQxr$three.Vector3(0, 1, 0);
+        const quaternion = new $hBQxr$three.Quaternion().setFromUnitVectors(defaultUp, direction);
         skysphere.applyQuaternion(quaternion);
         return skysphere;
     }
     setupSketchMetaDataFromScene(scene, userData) {
-        let sketchMetaData = new $1a6e733bd4fd211d$var$SketchMetadata(scene, userData);
-        this.modelBoundingBox = new $5fn1n$three.Box3().setFromObject(scene);
+        let sketchMetaData = new $677737c8a5cbea2f$var$SketchMetadata(scene, userData);
+        this.modelBoundingBox = new $hBQxr$three.Box3().setFromObject(scene);
         this.sketchMetadata = sketchMetaData;
     }
     setupSketchMetaData(model) {
-        let sketchMetaData = new $1a6e733bd4fd211d$var$SketchMetadata(model, model.userData);
-        this.modelBoundingBox = new $5fn1n$three.Box3().setFromObject(model);
+        let sketchMetaData = new $677737c8a5cbea2f$var$SketchMetadata(model, model.userData);
+        this.modelBoundingBox = new $hBQxr$three.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
     initCameras() {
@@ -6544,21 +6586,21 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
             cameraRot[0] += 0;
             cameraRot[1] += 180;
             cameraRot[2] += 0;
-            cameraRot[0] = $5fn1n$three.MathUtils.degToRad(cameraRot[0]);
-            cameraRot[1] = $5fn1n$three.MathUtils.degToRad(cameraRot[1]);
-            cameraRot[2] = $5fn1n$three.MathUtils.degToRad(cameraRot[2]);
+            cameraRot[0] = $hBQxr$three.MathUtils.degToRad(cameraRot[0]);
+            cameraRot[1] = $hBQxr$three.MathUtils.degToRad(cameraRot[1]);
+            cameraRot[2] = $hBQxr$three.MathUtils.degToRad(cameraRot[2]);
         }
         const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 75;
         const aspect = 2;
         const near = cameraOverrides?.perspective?.znear || 0.1;
         const far = 6000;
-        this.flatCamera = new $5fn1n$three.PerspectiveCamera(fov, aspect, near, far);
+        this.flatCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
         this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
-        if (cameraRot.length == 3) this.flatCamera.rotation.setFromVector3(new $5fn1n$three.Vector3(cameraRot[0], cameraRot[1], cameraRot[2]));
+        if (cameraRot.length == 3) this.flatCamera.rotation.setFromVector3(new $hBQxr$three.Vector3(cameraRot[0], cameraRot[1], cameraRot[2]));
         else this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
         this.flatCamera.updateProjectionMatrix();
-        this.xrCamera = new $5fn1n$three.PerspectiveCamera(fov, aspect, near, far);
-        this.cameraRig = new $5fn1n$three.Group();
+        this.xrCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
+        this.cameraRig = new $hBQxr$three.Group();
         this.scene.add(this.cameraRig);
         this.cameraRig.rotation.y = this.flatCamera.rotation.y;
         this.cameraRig.rotation.setFromQuaternion(this.flatCamera.quaternion);
@@ -6567,13 +6609,13 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         this.activeCamera = this.flatCamera;
         let cameraTarget;
         let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot;
-        if (pivot) cameraTarget = new $5fn1n$three.Vector3(pivot[0], pivot[1], pivot[2]);
+        if (pivot) cameraTarget = new $hBQxr$three.Vector3(pivot[0], pivot[1], pivot[2]);
         else {
             let vp = this.overrides?.geometryData?.visualCenterPoint;
             if (!vp) {
                 const box = this.modelBoundingBox;
                 if (box != undefined) {
-                    const boxCenter = box.getCenter(new $5fn1n$three.Vector3());
+                    const boxCenter = box.getCenter(new $hBQxr$three.Vector3());
                     vp = [
                         boxCenter.x,
                         boxCenter.y,
@@ -6581,19 +6623,19 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
                     ];
                 }
             }
-            let visualCenterPoint = new $5fn1n$three.Vector3(vp[0], vp[1], vp[2]);
+            let visualCenterPoint = new $hBQxr$three.Vector3(vp[0], vp[1], vp[2]);
             cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
             cameraTarget = cameraTarget || visualCenterPoint;
         }
-        (0, $d882b6cfe45cb358$export$2e2bcd8739ae039).install({
-            THREE: $5fn1n$three
+        (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
+            THREE: $hBQxr$three
         });
-        this.cameraControls = new (0, $d882b6cfe45cb358$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
+        this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
         this.cameraControls.smoothTime = 1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
         this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
         this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
-        (0, $2c32d9c40568b16d$export$fc22e28a11679cb8)(this.cameraControls);
+        (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
     // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
     // this.trackballControls.target = cameraTarget;
     // this.trackballControls.rotateSpeed = 1.0;
@@ -6606,15 +6648,15 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
     }
     calculatePivot(camera, centroid) {
         // 1. Get the camera's forward vector
-        const forward = new $5fn1n$three.Vector3();
+        const forward = new $hBQxr$three.Vector3();
         camera.getWorldDirection(forward); // This gives the forward vector in world space.
         // 2. Define a plane based on the centroid and facing the camera
         const planeNormal = forward.clone().negate(); // Plane facing the camera
-        const plane = new $5fn1n$three.Plane().setFromNormalAndCoplanarPoint(planeNormal, centroid);
+        const plane = new $hBQxr$three.Plane().setFromNormalAndCoplanarPoint(planeNormal, centroid);
         // 3. Calculate the intersection point of the forward vector with the plane
         const cameraPosition = camera.position.clone();
-        const ray = new $5fn1n$three.Ray(cameraPosition, forward);
-        const intersectionPoint = new $5fn1n$three.Vector3();
+        const ray = new $hBQxr$three.Ray(cameraPosition, forward);
+        const intersectionPoint = new $hBQxr$three.Vector3();
         if (ray.intersectPlane(plane, intersectionPoint)) return intersectionPoint; // This is your calculated pivot point.
         else {
             console.error("No intersection between camera forward vector and plane.");
@@ -6630,29 +6672,29 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         // 5. If there's neither custom metadata, an environment guid or explicit GLTF lights - create some default lighting.
         function convertTBEuler(rot) {
             const deg2rad = Math.PI / 180;
-            return new $5fn1n$three.Euler($5fn1n$three.MathUtils.degToRad(rot.x), $5fn1n$three.MathUtils.degToRad(rot.y), $5fn1n$three.MathUtils.degToRad(rot.z));
+            return new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(rot.x), $hBQxr$three.MathUtils.degToRad(rot.y), $hBQxr$three.MathUtils.degToRad(rot.z));
         }
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
-            const light = new $5fn1n$three.DirectionalLight(0xffffff, 1);
+            const light = new $hBQxr$three.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 10).normalize();
             this.loadedModel.add(light);
             return;
         }
-        let l0 = new $5fn1n$three.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
-        let l1 = new $5fn1n$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
+        let l0 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
+        let l1 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         l0.setRotationFromEuler(convertTBEuler(this.sketchMetadata.SceneLight0Rotation));
         l1.setRotationFromEuler(convertTBEuler(this.sketchMetadata.SceneLight1Rotation));
         l0.castShadow = true;
         l1.castShadow = false;
         this.loadedModel?.add(l0);
         this.loadedModel?.add(l1);
-        const ambientLight = new $5fn1n$three.AmbientLight();
+        const ambientLight = new $hBQxr$three.AmbientLight();
         ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.scene.add(ambientLight);
     }
     initFog() {
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) return;
-        this.scene.fog = new $5fn1n$three.FogExp2(this.sketchMetadata.FogColor, this.sketchMetadata.FogDensity);
+        this.scene.fog = new $hBQxr$three.FogExp2(this.sketchMetadata.FogColor, this.sketchMetadata.FogDensity);
     }
     initSceneBackground() {
         // OBJ and FBX models don't have metadata
@@ -6676,21 +6718,21 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
         this.frameBox(this.modelBoundingBox);
         else {
             // Fall back to framing the whole scene
-            let box = new $5fn1n$three.Box3().setFromObject(this.scene);
+            let box = new $hBQxr$three.Box3().setFromObject(this.scene);
             this.frameBox(box);
         }
     }
     frameNode(node) {
-        this.frameBox(new $5fn1n$three.Box3().setFromObject(node));
+        this.frameBox(new $hBQxr$three.Box3().setFromObject(node));
     }
     frameBox(box) {
-        const boxSize = box.getSize(new $5fn1n$three.Vector3()).length();
-        const boxCenter = box.getCenter(new $5fn1n$three.Vector3());
+        const boxSize = box.getSize(new $hBQxr$three.Vector3()).length();
+        const boxCenter = box.getCenter(new $hBQxr$three.Vector3());
         this.cameraControls.minDistance = boxSize * 0.01;
         this.cameraControls.maxDistance = boxSize * 10;
         const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
         this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
-        let sphere = new $5fn1n$three.Sphere();
+        let sphere = new $hBQxr$three.Sphere();
         box.getBoundingSphere(sphere);
         let fullDistance = sphere.radius * 1.75;
         this.cameraControls.dollyTo(fullDistance, true);
@@ -6698,9 +6740,9 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
     }
     levelCamera() {
         // Sets the camera target so that the camera is looking forward and level
-        let cameraPos = new $5fn1n$three.Vector3();
+        let cameraPos = new $hBQxr$three.Vector3();
         this.cameraControls.getPosition(cameraPos);
-        let cameraDir = new $5fn1n$three.Vector3();
+        let cameraDir = new $hBQxr$three.Vector3();
         this.cameraControls.camera.getWorldDirection(cameraDir);
         cameraDir.y = 0; // Ensure the direction is level
         cameraDir.normalize();
@@ -6772,5 +6814,5 @@ class $1a6e733bd4fd211d$export$2ec4afd9b3c16a85 {
 }
 
 
-export {$1a6e733bd4fd211d$export$2ec4afd9b3c16a85 as Viewer};
+export {$677737c8a5cbea2f$export$2ec4afd9b3c16a85 as Viewer};
 //# sourceMappingURL=icosa-viewer.module.js.map
