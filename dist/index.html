@@ -13,11 +13,12 @@
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
-                    "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
-                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/",
-                    "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/",
+                    "three": "https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.js",
+                    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.172.0/examples/jsm/",
+                    "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.172.0/examples/",
                     "three-icosa": "./three-icosa.module.js",
-                    "three-tiltloader": "https://cdn.jsdelivr.net/npm/three-tiltloader@0.4.2-alpha.4/dist/three-tiltloader.module.js"
+                    "three-tiltloader": "https://cdn.jsdelivr.net/npm/three-tiltloader@0.4.2-alpha.4/dist/three-tiltloader.module.js",
+                    "@sparkjsdev/spark": "https://cdn.jsdelivr.net/npm/@sparkjsdev/spark@0.1.8/dist/spark.module.js"
                 }
             }
         </script>
@@ -150,7 +151,8 @@
                 // await viewer.loadPly("formats/ply/dolphins_colored.ply", overrides);
                 // await viewer.loadStl("formats/stl/colored.stl", overrides);
                 // await viewer.loadUsdz("formats/usdz/saeukkang.usdz", overrides);
-                // await viewer.loadVox("formats/vox/teapot.vox", overrides);
+                // await viewer.loadVox("formats/vox/monu10.vox", overrides);
+                await viewer.loadSplat("formats/splats/butterfly.spz", overrides);
             }
 
             const gui = new GUI({ autoPlace: false });
@@ -228,7 +230,7 @@
                     if (t) {viewer.cameraControls.setTarget(t.x, t.y, t.z)}
                 },
                 targetPivot: () => {
-                    let t = viewer.overrides?.camera.GOOGLE_camera_settings?.pivot;
+                    let t = viewer.overrides?.camera?.GOOGLE_camera_settings?.pivot;
                     doLogging(t);
                     if (t) {viewer.cameraControls.setTarget(t[0], t[1], t[2])}
                 },
@@ -302,7 +304,7 @@
             if (!viewer.skyObject) toggleSkyControl.disable();
             if (!viewer.overrides?.geometryData?.visualCenterPoint) targetVisualCenterControl.disable();
             if (!viewer.overrides?.geometryData?.visualCenterPoint) targetVisualCenterYControl.disable();
-            if (!viewer.overrides?.camera.GOOGLE_camera_settings?.pivot) targetPivotControl.disable();
+            if (!viewer.overrides?.camera?.GOOGLE_camera_settings?.pivot) targetPivotControl.disable();
 
         </script>
     </body>
