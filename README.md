@@ -7,7 +7,7 @@
 
 3D viewer component for [Icosa Gallery](https://icosa.gallery).
 
-This project aims to provide a simple way to view raw .tilt files and the various converted variants hosted on Icosa Gallery, with legacy support for [Google Poly](https://poly.google.com) models.
+This project aims to provide a simple way to view raw .tilt files and the various converted variants hosted on Icosa Gallery, with legacy support for [Google Poly](https://poly.google.com) models and Gaussian splat formats (.SPZ, .SPLAT, .KSPLAT) via [Spark](https://github.com/sparkjsdev/spark).
 
 The viewer is still a work in progress and subject to change. Please join the [Discord](https://discord.gg/W7NCEYnEfy) to discuss the project!
 

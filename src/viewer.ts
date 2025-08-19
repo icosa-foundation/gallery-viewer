@@ -24,6 +24,7 @@ import {PLYLoader} from 'three/examples/jsm/loaders/PLYLoader.js';
 import {STLLoader} from 'three/examples/jsm/loaders/STLLoader.js';
 import {USDZLoader} from 'three/examples/jsm/loaders/USDZLoader.js';
 import {VOXLoader, VOXMesh} from 'three/examples/jsm/loaders/VOXLoader.js';
+import { SplatMesh } from '@sparkjsdev/spark';
 import { XRButton } from './IcosaXRButton.js';
 import { GLTFGoogleTiltBrushTechniquesExtension } from 'three-icosa';
 import { GLTFGoogleTiltBrushMaterialExtension } from 'three-icosa';
@@ -2188,6 +2189,22 @@ export class Viewer {
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Vox model");
+            this.loadingError = true;
+        }
+    }
+
+    public async loadSplat(url: string, overrides : any) {
+        try {
+            const splatModel = new SplatMesh({ url });
+            await splatModel.initialized;
+            this.loadedModel = splatModel;
+            this.setupSketchMetaData(splatModel);
+            this.modelBoundingBox = splatModel.getBoundingBox(false);
+            this.initializeScene(overrides);
+            this.frameScene();
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading Splat model");
             this.loadingError = true;
         }
     }
