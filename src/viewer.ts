@@ -2013,7 +2013,7 @@ export class Viewer {
         this.overrides = overrides;
         if (isV1) {
             sceneGltf = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
-            replaceBrushMaterials(this.brushPath.toString(), <Object3D>sceneGltf.scene);
+            replaceBrushMaterials(this.brushPath.toString(), <Object3D>sceneGltf.scene, THREE.DefaultLoadingManager, new THREE.Clock());
         } else {
             sceneGltf = <GLTF>await this.gltfLoader.loadAsync(url);
         }

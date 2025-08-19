@@ -19,16 +19,14 @@ import {
     RawShaderMaterial,
     Vector4,
     Clock,
-    DefaultLoadingManager
+    LoadingManager
 } from "three";
 
 import { TiltShaderLoader } from "three-icosa";
 
-export async function replaceBrushMaterials(brushPath: string, model: Object3D): Promise<void> {
-    const tiltShaderLoader = new TiltShaderLoader(DefaultLoadingManager);
+export async function replaceBrushMaterials(brushPath: string, model: Object3D, loadingManager: LoadingManager, clock: Clock): Promise<void> {
+    const tiltShaderLoader = new TiltShaderLoader(loadingManager);
     tiltShaderLoader.setPath(brushPath);
-
-    const clock = new Clock();
     model.traverse(async (object) => {
         if(object.type === "Mesh") {
             const mesh = <Mesh> object;

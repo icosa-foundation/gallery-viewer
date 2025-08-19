@@ -3833,10 +3833,9 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
 // limitations under the License.
 
 
-async function $594bcd4b482795a1$export$d51cb1093e099859(brushPath, model) {
-    const tiltShaderLoader = new (0, $hBQxr$TiltShaderLoader)((0, $hBQxr$DefaultLoadingManager));
+async function $594bcd4b482795a1$export$d51cb1093e099859(brushPath, model, loadingManager, clock) {
+    const tiltShaderLoader = new (0, $hBQxr$TiltShaderLoader)(loadingManager);
     tiltShaderLoader.setPath(brushPath);
-    const clock = new (0, $hBQxr$Clock)();
     model.traverse(async (object)=>{
         if (object.type === "Mesh") {
             const mesh = object;
@@ -6304,7 +6303,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.overrides = overrides;
         if (isV1) {
             sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
-            (0, $594bcd4b482795a1$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene);
+            (0, $594bcd4b482795a1$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene, $hBQxr$three.DefaultLoadingManager, new $hBQxr$three.Clock());
         } else sceneGltf = await this.gltfLoader.loadAsync(url);
         // The legacy loader has the latter structure
         let userData = sceneGltf.userData ?? sceneGltf.scene.userData;
