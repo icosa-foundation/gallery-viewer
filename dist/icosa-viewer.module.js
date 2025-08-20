@@ -3162,7 +3162,7 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
                     let shaderPath = "https://icosa-foundation.github.io/icosa-sketch-assets/";
                     // Catch anything else - it would give a CORS error in any case
                     let url = shader.uri.replace("https://vr.google.com/shaders/w/", shaderPath);
-                    url = url.replace(/https:\/\/web\.archive\.org\/web\/\d+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
+                    url = url.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
                     url = url.replace('https://www.tiltbrush.com/shaders/', shaderPath);
                     loader.load($81e80e8b2d2d5e9f$var$resolveURL(url, options.path), function(shaderText) {
                         resolve(shaderText);
@@ -3236,7 +3236,9 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
                 if (texture.source) return new Promise(function(resolve) {
                     var source = json.images[texture.source];
                     // TODO Make this configurable
-                    var sourceUri = source.uri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
+                    // Handle archive.org URLs first, then fall back to direct replacement
+                    var sourceUri = source.uri.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, "https://icosa-foundation.github.io/icosa-sketch-assets/");
+                    sourceUri = sourceUri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
                     var isObjectURL = false;
                     if (source.extensions && source.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF]) {
                         var metadata = source.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF];
@@ -3339,7 +3341,7 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
                             materialType = $hBQxr$three.MeshPhongMaterial;
                         }
                         // IMPORTANT: FIX VERTEX SHADER ATTRIBUTE DEFINITIONS
-                        materialParams.vertexShader = $81e80e8b2d2d5e9f$var$replaceTHREEShaderAttributes(vertexShader, technique);
+                        //materialParams.vertexShader = replaceTHREEShaderAttributes( vertexShader, technique );
                         var uniforms = technique.uniforms;
                         for(var uniformId in uniforms){
                             var pname = uniforms[uniformId];
@@ -4519,17 +4521,24 @@ async function $594bcd4b482795a1$export$d51cb1093e099859(brushPath, model, loadi
                     // This assumes we only hit ReplaceLegacyMaterials for old Tilt Brush files
                     // and not any arbitrary glTF v1 file
                     isRawShader = false;
-                    mesh.material = new (0, $hBQxr$MeshBasicMaterial)({
+                    mesh.material = new $hBQxr$MeshBasicMaterial({
                         vertexColors: true,
                         color: 0x333333
                     });
+                    mesh.material.name = "material_Unknown";
+                    console.warn(`Unknown brush type: ${targetFilter} - using MeshBasicMaterial`);
                     break;
             }
             if (isRawShader) mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group)=>{
                 if (material.uniforms["u_time"]) {
                     const elapsedTime = clock.getElapsedTime();
                     // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
-                    const time = new (0, $hBQxr$Vector4)(elapsedTime / 20, elapsedTime, elapsedTime * 2, elapsedTime * 3);
+                    const time = {
+                        x: elapsedTime / 20,
+                        y: elapsedTime,
+                        z: elapsedTime * 2,
+                        w: elapsedTime * 3
+                    };
                     material.uniforms["u_time"].value = time;
                 }
                 if (material.uniforms["cameraPosition"]) material.uniforms["cameraPosition"].value = camera.position;
