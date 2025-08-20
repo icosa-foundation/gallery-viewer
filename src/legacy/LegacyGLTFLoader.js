@@ -881,7 +881,7 @@ class GLTFParser {
                     let shaderPath = "https://icosa-foundation.github.io/icosa-sketch-assets/"
                     // Catch anything else - it would give a CORS error in any case
                     let url = shader.uri.replace("https://vr.google.com/shaders/w/", shaderPath);
-                    url = url.replace(/https:\/\/web\.archive\.org\/web\/\d+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
+                    url = url.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
                     url = url.replace('https://www.tiltbrush.com/shaders/', shaderPath);
 
                     loader.load( resolveURL( url, options.path ), function ( shaderText ) {
@@ -1025,7 +1025,9 @@ class GLTFParser {
                         var source = json.images[ texture.source ];
 
                         // TODO Make this configurable
-                        var sourceUri = source.uri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
+                        // Handle archive.org URLs first, then fall back to direct replacement
+                        var sourceUri = source.uri.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, "https://icosa-foundation.github.io/icosa-sketch-assets/");
+                        sourceUri = sourceUri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
 
                         var isObjectURL = false;
 
