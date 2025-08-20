@@ -1207,7 +1207,9 @@ class GLTFParser {
                         }
 
                         // IMPORTANT: FIX VERTEX SHADER ATTRIBUTE DEFINITIONS
-                        materialParams.vertexShader = replaceTHREEShaderAttributes( vertexShader, technique );
+                        // I'm not sure we need to replace the param names any more.
+                        // Not sure why it worked before!
+                        //materialParams.vertexShader = replaceTHREEShaderAttributes( vertexShader, technique );
 
                         var uniforms = technique.uniforms;
 
