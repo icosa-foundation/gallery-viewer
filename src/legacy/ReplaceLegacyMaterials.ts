@@ -12,25 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { 
-    Object3D,
-    Mesh,
-    MeshBasicMaterial,
-    RawShaderMaterial,
-    Vector4,
-    Clock,
-    LoadingManager
-} from "three";
-
+import * as THREE from 'three';
 import { TiltShaderLoader } from "three-icosa";
 
-export async function replaceBrushMaterials(brushPath: string, model: Object3D, loadingManager: LoadingManager, clock: Clock): Promise<void> {
+export async function replaceBrushMaterials(brushPath: string, model: THREE.Object3D, loadingManager: THREE.LoadingManager, clock: THREE.Clock): Promise<void> {
     const tiltShaderLoader = new TiltShaderLoader(loadingManager);
     tiltShaderLoader.setPath(brushPath);
     model.traverse(async (object) => {
         if(object.type === "Mesh") {
-            const mesh = <Mesh> object;
-            var shader : RawShaderMaterial;
+            const mesh = <THREE.Mesh> object;
+            var shader : THREE.RawShaderMaterial;
             let targetFilter = mesh.name.split('_')[1];
             targetFilter = "brush_" + targetFilter.split('-')[0];
             let isRawShader = true;
@@ -830,22 +821,26 @@ export async function replaceBrushMaterials(brushPath: string, model: Object3D, 
                     // This assumes we only hit ReplaceLegacyMaterials for old Tilt Brush files
                     // and not any arbitrary glTF v1 file
                     isRawShader = false;
-                    mesh.material = new MeshBasicMaterial({ vertexColors: true, color: 0x333333 });
+                    mesh.material = new THREE.MeshBasicMaterial({ vertexColors: true, color: 0x333333 });
+                    mesh.material.name = "material_Unknown";
+                    console.warn(`Unknown brush type: ${targetFilter} - using MeshBasicMaterial`);
                     break;
             }
 
             if (isRawShader) {
                 mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group) => {
-                    if ((<RawShaderMaterial>material).uniforms["u_time"]) {
+                    if ((<THREE.RawShaderMaterial>material).uniforms["u_time"]) {
                         const elapsedTime = clock.getElapsedTime();
                         // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
-                        const time = new Vector4(elapsedTime / 20, elapsedTime, elapsedTime * 2, elapsedTime * 3);
+                        // For some reason I don't fully understand using THREE.Vector4
+                        // gave an import error so just create a plain object
+                        const time = { x: elapsedTime / 20, y: elapsedTime, z: elapsedTime * 2, w: elapsedTime * 3 };
 
-                        (<RawShaderMaterial>material).uniforms["u_time"].value = time;
+                        (<THREE.RawShaderMaterial>material).uniforms["u_time"].value = time;
                     }
 
-                    if ((<RawShaderMaterial>material).uniforms["cameraPosition"]) {
-                        (<RawShaderMaterial>material).uniforms["cameraPosition"].value = camera.position;
+                    if ((<THREE.RawShaderMaterial>material).uniforms["cameraPosition"]) {
+                        (<THREE.RawShaderMaterial>material).uniforms["cameraPosition"].value = camera.position;
                     }
                 }
             }
