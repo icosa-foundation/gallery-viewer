@@ -315,7 +315,7 @@ export class Viewer {
         this.usdzLoader = new USDZLoader(manager);
         this.voxLoader = new VOXLoader(manager);
 
-        this.gltfLegacyLoader = new LegacyGLTFLoader(manager);
+        this.gltfLegacyLoader = new LegacyGLTFLoader(manager, assetBaseUrl);
         this.gltfLoader = new GLTFLoader(manager);
         // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
         this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, this.brushPath.toString()));

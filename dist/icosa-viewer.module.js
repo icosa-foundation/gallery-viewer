@@ -2657,6 +2657,10 @@ const $81e80e8b2d2d5e9f$var$GLASSFS_GLSL = "precision highp float; const float I
 const $81e80e8b2d2d5e9f$var$GLASSVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionMatrix; uniform mat3 u_normalMatrix; attribute vec3 a_position; attribute vec3 a_normal; varying vec3 v_normal; varying vec3 v_position; void main() { vec4 worldPosition = vec4(a_position, 1.0); // Our object space has no rotation and no scale, so this is fine. v_normal = a_normal; v_position = worldPosition.xyz; gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0); } ";
 const { Loader: $81e80e8b2d2d5e9f$var$ThreeLoader } = $hBQxr$three;
 class $81e80e8b2d2d5e9f$export$9559c3115faeb0b0 extends $81e80e8b2d2d5e9f$var$ThreeLoader {
+    constructor(manager, assetBaseUrl){
+        super(manager);
+        this.assetBaseUrl = assetBaseUrl;
+    }
     load(url, onLoad, onProgress, onError) {
         var scope = this;
         var resourcePath;
@@ -2683,7 +2687,8 @@ class $81e80e8b2d2d5e9f$export$9559c3115faeb0b0 extends $81e80e8b2d2d5e9f$var$Th
         var parser = new $81e80e8b2d2d5e9f$var$GLTFParser(json, extensions, {
             crossOrigin: this.crossOrigin,
             manager: this.manager,
-            path: path || this.resourcePath || ''
+            path: path || this.resourcePath || '',
+            assetBaseUrl: this.assetBaseUrl
         });
         parser.parse(function(scene, scenes, cameras, animations) {
             var glTF = {
@@ -3147,10 +3152,10 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
         var options = this.options;
         return this._withDependencies([
             "bufferViews"
-        ]).then(function(dependencies) {
-            return $81e80e8b2d2d5e9f$var$_each(json.shaders, function(shader) {
+        ]).then((dependencies)=>{
+            return $81e80e8b2d2d5e9f$var$_each(json.shaders, (shader)=>{
                 if (shader.extensions && shader.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF]) return extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF].loadShader(shader, dependencies.bufferViews);
-                return new Promise(function(resolve) {
+                return new Promise((resolve)=>{
                     var loader = new $hBQxr$three.FileLoader(options.manager);
                     // Common google urls to save pointless requests
                     if (shader.uri === 'https://vr.google.com/shaders/w/fs.glsl') return $81e80e8b2d2d5e9f$var$FS_GLSL;
@@ -3159,7 +3164,7 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
                     if (shader.uri === 'https://vr.google.com/shaders/w/glassFS.glsl') return $81e80e8b2d2d5e9f$var$GLASSFS_GLSL;
                     if (shader.uri === 'https://vr.google.com/shaders/w/gemVS.glsl') return $81e80e8b2d2d5e9f$var$GEMVS_GLSL;
                     if (shader.uri === 'https://vr.google.com/shaders/w/gemFS.glsl') return $81e80e8b2d2d5e9f$var$GEMFS_GLSL;
-                    let shaderPath = "https://icosa-foundation.github.io/icosa-sketch-assets/";
+                    let shaderPath = this.options.assetBaseUrl;
                     // Catch anything else - it would give a CORS error in any case
                     let url = shader.uri.replace("https://vr.google.com/shaders/w/", shaderPath);
                     url = url.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
@@ -3341,6 +3346,8 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
                             materialType = $hBQxr$three.MeshPhongMaterial;
                         }
                         // IMPORTANT: FIX VERTEX SHADER ATTRIBUTE DEFINITIONS
+                        // I'm not sure we need to replace the param names any more.
+                        // Not sure why it worked before!
                         //materialParams.vertexShader = replaceTHREEShaderAttributes( vertexShader, technique );
                         var uniforms = technique.uniforms;
                         for(var uniformId in uniforms){
@@ -4533,6 +4540,8 @@ async function $594bcd4b482795a1$export$d51cb1093e099859(brushPath, model, loadi
                 if (material.uniforms["u_time"]) {
                     const elapsedTime = clock.getElapsedTime();
                     // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
+                    // For some reason I don't fully understand using THREE.Vector4
+                    // gave an import error so just create a plain object
                     const time = {
                         x: elapsedTime / 20,
                         y: elapsedTime,
@@ -4697,7 +4706,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.stlLoader = new (0, $hBQxr$STLLoader)(manager);
         this.usdzLoader = new (0, $hBQxr$USDZLoader)(manager);
         this.voxLoader = new (0, $hBQxr$VOXLoader)(manager);
-        this.gltfLegacyLoader = new (0, $81e80e8b2d2d5e9f$export$9559c3115faeb0b0)(manager);
+        this.gltfLegacyLoader = new (0, $81e80e8b2d2d5e9f$export$9559c3115faeb0b0)(manager, assetBaseUrl);
         this.gltfLoader = new (0, $hBQxr$GLTFLoader)(manager);
         // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
         this.gltfLoader.register((parser)=>new (0, $hBQxr$GLTFGoogleTiltBrushMaterialExtension)(parser, this.brushPath.toString()));

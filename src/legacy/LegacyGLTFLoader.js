@@ -13,7 +13,10 @@ const GLASSVS_GLSL = "uniform mat4 u_modelViewMatrix; uniform mat4 u_projectionM
 
 const { Loader: ThreeLoader } = THREE;
 export class LegacyGLTFLoader extends ThreeLoader {
-
+    constructor(manager, assetBaseUrl) {
+        super(manager);
+        this.assetBaseUrl = assetBaseUrl;
+    }
 
     load ( url, onLoad, onProgress, onError ) {
 
@@ -77,8 +80,8 @@ export class LegacyGLTFLoader extends ThreeLoader {
 
             crossOrigin: this.crossOrigin,
             manager: this.manager,
-            path: path || this.resourcePath || ''
-
+            path: path || this.resourcePath || '',
+            assetBaseUrl: this.assetBaseUrl
         } );
 
         parser.parse( function ( scene, scenes, cameras, animations ) {
@@ -856,9 +859,9 @@ class GLTFParser {
 
             "bufferViews"
 
-        ] ).then( function ( dependencies ) {
+        ] ).then((dependencies)=> {
 
-            return _each( json.shaders, function ( shader ) {
+            return _each( json.shaders,  ( shader )=> {
 
                 if ( shader.extensions && shader.extensions[ EXTENSIONS.KHR_BINARY_GLTF ] ) {
 
@@ -866,7 +869,7 @@ class GLTFParser {
 
                 }
 
-                return new Promise( function ( resolve ) {
+                return new Promise(  ( resolve ) => {
 
                     var loader = new THREE.FileLoader( options.manager );
 
@@ -878,7 +881,7 @@ class GLTFParser {
                     if (shader.uri === 'https://vr.google.com/shaders/w/gemVS.glsl') {return GEMVS_GLSL}
                     if (shader.uri === 'https://vr.google.com/shaders/w/gemFS.glsl') {return GEMFS_GLSL}
 
-                    let shaderPath = "https://icosa-foundation.github.io/icosa-sketch-assets/"
+                    let shaderPath = this.options.assetBaseUrl;
                     // Catch anything else - it would give a CORS error in any case
                     let url = shader.uri.replace("https://vr.google.com/shaders/w/", shaderPath);
                     url = url.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
