@@ -139,7 +139,13 @@ class SketchMetadata {
             [r, g, b] = colorString.split(',').map(parseFloat);
             return new THREE.Color(r, g, b);
         } else {
-            return defaultValue;
+            // Check if it's already a THREE.Color
+            if (defaultValue instanceof THREE.Color) {
+                return defaultValue;
+            }
+            else {
+                return new THREE.Color(defaultValue.r, defaultValue.g, defaultValue.b, defaultValue.a);
+            }
         }
     }
 }
