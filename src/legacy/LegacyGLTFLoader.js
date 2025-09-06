@@ -971,99 +971,14 @@ class GLTFParser {
     };
 
     loadTextures() {
-
         var json = this.json;
-        var options = this.options;
-
-        return this._withDependencies( [
-
-            "bufferViews"
-
-        ] ).then( function ( dependencies ) {
-
-            return _each( json.textures, function ( texture ) {
-
-                if ( texture.source ) {
-
-                    return new Promise( function ( resolve ) {
-
-                        var source = json.images[ texture.source ];
-
-                        // TODO Make this configurable
-                        // Handle archive.org URLs first, then fall back to direct replacement
-                        var sourceUri = source.uri.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, "https://icosa-foundation.github.io/icosa-sketch-assets/");
-                        sourceUri = sourceUri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
-
-                        var isObjectURL = false;
-
-                        if ( source.extensions && source.extensions[ EXTENSIONS.KHR_BINARY_GLTF ] ) {
-
-                            var metadata = source.extensions[ EXTENSIONS.KHR_BINARY_GLTF ];
-                            var bufferView = dependencies.bufferViews[ metadata.bufferView ];
-                            var blob = new Blob( [ bufferView ], { type: metadata.mimeType } );
-                            sourceUri = URL.createObjectURL( blob );
-                            isObjectURL = true;
-
-                        }
-
-                        var textureLoader = options.manager.getHandler( sourceUri );
-
-                        if ( textureLoader === null ) {
-
-                            textureLoader = new THREE.TextureLoader( options.manager );
-
-                        }
-
-                        textureLoader.setCrossOrigin( options.crossOrigin );
-
-                        textureLoader.load( resolveURL( sourceUri, options.path ), function ( _texture ) {
-
-                            if ( isObjectURL ) URL.revokeObjectURL( sourceUri );
-
-                            _texture.flipY = false;
-
-                            if ( texture.name !== undefined ) _texture.name = texture.name;
-
-                            _texture.format = texture.format !== undefined ? WEBGL_TEXTURE_FORMATS[ texture.format ] : THREE.RGBAFormat;
-
-                            if ( texture.internalFormat !== undefined && _texture.format !== WEBGL_TEXTURE_FORMATS[ texture.internalFormat ] ) {
-
-                                console.warn( 'THREE.LegacyGLTFLoader: Three.js doesn\'t support texture internalFormat which is different from texture format. ' +
-                                    'internalFormat will be forced to be the same value as format.' );
-
-                            }
-
-                            _texture.type = texture.type !== undefined ? WEBGL_TEXTURE_DATATYPES[ texture.type ] : THREE.UnsignedByteType;
-
-                            if ( texture.sampler ) {
-
-                                var sampler = json.samplers[ texture.sampler ];
-
-                                _texture.magFilter = WEBGL_FILTERS[ sampler.magFilter ] || THREE.LinearFilter;
-                                _texture.minFilter = WEBGL_FILTERS[ sampler.minFilter ] || THREE.NearestMipmapLinearFilter;
-                                _texture.wrapS = WEBGL_WRAPPINGS[ sampler.wrapS ] || THREE.RepeatWrapping;
-                                _texture.wrapT = WEBGL_WRAPPINGS[ sampler.wrapT ] || THREE.RepeatWrapping;
-
-                            }
-
-                            resolve( _texture );
-
-                        }, undefined, function () {
-
-                            if ( isObjectURL ) URL.revokeObjectURL( sourceUri );
-
-                            resolve();
-
-                        } );
-
-                    } );
-
-                }
-
-            } );
-
-        } );
-
+        
+        // Skip texture loading entirely since materials get completely replaced by replaceBrushMaterials()
+        // Just return null textures for all texture references to avoid breaking the material loading pipeline
+        console.log('LegacyGLTFLoader: Skipping texture loading - materials will be replaced with working ones');
+        return Promise.resolve(_each(json.textures, function() {
+            return null; // Return null for each texture
+        }));
     };
 
     loadMaterials() {
