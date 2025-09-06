@@ -855,8 +855,6 @@ class GLTFParser {
 
         // Skip shader loading entirely since materials get completely replaced by replaceBrushMaterials()
         // Just return empty shaders for all shader references to avoid breaking the material loading pipeline
-        console.log( 'LegacyGLTFLoader: Skipping shader loading - materials will be replaced with working ones' );
-        
         return Promise.resolve( _each( json.shaders, function () {
             return ''; // Return empty string for each shader
         } ) );
@@ -975,7 +973,6 @@ class GLTFParser {
         
         // Skip texture loading entirely since materials get completely replaced by replaceBrushMaterials()
         // Just return null textures for all texture references to avoid breaking the material loading pipeline
-        console.log('LegacyGLTFLoader: Skipping texture loading - materials will be replaced with working ones');
         return Promise.resolve(_each(json.textures, function() {
             return null; // Return null for each texture
         }));
@@ -1072,7 +1069,7 @@ class GLTFParser {
 
                         if ( ! materialParams.fragmentShader ) {
 
-                            console.warn( "ERROR: Missing fragment shader definition:", program.fragmentShader );
+                            // Shaders are intentionally skipped since materials get replaced by replaceBrushMaterials()
                             materialType = THREE.MeshPhongMaterial;
 
                         }
@@ -1081,7 +1078,7 @@ class GLTFParser {
 
                         if ( ! vertexShader ) {
 
-                            console.warn( "ERROR: Missing vertex shader definition:", program.vertexShader );
+                            // Shaders are intentionally skipped since materials get replaced by replaceBrushMaterials()
                             materialType = THREE.MeshPhongMaterial;
 
                         }
