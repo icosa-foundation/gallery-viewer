@@ -18,6 +18,10 @@ import { TiltShaderLoader } from "three-icosa";
 export async function replaceBrushMaterials(brushPath: string, model: THREE.Object3D, loadingManager: THREE.LoadingManager, clock: THREE.Clock): Promise<void> {
     const tiltShaderLoader = new TiltShaderLoader(loadingManager);
     tiltShaderLoader.setPath(brushPath);
+    
+    // Workaround for Parcel bundling bug with MeshBasicMaterial
+    const ThreeNamespace = THREE;
+    const MeshBasicMaterial = ThreeNamespace.MeshBasicMaterial;
     model.traverse(async (object) => {
         if(object.type === "Mesh") {
             const mesh = <THREE.Mesh> object;
@@ -821,7 +825,7 @@ export async function replaceBrushMaterials(brushPath: string, model: THREE.Obje
                     // This assumes we only hit ReplaceLegacyMaterials for old Tilt Brush files
                     // and not any arbitrary glTF v1 file
                     isRawShader = false;
-                    mesh.material = new THREE.MeshBasicMaterial({ vertexColors: true, color: 0x333333 });
+                    mesh.material = new MeshBasicMaterial({ vertexColors: true, color: 0x333333 });
                     mesh.material.name = "material_Unknown";
                     console.warn(`Unknown brush type: ${targetFilter} - using MeshBasicMaterial`);
                     break;
