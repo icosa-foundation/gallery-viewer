@@ -25,7 +25,7 @@ function $4fdc68aa1ebb2033$var$getDefaultWhiteTexture() {
             255,
             255
         ]), 1, 1, $fugmd$RGBAFormat);
-        $4fdc68aa1ebb2033$var$defaultWhiteTexture.name = "DefaultWhiteTexture";
+        $4fdc68aa1ebb2033$var$defaultWhiteTexture.name = 'DefaultWhiteTexture';
         $4fdc68aa1ebb2033$var$defaultWhiteTexture.needsUpdate = true;
     }
     return $4fdc68aa1ebb2033$var$defaultWhiteTexture;
@@ -38,7 +38,7 @@ function $4fdc68aa1ebb2033$var$getDefaultNormalTexture() {
             255,
             255
         ]), 1, 1, $fugmd$RGBAFormat);
-        $4fdc68aa1ebb2033$var$defaultNormalTexture.name = "DefaultNormalTexture";
+        $4fdc68aa1ebb2033$var$defaultNormalTexture.name = 'DefaultNormalTexture';
         $4fdc68aa1ebb2033$var$defaultNormalTexture.needsUpdate = true;
     }
     return $4fdc68aa1ebb2033$var$defaultNormalTexture;
@@ -54,8 +54,8 @@ class $4fdc68aa1ebb2033$export$bcc22bf437a07d8f extends $fugmd$Loader {
         try {
             return await loader.loadAsync(relativePath);
         } catch (error) {
-            console.warn("Failed to load surface shader includes:", relativePath, error);
-            return "// Failed to load surface shader includes " + relativePath + "\n";
+            console.warn('Failed to load surface shader includes:', relativePath, error);
+            return '// Failed to load surface shader includes ' + relativePath + '\n';
         }
     }
     async load(brushName, onLoad, onProgress, onError) {
@@ -67,7 +67,7 @@ class $4fdc68aa1ebb2033$export$bcc22bf437a07d8f extends $fugmd$Loader {
         }
         const loader = new $fugmd$FileLoader(this.manager);
         loader.setPath(this.path);
-        loader.setResponseType("text");
+        loader.setResponseType('text');
         loader.setWithCredentials(this.withCredentials);
         const textureLoader = new $fugmd$TextureLoader(this.manager);
         textureLoader.setPath(this.path);
@@ -77,12 +77,12 @@ class $4fdc68aa1ebb2033$export$bcc22bf437a07d8f extends $fugmd$Loader {
         // Load shaders
         const vertexShaderText = await loader.loadAsync(materialParams.vertexShader);
         let fragmentShaderText = await loader.loadAsync(materialParams.fragmentShader);
-        if (!this.fogShaderCode) this.fogShaderCode = await this.loadShaderIncludes("includes/FogShaderIncludes.glsl");
-        fragmentShaderText = this.fogShaderCode + "\n" + fragmentShaderText;
+        if (!this.fogShaderCode) this.fogShaderCode = await this.loadShaderIncludes('includes/FogShaderIncludes.glsl');
+        fragmentShaderText = this.fogShaderCode + '\n' + fragmentShaderText;
         // Prepend surface shader code if needed
         if (materialParams.isSurfaceShader) {
-            if (!this.surfaceShaderCode) this.surfaceShaderCode = await this.loadShaderIncludes("includes/SurfaceShaderIncludes.glsl");
-            fragmentShaderText = this.surfaceShaderCode + "\n" + fragmentShaderText;
+            if (!this.surfaceShaderCode) this.surfaceShaderCode = await this.loadShaderIncludes('includes/SurfaceShaderIncludes.glsl');
+            fragmentShaderText = this.surfaceShaderCode + '\n' + fragmentShaderText;
         }
         // Remove custom flag before passing to Three.js
         delete materialParams.isSurfaceShader;
@@ -9777,8 +9777,8 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
             let nameOrGuid;
             // Try a guid first
             if (extensionsDef?.[this.name]) nameOrGuid = extensionsDef[this.name].guid;
-            else if (material.name.startsWith("material_")) nameOrGuid = material.name.replace("material_", "");
-            else if (material.name.startsWith("ob-")) nameOrGuid = material.name.replace("ob-", "");
+            else if (material.name.startsWith("material_")) nameOrGuid = material.name.replace('material_', '');
+            else if (material.name.startsWith('ob-')) nameOrGuid = material.name.replace('ob-', '');
             else {
                 let newName = this.tryReplaceBlocksName(material.name);
                 if (newName !== undefined) nameOrGuid = newName;
@@ -9817,13 +9817,13 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 const material = json.materials[prim.material];
                 const extensionsDef = material.extensions;
                 let brushName;
-                if (material.name.startsWith("ob-")) // New glb naming convention
-                brushName = material.name.replace("ob-", "");
-                else if (material.name.startsWith("material_")) // Some legacy poly files
+                if (material.name.startsWith('ob-')) // New glb naming convention
+                brushName = material.name.replace('ob-', '');
+                else if (material.name.startsWith('material_')) // Some legacy poly files
                 // TODO - risk of name collision with non-tilt materials
                 // Maybe we should pass in a flag when a tilt gltf is detected?
                 // Do names in this format use guids or english names?
-                brushName = material.name.replace("material_", "");
+                brushName = material.name.replace('material_', '');
                 else if (extensionsDef) {
                     let exDef = extensionsDef[this.name];
                     if (exDef !== undefined) brushName = exDef.guid;
@@ -9839,17 +9839,17 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
     tryReplaceBlocksName(originalName) {
         // Handle naming embedded models exported from newer Open Brush versions
         let newName;
-        if (originalName.includes("_BlocksPaper ")) newName = "BlocksPaper";
-        else if (originalName.includes("_BlocksGlass ")) newName = "BlocksGlass";
-        else if (originalName.includes("_BlocksGem ")) newName = "BlocksGem";
+        if (originalName.includes('_BlocksPaper ')) newName = 'BlocksPaper';
+        else if (originalName.includes('_BlocksGlass ')) newName = 'BlocksGlass';
+        else if (originalName.includes('_BlocksGem ')) newName = 'BlocksGem';
         return newName;
     }
     isTiltGltf(json) {
         let isTiltGltf = false;
         isTiltGltf ||= json.extensionsUsed && json.extensionsUsed.includes(this.name);
         isTiltGltf ||= json.extensionsUsed && json.extensionsUsed.includes(this.altName);
-        isTiltGltf ||= "extensions" in json && this.name in json["extensions"];
-        isTiltGltf ||= "extensions" in json && this.altName in json["extensions"];
+        isTiltGltf ||= 'extensions' in json && this.name in json['extensions'];
+        isTiltGltf ||= 'extensions' in json && this.altName in json['extensions'];
         return isTiltGltf;
     }
     async replaceMaterial(mesh, guidOrName) {

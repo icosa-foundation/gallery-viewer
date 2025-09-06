@@ -891,6 +891,11 @@ class GLTFParser {
 
                         resolve( shaderText );
 
+                    }, undefined, function ( error ) {
+
+                        console.warn( 'LegacyGLTFLoader: Failed to load shader from ' + url + ', resolving with empty shader. Error:', error );
+                        resolve( '' );
+
                     } );
 
                 } );

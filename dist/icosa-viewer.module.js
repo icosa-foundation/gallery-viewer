@@ -3171,6 +3171,9 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
                     url = url.replace('https://www.tiltbrush.com/shaders/', shaderPath);
                     loader.load($81e80e8b2d2d5e9f$var$resolveURL(url, options.path), function(shaderText) {
                         resolve(shaderText);
+                    }, undefined, function(error) {
+                        console.warn('LegacyGLTFLoader: Failed to load shader from ' + url + ', resolving with empty shader. Error:', error);
+                        resolve('');
                     });
                 });
             });
