@@ -852,57 +852,14 @@ class GLTFParser {
     loadShaders() {
 
         var json = this.json;
-        var extensions = this.extensions;
-        var options = this.options;
 
-        return this._withDependencies( [
-
-            "bufferViews"
-
-        ] ).then((dependencies)=> {
-
-            return _each( json.shaders,  ( shader )=> {
-
-                if ( shader.extensions && shader.extensions[ EXTENSIONS.KHR_BINARY_GLTF ] ) {
-
-                    return extensions[ EXTENSIONS.KHR_BINARY_GLTF ].loadShader( shader, dependencies.bufferViews );
-
-                }
-
-                return new Promise(  ( resolve ) => {
-
-                    var loader = new THREE.FileLoader( options.manager );
-
-                    // Common google urls to save pointless requests
-                    if (shader.uri === 'https://vr.google.com/shaders/w/fs.glsl') {return FS_GLSL}
-                    if (shader.uri === 'https://vr.google.com/shaders/w/vs.glsl') {return VS_GLSL}
-                    if (shader.uri === 'https://vr.google.com/shaders/w/glassVS.glsl') {return GLASSVS_GLSL}
-                    if (shader.uri === 'https://vr.google.com/shaders/w/glassFS.glsl') {return GLASSFS_GLSL}
-                    if (shader.uri === 'https://vr.google.com/shaders/w/gemVS.glsl') {return GEMVS_GLSL}
-                    if (shader.uri === 'https://vr.google.com/shaders/w/gemFS.glsl') {return GEMFS_GLSL}
-
-                    let shaderPath = this.options.assetBaseUrl;
-                    // Catch anything else - it would give a CORS error in any case
-                    let url = shader.uri.replace("https://vr.google.com/shaders/w/", shaderPath);
-                    url = url.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, shaderPath);
-                    url = url.replace('https://www.tiltbrush.com/shaders/', shaderPath);
-
-                    loader.load( resolveURL( url, options.path ), function ( shaderText ) {
-
-                        resolve( shaderText );
-
-                    }, undefined, function ( error ) {
-
-                        console.warn( 'LegacyGLTFLoader: Failed to load shader from ' + url + ', resolving with empty shader. Error:', error );
-                        resolve( '' );
-
-                    } );
-
-                } );
-
-            } );
-
-        } );
+        // Skip shader loading entirely since materials get completely replaced by replaceBrushMaterials()
+        // Just return empty shaders for all shader references to avoid breaking the material loading pipeline
+        console.log( 'LegacyGLTFLoader: Skipping shader loading - materials will be replaced with working ones' );
+        
+        return Promise.resolve( _each( json.shaders, function () {
+            return ''; // Return empty string for each shader
+        } ) );
 
     };
 
