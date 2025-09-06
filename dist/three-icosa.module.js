@@ -9756,11 +9756,12 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
 
 
 class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
-    constructor(parser, brushPath){
+    constructor(parser, brushPath, isLegacy = false){
         this.name = "GOOGLE_tilt_brush_material";
         this.altName = "GOOGLE_tilt_brush_techniques";
         this.parser = parser;
         this.brushPath = brushPath;
+        this.isLegacy = isLegacy;
         // Quick repair of path if required
         if (this.brushPath.slice(this.brushPath.length - 1) !== "/") this.brushPath += "/";
         this.tiltShaderLoader = new (0, $4fdc68aa1ebb2033$export$bcc22bf437a07d8f)(parser.options.manager);
@@ -9880,10 +9881,20 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                     const itemSize = colorAttribute.itemSize;
                     const count = src.length / itemSize;
                     const normalizedColors = new Uint8Array(src.length);
+                    // Apply color space conversion only for non-legacy files
+                    // Legacy files already have sRGB colors, non-legacy files need linear->sRGB conversion
+                    const shouldConvert = !this.isLegacy;
                     for(let i = 0; i < count; ++i){
-                        normalizedColors[i * itemSize + 0] = Math.round(linearToSRGB(src[i * itemSize + 0]) * 255); // R
-                        normalizedColors[i * itemSize + 1] = Math.round(linearToSRGB(src[i * itemSize + 1]) * 255); // G
-                        normalizedColors[i * itemSize + 2] = Math.round(linearToSRGB(src[i * itemSize + 2]) * 255); // B
+                        if (shouldConvert) {
+                            normalizedColors[i * itemSize + 0] = Math.round(linearToSRGB(src[i * itemSize + 0]) * 255); // R
+                            normalizedColors[i * itemSize + 1] = Math.round(linearToSRGB(src[i * itemSize + 1]) * 255); // G
+                            normalizedColors[i * itemSize + 2] = Math.round(linearToSRGB(src[i * itemSize + 2]) * 255); // B
+                        } else {
+                            // Legacy files: colors are already sRGB, just scale to 0-255
+                            normalizedColors[i * itemSize + 0] = Math.round(src[i * itemSize + 0] * 255); // R
+                            normalizedColors[i * itemSize + 1] = Math.round(src[i * itemSize + 1] * 255); // G
+                            normalizedColors[i * itemSize + 2] = Math.round(src[i * itemSize + 2] * 255); // B
+                        }
                         if (itemSize > 3) normalizedColors[i * itemSize + 3] = Math.round(src[i * itemSize + 3] * 255); // A (linear)
                     }
                     colorAttribute = new $fugmd$BufferAttribute(normalizedColors, itemSize, true);
@@ -10310,7 +10321,6 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
             case "f5c336cf-5108-4b40-ade9-c687504385ab":
             case "c0012095-3ffd-4040-8ee1-fc180d346eaa":
             case "Ink":
-                console.log("GOOOGLE_tilt_brush_material Ink shader to", mesh.name);
                 mesh.geometry.name = "geometry_Ink";
                 setAttributeIfExists(mesh, "position", "a_position");
                 setAttributeIfExists(mesh, "normal", "a_normal");
@@ -10529,7 +10539,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
-                setAttributeIfExists(mesh, "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 shader = await this.tiltShaderLoader.loadAsync("Plasma");
                 shader.lights = true;
                 shader.fog = true;
@@ -10545,7 +10555,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
-                setAttributeIfExists(mesh, "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 shader = await this.tiltShaderLoader.loadAsync("Rainbow");
                 shader.lights = true;
                 shader.fog = true;
@@ -10561,7 +10571,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
-                setAttributeIfExists(mesh, "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 shader = await this.tiltShaderLoader.loadAsync("ShinyHull");
                 shader.lights = true;
                 shader.fog = true;
@@ -10578,7 +10588,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
-                setAttributeIfExists(mesh, "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
                 renameAttribute(mesh, "texcoord_1", "a_texcoord1");
                 shader = await this.tiltShaderLoader.loadAsync("Smoke");

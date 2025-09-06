@@ -34,7 +34,6 @@ import {CanvasTexture, Object3D, Object3DEventMap} from "three";
 // import { RenderPass } from 'three/addons';
 import { setupNavigation } from './helpers/Navigation';
 import { LegacyGLTFLoader } from './legacy/LegacyGLTFLoader.js';
-import { replaceBrushMaterials } from './legacy/ReplaceLegacyMaterials.js';
 import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
@@ -2014,12 +2013,47 @@ export class Viewer {
         }
     }
 
+    private async replaceGltf1Materials(model: THREE.Object3D, brushPath: string): Promise<void> {
+        // Create a minimal mock parser object with the required options.manager
+        const mockParser = {
+            options: {
+                manager: THREE.DefaultLoadingManager
+            }
+        };
+        const extension = new GLTFGoogleTiltBrushMaterialExtension(mockParser, brushPath, true);
+        
+        // Collect all meshes first, then process them with async/await
+        const meshes: THREE.Mesh[] = [];
+        model.traverse((object) => {
+            if (object.type === "Mesh") {
+                meshes.push(object as THREE.Mesh);
+            }
+        });
+        
+        // Process all meshes asynchronously
+        for (const mesh of meshes) {
+            // Use material name directly - strip "material_" prefix if present
+            const materialName = (mesh.material as THREE.Material)?.name;
+            if (materialName) {
+                const brushId = materialName.startsWith('material_') 
+                    ? materialName.substring('material_'.length)
+                    : materialName;
+                try {
+                    await extension.replaceMaterial(mesh, brushId);
+                } catch (error) {
+                    console.warn(`Failed to replace material for ${brushId} on mesh ${mesh.name}:`, error);
+                    // Keep original material as fallback
+                }
+            }
+        }
+    }
+
     private async _loadGltf(url : string, loadEnvironment : boolean, overrides : any, isV1: boolean) {
         let sceneGltf : GLTF;
         this.overrides = overrides;
         if (isV1) {
             sceneGltf = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
-            replaceBrushMaterials(this.brushPath.toString(), <Object3D>sceneGltf.scene, THREE.DefaultLoadingManager, new THREE.Clock());
+            await this.replaceGltf1Materials(<Object3D>sceneGltf.scene, this.brushPath.toString());
         } else {
             sceneGltf = <GLTF>await this.gltfLoader.loadAsync(url);
         }

@@ -8,7 +8,7 @@ import {PLYLoader as $hBQxr$PLYLoader} from "three/examples/jsm/loaders/PLYLoade
 import {STLLoader as $hBQxr$STLLoader} from "three/examples/jsm/loaders/STLLoader.js";
 import {USDZLoader as $hBQxr$USDZLoader} from "three/examples/jsm/loaders/USDZLoader.js";
 import {VOXLoader as $hBQxr$VOXLoader, VOXMesh as $hBQxr$VOXMesh} from "three/examples/jsm/loaders/VOXLoader.js";
-import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension, TiltShaderLoader as $hBQxr$TiltShaderLoader} from "three-icosa";
+import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension} from "three-icosa";
 import {TiltLoader as $hBQxr$TiltLoader} from "three-tiltloader";
 import {XRControllerModelFactory as $hBQxr$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
 
@@ -3150,7 +3150,6 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
         var json = this.json;
         // Skip shader loading entirely since materials get completely replaced by replaceBrushMaterials()
         // Just return empty shaders for all shader references to avoid breaking the material loading pipeline
-        console.log('LegacyGLTFLoader: Skipping shader loading - materials will be replaced with working ones');
         return Promise.resolve($81e80e8b2d2d5e9f$var$_each(json.shaders, function() {
             return ''; // Return empty string for each shader
         }));
@@ -3212,54 +3211,11 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
     }
     loadTextures() {
         var json = this.json;
-        var options = this.options;
-        return this._withDependencies([
-            "bufferViews"
-        ]).then(function(dependencies) {
-            return $81e80e8b2d2d5e9f$var$_each(json.textures, function(texture) {
-                if (texture.source) return new Promise(function(resolve) {
-                    var source = json.images[texture.source];
-                    // TODO Make this configurable
-                    // Handle archive.org URLs first, then fall back to direct replacement
-                    var sourceUri = source.uri.replace(/https:\/\/web\.archive\.org\/web\/[^\/]+\/https:\/\/www\.tiltbrush\.com\/shaders\//, "https://icosa-foundation.github.io/icosa-sketch-assets/");
-                    sourceUri = sourceUri.replace("https://www.tiltbrush.com/shaders/", "https://icosa-foundation.github.io/icosa-sketch-assets/");
-                    var isObjectURL = false;
-                    if (source.extensions && source.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF]) {
-                        var metadata = source.extensions[$81e80e8b2d2d5e9f$var$EXTENSIONS.KHR_BINARY_GLTF];
-                        var bufferView = dependencies.bufferViews[metadata.bufferView];
-                        var blob = new Blob([
-                            bufferView
-                        ], {
-                            type: metadata.mimeType
-                        });
-                        sourceUri = URL.createObjectURL(blob);
-                        isObjectURL = true;
-                    }
-                    var textureLoader = options.manager.getHandler(sourceUri);
-                    if (textureLoader === null) textureLoader = new $hBQxr$three.TextureLoader(options.manager);
-                    textureLoader.setCrossOrigin(options.crossOrigin);
-                    textureLoader.load($81e80e8b2d2d5e9f$var$resolveURL(sourceUri, options.path), function(_texture) {
-                        if (isObjectURL) URL.revokeObjectURL(sourceUri);
-                        _texture.flipY = false;
-                        if (texture.name !== undefined) _texture.name = texture.name;
-                        _texture.format = texture.format !== undefined ? $81e80e8b2d2d5e9f$var$WEBGL_TEXTURE_FORMATS[texture.format] : $hBQxr$three.RGBAFormat;
-                        if (texture.internalFormat !== undefined && _texture.format !== $81e80e8b2d2d5e9f$var$WEBGL_TEXTURE_FORMATS[texture.internalFormat]) console.warn("THREE.LegacyGLTFLoader: Three.js doesn't support texture internalFormat which is different from texture format. internalFormat will be forced to be the same value as format.");
-                        _texture.type = texture.type !== undefined ? $81e80e8b2d2d5e9f$var$WEBGL_TEXTURE_DATATYPES[texture.type] : $hBQxr$three.UnsignedByteType;
-                        if (texture.sampler) {
-                            var sampler = json.samplers[texture.sampler];
-                            _texture.magFilter = $81e80e8b2d2d5e9f$var$WEBGL_FILTERS[sampler.magFilter] || $hBQxr$three.LinearFilter;
-                            _texture.minFilter = $81e80e8b2d2d5e9f$var$WEBGL_FILTERS[sampler.minFilter] || $hBQxr$three.NearestMipmapLinearFilter;
-                            _texture.wrapS = $81e80e8b2d2d5e9f$var$WEBGL_WRAPPINGS[sampler.wrapS] || $hBQxr$three.RepeatWrapping;
-                            _texture.wrapT = $81e80e8b2d2d5e9f$var$WEBGL_WRAPPINGS[sampler.wrapT] || $hBQxr$three.RepeatWrapping;
-                        }
-                        resolve(_texture);
-                    }, undefined, function() {
-                        if (isObjectURL) URL.revokeObjectURL(sourceUri);
-                        resolve();
-                    });
-                });
-            });
-        });
+        // Skip texture loading entirely since materials get completely replaced by replaceBrushMaterials()
+        // Just return null textures for all texture references to avoid breaking the material loading pipeline
+        return Promise.resolve($81e80e8b2d2d5e9f$var$_each(json.textures, function() {
+            return null; // Return null for each texture
+        }));
     }
     loadMaterials() {
         var json = this.json;
@@ -3315,15 +3271,11 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
                     var program = json.programs[technique.program];
                     if (program) {
                         materialParams.fragmentShader = dependencies.shaders[program.fragmentShader];
-                        if (!materialParams.fragmentShader) {
-                            console.warn("ERROR: Missing fragment shader definition:", program.fragmentShader);
-                            materialType = $hBQxr$three.MeshPhongMaterial;
-                        }
+                        if (!materialParams.fragmentShader) // Shaders are intentionally skipped since materials get replaced by replaceBrushMaterials()
+                        materialType = $hBQxr$three.MeshPhongMaterial;
                         var vertexShader = dependencies.shaders[program.vertexShader];
-                        if (!vertexShader) {
-                            console.warn("ERROR: Missing vertex shader definition:", program.vertexShader);
-                            materialType = $hBQxr$three.MeshPhongMaterial;
-                        }
+                        if (!vertexShader) // Shaders are intentionally skipped since materials get replaced by replaceBrushMaterials()
+                        materialType = $hBQxr$three.MeshPhongMaterial;
                         // IMPORTANT: FIX VERTEX SHADER ATTRIBUTE DEFINITIONS
                         // I'm not sure we need to replace the param names any more.
                         // Not sure why it worked before!
@@ -3806,736 +3758,6 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
 }
 
 
-// Copyright 2021-2022 Icosa Gallery
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-
-async function $594bcd4b482795a1$export$d51cb1093e099859(brushPath, model, loadingManager, clock) {
-    const tiltShaderLoader = new (0, $hBQxr$TiltShaderLoader)(loadingManager);
-    tiltShaderLoader.setPath(brushPath);
-    model.traverse(async (object)=>{
-        if (object.type === "Mesh") {
-            const mesh = object;
-            var shader;
-            let targetFilter = mesh.name.split('_')[1];
-            targetFilter = "brush_" + targetFilter.split('-')[0];
-            let isRawShader = true;
-            switch(targetFilter){
-                case "brush_BlocksBasic":
-                    mesh.geometry.name = "geometry_BlocksBasic";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                    shader = await tiltShaderLoader.loadAsync("BlocksBasic");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_BlocksBasic";
-                    break;
-                case "brush_BlocksGem":
-                    mesh.geometry.name = "geometry_BlocksGem";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                    shader = await tiltShaderLoader.loadAsync("BlocksGem");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_BlocksGem";
-                    break;
-                case "brush_BlocksGlass":
-                    mesh.geometry.name = "geometry_BlocksGlass";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    //mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("_tb_unity_texcoord_0"));
-                    shader = await tiltShaderLoader.loadAsync("BlocksGlass");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_BlocksGlass";
-                    break;
-                case "brush_Bubbles":
-                    mesh.geometry.name = "geometry_Bubbles";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("uv2"));
-                    shader = await tiltShaderLoader.loadAsync("Bubbles");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Bubbles";
-                    break;
-                case "brush_CelVinyl":
-                    mesh.geometry.name = "geometry_CelVinyl";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("CelVinyl");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_CelVinyl";
-                    break;
-                case "brush_ChromaticWave":
-                    mesh.geometry.name = "geometry_ChromaticWave";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("ChromaticWave");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_ChromaticWave";
-                    break;
-                case "brush_CoarseBristles":
-                    mesh.geometry.name = "geometry_CoarseBristles";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("CoarseBristles");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_CoarseBristles";
-                    break;
-                case "brush_Comet":
-                    mesh.geometry.name = "geometry_Comet";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Comet");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Comet";
-                    break;
-                case "brush_DiamondHull":
-                    mesh.geometry.name = "geometry_DiamondHull";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("DiamondHull");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_DiamondHull";
-                    break;
-                case "brush_Disco":
-                    mesh.geometry.name = "geometry_Disco";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Disco");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Disco";
-                    break;
-                case "brush_DotMarker":
-                    mesh.geometry.name = "geometry_DotMarker";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("DotMarker");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_DotMarker";
-                    break;
-                case "brush_Dots":
-                    mesh.geometry.name = "geometry_Dots";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("uv2"));
-                    shader = await tiltShaderLoader.loadAsync("Dots");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Dots";
-                    break;
-                case "brush_DoubleTaperedFlat":
-                    mesh.geometry.name = "geometry_DoubleTaperedFlat";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("DoubleTaperedFlat");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_DoubleTaperedFlat";
-                    break;
-                case "brush_DoubleTaperedMarker":
-                    mesh.geometry.name = "geometry_DoubleTaperedMarker";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("DoubleTaperedMarker");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_DoubleTaperedMarker";
-                    break;
-                case "brush_DuctTape":
-                    mesh.geometry.name = "geometry_DuctTape";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("DuctTape");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_DuctTape";
-                    break;
-                case "brush_Electricity":
-                    mesh.geometry.name = "geometry_Electricity";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("uv2"));
-                    shader = await tiltShaderLoader.loadAsync("Electricity");
-                    mesh.material = shader;
-                    mesh.material.name = "material_Electricity";
-                    break;
-                case "brush_Embers":
-                    mesh.geometry.name = "geometry_Embers";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("uv2"));
-                    shader = await tiltShaderLoader.loadAsync("Embers");
-                    mesh.material = shader;
-                    mesh.material.name = "material_Embers";
-                    break;
-                case "brush_EnvironmentDiffuse":
-                    mesh.geometry.name = "geometry_EnvironmentDiffuse";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("EnvironmentDiffuse");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_EnvironmentDiffuse";
-                    break;
-                case "brush_EnvironmentDiffuseLightMap":
-                    mesh.geometry.name = "geometry_EnvironmentDiffuseLightMap";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("EnvironmentDiffuseLightMap");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_EnvironmentDiffuseLightMap";
-                    break;
-                case "brush_Fire":
-                    mesh.geometry.name = "geometry_Fire";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Fire");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Fire";
-                    break;
-                case "brush_Flat":
-                    mesh.geometry.name = "geometry_Flat";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Flat");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Flat";
-                    break;
-                case "brush_FlatDeprecated":
-                    mesh.geometry.name = "geometry_FlatDeprecated";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("FlatDeprecated");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_FlatDeprecated";
-                    break;
-                case "brush_Highlighter":
-                    mesh.geometry.name = "geometry_Highlighter";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Highlighter");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Highlighter";
-                    break;
-                case "brush_Hypercolor":
-                    mesh.geometry.name = "geometry_Hypercolor";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Hypercolor");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Hypercolor";
-                    break;
-                case "brush_HyperGrid":
-                    mesh.geometry.name = "geometry_HyperGrid";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("uv2"));
-                    shader = await tiltShaderLoader.loadAsync("HyperGrid");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_HyperGrid";
-                    break;
-                case "brush_Icing":
-                    mesh.geometry.name = "geometry_Icing";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Icing");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Icing";
-                    break;
-                case "brush_Ink":
-                    mesh.geometry.name = "geometry_Ink";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Ink");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Ink";
-                    break;
-                case "brush_Leaves":
-                    mesh.geometry.name = "geometry_Leaves";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Leaves");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Leaves";
-                    break;
-                case "brush_Light":
-                    mesh.geometry.name = "geometry_Light";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Light");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Light";
-                    break;
-                case "brush_LightWire":
-                    mesh.geometry.name = "geometry_LightWire";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("LightWire");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_LightWire";
-                    break;
-                case "brush_Lofted":
-                    mesh.geometry.name = "geometry_Lofted";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Lofted");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Lofted";
-                    break;
-                case "brush_Marker":
-                    mesh.geometry.name = "geometry_Marker";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Marker");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Marker";
-                    break;
-                case "brush_MatteHull":
-                    mesh.geometry.name = "geometry_MatteHull";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    shader = await tiltShaderLoader.loadAsync("MatteHull");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_MatteHull";
-                    break;
-                case "brush_NeonPulse":
-                    mesh.geometry.name = "geometry_NeonPulse";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("NeonPulse");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_NeonPulse";
-                    break;
-                case "brush_OilPaint":
-                    mesh.geometry.name = "geometry_OilPaint";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("OilPaint");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_OilPaint";
-                    break;
-                case "brush_Paper":
-                    mesh.geometry.name = "geometry_Paper";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Paper");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Paper";
-                    break;
-                case "brush_PbrTemplate":
-                    mesh.geometry.name = "geometry_PbrTemplate";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("PbrTemplate");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_PbrTemplate";
-                    break;
-                case "brush_PbrTransparentTemplate":
-                    mesh.geometry.name = "geometry_PbrTransparentTemplate";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("PbrTransparentTemplate");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_PbrTransparentTemplate";
-                    break;
-                case "brush_Petal":
-                    mesh.geometry.name = "geometry_Petal";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Petal");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Petal";
-                    break;
-                case "brush_Plasma":
-                    mesh.geometry.name = "geometry_Plasma";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Plasma");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Plasma";
-                    break;
-                case "brush_Rainbow":
-                    mesh.geometry.name = "geometry_Rainbow";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Rainbow");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Rainbow";
-                    break;
-                case "brush_ShinyHull":
-                    mesh.geometry.name = "geometry_ShinyHull";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("ShinyHull");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_ShinyHull";
-                    break;
-                case "brush_Smoke":
-                    mesh.geometry.name = "geometry_Smoke";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("uv2"));
-                    shader = await tiltShaderLoader.loadAsync("Smoke");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Smoke";
-                    break;
-                case "brush_Snow":
-                    mesh.geometry.name = "geometry_Snow";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("uv2"));
-                    shader = await tiltShaderLoader.loadAsync("Snow");
-                    mesh.material = shader;
-                    mesh.material.name = "material_Snow";
-                    break;
-                case "brush_SoftHighlighter":
-                    mesh.geometry.name = "geometry_SoftHighlighter";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("SoftHighlighter");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_SoftHighlighter";
-                    break;
-                case "brush_Spikes":
-                    mesh.geometry.name = "geometry_Spikes";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Spikes");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Spikes";
-                    break;
-                case "brush_Splatter":
-                    mesh.geometry.name = "geometry_Splatter";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Splatter");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Splatter";
-                    break;
-                case "brush_Stars":
-                    mesh.geometry.name = "geometry_Stars";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    mesh.geometry.setAttribute("a_texcoord1", mesh.geometry.getAttribute("uv2"));
-                    shader = await tiltShaderLoader.loadAsync("Stars");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Stars";
-                    break;
-                case "brush_Streamers":
-                    mesh.geometry.name = "geometry_Streamers";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Streamers");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Streamers";
-                    break;
-                case "brush_Taffy":
-                    mesh.geometry.name = "geometry_Taffy";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("DiamondHull");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_DiamondHull";
-                    break;
-                case "brush_TaperedFlat":
-                    mesh.geometry.name = "geometry_TaperedFlat";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("TaperedFlat");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_TaperedFlat";
-                    break;
-                case "brush_TaperedMarker":
-                    mesh.geometry.name = "geometry_TaperedMarker";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("TaperedMarker");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_TaperedMarker";
-                    break;
-                case "brush_TaperedMarker_Flat":
-                    mesh.geometry.name = "geometry_Flat";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Flat");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Flat";
-                    break;
-                case "brush_ThickPaint":
-                    mesh.geometry.name = "geometry_ThickPaint";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("ThickPaint");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_ThickPaint";
-                    break;
-                case "brush_Toon":
-                    mesh.geometry.name = "geometry_Toon";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    shader = await tiltShaderLoader.loadAsync("Toon");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Toon";
-                    break;
-                case "brush_UnlitHull":
-                    mesh.geometry.name = "geometry_UnlitHull";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    shader = await tiltShaderLoader.loadAsync("UnlitHull");
-                    mesh.material = shader;
-                    mesh.material.name = "material_UnlitHull";
-                    break;
-                case "brush_VelvetInk":
-                    mesh.geometry.name = "geometry_VelvetInk";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("VelvetInk");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_VelvetInk";
-                    break;
-                case "brush_Waveform":
-                    mesh.geometry.name = "geometry_Waveform";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("Waveform");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_Waveform";
-                    break;
-                case "brush_WetPaint":
-                    mesh.geometry.name = "geometry_WetPaint";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("WetPaint");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_WetPaint";
-                    break;
-                case "brush_WigglyGraphite":
-                    mesh.geometry.name = "geometry_WigglyGraphite";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    mesh.geometry.setAttribute("a_texcoord0", mesh.geometry.getAttribute("uv"));
-                    shader = await tiltShaderLoader.loadAsync("WigglyGraphite");
-                    shader.uniformsNeedUpdate = true;
-                    mesh.material = shader;
-                    mesh.material.name = "material_WigglyGraphite";
-                    break;
-                case "brush_Wire":
-                    mesh.geometry.name = "geometry_Wire";
-                    mesh.geometry.setAttribute("a_position", mesh.geometry.getAttribute("position"));
-                    mesh.geometry.setAttribute("a_normal", mesh.geometry.getAttribute("normal"));
-                    mesh.geometry.setAttribute("a_color", mesh.geometry.getAttribute("color"));
-                    shader = await tiltShaderLoader.loadAsync("Wire");
-                    mesh.material = shader;
-                    mesh.material.name = "material_Wire";
-                    break;
-                default:
-                    // Should only catch imported meshes - hopefully from Blocks
-                    // This assumes we only hit ReplaceLegacyMaterials for old Tilt Brush files
-                    // and not any arbitrary glTF v1 file
-                    isRawShader = false;
-                    mesh.material = new $hBQxr$MeshBasicMaterial({
-                        vertexColors: true,
-                        color: 0x333333
-                    });
-                    mesh.material.name = "material_Unknown";
-                    console.warn(`Unknown brush type: ${targetFilter} - using MeshBasicMaterial`);
-                    break;
-            }
-            if (isRawShader) mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group)=>{
-                if (material.uniforms["u_time"]) {
-                    const elapsedTime = clock.getElapsedTime();
-                    // _Time from https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html
-                    // For some reason I don't fully understand using THREE.Vector4
-                    // gave an import error so just create a plain object
-                    const time = {
-                        x: elapsedTime / 20,
-                        y: elapsedTime,
-                        z: elapsedTime * 2,
-                        w: elapsedTime * 3
-                    };
-                    material.uniforms["u_time"].value = time;
-                }
-                if (material.uniforms["cameraPosition"]) material.uniforms["cameraPosition"].value = camera.position;
-            };
-        }
-    });
-}
-
-
 
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
@@ -4597,7 +3819,11 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         if (colorString) {
             [r, g, b] = colorString.split(',').map(parseFloat);
             return new $hBQxr$three.Color(r, g, b);
-        } else return defaultValue;
+        } else {
+            // Check if it's already a THREE.Color
+            if (defaultValue instanceof $hBQxr$three.Color) return defaultValue;
+            else return new $hBQxr$three.Color(defaultValue.r, defaultValue.g, defaultValue.b, defaultValue.a);
+        }
     }
 }
 class $677737c8a5cbea2f$var$EnvironmentPreset {
@@ -6295,12 +5521,40 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
+    async replaceGltf1Materials(model, brushPath) {
+        // Create a minimal mock parser object with the required options.manager
+        const mockParser = {
+            options: {
+                manager: $hBQxr$three.DefaultLoadingManager
+            }
+        };
+        const extension = new (0, $hBQxr$GLTFGoogleTiltBrushMaterialExtension)(mockParser, brushPath, true);
+        // Collect all meshes first, then process them with async/await
+        const meshes = [];
+        model.traverse((object)=>{
+            if (object.type === "Mesh") meshes.push(object);
+        });
+        // Process all meshes asynchronously
+        for (const mesh of meshes){
+            // Use material name directly - strip "material_" prefix if present
+            const materialName = mesh.material?.name;
+            if (materialName) {
+                const brushId = materialName.startsWith('material_') ? materialName.substring(9) : materialName;
+                try {
+                    await extension.replaceMaterial(mesh, brushId);
+                } catch (error) {
+                    console.warn(`Failed to replace material for ${brushId} on mesh ${mesh.name}:`, error);
+                // Keep original material as fallback
+                }
+            }
+        }
+    }
     async _loadGltf(url, loadEnvironment, overrides, isV1) {
         let sceneGltf;
         this.overrides = overrides;
         if (isV1) {
             sceneGltf = await this.gltfLegacyLoader.loadAsync(url);
-            (0, $594bcd4b482795a1$export$d51cb1093e099859)(this.brushPath.toString(), sceneGltf.scene, $hBQxr$three.DefaultLoadingManager, new $hBQxr$three.Clock());
+            await this.replaceGltf1Materials(sceneGltf.scene, this.brushPath.toString());
         } else sceneGltf = await this.gltfLoader.loadAsync(url);
         // The legacy loader has the latter structure
         let userData = sceneGltf.userData ?? sceneGltf.scene.userData;
