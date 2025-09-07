@@ -2488,8 +2488,17 @@ export class Viewer {
 
         let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
-        l0.setRotationFromEuler(convertTBEuler(this.sketchMetadata.SceneLight0Rotation))
-        l1.setRotationFromEuler(convertTBEuler(this.sketchMetadata.SceneLight1Rotation))
+        
+        // Convert rotation to position for directional lights
+        const light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
+        const light0Direction = new THREE.Vector3(0, 0, 1).applyEuler(light0Euler);
+        l0.position.copy(light0Direction.multiplyScalar(10));
+        l0.lookAt(0, 0, 0);
+        
+        const light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
+        const light1Direction = new THREE.Vector3(0, 0, 1).applyEuler(light1Euler);
+        l1.position.copy(light1Direction.multiplyScalar(10));
+        l1.lookAt(0, 0, 0);
         l0.castShadow = true;
         l1.castShadow = false;
         this.loadedModel?.add(l0);
