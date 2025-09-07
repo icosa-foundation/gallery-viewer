@@ -5539,7 +5539,12 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             // Use material name directly - strip "material_" prefix if present
             const materialName = mesh.material?.name;
             if (materialName) {
-                const brushId = materialName.startsWith('material_') ? materialName.substring(9) : materialName;
+                // Strip "material_" prefix if present
+                let brushId = materialName.startsWith('material_') ? materialName.substring(9) : materialName;
+                // At this point we either have just a guid or brushName-guid
+                // If we have brushName-guid, extract just the guid
+                const guidMatch = brushId.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+                if (guidMatch) brushId = guidMatch[0];
                 try {
                     await extension.replaceMaterial(mesh, brushId);
                 } catch (error) {

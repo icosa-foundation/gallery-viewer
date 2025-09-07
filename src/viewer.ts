@@ -2014,6 +2014,7 @@ export class Viewer {
     }
 
     private async replaceGltf1Materials(model: THREE.Object3D, brushPath: string): Promise<void> {
+
         // Create a minimal mock parser object with the required options.manager
         const mockParser = {
             options: {
@@ -2035,9 +2036,16 @@ export class Viewer {
             // Use material name directly - strip "material_" prefix if present
             const materialName = (mesh.material as THREE.Material)?.name;
             if (materialName) {
-                const brushId = materialName.startsWith('material_') 
+                // Strip "material_" prefix if present
+                let brushId = materialName.startsWith('material_')
                     ? materialName.substring('material_'.length)
                     : materialName;
+                // At this point we either have just a guid or brushName-guid
+                // If we have brushName-guid, extract just the guid
+                const guidMatch = brushId.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);
+                if (guidMatch) {
+                    brushId = guidMatch[0];
+                }
                 try {
                     await extension.replaceMaterial(mesh, brushId);
                 } catch (error) {
