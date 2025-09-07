@@ -5562,7 +5562,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             await this.replaceGltf1Materials(sceneGltf.scene, this.brushPath.toString());
         } else sceneGltf = await this.gltfLoader.loadAsync(url);
         // The legacy loader has the latter structure
-        let userData = sceneGltf.userData ?? sceneGltf.scene.userData;
+        let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
         this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         if (loadEnvironment) await this.assignEnvironment(sceneGltf.scene);
         if (overrides?.tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
@@ -5765,15 +5765,18 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
             const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
-            // Use the standard GLTFLoader for environments
-            const standardLoader = new (0, $hBQxr$GLTFLoader)();
-            const envGltf = await standardLoader.loadAsync(envUrl.toString());
-            envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
-            // Not sure why the environment models are 2x larger than they should be
-            envGltf.scene.scale.set(2, 2, 2);
-            scene.attach(envGltf.scene);
-            this.environmentObject = envGltf.scene;
-        }
+            try {
+                // Use the standard GLTFLoader for environments
+                const standardLoader = new (0, $hBQxr$GLTFLoader)();
+                const envGltf = await standardLoader.loadAsync(envUrl.toString());
+                envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
+                // envGltf.scene.scale.set(.2, .2, .2);
+                scene.attach(envGltf.scene);
+                this.environmentObject = envGltf.scene;
+            } catch (error) {
+                console.error(`Failed to load environment: ${error}`);
+            }
+        } else console.log(`No environment GUID found`);
     }
     generateGradientSky(colorA, colorB, direction) {
         const canvas = document.createElement('canvas');

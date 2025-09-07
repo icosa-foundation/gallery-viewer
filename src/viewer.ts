@@ -2067,7 +2067,7 @@ export class Viewer {
         }
 
         // The legacy loader has the latter structure
-        let userData = sceneGltf.userData ?? sceneGltf.scene.userData;
+        let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
 
         this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         if (loadEnvironment) {await this.assignEnvironment(sceneGltf.scene);}
@@ -2295,14 +2295,19 @@ export class Viewer {
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
             const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
-            // Use the standard GLTFLoader for environments
-            const standardLoader = new GLTFLoader();
-            const envGltf = await standardLoader.loadAsync(envUrl.toString());
-            envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
-            // Not sure why the environment models are 2x larger than they should be
-            envGltf.scene.scale.set(2, 2, 2);
-            scene.attach(envGltf.scene);
-            this.environmentObject = envGltf.scene;
+            try {
+                // Use the standard GLTFLoader for environments
+                const standardLoader = new GLTFLoader();
+                const envGltf = await standardLoader.loadAsync(envUrl.toString());
+                envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
+                // envGltf.scene.scale.set(.2, .2, .2);
+                scene.attach(envGltf.scene);
+                this.environmentObject = envGltf.scene;
+            } catch (error) {
+                console.error(`Failed to load environment: ${error}`);
+            }
+        } else {
+            console.log(`No environment GUID found`);
         }
     }
 
