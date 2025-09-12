@@ -2075,7 +2075,90 @@ export class Viewer {
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
+        
+        // Apply legacy scaling correction if needed
+        this.applyLegacyScaling(sceneGltf, isV1);
+        
         this.initializeScene(overrides);
+    }
+
+    private applyLegacyScaling(sceneGltf: any, isV1: boolean) {
+        let isLegacyExporter = false;
+        
+        if (isV1) {
+            // All GLTF1 files are assumed to be from legacy exporters
+            isLegacyExporter = true;
+            console.log('GLTF1 file detected - treating as legacy exporter');
+        } else {
+            // For GLTF2 files, check the generator string
+            const generator = sceneGltf.asset?.generator;
+            console.log('GLTF2 generator:', generator);
+            // Treat "Open Brush UnityGLTF Exporter" as modern, everything else as legacy
+            isLegacyExporter = generator && !generator.includes('Open Brush UnityGLTF Exporter');
+            console.log('GLTF2 is legacy exporter:', isLegacyExporter);
+        }
+        
+        if (isLegacyExporter) {
+            if (isV1 && this.environmentObject) {
+                console.log('Applying 0.1x environment scaling for GLTF1 legacy file');
+                // Scale down environment by 10x instead of scaling up sketch
+                // This keeps the overall scene scale correct for fog, camera, etc.
+                const envBox = new THREE.Box3().setFromObject(this.environmentObject);
+                const envCenter = envBox.getCenter(new THREE.Vector3());
+                
+                // Translate to origin, scale, then translate back
+                this.environmentObject.position.sub(envCenter);
+                this.environmentObject.scale.multiplyScalar(0.1);
+                this.environmentObject.position.multiplyScalar(0.1);
+                this.environmentObject.position.add(envCenter.multiplyScalar(0.1));
+            } else if (!isV1) {
+                console.log('Applying pose transforms for GLTF2 legacy file');
+                // For GLTF2 legacy files, apply pose transforms to the sketch
+                this.applyPoseTransforms(sceneGltf.scene, sceneGltf);
+            }
+        }
+    }
+
+    private applyPoseTransforms(sceneNode: THREE.Object3D, sceneGltf: any) {
+        try {
+            const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
+            console.log('Available userData keys:', Object.keys(userData));
+            
+            console.log('Raw pose values from userData:', {
+                translation: userData['TB_PoseTranslation'],
+                rotation: userData['TB_PoseRotation'], 
+                scale: userData['TB_PoseScale']
+            });
+            
+            const poseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
+            const poseRotation = this.parseTBVector3(userData['TB_PoseRotation']);
+            const poseScale = userData['TB_PoseScale'] ?? 1;
+            
+            console.log('Parsed pose values:', { poseTranslation, poseRotation, poseScale });
+            
+            if (poseTranslation && (poseTranslation.x !== 0 || poseTranslation.y !== 0 || poseTranslation.z !== 0)) {
+                console.log('Applying pose translation:', poseTranslation);
+                sceneNode.position.copy(poseTranslation);
+            }
+            
+            if (poseRotation && (poseRotation.x !== 0 || poseRotation.y !== 0 || poseRotation.z !== 0)) {
+                console.log('Applying pose rotation (degrees):', poseRotation);
+                const rotationRad = new THREE.Vector3(
+                    THREE.MathUtils.degToRad(poseRotation.x),
+                    THREE.MathUtils.degToRad(poseRotation.y),
+                    THREE.MathUtils.degToRad(poseRotation.z)
+                );
+                sceneNode.setRotationFromEuler(new THREE.Euler(rotationRad.x, rotationRad.y, rotationRad.z));
+            }
+            
+            if (poseScale && poseScale !== 1) {
+                console.log('Applying pose scale:', poseScale);
+                sceneNode.scale.multiplyScalar(poseScale);
+            }
+        } catch (error) {
+            console.error('Error applying pose transforms:', error);
+            throw error;
+        }
     }
 
     public async loadTilt(url: string, overrides : any) {
