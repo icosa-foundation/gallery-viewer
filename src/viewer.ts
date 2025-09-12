@@ -2562,10 +2562,9 @@ export class Viewer {
         function convertTBEuler(rot: THREE.Vector3) : THREE.Euler {
             const deg2rad = Math.PI / 180;
             return new THREE.Euler(
-                THREE.MathUtils.degToRad(-rot.x),
+                THREE.MathUtils.degToRad(rot.x),
                 THREE.MathUtils.degToRad(rot.y),
-                THREE.MathUtils.degToRad(rot.z),
-                'ZXY'
+                THREE.MathUtils.degToRad(rot.z)
             );
         }
 
@@ -2581,12 +2580,12 @@ export class Viewer {
         
         // Convert rotation to position for directional lights
         const light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
-        const light0Direction = new THREE.Vector3(0, 0, -1).applyEuler(light0Euler);
+        const light0Direction = new THREE.Vector3(0, 0, 1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
         l0.lookAt(0, 0, 0);
         
         const light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
-        const light1Direction = new THREE.Vector3(0, 0, -1).applyEuler(light1Euler);
+        const light1Direction = new THREE.Vector3(0, 0, 1).applyEuler(light1Euler);
         l1.position.copy(light1Direction.multiplyScalar(10));
         l1.lookAt(0, 0, 0);
         l0.castShadow = true;
