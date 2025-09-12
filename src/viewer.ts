@@ -92,7 +92,7 @@ class SketchMetadata {
         }
         this.SkyColorA = this.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
-        this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
+        this.SkyGradientDirection = Viewer.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
         this.AmbientLightColor = this.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
         this.FogColor = this.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
@@ -119,18 +119,12 @@ class SketchMetadata {
         this.SceneLight0Color = new THREE.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new THREE.Color(light1col.r, light1col.g, light1col.b);
 
-        this.PoseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
-        this.PoseRotation = this.parseTBVector3(userData['TB_PoseRotation']);
+        this.PoseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation']);
+        this.PoseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation']);
         this.PoseScale = userData['TB_PoseScale'] ?? 1;
 
-        this.CameraTranslation = this.parseTBVector3(userData['TB_CameraTranslation'])
-        this.CameraRotation = this.parseTBVector3(userData['TB_CameraRotation']);
-    }
-
-    private parseTBVector3(vectorString: string, defaultValue? : THREE.Vector3) {
-        if (!vectorString) {return defaultValue ?? new THREE.Vector3()}
-        let [x, y, z] = vectorString.split(',').map(parseFloat);
-        return new THREE.Vector3(x, y, z);
+        this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'])
+        this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation']);
     }
 
     private parseTBColorString(colorString: string, defaultValue: THREE.Color) {
@@ -560,6 +554,12 @@ export class Viewer {
         };
 
         animate();
+    }
+
+    static parseTBVector3(vectorString: string, defaultValue?: THREE.Vector3) {
+        if (!vectorString) return defaultValue ?? new THREE.Vector3();
+        const [x, y, z] = vectorString.split(',').map(p => parseFloat(p.trim()));
+        return new THREE.Vector3(x, y, z);
     }
 
     private toggleFullscreen(controlButton: HTMLButtonElement) {
@@ -2130,8 +2130,8 @@ export class Viewer {
                 scale: userData['TB_PoseScale']
             });
             
-            const poseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
-            const poseRotation = this.parseTBVector3(userData['TB_PoseRotation']);
+            const poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation']);
+            const poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation']);
             const poseScale = userData['TB_PoseScale'] ?? 1;
             
             console.log('Parsed pose values:', { poseTranslation, poseRotation, poseScale });

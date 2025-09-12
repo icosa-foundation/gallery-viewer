@@ -3781,7 +3781,7 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         } else this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         this.SkyColorA = this.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
         this.SkyColorB = this.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
-        this.SkyGradientDirection = this.parseTBVector3(userData['TB_SkyGradientDirection'], new $hBQxr$three.Vector3(0, 1, 0));
+        this.SkyGradientDirection = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_SkyGradientDirection'], new $hBQxr$three.Vector3(0, 1, 0));
         this.AmbientLightColor = this.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
         this.FogColor = this.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
@@ -3803,16 +3803,11 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         let light1col = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
         this.SceneLight0Color = new $hBQxr$three.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new $hBQxr$three.Color(light1col.r, light1col.g, light1col.b);
-        this.PoseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
-        this.PoseRotation = this.parseTBVector3(userData['TB_PoseRotation']);
+        this.PoseTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseTranslation']);
+        this.PoseRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseRotation']);
         this.PoseScale = userData['TB_PoseScale'] ?? 1;
-        this.CameraTranslation = this.parseTBVector3(userData['TB_CameraTranslation']);
-        this.CameraRotation = this.parseTBVector3(userData['TB_CameraRotation']);
-    }
-    parseTBVector3(vectorString, defaultValue) {
-        if (!vectorString) return defaultValue ?? new $hBQxr$three.Vector3();
-        let [x, y, z] = vectorString.split(',').map(parseFloat);
-        return new $hBQxr$three.Vector3(x, y, z);
+        this.CameraTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTranslation']);
+        this.CameraRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraRotation']);
     }
     parseTBColorString(colorString, defaultValue) {
         let r, g, b;
@@ -4088,6 +4083,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             return dataUrl;
         };
         animate();
+    }
+    static parseTBVector3(vectorString, defaultValue) {
+        if (!vectorString) return defaultValue ?? new $hBQxr$three.Vector3();
+        const [x, y, z] = vectorString.split(',').map((p)=>parseFloat(p.trim()));
+        return new $hBQxr$three.Vector3(x, y, z);
     }
     toggleFullscreen(controlButton) {
         if (this.icosa_frame?.requestFullscreen) this.icosa_frame?.requestFullscreen();
@@ -5614,8 +5614,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 rotation: userData['TB_PoseRotation'],
                 scale: userData['TB_PoseScale']
             });
-            const poseTranslation = this.parseTBVector3(userData['TB_PoseTranslation']);
-            const poseRotation = this.parseTBVector3(userData['TB_PoseRotation']);
+            const poseTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseTranslation']);
+            const poseRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseRotation']);
             const poseScale = userData['TB_PoseScale'] ?? 1;
             console.log('Parsed pose values:', {
                 poseTranslation: poseTranslation,
@@ -6010,7 +6010,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
         let l0 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         let l1 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
-        // Convert rotation to position for directional lights  
+        // Convert rotation to position for directional lights
         const light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
         const light0Direction = new $hBQxr$three.Vector3(0, 0, -1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
