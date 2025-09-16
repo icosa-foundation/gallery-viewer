@@ -54,11 +54,8 @@ class SketchMetadata {
     public SceneLight0Rotation: THREE.Vector3;
     public SceneLight1Color: THREE.Color;
     public SceneLight1Rotation: THREE.Vector3;
-    public PoseTranslation: THREE.Vector3;
-    public PoseRotation: THREE.Vector3;
     public CameraTranslation: THREE.Vector3;
     public CameraRotation: THREE.Vector3;
-    public PoseScale: number;
     public EnvironmentPreset: EnvironmentPreset;
     public SkyTexture: string;
     public ReflectionTexture: string;
@@ -90,11 +87,11 @@ class SketchMetadata {
         } else {
             this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
         }
-        this.SkyColorA = this.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
-        this.SkyColorB = this.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
+        this.SkyColorA = Viewer.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
+        this.SkyColorB = Viewer.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
         this.SkyGradientDirection = Viewer.parseTBVector3(userData['TB_SkyGradientDirection'], new THREE.Vector3(0, 1, 0));
-        this.AmbientLightColor = this.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
-        this.FogColor = this.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
+        this.AmbientLightColor = Viewer.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
+        this.FogColor = Viewer.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
         this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
@@ -119,28 +116,8 @@ class SketchMetadata {
         this.SceneLight0Color = new THREE.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new THREE.Color(light1col.r, light1col.g, light1col.b);
 
-        this.PoseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation']);
-        this.PoseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation']);
-        this.PoseScale = userData['TB_PoseScale'] ?? 1;
-
         this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'])
         this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation']);
-    }
-
-    private parseTBColorString(colorString: string, defaultValue: THREE.Color) {
-        let r : number, g : number, b : number;
-        if (colorString) {
-            [r, g, b] = colorString.split(',').map(parseFloat);
-            return new THREE.Color(r, g, b);
-        } else {
-            // Check if it's already a THREE.Color
-            if (defaultValue instanceof THREE.Color) {
-                return defaultValue;
-            }
-            else {
-                return new THREE.Color(defaultValue.r, defaultValue.g, defaultValue.b, defaultValue.a);
-            }
-        }
     }
 }
 
@@ -561,6 +538,23 @@ export class Viewer {
         const [x, y, z] = vectorString.split(',').map(p => parseFloat(p.trim()));
         return new THREE.Vector3(x, y, z);
     }
+
+    static parseTBColorString(colorString: string, defaultValue: THREE.Color) {
+        let r : number, g : number, b : number;
+        if (colorString) {
+            [r, g, b] = colorString.split(',').map(parseFloat);
+            return new THREE.Color(r, g, b);
+        } else {
+            // Check if it's already a THREE.Color
+            if (defaultValue instanceof THREE.Color) {
+                return defaultValue;
+            }
+            else {
+                return new THREE.Color(defaultValue.r, defaultValue.g, defaultValue.b, defaultValue.a);
+            }
+        }
+    }
+
 
     private toggleFullscreen(controlButton: HTMLButtonElement) {
         if(this.icosa_frame?.requestFullscreen)
@@ -2075,90 +2069,43 @@ export class Viewer {
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
-        
-        // Apply legacy scaling correction if needed
-        this.applyLegacyScaling(sceneGltf, isV1);
-        
+
+        // if (isV1 && this.environmentObject) {
+            this.scaleEnvironment(0.1);
+        // }
+        this.scaleScene(sceneGltf);
         this.initializeScene(overrides);
     }
 
-    private applyLegacyScaling(sceneGltf: any, isV1: boolean) {
-        let isLegacyExporter = false;
-        
-        if (isV1) {
-            // All GLTF1 files are assumed to be from legacy exporters
-            isLegacyExporter = true;
-            console.log('GLTF1 file detected - treating as legacy exporter');
-        } else {
-            // For GLTF2 files, check the generator string
-            const generator = sceneGltf.asset?.generator;
-            console.log('GLTF2 generator:', generator);
-            // Treat "Open Brush UnityGLTF Exporter" as modern, everything else as legacy
-            isLegacyExporter = generator && !generator.includes('Open Brush UnityGLTF Exporter');
-            console.log('GLTF2 is legacy exporter:', isLegacyExporter);
-        }
-        
-        if (isLegacyExporter) {
-            if (isV1 && this.environmentObject) {
-                console.log('Applying 0.1x environment scaling for GLTF1 legacy file');
-                // Scale down environment by 10x instead of scaling up sketch
-                // This keeps the overall scene scale correct for fog, camera, etc.
-                const envBox = new THREE.Box3().setFromObject(this.environmentObject);
-                const envCenter = envBox.getCenter(new THREE.Vector3());
-                
-                // Translate to origin, scale, then translate back
-                this.environmentObject.position.sub(envCenter);
-                this.environmentObject.scale.multiplyScalar(0.1);
-                this.environmentObject.position.multiplyScalar(0.1);
-                this.environmentObject.position.add(envCenter.multiplyScalar(0.1));
-            } else if (!isV1) {
-                console.log('Applying pose transforms for GLTF2 legacy file');
-                // For GLTF2 legacy files, apply pose transforms to the sketch
-                this.applyPoseTransforms(sceneGltf.scene, sceneGltf);
-            }
-        }
+    private isLegacyExporter(sceneGltf: any) {
+        const generator = sceneGltf.asset?.generator;
+        return generator && !generator.includes('Open Brush UnityGLTF Exporter');
     }
 
-    private applyPoseTransforms(sceneNode: THREE.Object3D, sceneGltf: any) {
-        try {
-            const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
-            console.log('Available userData keys:', Object.keys(userData));
-            
-            console.log('Raw pose values from userData:', {
-                translation: userData['TB_PoseTranslation'],
-                rotation: userData['TB_PoseRotation'], 
-                scale: userData['TB_PoseScale']
-            });
-            
-            const poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation']);
-            const poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation']);
-            const poseScale = userData['TB_PoseScale'] ?? 1;
-            
-            console.log('Parsed pose values:', { poseTranslation, poseRotation, poseScale });
-            
-            if (poseTranslation && (poseTranslation.x !== 0 || poseTranslation.y !== 0 || poseTranslation.z !== 0)) {
-                console.log('Applying pose translation:', poseTranslation);
-                sceneNode.position.copy(poseTranslation);
-            }
-            
-            if (poseRotation && (poseRotation.x !== 0 || poseRotation.y !== 0 || poseRotation.z !== 0)) {
-                console.log('Applying pose rotation (degrees):', poseRotation);
-                const rotationRad = new THREE.Vector3(
-                    THREE.MathUtils.degToRad(poseRotation.x),
-                    THREE.MathUtils.degToRad(poseRotation.y),
-                    THREE.MathUtils.degToRad(poseRotation.z)
-                );
-                sceneNode.setRotationFromEuler(new THREE.Euler(rotationRad.x, rotationRad.y, rotationRad.z));
-            }
-            
-            if (poseScale && poseScale !== 1) {
-                console.log('Applying pose scale:', poseScale);
-                sceneNode.scale.multiplyScalar(poseScale);
-            }
-        } catch (error) {
-            console.error('Error applying pose transforms:', error);
-            throw error;
-        }
+    private scaleEnvironment(scale : float) {
+        const envBox = new THREE.Box3().setFromObject(this.environmentObject);
+        const envCenter = envBox.getCenter(new THREE.Vector3());
+        this.environmentObject.position.sub(envCenter);
+        this.environmentObject.scale.multiplyScalar(scale);
+        this.environmentObject.position.multiplyScalar(scale);
+        this.environmentObject.position.add(envCenter.multiplyScalar(scale));
+    }
+
+    private scaleScene(sceneGltf: any) {
+        const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
+
+        const poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
+        const poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
+        const poseScale = userData['TB_PoseScale'] ?? 1;
+
+        sceneGltf.scene.position.copy(poseTranslation);
+        const rotationRad = new THREE.Vector3(
+            THREE.MathUtils.degToRad(poseRotation.x),
+            THREE.MathUtils.degToRad(poseRotation.y),
+            THREE.MathUtils.degToRad(poseRotation.z)
+        );
+        sceneGltf.scene.setRotationFromEuler(new THREE.Euler(rotationRad.x, rotationRad.y, rotationRad.z));
+        sceneGltf.scene.scale.multiplyScalar(poseScale);
     }
 
     public async loadTilt(url: string, overrides : any) {
