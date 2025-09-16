@@ -3779,11 +3779,11 @@ class $677737c8a5cbea2f$var$SketchMetadata {
             let isValidEnvironmentPreset = this.EnvironmentPreset.Guid !== null;
             this.UseGradient = isValidEnvironmentPreset && this.EnvironmentPreset.UseGradient;
         } else this.UseGradient = JSON.parse(userData['TB_UseGradient'].toLowerCase());
-        this.SkyColorA = this.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
-        this.SkyColorB = this.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
+        this.SkyColorA = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBColorString(userData['TB_SkyColorA'], this.EnvironmentPreset.SkyColorA);
+        this.SkyColorB = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBColorString(userData['TB_SkyColorB'], this.EnvironmentPreset.SkyColorB);
         this.SkyGradientDirection = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_SkyGradientDirection'], new $hBQxr$three.Vector3(0, 1, 0));
-        this.AmbientLightColor = this.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
-        this.FogColor = this.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
+        this.AmbientLightColor = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBColorString(userData['TB_AmbientLightColor'], this.EnvironmentPreset.AmbientLightColor);
+        this.FogColor = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBColorString(userData['TB_FogColor'], this.EnvironmentPreset.FogColor);
         this.FogDensity = userData['TB_FogDensity'] ?? this.EnvironmentPreset.FogDensity;
         this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
@@ -3803,22 +3803,8 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         let light1col = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
         this.SceneLight0Color = new $hBQxr$three.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new $hBQxr$three.Color(light1col.r, light1col.g, light1col.b);
-        this.PoseTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseTranslation']);
-        this.PoseRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseRotation']);
-        this.PoseScale = userData['TB_PoseScale'] ?? 1;
         this.CameraTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTranslation']);
         this.CameraRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraRotation']);
-    }
-    parseTBColorString(colorString, defaultValue) {
-        let r, g, b;
-        if (colorString) {
-            [r, g, b] = colorString.split(',').map(parseFloat);
-            return new $hBQxr$three.Color(r, g, b);
-        } else {
-            // Check if it's already a THREE.Color
-            if (defaultValue instanceof $hBQxr$three.Color) return defaultValue;
-            else return new $hBQxr$three.Color(defaultValue.r, defaultValue.g, defaultValue.b, defaultValue.a);
-        }
     }
 }
 class $677737c8a5cbea2f$var$EnvironmentPreset {
@@ -4088,6 +4074,17 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (!vectorString) return defaultValue ?? new $hBQxr$three.Vector3();
         const [x, y, z] = vectorString.split(',').map((p)=>parseFloat(p.trim()));
         return new $hBQxr$three.Vector3(x, y, z);
+    }
+    static parseTBColorString(colorString, defaultValue) {
+        let r, g, b;
+        if (colorString) {
+            [r, g, b] = colorString.split(',').map(parseFloat);
+            return new $hBQxr$three.Color(r, g, b);
+        } else {
+            // Check if it's already a THREE.Color
+            if (defaultValue instanceof $hBQxr$three.Color) return defaultValue;
+            else return new $hBQxr$three.Color(defaultValue.r, defaultValue.g, defaultValue.b, defaultValue.a);
+        }
     }
     toggleFullscreen(controlButton) {
         if (this.icosa_frame?.requestFullscreen) this.icosa_frame?.requestFullscreen();
@@ -5564,81 +5561,44 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // The legacy loader has the latter structure
         let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
         this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
-        if (loadEnvironment) await this.assignEnvironment(sceneGltf.scene);
+        this.scaleScene(sceneGltf, true);
+        if (loadEnvironment) await this.assignEnvironment(sceneGltf);
         if (overrides?.tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
-        // Apply legacy scaling correction if needed
-        this.applyLegacyScaling(sceneGltf, isV1);
         this.initializeScene(overrides);
     }
-    applyLegacyScaling(sceneGltf, isV1) {
-        let isLegacyExporter = false;
-        if (isV1) {
-            // All GLTF1 files are assumed to be from legacy exporters
-            isLegacyExporter = true;
-            console.log('GLTF1 file detected - treating as legacy exporter');
-        } else {
-            // For GLTF2 files, check the generator string
-            const generator = sceneGltf.asset?.generator;
-            console.log('GLTF2 generator:', generator);
-            // Treat "Open Brush UnityGLTF Exporter" as modern, everything else as legacy
-            isLegacyExporter = generator && !generator.includes('Open Brush UnityGLTF Exporter');
-            console.log('GLTF2 is legacy exporter:', isLegacyExporter);
-        }
-        if (isLegacyExporter) {
-            if (isV1 && this.environmentObject) {
-                console.log('Applying 0.1x environment scaling for GLTF1 legacy file');
-                // Scale down environment by 10x instead of scaling up sketch
-                // This keeps the overall scene scale correct for fog, camera, etc.
-                const envBox = new $hBQxr$three.Box3().setFromObject(this.environmentObject);
-                const envCenter = envBox.getCenter(new $hBQxr$three.Vector3());
-                // Translate to origin, scale, then translate back
-                this.environmentObject.position.sub(envCenter);
-                this.environmentObject.scale.multiplyScalar(0.1);
-                this.environmentObject.position.multiplyScalar(0.1);
-                this.environmentObject.position.add(envCenter.multiplyScalar(0.1));
-            } else if (!isV1) {
-                console.log('Applying pose transforms for GLTF2 legacy file');
-                // For GLTF2 legacy files, apply pose transforms to the sketch
-                this.applyPoseTransforms(sceneGltf.scene, sceneGltf);
-            }
-        }
+    isLegacyExporter(sceneGltf) {
+        const generator = sceneGltf.asset?.generator;
+        return generator && !generator.includes('Open Brush UnityGLTF Exporter');
     }
-    applyPoseTransforms(sceneNode, sceneGltf) {
-        try {
-            const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
-            console.log('Available userData keys:', Object.keys(userData));
-            console.log('Raw pose values from userData:', {
-                translation: userData['TB_PoseTranslation'],
-                rotation: userData['TB_PoseRotation'],
-                scale: userData['TB_PoseScale']
-            });
-            const poseTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseTranslation']);
-            const poseRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseRotation']);
-            const poseScale = userData['TB_PoseScale'] ?? 1;
-            console.log('Parsed pose values:', {
-                poseTranslation: poseTranslation,
-                poseRotation: poseRotation,
-                poseScale: poseScale
-            });
-            if (poseTranslation && (poseTranslation.x !== 0 || poseTranslation.y !== 0 || poseTranslation.z !== 0)) {
-                console.log('Applying pose translation:', poseTranslation);
-                sceneNode.position.copy(poseTranslation);
-            }
-            if (poseRotation && (poseRotation.x !== 0 || poseRotation.y !== 0 || poseRotation.z !== 0)) {
-                console.log('Applying pose rotation (degrees):', poseRotation);
-                const rotationRad = new $hBQxr$three.Vector3($hBQxr$three.MathUtils.degToRad(poseRotation.x), $hBQxr$three.MathUtils.degToRad(poseRotation.y), $hBQxr$three.MathUtils.degToRad(poseRotation.z));
-                sceneNode.setRotationFromEuler(new $hBQxr$three.Euler(rotationRad.x, rotationRad.y, rotationRad.z));
-            }
-            if (poseScale && poseScale !== 1) {
-                console.log('Applying pose scale:', poseScale);
-                sceneNode.scale.multiplyScalar(poseScale);
-            }
-        } catch (error) {
-            console.error('Error applying pose transforms:', error);
-            throw error;
+    scaleScene(sceneGltf, negate) {
+        const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
+        let poseTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseTranslation'], new $hBQxr$three.Vector3(0, 0, 0));
+        let poseRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseRotation'], new $hBQxr$three.Vector3(0, 0, 0));
+        let poseScale = userData['TB_PoseScale'] ?? 1;
+        if (negate) {
+            // Create inverse transformation matrix: (T * R * S)^-1 = S^-1 * R^-1 * T^-1
+            const inverseScale = 1.0 / poseScale;
+            const inverseRotation = new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(-poseRotation.x), $hBQxr$three.MathUtils.degToRad(-poseRotation.y), $hBQxr$three.MathUtils.degToRad(-poseRotation.z), 'ZYX' // Reverse order for inverse
+            );
+            const inverseTranslation = poseTranslation.clone().negate();
+            // Apply inverse transforms in reverse order: S^-1 * R^-1 * T^-1
+            sceneGltf.scene.scale.multiplyScalar(inverseScale);
+            sceneGltf.scene.setRotationFromEuler(inverseRotation);
+            // Transform the translation by the inverse rotation and scale
+            const rotMatrix = new $hBQxr$three.Matrix4().makeRotationFromEuler(inverseRotation);
+            inverseTranslation.applyMatrix4(rotMatrix);
+            inverseTranslation.multiplyScalar(inverseScale);
+            sceneGltf.scene.position.copy(inverseTranslation);
+        } else {
+            sceneGltf.scene.position.copy(poseTranslation);
+            sceneGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(poseRotation.x), $hBQxr$three.MathUtils.degToRad(poseRotation.y), $hBQxr$three.MathUtils.degToRad(poseRotation.z)));
+            sceneGltf.scene.scale.multiplyScalar(poseScale);
         }
+        console.log(`scene Position: ${sceneGltf.scene.position.x}, ${sceneGltf.scene.position.y}, ${sceneGltf.scene.position.z}`);
+        console.log(`scene Rotation: ${sceneGltf.scene.rotation.x}, ${sceneGltf.scene.rotation.y}, ${sceneGltf.scene.rotation.z}`);
+        console.log(`scene Scale: ${sceneGltf.scene.scale.x}`);
     }
     async loadTilt(url, overrides) {
         try {
@@ -5831,7 +5791,9 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
-    async assignEnvironment(scene) {
+    async assignEnvironment(sceneGltf) {
+        console.log("assigning environment");
+        let scene = sceneGltf.scene;
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
             const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
@@ -5839,8 +5801,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 // Use the standard GLTFLoader for environments
                 const standardLoader = new (0, $hBQxr$GLTFLoader)();
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
-                envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
-                // envGltf.scene.scale.set(.2, .2, .2);
+                if (!this.isLegacyExporter(sceneGltf)) {
+                    console.log("Rotating environment 180 degrees for legacy exporter");
+                    envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
+                }
+                envGltf.scene.scale.set(.1, .1, .1);
                 scene.attach(envGltf.scene);
                 this.environmentObject = envGltf.scene;
             } catch (error) {
@@ -6000,7 +5965,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // 5. If there's neither custom metadata, an environment guid or explicit GLTF lights - create some default lighting.
         function convertTBEuler(rot) {
             const deg2rad = Math.PI / 180;
-            return new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(-rot.x), $hBQxr$three.MathUtils.degToRad(rot.y), $hBQxr$three.MathUtils.degToRad(rot.z), 'ZXY');
+            return new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(rot.x), $hBQxr$three.MathUtils.degToRad(rot.y), $hBQxr$three.MathUtils.degToRad(rot.z));
         }
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
             const light = new $hBQxr$three.DirectionalLight(0xffffff, 1);
@@ -6012,11 +5977,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let l1 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         // Convert rotation to position for directional lights
         const light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
-        const light0Direction = new $hBQxr$three.Vector3(0, 0, -1).applyEuler(light0Euler);
+        const light0Direction = new $hBQxr$three.Vector3(0, 0, 1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
         l0.lookAt(0, 0, 0);
         const light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
-        const light1Direction = new $hBQxr$three.Vector3(0, 0, -1).applyEuler(light1Euler);
+        const light1Direction = new $hBQxr$three.Vector3(0, 0, 1).applyEuler(light1Euler);
         l1.position.copy(light1Direction.multiplyScalar(10));
         l1.lookAt(0, 0, 0);
         l0.castShadow = true;

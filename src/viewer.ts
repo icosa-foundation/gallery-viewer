@@ -2065,15 +2065,11 @@ export class Viewer {
         let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
 
         this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
-        if (loadEnvironment) {await this.assignEnvironment(sceneGltf.scene);}
+        this.scaleScene(sceneGltf, true);
+        if (loadEnvironment) {await this.assignEnvironment(sceneGltf);}
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
-
-        // if (isV1 && this.environmentObject) {
-            this.scaleEnvironment(0.1);
-        // }
-        this.scaleScene(sceneGltf);
         this.initializeScene(overrides);
     }
 
@@ -2082,30 +2078,47 @@ export class Viewer {
         return generator && !generator.includes('Open Brush UnityGLTF Exporter');
     }
 
-    private scaleEnvironment(scale : float) {
-        const envBox = new THREE.Box3().setFromObject(this.environmentObject);
-        const envCenter = envBox.getCenter(new THREE.Vector3());
-        this.environmentObject.position.sub(envCenter);
-        this.environmentObject.scale.multiplyScalar(scale);
-        this.environmentObject.position.multiplyScalar(scale);
-        this.environmentObject.position.add(envCenter.multiplyScalar(scale));
-    }
+    private scaleScene(sceneGltf: any, negate : boolean) {
 
-    private scaleScene(sceneGltf: any) {
         const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
 
-        const poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
-        const poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
-        const poseScale = userData['TB_PoseScale'] ?? 1;
+        let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
+        let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
+        let poseScale = userData['TB_PoseScale'] ?? 1;
 
-        sceneGltf.scene.position.copy(poseTranslation);
-        const rotationRad = new THREE.Vector3(
-            THREE.MathUtils.degToRad(poseRotation.x),
-            THREE.MathUtils.degToRad(poseRotation.y),
-            THREE.MathUtils.degToRad(poseRotation.z)
-        );
-        sceneGltf.scene.setRotationFromEuler(new THREE.Euler(rotationRad.x, rotationRad.y, rotationRad.z));
-        sceneGltf.scene.scale.multiplyScalar(poseScale);
+        if (negate) {
+            // Create inverse transformation matrix: (T * R * S)^-1 = S^-1 * R^-1 * T^-1
+            const inverseScale = 1.0 / poseScale;
+            const inverseRotation = new THREE.Euler(
+                THREE.MathUtils.degToRad(-poseRotation.x),
+                THREE.MathUtils.degToRad(-poseRotation.y),
+                THREE.MathUtils.degToRad(-poseRotation.z),
+                'ZYX' // Reverse order for inverse
+            );
+            const inverseTranslation = poseTranslation.clone().negate();
+
+            // Apply inverse transforms in reverse order: S^-1 * R^-1 * T^-1
+            sceneGltf.scene.scale.multiplyScalar(inverseScale);
+            sceneGltf.scene.setRotationFromEuler(inverseRotation);
+
+            // Transform the translation by the inverse rotation and scale
+            const rotMatrix = new THREE.Matrix4().makeRotationFromEuler(inverseRotation);
+            inverseTranslation.applyMatrix4(rotMatrix);
+            inverseTranslation.multiplyScalar(inverseScale);
+            sceneGltf.scene.position.copy(inverseTranslation);
+        } else {
+            sceneGltf.scene.position.copy(poseTranslation);
+            sceneGltf.scene.setRotationFromEuler(new THREE.Euler(
+                THREE.MathUtils.degToRad(poseRotation.x),
+                THREE.MathUtils.degToRad(poseRotation.y),
+                THREE.MathUtils.degToRad(poseRotation.z)
+            ));
+            sceneGltf.scene.scale.multiplyScalar(poseScale);
+        }
+
+        console.log(`scene Position: ${sceneGltf.scene.position.x}, ${sceneGltf.scene.position.y}, ${sceneGltf.scene.position.z}`);
+        console.log(`scene Rotation: ${sceneGltf.scene.rotation.x}, ${sceneGltf.scene.rotation.y}, ${sceneGltf.scene.rotation.z}`);
+        console.log(`scene Scale: ${sceneGltf.scene.scale.x}`);
     }
 
     public async loadTilt(url: string, overrides : any) {
@@ -2322,7 +2335,9 @@ export class Viewer {
         }
     }
 
-    private async assignEnvironment(scene : Object3D<THREE.Object3DEventMap>) {
+    private async assignEnvironment(sceneGltf : GLTF) {
+        console.log("assigning environment");
+        let scene = sceneGltf.scene;
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
             const envUrl = new URL(`${guid}/${guid}.glb`, this.environmentPath);
@@ -2330,8 +2345,12 @@ export class Viewer {
                 // Use the standard GLTFLoader for environments
                 const standardLoader = new GLTFLoader();
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
-                envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
-                // envGltf.scene.scale.set(.2, .2, .2);
+                if (!this.isLegacyExporter(sceneGltf))
+                {
+                    console.log("Rotating environment 180 degrees for legacy exporter");
+                    envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
+                }
+                envGltf.scene.scale.set(.1, .1, .1);
                 scene.attach(envGltf.scene);
                 this.environmentObject = envGltf.scene;
             } catch (error) {
