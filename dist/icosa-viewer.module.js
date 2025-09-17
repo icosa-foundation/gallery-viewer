@@ -5776,6 +5776,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 url: url
             });
             await splatModel.initialized;
+            // Apply coordinate system correction - splat files are upside-down compared to other formats
+            splatModel.rotation.x = Math.PI;
             this.loadedModel = splatModel;
             this.setupSketchMetaData(splatModel);
             this.modelBoundingBox = splatModel.getBoundingBox(false);

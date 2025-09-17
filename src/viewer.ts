@@ -2315,7 +2315,10 @@ export class Viewer {
 
             const splatModel = new SplatMesh({ url });
             await splatModel.initialized;
-            
+
+            // Apply coordinate system correction - splat files are upside-down compared to other formats
+            splatModel.rotation.x = Math.PI;
+
             this.loadedModel = splatModel;
             this.setupSketchMetaData(splatModel);
             this.modelBoundingBox = splatModel.getBoundingBox(false);
