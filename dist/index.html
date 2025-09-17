@@ -176,6 +176,24 @@
                 backgroundColor: '#000000',
                 fogColor: '#000000',
                 fogDensity: 0,
+                // Lighting controls
+                ambientLightColor: '#ffffff',
+                light0Color: '#ffffff',
+                light0RotationX: 0,
+                light0RotationY: 0,
+                light1Color: '#ffffff',
+                light1RotationX: 0,
+                light1RotationY: 0,
+                // Environment controls
+                envScale: 1,
+                envTransX: 0,
+                envTransY: 0,
+                envTransZ: 0,
+                // Scene transform controls
+                sceneScale: 1,
+                sceneTransX: 0,
+                sceneTransY: 0,
+                sceneTransZ: 0,
                 toggleTreeView: () => viewer.toggleTreeView(document.getElementById('tree-view')),
                 toggleEnvironment: () => viewer.environmentObject && (viewer.environmentObject.visible = !viewer.environmentObject.visible),
                 toggleSky: () => viewer.skyObject && (viewer.skyObject.visible = !viewer.skyObject.visible),
@@ -263,29 +281,184 @@
             };
 
             const toggleTreeView = gui.add(guiParams, 'toggleTreeView').name("Toggle Hierarchy");
-            const backgroundColorControl = gui.addColor(guiParams, 'backgroundColor').onChange(() => viewer.scene.background = new THREE.Color(guiParams.backgroundColor));
-            const fogColorControl = gui.addColor(guiParams, 'fogColor').onChange(() => viewer.scene.fog.color = new THREE.Color(guiParams.fogColor));
-            const fogDensityControl = gui.add(guiParams, 'fogDensity', 0, 1).onChange(() => viewer.scene.fog.density = guiParams.fogDensity);
-            const fogBackgroundControl = gui.add(guiParams, "fogBackground", ).name("Fog Background");
-            const toggleEnvironmentControl = gui.add(guiParams, 'toggleEnvironment').name("Toggle Environment");
-            const toggleSkyControl = gui.add(guiParams, 'toggleSky').name("Toggle Sky");
-            const wireframeControl = gui.add(guiParams, 'wireframe').name("Toggle Wireframe");
-            const listCamerasControl = gui.add(guiParams, 'listCameras').name("List Cameras");
-            const listLightsControl = gui.add(guiParams, 'listLights').name("List Lights");
-            const listOverridesControl = gui.add(guiParams, 'listOverrides').name("List Overrides");
-            const listSketchMetadataControl = gui.add(guiParams, 'listSketchMetadata').name("List Sketch MetaData");
 
-            const folder1 = gui.addFolder( 'Camera' );
-            const levelCameraControl = folder1.add(guiParams, 'levelCamera').name("Level Camera");
-            const frameSceneControl = folder1.add(guiParams, 'frameScene').name("Frame Scene");
-            const logTargetPointControl = folder1.add(guiParams, 'logTargetPoint').name("Log Target Point");
+            // Environment controls folder
+            const environmentFolder = gui.addFolder('Environment');
+            const backgroundColorControl = environmentFolder.addColor(guiParams, 'backgroundColor').name("Background Color").onChange(() => viewer.scene.background = new THREE.Color(guiParams.backgroundColor));
+            const fogColorControl = environmentFolder.addColor(guiParams, 'fogColor').name("Fog Color").onChange(() => viewer.scene.fog.color = new THREE.Color(guiParams.fogColor));
+            const fogDensityControl = environmentFolder.add(guiParams, 'fogDensity', 0, 1).name("Fog Density").onChange(() => viewer.scene.fog.density = guiParams.fogDensity);
+            const fogBackgroundControl = environmentFolder.add(guiParams, "fogBackground").name("Fog Background");
+            const toggleEnvironmentControl = environmentFolder.add(guiParams, 'toggleEnvironment').name("Toggle Environment");
+            const toggleSkyControl = environmentFolder.add(guiParams, 'toggleSky').name("Toggle Sky");
+            const wireframeControl = environmentFolder.add(guiParams, 'wireframe').name("Toggle Wireframe");
+            
+            // Environment transform controls
+            const envTransformFolder = environmentFolder.addFolder('Environment Transform');
+            envTransformFolder.close();
+            envTransformFolder.add(guiParams, 'envScale', 0.001, 2).name('Scale').onChange(() => {
+                if (viewer.environmentObject) {
+                    viewer.environmentObject.scale.setScalar(guiParams.envScale);
+                    viewer.environmentObject.position.set(guiParams.envTransX, guiParams.envTransY, guiParams.envTransZ);
+                }
+            });
+            envTransformFolder.add(guiParams, 'envTransX', -10, 10).name('Translation X').onChange(() => {
+                if (viewer.environmentObject) {
+                    viewer.environmentObject.scale.setScalar(guiParams.envScale);
+                    viewer.environmentObject.position.set(guiParams.envTransX, guiParams.envTransY, guiParams.envTransZ);
+                }
+            });
+            envTransformFolder.add(guiParams, 'envTransY', -10, 10).name('Translation Y').onChange(() => {
+                if (viewer.environmentObject) {
+                    viewer.environmentObject.scale.setScalar(guiParams.envScale);
+                    viewer.environmentObject.position.set(guiParams.envTransX, guiParams.envTransY, guiParams.envTransZ);
+                }
+            });
+            envTransformFolder.add(guiParams, 'envTransZ', -10, 10).name('Translation Z').onChange(() => {
+                if (viewer.environmentObject) {
+                    viewer.environmentObject.scale.setScalar(guiParams.envScale);
+                    viewer.environmentObject.position.set(guiParams.envTransX, guiParams.envTransY, guiParams.envTransZ);
+                }
+            });
+            
+            // Scene transform controls
+            const sceneTransformFolder = gui.addFolder('Scene Transform');
+            sceneTransformFolder.close();
+            // Store references to sketch children (excluding environment)
+            let sketchChildren = [];
+            if (viewer.loadedModel) {
+                viewer.loadedModel.traverse((child) => {
+                    if (child !== viewer.environmentObject && child.parent === viewer.loadedModel) {
+                        sketchChildren.push(child);
+                    }
+                });
+            }
+            
+            function applySceneTransform() {
+                sketchChildren.forEach((child) => {
+                    child.scale.setScalar(guiParams.sceneScale);
+                    child.position.set(guiParams.sceneTransX, guiParams.sceneTransY, guiParams.sceneTransZ);
+                });
+            }
+            
+            sceneTransformFolder.add(guiParams, 'sceneScale', 0.1, 10).name('Scale').onChange(applySceneTransform);
+            sceneTransformFolder.add(guiParams, 'sceneTransX', -10, 10).name('Translation X').onChange(applySceneTransform);
+            sceneTransformFolder.add(guiParams, 'sceneTransY', -10, 10).name('Translation Y').onChange(applySceneTransform);
+            sceneTransformFolder.add(guiParams, 'sceneTransZ', -10, 10).name('Translation Z').onChange(applySceneTransform);
+            
+            const sceneInfoFolder = gui.addFolder('Scene Info');
+            const listCamerasControl = sceneInfoFolder.add(guiParams, 'listCameras').name("List Cameras");
+            const listLightsControl = sceneInfoFolder.add(guiParams, 'listLights').name("List Lights");
+            const listOverridesControl = sceneInfoFolder.add(guiParams, 'listOverrides').name("List Overrides");
+            const listSketchMetadataControl = sceneInfoFolder.add(guiParams, 'listSketchMetadata').name("List Sketch MetaData");
 
-            const folder2 = gui.addFolder( 'Camera Target' );
-            const targetPivotControl = folder2.add(guiParams, 'targetPivot').name("Target Pivot");
-            const targetVisualCenterControl = folder2.add(guiParams, 'targetVisualCenter').name("Target visualCenterPoint");
-            const targetVisualCenterYControl = folder2.add(guiParams, 'targetVisualCenterY').name("Target visualCenterPoint Y");
-            const targetBoundingBoxCenterControl = folder2.add(guiParams, 'targetBoundingBoxCenter').name("Target Bounding Box Center");
-            const targetOriginControl = folder2.add(guiParams, 'targetOrigin').name("Target Origin");
+            const cameraFolder = gui.addFolder( 'Camera' );
+            const levelCameraControl = cameraFolder.add(guiParams, 'levelCamera').name("Level Camera");
+            const frameSceneControl = cameraFolder.add(guiParams, 'frameScene').name("Frame Scene");
+            const logTargetPointControl = cameraFolder.add(guiParams, 'logTargetPoint').name("Log Target Point");
+
+            const cameraTargetFolder = cameraFolder.addFolder( 'Camera Target' );
+            cameraTargetFolder.close();
+            const targetPivotControl = cameraTargetFolder.add(guiParams, 'targetPivot').name("Target Pivot");
+            const targetVisualCenterControl = cameraTargetFolder.add(guiParams, 'targetVisualCenter').name("Target visualCenterPoint");
+            const targetVisualCenterYControl = cameraTargetFolder.add(guiParams, 'targetVisualCenterY').name("Target visualCenterPoint Y");
+            const targetBoundingBoxCenterControl = cameraTargetFolder.add(guiParams, 'targetBoundingBoxCenter').name("Target Bounding Box Center");
+            const targetOriginControl = cameraTargetFolder.add(guiParams, 'targetOrigin').name("Target Origin");
+
+            // Lighting controls folder
+            const lightsFolder = gui.addFolder('Lighting');
+            
+            // Get references to lights after model is loaded
+            let ambientLight = null;
+            let directionalLight0 = null;
+            let directionalLight1 = null;
+            
+            viewer.scene.traverse((child) => {
+                if (child instanceof THREE.AmbientLight) {
+                    ambientLight = child;
+                } else if (child instanceof THREE.DirectionalLight) {
+                    if (!directionalLight0) {
+                        directionalLight0 = child;
+                    } else if (!directionalLight1) {
+                        directionalLight1 = child;
+                    }
+                }
+            });
+            
+            // Ambient light color control
+            if (ambientLight) {
+                guiParams.ambientLightColor = '#' + ambientLight.color.getHexString();
+                lightsFolder.addColor(guiParams, 'ambientLightColor').name('Ambient Light Color').onChange(() => {
+                    ambientLight.color.setHex(parseInt(guiParams.ambientLightColor.replace('#', ''), 16));
+                });
+            }
+            
+            // Directional Light 0 controls
+            if (directionalLight0) {
+                guiParams.light0Color = '#' + directionalLight0.color.getHexString();
+                const light0Euler = new THREE.Euler().setFromQuaternion(directionalLight0.quaternion);
+                guiParams.light0RotationX = THREE.MathUtils.radToDeg(light0Euler.x);
+                guiParams.light0RotationY = THREE.MathUtils.radToDeg(light0Euler.y);
+                
+                const light0Folder = lightsFolder.addFolder('Light 0');
+                light0Folder.close();
+                light0Folder.addColor(guiParams, 'light0Color').name('Color').onChange(() => {
+                    directionalLight0.color.setHex(parseInt(guiParams.light0Color.replace('#', ''), 16));
+                });
+                light0Folder.add(guiParams, 'light0RotationX', -180, 180).name('Rotation X').onChange(() => {
+                    const euler = new THREE.Euler(
+                        THREE.MathUtils.degToRad(guiParams.light0RotationX),
+                        THREE.MathUtils.degToRad(guiParams.light0RotationY),
+                        0
+                    );
+                    const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
+                    directionalLight0.position.copy(direction.multiplyScalar(10));
+                    directionalLight0.lookAt(0, 0, 0);
+                });
+                light0Folder.add(guiParams, 'light0RotationY', -180, 180).name('Rotation Y').onChange(() => {
+                    const euler = new THREE.Euler(
+                        THREE.MathUtils.degToRad(guiParams.light0RotationX),
+                        THREE.MathUtils.degToRad(guiParams.light0RotationY),
+                        0
+                    );
+                    const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
+                    directionalLight0.position.copy(direction.multiplyScalar(10));
+                    directionalLight0.lookAt(0, 0, 0);
+                });
+            }
+            
+            // Directional Light 1 controls
+            if (directionalLight1) {
+                guiParams.light1Color = '#' + directionalLight1.color.getHexString();
+                const light1Euler = new THREE.Euler().setFromQuaternion(directionalLight1.quaternion);
+                guiParams.light1RotationX = THREE.MathUtils.radToDeg(light1Euler.x);
+                guiParams.light1RotationY = THREE.MathUtils.radToDeg(light1Euler.y);
+                
+                const light1Folder = lightsFolder.addFolder('Light 1');
+                light1Folder.close();
+                light1Folder.addColor(guiParams, 'light1Color').name('Color').onChange(() => {
+                    directionalLight1.color.setHex(parseInt(guiParams.light1Color.replace('#', ''), 16));
+                });
+                light1Folder.add(guiParams, 'light1RotationX', -180, 180).name('Rotation X').onChange(() => {
+                    const euler = new THREE.Euler(
+                        THREE.MathUtils.degToRad(guiParams.light1RotationX),
+                        THREE.MathUtils.degToRad(guiParams.light1RotationY),
+                        0
+                    );
+                    const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
+                    directionalLight1.position.copy(direction.multiplyScalar(10));
+                    directionalLight1.lookAt(0, 0, 0);
+                });
+                light1Folder.add(guiParams, 'light1RotationY', -180, 180).name('Rotation Y').onChange(() => {
+                    const euler = new THREE.Euler(
+                        THREE.MathUtils.degToRad(guiParams.light1RotationX),
+                        THREE.MathUtils.degToRad(guiParams.light1RotationY),
+                        0
+                    );
+                    const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
+                    directionalLight1.position.copy(direction.multiplyScalar(10));
+                    directionalLight1.lookAt(0, 0, 0);
+                });
+            }
 
             const logInfoControl = gui.add(guiParams, 'logInfo').name('Log Window');
             window.logInfoControl = logInfoControl;
@@ -312,6 +485,22 @@
             guiParams.backgroundColor = "#" + (viewer.scene.background?.color?.getHexString() || "000000");
             guiParams.fogColor = "#" + (viewer.scene.fog?.color?.getHexString() || "ffffff");
             guiParams.fogDensity = viewer.scene.fog?.density;
+            
+            // Initialize environment transform parameters
+            if (viewer.environmentObject) {
+                guiParams.envScale = viewer.environmentObject.scale.x;
+                guiParams.envTransX = viewer.environmentObject.position.x;
+                guiParams.envTransY = viewer.environmentObject.position.y;
+                guiParams.envTransZ = viewer.environmentObject.position.z;
+            }
+            
+            // Initialize scene transform parameters
+            if (viewer.loadedModel) {
+                guiParams.sceneScale = viewer.loadedModel.scale.x;
+                guiParams.sceneTransX = viewer.loadedModel.position.x;
+                guiParams.sceneTransY = viewer.loadedModel.position.y;
+                guiParams.sceneTransZ = viewer.loadedModel.position.z;
+            }
 
             if (!viewer.environmentObject) toggleEnvironmentControl.disable();
             if (!viewer.skyObject) toggleSkyControl.disable();
