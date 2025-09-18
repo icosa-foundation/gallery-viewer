@@ -5771,6 +5771,23 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     async loadSplat(url, overrides) {
         try {
             this.overrides = overrides;
+            // Add default camera override for splat files if none supplied
+            if (!this.overrides?.camera || Object.keys(this.overrides.camera).length === 0) {
+                this.overrides = this.overrides || {};
+                this.overrides.camera = {
+                    translation: [
+                        0,
+                        0,
+                        3
+                    ],
+                    rotation: [
+                        0,
+                        0,
+                        0,
+                        1
+                    ] // Identity quaternion (no rotation, facing forward)
+                };
+            }
             // Dynamic import for optional Spark dependency
             let SplatMesh;
             try {
@@ -5792,7 +5809,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.modelBoundingBox = splatModel.getBoundingBox(false);
             this.scene.add(this.loadedModel);
             this.initializeScene();
-            this.frameScene();
             // Manually trigger loading screen fade-out since SplatMesh doesn't use LoadingManager
             let loadscreen = document.getElementById('loadscreen');
             if (loadscreen && !loadscreen.classList.contains('loaderror')) loadscreen.classList.add('fade-out');

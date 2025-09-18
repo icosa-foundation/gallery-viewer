@@ -577,9 +577,9 @@ export class Viewer {
         }
     }
 
-    private initializeScene(overrides : any) {
+    private initializeScene() {
 
-        let defaultBackgroundColor : string = overrides?.["defaultBackgroundColor"];
+        let defaultBackgroundColor : string = this.overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
         this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
 
@@ -2070,7 +2070,7 @@ export class Viewer {
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
-        this.initializeScene(overrides);
+        this.initializeScene();
     }
 
     private isLegacyExporter(sceneGltf: any) {
@@ -2123,10 +2123,11 @@ export class Viewer {
 
     public async loadTilt(url: string, overrides : any) {
         try {
+            this.overrides = overrides;
             const tiltData = await this.tiltLoader.loadAsync(url);
             this.loadedModel = tiltData;
             this.setupSketchMetaData(tiltData);
-            this.initializeScene(overrides);
+            this.initializeScene();
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Tilt model");
@@ -2149,6 +2150,7 @@ export class Viewer {
     // Defaults to assuming materials are vertex colored
     public async loadObj(url: string, overrides: any) {
         try {
+            this.overrides = overrides;
             this.objLoader.loadAsync(url).then((objData) => {
 
                 this.loadedModel = objData;
@@ -2162,7 +2164,7 @@ export class Viewer {
                     this.setAllVertexColors(this.loadedModel);
                 }
                 this.setupSketchMetaData(this.loadedModel);
-                this.initializeScene(overrides);
+                this.initializeScene();
             });
         } catch (error) {
             this.showErrorIcon();
@@ -2173,6 +2175,7 @@ export class Viewer {
 
     public async loadObjWithMtl(objUrl: string, mtlUrl: string, overrides: any) {
         try {
+            this.overrides = overrides;
             this.mtlLoader.loadAsync(mtlUrl).then((materials) => {
                 materials.preload();
                 this.objLoader.setMaterials(materials);
@@ -2188,7 +2191,7 @@ export class Viewer {
                         this.setAllVertexColors(this.loadedModel);
                     }
                     this.setupSketchMetaData(this.loadedModel);
-                    this.initializeScene(overrides);
+                    this.initializeScene();
                     this.frameScene(); // Not sure why the standard viewpoint heuristic isn't working here
                 });
             });
@@ -2201,10 +2204,11 @@ export class Viewer {
 
     public async loadFbx(url: string, overrides : any) {
         try {
+            this.overrides = overrides;
             const fbxData = await this.fbxLoader.loadAsync(url);
             this.loadedModel = fbxData;
             this.setupSketchMetaData(fbxData);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -2215,13 +2219,14 @@ export class Viewer {
 
     public async loadPly(url: string, overrides : any) {
         try {
+            this.overrides = overrides;
             const plyData = await this.plyLoader.loadAsync(url);
             plyData.computeVertexNormals();
             const material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
             const plyModel = new THREE.Mesh(plyData, material);
             this.loadedModel = plyModel;
             this.setupSketchMetaData(plyModel);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -2232,6 +2237,7 @@ export class Viewer {
 
     public async loadStl(url: string, overrides : any) {
         try {
+            this.overrides = overrides;
             const stlData = await this.stlLoader.loadAsync(url);
             let material = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0 });
             if (stlData.hasColors) {
@@ -2240,7 +2246,7 @@ export class Viewer {
             const stlModel = new THREE.Mesh(stlData, material);
             this.loadedModel = stlModel;
             this.setupSketchMetaData(stlModel);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -2251,10 +2257,11 @@ export class Viewer {
 
     public async loadUsdz(url: string, overrides : any) {
         try {
+            this.overrides = overrides;
             const usdzData = await this.usdzLoader.loadAsync(url);
             this.loadedModel = usdzData;
             this.setupSketchMetaData(usdzData);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -2265,6 +2272,7 @@ export class Viewer {
 
     public async loadVox(url: string, overrides : any) {
         try {
+            this.overrides = overrides;
             let voxModel = new THREE.Group();
             let chunks = await this.voxLoader.loadAsync(url);
             for ( let i = 0; i < chunks.length; i ++ ) {
@@ -2275,7 +2283,7 @@ export class Viewer {
             }
             this.loadedModel = voxModel;
             this.setupSketchMetaData(voxModel);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -2302,6 +2310,16 @@ export class Viewer {
 
     public async loadSplat(url: string, overrides : any) {
         try {
+            this.overrides = overrides;
+
+            // Add default camera override for splat files if none supplied
+            if (!this.overrides?.camera || Object.keys(this.overrides.camera).length === 0) {
+                this.overrides = this.overrides || {};
+                this.overrides.camera = {
+                    translation: [0, 0, 3],
+                    rotation: [0, 0, 0, 1] // Identity quaternion (no rotation, facing forward)
+                };
+            }
             // Dynamic import for optional Spark dependency
             let SplatMesh;
             try {
@@ -2323,8 +2341,7 @@ export class Viewer {
             this.setupSketchMetaData(splatModel);
             this.modelBoundingBox = splatModel.getBoundingBox(false);
             this.scene.add(this.loadedModel);
-            this.initializeScene(overrides);
-            this.frameScene();
+            this.initializeScene();
             
             // Manually trigger loading screen fade-out since SplatMesh doesn't use LoadingManager
             let loadscreen = document.getElementById('loadscreen');
