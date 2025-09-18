@@ -4102,8 +4102,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             }
         };
     }
-    initializeScene(overrides) {
-        let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
+    initializeScene() {
+        let defaultBackgroundColor = this.overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
         this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
         if (!this.loadedModel) return;
@@ -5566,7 +5566,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (overrides?.tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
-        this.initializeScene(overrides);
+        this.initializeScene();
     }
     isLegacyExporter(sceneGltf) {
         const generator = sceneGltf.asset?.generator;
@@ -5602,10 +5602,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadTilt(url, overrides) {
         try {
+            this.overrides = overrides;
             const tiltData = await this.tiltLoader.loadAsync(url);
             this.loadedModel = tiltData;
             this.setupSketchMetaData(tiltData);
-            this.initializeScene(overrides);
+            this.initializeScene();
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Tilt model");
@@ -5623,6 +5624,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     // Defaults to assuming materials are vertex colored
     async loadObj(url, overrides) {
         try {
+            this.overrides = overrides;
             this.objLoader.loadAsync(url).then((objData)=>{
                 this.loadedModel = objData;
                 let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
@@ -5631,7 +5633,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 let withVertexColors = overrides?.["withVertexColors"];
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                 this.setupSketchMetaData(this.loadedModel);
-                this.initializeScene(overrides);
+                this.initializeScene();
             });
         } catch (error) {
             this.showErrorIcon();
@@ -5641,6 +5643,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadObjWithMtl(objUrl, mtlUrl, overrides) {
         try {
+            this.overrides = overrides;
             this.mtlLoader.loadAsync(mtlUrl).then((materials)=>{
                 materials.preload();
                 this.objLoader.setMaterials(materials);
@@ -5652,7 +5655,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                     let withVertexColors = overrides?.["withVertexColors"];
                     if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                     this.setupSketchMetaData(this.loadedModel);
-                    this.initializeScene(overrides);
+                    this.initializeScene();
                     this.frameScene(); // Not sure why the standard viewpoint heuristic isn't working here
                 });
             });
@@ -5664,10 +5667,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadFbx(url, overrides) {
         try {
+            this.overrides = overrides;
             const fbxData = await this.fbxLoader.loadAsync(url);
             this.loadedModel = fbxData;
             this.setupSketchMetaData(fbxData);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -5677,6 +5681,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadPly(url, overrides) {
         try {
+            this.overrides = overrides;
             const plyData = await this.plyLoader.loadAsync(url);
             plyData.computeVertexNormals();
             const material = new $hBQxr$three.MeshStandardMaterial({
@@ -5686,7 +5691,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             const plyModel = new $hBQxr$three.Mesh(plyData, material);
             this.loadedModel = plyModel;
             this.setupSketchMetaData(plyModel);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -5696,6 +5701,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadStl(url, overrides) {
         try {
+            this.overrides = overrides;
             const stlData = await this.stlLoader.loadAsync(url);
             let material = new $hBQxr$three.MeshStandardMaterial({
                 color: 0xffffff,
@@ -5708,7 +5714,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             const stlModel = new $hBQxr$three.Mesh(stlData, material);
             this.loadedModel = stlModel;
             this.setupSketchMetaData(stlModel);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -5718,10 +5724,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadUsdz(url, overrides) {
         try {
+            this.overrides = overrides;
             const usdzData = await this.usdzLoader.loadAsync(url);
             this.loadedModel = usdzData;
             this.setupSketchMetaData(usdzData);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -5731,6 +5738,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadVox(url, overrides) {
         try {
+            this.overrides = overrides;
             let voxModel = new $hBQxr$three.Group();
             let chunks = await this.voxLoader.loadAsync(url);
             for(let i = 0; i < chunks.length; i++){
@@ -5741,7 +5749,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             }
             this.loadedModel = voxModel;
             this.setupSketchMetaData(voxModel);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
         } catch (error) {
             this.showErrorIcon();
@@ -5762,6 +5770,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadSplat(url, overrides) {
         try {
+            this.overrides = overrides;
             // Dynamic import for optional Spark dependency
             let SplatMesh;
             try {
@@ -5782,7 +5791,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.setupSketchMetaData(splatModel);
             this.modelBoundingBox = splatModel.getBoundingBox(false);
             this.scene.add(this.loadedModel);
-            this.initializeScene(overrides);
+            this.initializeScene();
             this.frameScene();
             // Manually trigger loading screen fade-out since SplatMesh doesn't use LoadingManager
             let loadscreen = document.getElementById('loadscreen');
