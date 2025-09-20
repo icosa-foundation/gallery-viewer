@@ -3908,13 +3908,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.canvas.onmouseup = ()=>{
             this.canvas.classList.remove('grabbed');
         };
-        const renderer = new $hBQxr$three.WebGLRenderer({
+        this.renderer = new $hBQxr$three.WebGLRenderer({
             canvas: this.canvas,
             antialias: true
         });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.outputColorSpace = $hBQxr$three.SRGBColorSpace;
-        renderer.xr.enabled = true;
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.outputColorSpace = $hBQxr$three.SRGBColorSpace;
+        this.renderer.xr.enabled = true;
         function handleController(inputSource) {
             const gamepad = inputSource.gamepad;
             if (gamepad) return {
@@ -3930,18 +3930,18 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let controllerGrip0;
         let controllerGrip1;
         let previousLeftThumbstickX = 0;
-        controller0 = renderer.xr.getController(0);
+        controller0 = this.renderer.xr.getController(0);
         this.scene.add(controller0);
-        controller1 = renderer.xr.getController(1);
+        controller1 = this.renderer.xr.getController(1);
         this.scene.add(controller1);
         const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
-        controllerGrip0 = renderer.xr.getControllerGrip(0);
+        controllerGrip0 = this.renderer.xr.getControllerGrip(0);
         controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
         this.scene.add(controllerGrip0);
-        controllerGrip1 = renderer.xr.getControllerGrip(1);
+        controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.scene.add(controllerGrip1);
-        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(renderer);
+        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer);
         this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement('button');
@@ -3971,15 +3971,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 svgPath.setAttribute('stroke', 'white');
             });
         }
-        function animate() {
-            renderer.setAnimationLoop(render);
+        const animate = ()=>{
+            this.renderer.setAnimationLoop(render);
         // requestAnimationFrame( animate );
         // composer.render();
-        }
-        function render() {
+        };
+        const render = ()=>{
             const delta = clock.getDelta();
-            if (renderer.xr.isPresenting) {
-                let session = renderer.xr.getSession();
+            if (this.renderer.xr.isPresenting) {
+                let session = this.renderer.xr.getSession();
                 viewer1.activeCamera = viewer1?.xrCamera;
                 const inputSources = Array.from(session.inputSources);
                 const moveSpeed = 0.05;
@@ -4024,15 +4024,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 viewer1.activeCamera = viewer1?.flatCamera;
                 const needResize = viewer1.canvas.width !== viewer1.canvas.clientWidth || viewer1.canvas.height !== viewer1.canvas.clientHeight;
                 if (needResize && viewer1?.flatCamera) {
-                    renderer.setSize(viewer1.canvas.clientWidth, viewer1.canvas.clientHeight, false);
+                    this.renderer.setSize(viewer1.canvas.clientWidth, viewer1.canvas.clientHeight, false);
                     viewer1.flatCamera.aspect = viewer1.canvas.clientWidth / viewer1.canvas.clientHeight;
                     viewer1.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
                 if (viewer1?.trackballControls) viewer1.trackballControls.update();
             }
-            if (viewer1?.activeCamera) renderer.render(viewer1.scene, viewer1.activeCamera);
-        }
+            if (viewer1?.activeCamera) this.renderer.render(viewer1.scene, viewer1.activeCamera);
+        };
         this.dataURLtoBlob = (dataURL)=>{
             let arr = dataURL.split(',');
             let mimeMatch = arr[0].match(/:(.*?);/);
@@ -4048,24 +4048,58 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             });
         };
         this.captureThumbnail = (width, height)=>{
+            // Store original renderer state
+            const originalRenderTarget = this.renderer.getRenderTarget();
+            const originalSize = this.renderer.getSize(new $hBQxr$three.Vector2());
+            const originalPixelRatio = this.renderer.getPixelRatio();
+            // Store original camera aspect ratio
+            const originalAspect = this.activeCamera.aspect;
+            // Create render target for offscreen rendering
+            const renderTarget = new $hBQxr$three.WebGLRenderTarget(width, height, {
+                format: $hBQxr$three.RGBAFormat,
+                type: $hBQxr$three.UnsignedByteType,
+                generateMipmaps: false,
+                minFilter: $hBQxr$three.LinearFilter,
+                magFilter: $hBQxr$three.LinearFilter
+            });
+            // Set render target and size
+            this.renderer.setRenderTarget(renderTarget);
+            this.renderer.setSize(width, height, false);
+            this.renderer.setPixelRatio(1); // Use 1:1 pixel ratio for consistent output
+            // Update camera aspect ratio to match thumbnail dimensions
+            this.activeCamera.aspect = width / height;
+            this.activeCamera.updateProjectionMatrix();
+            // Render the scene
+            this.renderer.render(this.scene, this.activeCamera);
+            // Read pixels from render target
+            const pixels = new Uint8Array(width * height * 4);
+            this.renderer.readRenderTargetPixels(renderTarget, 0, 0, width, height, pixels);
+            // Create canvas and draw pixels to it
             const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
-            const thumbnailRenderer = new $hBQxr$three.WebGLRenderer({
-                canvas: canvas,
-                antialias: true,
-                preserveDrawingBuffer: true // Important to allow toDataURL to work
-            });
-            thumbnailRenderer.setSize(width, height);
-            thumbnailRenderer.setPixelRatio(window.devicePixelRatio);
-            // If your scene requires specific renderer settings (e.g., tone mapping, shadow map), apply them here
-            // Example:
-            // thumbnailRenderer.toneMapping = renderer.toneMapping;
-            // thumbnailRenderer.shadowMap.enabled = renderer.shadowMap.enabled;
-            thumbnailRenderer.render(this.scene, this.activeCamera);
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.createImageData(width, height);
+            // Copy pixels (note: WebGL coordinates are flipped compared to canvas)
+            for(let y = 0; y < height; y++)for(let x = 0; x < width; x++){
+                const srcIndex = ((height - y - 1) * width + x) * 4; // Flip Y
+                const dstIndex = (y * width + x) * 4;
+                imageData.data[dstIndex] = pixels[srcIndex]; // R
+                imageData.data[dstIndex + 1] = pixels[srcIndex + 1]; // G
+                imageData.data[dstIndex + 2] = pixels[srcIndex + 2]; // B
+                imageData.data[dstIndex + 3] = pixels[srcIndex + 3]; // A
+            }
+            ctx.putImageData(imageData, 0, 0);
             const dataUrl = canvas.toDataURL('image/png');
-            thumbnailRenderer.dispose();
-            canvas.width = canvas.height = 0;
+            // Restore original renderer state
+            this.renderer.setRenderTarget(originalRenderTarget);
+            this.renderer.setSize(originalSize.x, originalSize.y, false);
+            this.renderer.setPixelRatio(originalPixelRatio);
+            // Restore original camera aspect ratio
+            this.activeCamera.aspect = originalAspect;
+            this.activeCamera.updateProjectionMatrix();
+            // Clean up
+            renderTarget.dispose();
             return dataUrl;
         };
         animate();
