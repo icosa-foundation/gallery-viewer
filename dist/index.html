@@ -244,6 +244,91 @@
                     let t = viewer.cameraControls.getTarget();
                     doLogging(t);
                 },
+                debugCameraPositioning: () => {
+                    const cameraPos = new THREE.Vector3();
+                    const target = new THREE.Vector3();
+                    viewer.cameraControls.getPosition(cameraPos);
+                    viewer.cameraControls.getTarget(target);
+
+                    // Analyze what actually determined the current camera state
+                    const debug = {
+                        finalResult: {
+                            cameraPosition: cameraPos.toArray(),
+                            cameraTarget: target.toArray(),
+                            distance: cameraPos.distanceTo(target)
+                        },
+                        calculationTrace: {}
+                    };
+
+                    // Check what overrides were actually used
+                    if (viewer.overrides?.camera) {
+                        debug.calculationTrace.cameraOverrides = {
+                            source: "viewer.overrides.camera",
+                            values: viewer.overrides.camera,
+                            winner: "✓ These camera overrides were applied"
+                        };
+                    } else {
+                        debug.calculationTrace.cameraOverrides = {
+                            source: "viewer.overrides.camera",
+                            values: null,
+                            winner: "✗ No camera overrides found"
+                        };
+                    }
+
+                    // Check sketch metadata camera settings
+                    if (viewer.sketchMetadata?.CameraTranslation || viewer.sketchMetadata?.CameraRotation) {
+                        debug.calculationTrace.sketchMetadata = {
+                            source: "viewer.sketchMetadata",
+                            translation: viewer.sketchMetadata?.CameraTranslation,
+                            rotation: viewer.sketchMetadata?.CameraRotation,
+                            winner: viewer.overrides?.camera ? "✗ Overridden by camera overrides" : "✓ These values were used"
+                        };
+                    } else {
+                        debug.calculationTrace.sketchMetadata = {
+                            source: "viewer.sketchMetadata",
+                            values: null,
+                            winner: "✗ No sketch metadata camera found"
+                        };
+                    }
+
+                    // Check target calculation
+                    const geometryData = viewer.overrides?.geometryData;
+                    if (geometryData?.visualCenterPoint) {
+                        debug.calculationTrace.targetCalculation = {
+                            method: "visualCenterPoint from geometryData",
+                            value: geometryData.visualCenterPoint,
+                            winner: "✓ Target set to visualCenterPoint"
+                        };
+                    } else if (geometryData?.stats?.centroid) {
+                        debug.calculationTrace.targetCalculation = {
+                            method: "centroid from geometryData.stats",
+                            value: geometryData.stats.centroid,
+                            winner: "✓ Target set to centroid"
+                        };
+                    } else {
+                        debug.calculationTrace.targetCalculation = {
+                            method: "default (0,0,0)",
+                            value: [0, 0, 0],
+                            winner: "✓ Target defaulted to origin"
+                        };
+                    }
+
+                    // Check why target is not at origin as expected
+                    debug.calculationTrace.targetCalculationDetailed = {
+                        expectedTarget: [0, 0, 0],
+                        actualTarget: target.toArray(),
+                        explanation: "Target should be [0,0,0] but initCameras() may be overriding it"
+                    };
+
+                    if (viewer.modelBoundingBox) {
+                        const boxCenter = viewer.modelBoundingBox.getCenter(new THREE.Vector3());
+                        debug.calculationTrace.targetCalculationDetailed.boundingBoxCenter = boxCenter.toArray();
+                        debug.calculationTrace.targetCalculationDetailed.explanation += ". initCameras() uses bounding box center when no visualCenterPoint exists";
+                    }
+
+                    console.log("🎥 Camera Positioning Trace for Current File:", debug);
+                    doLogging(debug);
+                },
                 targetVisualCenterY: () => {
                     let t = viewer.overrides?.geometryData?.visualCenterPoint;
                     var pos = viewer.cameraControls.camera.getWorldPosition(new THREE.Vector3());
@@ -277,10 +362,29 @@
                         }
                     });
                 },
+                captureThumbnail: () => {
+                    const dataUrl = viewer.captureThumbnail(512, 512);
+
+                    // Create a temporary link to download the image
+                    const link = document.createElement('a');
+                    link.download = 'thumbnail.png';
+                    link.href = dataUrl;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+
+                    // Also log the data URL for debugging
+                    doLogging({
+                        message: "Thumbnail captured",
+                        size: "512x512",
+                        dataUrl: dataUrl.substring(0, 100) + "..." // Show first 100 chars
+                    });
+                },
                 logInfo: ""
             };
 
             const toggleTreeView = gui.add(guiParams, 'toggleTreeView').name("Toggle Hierarchy");
+            const captureThumbnailBtn = gui.add(guiParams, 'captureThumbnail').name("Capture Thumbnail");
 
             // Environment controls folder
             const environmentFolder = gui.addFolder('Environment');
@@ -355,6 +459,7 @@
             const levelCameraControl = cameraFolder.add(guiParams, 'levelCamera').name("Level Camera");
             const frameSceneControl = cameraFolder.add(guiParams, 'frameScene').name("Frame Scene");
             const logTargetPointControl = cameraFolder.add(guiParams, 'logTargetPoint').name("Log Target Point");
+            const debugCameraPositioningControl = cameraFolder.add(guiParams, 'debugCameraPositioning').name("Debug Camera Positioning");
 
             const cameraTargetFolder = cameraFolder.addFolder( 'Camera Target' );
             cameraTargetFolder.close();
