@@ -207,6 +207,7 @@ export class Viewer {
     private treeViewRoot: HTMLElement | null;
     public showErrorIcon: () => void;
     public loadingError: boolean;
+    private needsStochasticSetup: boolean;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.loadingError = false;
@@ -484,6 +485,16 @@ export class Viewer {
                 }
                 if (viewer?.cameraControls) viewer.cameraControls.update(delta);
                 if (viewer?.trackballControls) viewer.trackballControls.update();
+            }
+
+            // Configure SparkRenderer for stochastic rendering
+            if (viewer?.needsStochasticSetup) {
+                viewer.scene.traverse((child) => {
+                    if (child.constructor.name.includes('Spark') && child.defaultView) {
+                        child.defaultView.stochastic = true;
+                        viewer.needsStochasticSetup = false;
+                    }
+                });
             }
 
             if (viewer?.activeCamera) {
@@ -2360,7 +2371,7 @@ export class Viewer {
                 throw new Error("SplatMesh not found in Spark module exports");
             }
 
-            return sparkModule.SplatMesh;
+            return sparkModule;
         } catch (error) {
             throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error.message}`);
         }
@@ -2379,9 +2390,9 @@ export class Viewer {
                 };
             }
             // Dynamic import for optional Spark dependency
-            let SplatMesh;
+            let SparkModule;
             try {
-                SplatMesh = await this.loadSparkModule();
+                SparkModule = await this.loadSparkModule();
             } catch (importError) {
                 console.error(importError.message);
                 this.showErrorIcon();
@@ -2389,7 +2400,9 @@ export class Viewer {
                 return;
             }
 
-            const splatModel = new SplatMesh({ url });
+            // Store a flag to try setting stochastic after rendering starts
+            this.needsStochasticSetup = true;
+            const splatModel = new SparkModule.SplatMesh({ url });
             await splatModel.initialized;
 
             // Apply coordinate system correction - splat files are upside-down compared to other formats
