@@ -206,7 +206,6 @@ export class Viewer {
     public selectedNode: THREE.Object3D | null;
     public showErrorIcon: () => void;
     public loadingError: boolean;
-    private needsStochasticSetup: boolean;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.loadingError = false;
@@ -485,15 +484,7 @@ export class Viewer {
                 if (viewer?.trackballControls) viewer.trackballControls.update();
             }
 
-            // Configure SparkRenderer for stochastic rendering
-            if (viewer?.needsStochasticSetup) {
-                viewer.scene.traverse((child) => {
-                    if (child.constructor.name.includes('Spark') && child.defaultView) {
-                        child.defaultView.stochastic = true;
-                        viewer.needsStochasticSetup = false;
-                    }
-                });
-            }
+            // SparkRenderer stochastic setup is now handled by GUI toggle
 
             if (viewer?.activeCamera) {
                 this.renderer.render(viewer.scene, viewer.activeCamera);
@@ -2386,8 +2377,6 @@ export class Viewer {
                 return;
             }
 
-            // Store a flag to try setting stochastic after rendering starts
-            this.needsStochasticSetup = true;
             const splatModel = new SparkModule.SplatMesh({ url });
             await splatModel.initialized;
 

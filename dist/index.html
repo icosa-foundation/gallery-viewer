@@ -176,6 +176,7 @@
                 backgroundColor: '#000000',
                 fogColor: '#000000',
                 fogDensity: 0,
+                stochastic: false,
                 // Lighting controls
                 ambientLightColor: '#ffffff',
                 light0Color: '#ffffff',
@@ -395,6 +396,13 @@
             const toggleEnvironmentControl = environmentFolder.add(guiParams, 'toggleEnvironment').name("Toggle Environment");
             const toggleSkyControl = environmentFolder.add(guiParams, 'toggleSky').name("Toggle Sky");
             const wireframeControl = environmentFolder.add(guiParams, 'wireframe').name("Toggle Wireframe");
+            const stochasticControl = environmentFolder.add(guiParams, 'stochastic').name("Stochastic Rendering").onChange(() => {
+                viewer.scene.traverse((child) => {
+                    if (child.constructor.name.includes('Spark') && child.defaultView) {
+                        child.defaultView.stochastic = guiParams.stochastic;
+                    }
+                });
+            });
             
             // Environment transform controls
             const envTransformFolder = environmentFolder.addFolder('Environment Transform');
