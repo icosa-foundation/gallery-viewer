@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>icose viewer v251003 x joserpagil@gmail.com</title>
+</head>
+
+<body style="touch-action: none; margin: 0; position: relative; width: 100dvw; height: 100dvh; overflow: hidden;">
+
+<script type = "importmap">
+	{
+		"imports": {
+			"three"         : "https://unpkg.com/three@0.161.0/build/three.module",
+			"three/addons/" : "https://unpkg.com/three@0.161.0/examples/jsm/"
+		}
+	}
+</script>
+
+<script type = 'module'>
+
+addEventListener( "error", event =>{ alert( event.lineno + " = " + event.message )})
+
+/*
+
+	viverse-cli auth login -e joserpagil@gmail.com -p rcfdve.1a
+	viverse-cli app create --name "c"
+	viverse-cli app list
+	viverse-cli app publish dist --app-id 9sznzbaq87
+
+*/
+
+import { GUI }                                  from 'three/addons/libs/lil-gui.module.min.js'
+import * as THREE                               from 'three'
+import { RoomEnvironment }                      from "three/addons/environments/RoomEnvironment.js"
+import { GLTFLoader }                           from 'three/addons/loaders/GLTFLoader.js'
+import { OrbitControls }                        from 'three/addons/controls/OrbitControls.js'
+import { FlyControls }                          from 'three/addons/controls/FlyControls.js'
+import { BoxLineGeometry }                      from 'three/addons/geometries/BoxLineGeometry.js'
+import { GLTFGoogleTiltBrushMaterialExtension } from '/src/three-icosa.module.js'
+import { Client }                               from '@viverse/sdk'
+import   AvatarClient                           from '@viverse/sdk/avatar-client'
+import { BvhPhysicsWorld, 
+         SimpleCharacter }                      from '@pmndrs/viverse'
+import { Reflector }                            from 'three/addons/objects/Reflector.js'
+import { VRButton }                             from 'three/addons/webxr/VRButton.js'
+
+const floor_size = 50
+
+let   canvas, renderer, scene, camera, clock, orbit_controls, fly_controls, grid, floor, reflector, world
+let   client, auth, avatarClient, profile, character
+let   gui, options, controller
+
+{ // gui
+gui                = new GUI()
+options            ={ mode : 'first' }
+controller         = gui.add( options, 'mode', {
+	first : 'first',
+	third : 'third',
+	fly   : 'fly',
+}).name( 'controls' )
+controller.onChange( value =>{
+	switch( options.mode ){
+		case 'first' :{
+			character.visible = false
+			grid.visible      = false
+			floor.visible     = true
+			reflector.visible = false
+		} break
+		case 'third' :{
+			character.visible = true
+			grid.visible      = true
+			floor.visible     = true
+			reflector.visible = true
+		} break
+		case 'fly'   :{
+			character.visible = false
+			grid.visible      = false
+			floor.visible     = false
+			reflector.visible = false		
+		} break
+	}
+})
+}
+
+const create_world =_=>{
+	canvas                   = document.createElement( 'canvas' )
+	renderer                 = new THREE.WebGLRenderer({ canvas, antialias : true })
+	renderer.xr.enabled      = true
+	document.body.appendChild( renderer.domElement )
+	document.body.appendChild( VRButton.createButton( renderer ))
+	scene                    = new THREE.Scene()
+	scene.environment        = new THREE.PMREMGenerator( renderer ).fromScene( new RoomEnvironment(), 0.04 ).texture		
+	camera                   = new THREE.PerspectiveCamera( 50 )
+	camera.position.set      ( 0, 5, 15 )
+
+	clock = new THREE.Clock()
+
+	//orbit_controls = new OrbitControls( camera, renderer.domElement )
+
+	fly_controls         = new FlyControls( camera, renderer.domElement )
+	fly_controls.movementSpeed = 10
+	fly_controls.domElement    = renderer.domElement
+	fly_controls.rollSpeed     = Math.PI / 24
+	//fly_controls.autoForward   = false
+	//fly_controls.dragToLook    = true
+
+	grid = new THREE.LineSegments(
+		new BoxLineGeometry( floor_size, 0, floor_size, floor_size, 1, floor_size ),//.translate( 0, 0, 0 ),
+		new THREE.LineBasicMaterial({ color : 0xbcbcbc })
+	)
+	grid.visible = false
+	scene.add     ( grid )
+
+	reflector            = new Reflector( new THREE.PlaneGeometry( floor_size, floor_size ), { clipBias : 0.003, textureWidth : window.innerWidth * window.devicePixelRatio, textureHeight : window.innerHeight * window.devicePixelRatio, color : 0x777777 })
+	reflector.rotation.x = -Math.PI / 2
+	reflector.visible    = false
+	scene.add            ( reflector )
+	
+	floor            = new THREE.Mesh( new THREE.PlaneGeometry( floor_size, floor_size, floor_size, floor_size ), new THREE.MeshBasicMaterial({ opacity : 0, transparent : true }))
+	floor.rotation.x = -Math.PI / 2
+	floor.visible    = true
+	scene.add        ( floor )
+
+	world        = new BvhPhysicsWorld()
+	world.addBody( floor, false )	
+	
+	character = new SimpleCharacter( camera, world, canvas, { model : { url: undefined }})
+	character.visible = false
+	scene.add( character )	
+	
+	const gltf_loader   = new GLTFLoader()
+	gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'brushes/' ))
+	gltf_loader.load    ( 'ushio-and-tora.glb', gltf =>{
+		const brush = gltf.scene
+		brush.position.z = -floor_size / 4
+		brush.rotation.y = Math.PI
+		scene.add( brush )
+	})
+
+	{ // resize
+	const resize =()=>{
+		camera.aspect                = innerWidth / innerHeight
+		camera.updateProjectionMatrix()
+		
+		renderer.setSize( innerWidth, innerHeight )
+	}
+	resize()
+	addEventListener( "resize", resize )
+	}	
+	{ // render
+	renderer.setAnimationLoop( args =>{
+		const delta = clock.getDelta()
+		
+		switch( options.mode ){
+			case 'first' :
+			case 'third' :{
+				character?.update( delta )
+				if( character?.position.y < -10 ) character?.position.set( 0, 0, 0 )
+			} break
+			case 'fly'   :{
+				fly_controls.update( delta )			
+			} break
+		}
+				
+		renderer.render( scene, camera )
+	})
+	}
+}
+const authorize    = async _=>{
+	client = new Client({ 
+		clientId : '9sznzbaq87', 
+		domain   : 'https://account.htcvive.com/' 
+	})
+
+	auth = await client?.checkAuth()
+
+	avatarClient = auth == null 
+		? undefined 
+		: new AvatarClient({ 
+			token: auth?.access_token, 
+			baseURL: 'https://sdk-api.viverse.com/' 
+	})
+
+	profile =( await avatarClient?.getProfile()) ?? {
+		name         : 'Anonymous',
+		activeAvatar :{ headIconUrl: 'https://picsum.photos/200', vrmUrl: undefined },
+	}
+	
+	const new_character   = new SimpleCharacter( camera, world, canvas, { model : { url : profile.activeAvatar?.vrmUrl, type : "vrm" }})
+	new_character.visible = character.visible
+	scene.remove          ( character )
+	character             = new_character
+	scene.add             ( character )	
+}
+
+create_world()
+authorize()
+
+</script>
+</body>
+</html>
