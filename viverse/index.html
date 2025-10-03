@@ -4,11 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>icose viewer v251003 x joserpagil@gmail.com</title>
+    <title>icosa viewer v251003 x joserpagil@gmail.com</title>
 </head>
+
+<style>
+
+	#container {
+		position         : absolute;
+		right            : 0;
+		display          : flex;
+		flex-direction   : column;
+		gap              : 20px;
+		padding          : 20px;
+		background-color : rgba( 0, 0, 0, 0.6 );
+		color            : white;
+		text-shadow      :
+			-1px -1px 0 black,
+ 			 1px -1px 0 black,
+			-1px  1px 0 black,
+			 1px  1px 0 black;
+		border-bottom-left-radius : 10%; 
+	}
+
+	#controls_select,
+	#commands_div {
+		border  : 1px solid #ccc;
+		padding : 10px;
+		width   : 200px;
+	}
+	
+</style>
 
 <body style="touch-action: none; margin: 0; position: relative; width: 100dvw; height: 100dvh; overflow: hidden;">
 
+<div id="container">
+	<label for="controls_select">controls</label>
+	<select id="controls_select">
+		<option value="third">third person</option>
+		<option value="first">first person</option>
+		<option value="fly">fly</option>
+	</select>
+	<div id="commands_div">
+	</div>	
+</div>
+  
 <script type = "importmap">
 	{
 		"imports": {
@@ -27,7 +66,7 @@ addEventListener( "error", event =>{ alert( event.lineno + " = " + event.message
 	viverse-cli auth login -e joserpagil@gmail.com -p rcfdve.1a
 	viverse-cli app create --name "c"
 	viverse-cli app list
-	viverse-cli app publish dist --app-id 9sznzbaq87
+	viverse-cli app publish dist --app-id s3r5rga92q
 
 */
 
@@ -50,8 +89,48 @@ const floor_size = 50
 
 let   canvas, renderer, scene, camera, clock, orbit_controls, fly_controls, grid, floor, reflector, world
 let   client, auth, avatarClient, profile, character
-let   gui, options, controller
+let   gui, controller
+let   options ={ mode : 'third' }
 
+const controls = document.getElementById( 'controls_select' )
+const commands = document.getElementById( 'commands_div' )
+
+const show_commands = mode =>{
+	controls.value = mode
+	switch( mode ){
+		case 'first' :{
+			character.visible = false
+			grid.visible      = false
+			floor.visible     = true
+			reflector.visible = false
+			
+			commands.innerHTML = '🚶🏼‍♀move : wasd<br>🏃🏼‍♀️run : SHIFT<br>🦘jump : SPACEBAR'			
+		} break
+		case 'third' :{
+			character.visible = true
+			grid.visible      = true
+			floor.visible     = true
+			reflector.visible = true
+
+			commands.innerHTML = '🚶🏼‍♀move : wasd<br>🏃🏼‍♀run : SHIFT<br>🦘jump : SPACEBAR'			
+		} break
+		case 'fly'   :{
+			character.visible = false
+			grid.visible      = false
+			floor.visible     = false
+			reflector.visible = false		
+
+			commands.innerHTML = '🚶🏼‍♀move : wasd<br>🐭lmb : forward<br>🐭 RMB : backwards<br>roll cw : q<br>roll ccw : e<br>up : r<br>down : f'			
+		} break
+	}	
+}
+
+controls.addEventListener( 'change', event =>{
+	options.mode = event.target.value
+	show_commands( options.mode )
+})
+
+/*
 { // gui
 gui                = new GUI()
 options            ={ mode : 'first' }
@@ -83,6 +162,7 @@ controller.onChange( value =>{
 	}
 })
 }
+*/
 
 const create_world =_=>{
 	canvas                   = document.createElement( 'canvas' )
@@ -170,7 +250,7 @@ const create_world =_=>{
 }
 const authorize    = async _=>{
 	client = new Client({ 
-		clientId : '9sznzbaq87', 
+		clientId : 's3r5rga92q', 
 		domain   : 'https://account.htcvive.com/' 
 	})
 
@@ -196,6 +276,9 @@ const authorize    = async _=>{
 }
 
 create_world()
+
+show_commands( options.mode )
+
 authorize()
 
 </script>
