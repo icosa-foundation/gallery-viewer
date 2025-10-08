@@ -204,6 +204,7 @@ export class Viewer {
     private overrides: any;
     private cameraRig: THREE.Group;
     public selectedNode: THREE.Object3D | null;
+    private treeViewRoot: HTMLElement | null;
     public showErrorIcon: () => void;
     public loadingError: boolean;
 
@@ -337,6 +338,7 @@ export class Viewer {
 
         this.cameraRig = new THREE.Group();
         this.selectedNode = null;
+        this.treeViewRoot = null;
 
         let controller0: THREE.Group;
         let controller1: THREE.Group;
@@ -2721,6 +2723,7 @@ export class Viewer {
             console.error('Tree view container not found');
             return;
         }
+        this.treeViewRoot = treeView;
         treeView.innerHTML = '';
         if (model) {
             this.createTreeViewNode(model, treeView);
@@ -2795,5 +2798,87 @@ export class Viewer {
         }
 
         parentElement.appendChild(nodeElement);
+    }
+
+    /**
+     * Generate a consistent path for an object in the scene hierarchy.
+     * Uses object names and child indices to create a unique, reproducible identifier.
+     */
+    private getObjectPath(object: THREE.Object3D, currentPath: string = ''): string {
+        if (!object.parent) {
+            return currentPath || '/';
+        }
+        
+        const parent = object.parent;
+        const childIndex = parent.children.indexOf(object);
+        const nodeName = object.name || `${object.type}_${childIndex}`;
+        const newPath = `/${nodeName}${currentPath}`;
+        
+        return this.getObjectPath(parent, newPath);
+    }
+
+    /**
+     * Get the current visibility state of all nodes in the scene hierarchy.
+     * Returns a map of object paths to visibility state.
+     * Object paths are consistent across sessions when loading the same file.
+     * @returns An object mapping paths to state information
+     */
+    public getTreeViewState(): { [path: string]: { visible: boolean } } {
+        const state: { [path: string]: { visible: boolean } } = {};
+        
+        const collectState = (object: THREE.Object3D) => {
+            const path = this.getObjectPath(object);
+            state[path] = {
+                visible: object.visible
+            };
+            
+            if (object.children && object.children.length > 0) {
+                object.children.forEach(child => collectState(child));
+            }
+        };
+        
+        if (this.scene) {
+            collectState(this.scene);
+        }
+        
+        return state;
+    }
+
+    /**
+     * Restore the visibility state of nodes from a previously saved state.
+     * @param state - The state object returned from getTreeViewState()
+     */
+    public setTreeViewState(state: { [path: string]: { visible: boolean } }): void {
+        const applyState = (object: THREE.Object3D) => {
+            const path = this.getObjectPath(object);
+            const savedState = state[path];
+            if (savedState !== undefined) {
+                object.visible = savedState.visible;
+            }
+            
+            if (object.children && object.children.length > 0) {
+                object.children.forEach(child => applyState(child));
+            }
+        };
+        
+        if (this.scene) {
+            applyState(this.scene);
+        }
+        
+        // Refresh the tree view UI if it exists
+        this.refreshTreeView();
+    }
+
+    /**
+     * Refresh the tree view UI to match the current visibility state of objects.
+     * This updates all checkboxes in the tree view to reflect the actual visibility of objects.
+     */
+    public refreshTreeView(): void {
+        if (!this.treeViewRoot || !this.scene) {
+            return;
+        }
+        
+        // Recreate the tree view to reflect the current state
+        this.createTreeView(this.scene, this.treeViewRoot);
     }
 }
