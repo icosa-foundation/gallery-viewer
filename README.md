@@ -1,5 +1,7 @@
 # Icosa Viewer
 
+![gallery-viewer.jpg](docs/images/gallery-viewer.jpg)
+
 [![Latest NPM release](https://img.shields.io/npm/v/icosa-viewer.svg)](https://www.npmjs.com/package/icosa-viewer)
 [![Twitter](https://img.shields.io/badge/follow-%40IcosaGallery-blue.svg?style=flat&logo=twitter)](https://twitter.com/IcosaGallery)
 [![Discord](https://discordapp.com/api/guilds/783806589991780412/embed.png?style=shield)](https://discord.gg/W7NCEYnEfy)
