@@ -1,4 +1,4 @@
-import {DataTexture as $fugmd$DataTexture, RGBAFormat as $fugmd$RGBAFormat, FileLoader as $fugmd$FileLoader, TextureLoader as $fugmd$TextureLoader, RepeatWrapping as $fugmd$RepeatWrapping, UniformsLib as $fugmd$UniformsLib, RawShaderMaterial as $fugmd$RawShaderMaterial, Loader as $fugmd$Loader, Vector4 as $fugmd$Vector4, Vector3 as $fugmd$Vector3, GLSL3 as $fugmd$GLSL3, Clock as $fugmd$Clock, BufferAttribute as $fugmd$BufferAttribute, Matrix4 as $fugmd$Matrix4} from "three";
+import {DataTexture as $fugmd$DataTexture, RGBAFormat as $fugmd$RGBAFormat, UnsignedByteType as $fugmd$UnsignedByteType, SRGBColorSpace as $fugmd$SRGBColorSpace, NoColorSpace as $fugmd$NoColorSpace, FileLoader as $fugmd$FileLoader, TextureLoader as $fugmd$TextureLoader, RepeatWrapping as $fugmd$RepeatWrapping, UniformsLib as $fugmd$UniformsLib, RawShaderMaterial as $fugmd$RawShaderMaterial, Loader as $fugmd$Loader, Vector4 as $fugmd$Vector4, Vector3 as $fugmd$Vector3, GLSL3 as $fugmd$GLSL3, Clock as $fugmd$Clock, BufferAttribute as $fugmd$BufferAttribute, Matrix4 as $fugmd$Matrix4} from "three";
 
 // Copyright 2021-2022 Icosa Gallery
 //
@@ -24,8 +24,9 @@ function $4fdc68aa1ebb2033$var$getDefaultWhiteTexture() {
             255,
             255,
             255
-        ]), 1, 1, $fugmd$RGBAFormat);
+        ]), 1, 1, $fugmd$RGBAFormat, $fugmd$UnsignedByteType);
         $4fdc68aa1ebb2033$var$defaultWhiteTexture.name = "DefaultWhiteTexture";
+        $4fdc68aa1ebb2033$var$defaultWhiteTexture.colorSpace = $fugmd$SRGBColorSpace;
         $4fdc68aa1ebb2033$var$defaultWhiteTexture.needsUpdate = true;
     }
     return $4fdc68aa1ebb2033$var$defaultWhiteTexture;
@@ -37,8 +38,9 @@ function $4fdc68aa1ebb2033$var$getDefaultNormalTexture() {
             128,
             255,
             255
-        ]), 1, 1, $fugmd$RGBAFormat);
+        ]), 1, 1, $fugmd$RGBAFormat, $fugmd$UnsignedByteType);
         $4fdc68aa1ebb2033$var$defaultNormalTexture.name = "DefaultNormalTexture";
+        $4fdc68aa1ebb2033$var$defaultNormalTexture.colorSpace = $fugmd$NoColorSpace;
         $4fdc68aa1ebb2033$var$defaultNormalTexture.needsUpdate = true;
     }
     return $4fdc68aa1ebb2033$var$defaultNormalTexture;
@@ -90,25 +92,27 @@ class $4fdc68aa1ebb2033$export$bcc22bf437a07d8f extends $fugmd$Loader {
         materialParams.fragmentShader = fragmentShaderText;
         if (materialParams.uniforms.u_MainTex) {
             if (materialParams.uniforms.u_MainTex.value === null) materialParams.uniforms.u_MainTex.value = $4fdc68aa1ebb2033$var$getDefaultWhiteTexture();
-            else {
+            else if (typeof materialParams.uniforms.u_MainTex.value === "string") {
                 const mainTex = await textureLoader.loadAsync(materialParams.uniforms.u_MainTex.value);
                 mainTex.name = `${brushName}_MainTex`;
                 mainTex.wrapS = $fugmd$RepeatWrapping;
                 mainTex.wrapT = $fugmd$RepeatWrapping;
                 mainTex.flipY = false;
                 materialParams.uniforms.u_MainTex.value = mainTex;
-            }
+            } else if (materialParams.uniforms.u_MainTex.value.isTexture) ;
+            else console.error(`[TiltShaderLoader] u_MainTex has unexpected type for ${brushName}:`, materialParams.uniforms.u_MainTex.value);
         }
         if (materialParams.uniforms.u_BumpMap) {
             if (materialParams.uniforms.u_BumpMap.value === null) materialParams.uniforms.u_BumpMap.value = $4fdc68aa1ebb2033$var$getDefaultNormalTexture();
-            else {
+            else if (typeof materialParams.uniforms.u_BumpMap.value === "string") {
                 const bumpMap = await textureLoader.loadAsync(materialParams.uniforms.u_BumpMap.value);
                 bumpMap.name = `${brushName}_BumpMap`;
                 bumpMap.wrapS = $fugmd$RepeatWrapping;
                 bumpMap.wrapT = $fugmd$RepeatWrapping;
                 bumpMap.flipY = false;
                 materialParams.uniforms.u_BumpMap.value = bumpMap;
-            }
+            } else if (materialParams.uniforms.u_BumpMap.value.isTexture) ;
+            else console.error(`[TiltShaderLoader] u_MainTex has unexpected type for ${brushName}:`, materialParams.uniforms.u_MainTex.value);
         }
         if (materialParams.uniforms.u_AlphaMask) {
             const alphaMask = await textureLoader.loadAsync(materialParams.uniforms.u_AlphaMask.value);
