@@ -2119,9 +2119,14 @@ export class Viewer {
         this.initializeScene();
     }
 
-    private isLegacyExporter(sceneGltf: any) {
+    private isLegacyTiltExporter(sceneGltf: any) {
         const generator = sceneGltf.asset?.generator;
-        return generator && !generator.includes('Open Brush UnityGLTF Exporter');
+        return generator && !generator.includes('Tilt Brush');
+    }
+
+    private isNewTiltExporter(sceneGltf: any) {
+        const generator = sceneGltf.asset?.generator;
+        return generator && generator.includes('Open Brush UnityGLTF Exporter');
     }
 
     private scaleScene(sceneGltf: any, negate : boolean) {
@@ -2131,7 +2136,9 @@ export class Viewer {
         let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
         let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
         let poseScale = userData['TB_PoseScale'] ?? 1;
-
+        if (this.isNewTiltExporter(sceneGltf)) {
+            poseScale *= negate ? 10 : 0.1;
+        }
         if (negate) {
             // Create inverse transformation matrix: (T * R * S)^-1 = S^-1 * R^-1 * T^-1
             const inverseScale = 1.0 / poseScale;
@@ -2411,9 +2418,7 @@ export class Viewer {
                 // Use the standard GLTFLoader for environments
                 const standardLoader = new GLTFLoader();
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
-                if (!this.isLegacyExporter(sceneGltf))
-                {
-                    console.log("Rotating environment 180 degrees for legacy exporter");
+                if (this.isNewTiltExporter(sceneGltf)) {
                     envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
                 }
                 envGltf.scene.scale.set(.1, .1, .1);

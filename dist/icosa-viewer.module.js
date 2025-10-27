@@ -3925,6 +3925,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
         this.cameraRig = new $hBQxr$three.Group();
         this.selectedNode = null;
+        this.treeViewRoot = null;
         let controller0;
         let controller1;
         let controllerGrip0;
@@ -5602,15 +5603,20 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.sceneGltf = sceneGltf;
         this.initializeScene();
     }
-    isLegacyExporter(sceneGltf) {
+    isLegacyTiltExporter(sceneGltf) {
         const generator = sceneGltf.asset?.generator;
-        return generator && !generator.includes('Open Brush UnityGLTF Exporter');
+        return generator && !generator.includes('Tilt Brush');
+    }
+    isNewTiltExporter(sceneGltf) {
+        const generator = sceneGltf.asset?.generator;
+        return generator && generator.includes('Open Brush UnityGLTF Exporter');
     }
     scaleScene(sceneGltf, negate) {
         const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
         let poseTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseTranslation'], new $hBQxr$three.Vector3(0, 0, 0));
         let poseRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseRotation'], new $hBQxr$three.Vector3(0, 0, 0));
         let poseScale = userData['TB_PoseScale'] ?? 1;
+        if (this.isNewTiltExporter(sceneGltf)) poseScale *= negate ? 10 : 0.1;
         if (negate) {
             // Create inverse transformation matrix: (T * R * S)^-1 = S^-1 * R^-1 * T^-1
             const inverseScale = 1.0 / poseScale;
@@ -5862,10 +5868,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 // Use the standard GLTFLoader for environments
                 const standardLoader = new (0, $hBQxr$GLTFLoader)();
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
-                if (!this.isLegacyExporter(sceneGltf)) {
-                    console.log("Rotating environment 180 degrees for legacy exporter");
-                    envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
-                }
+                if (this.isNewTiltExporter(sceneGltf)) envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
                 envGltf.scene.scale.set(.1, .1, .1);
                 scene.attach(envGltf.scene);
                 this.environmentObject = envGltf.scene;
@@ -6116,6 +6119,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             console.error('Tree view container not found');
             return;
         }
+        this.treeViewRoot = treeView;
         treeView.innerHTML = '';
         if (model) this.createTreeViewNode(model, treeView);
         else console.error('Model not loaded');
@@ -6171,6 +6175,56 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             });
         }
         parentElement.appendChild(nodeElement);
+    }
+    /**
+     * Generate a consistent path for an object in the scene hierarchy.
+     * Uses object names and child indices to create a unique, reproducible identifier.
+     */ getObjectPath(object, currentPath = '') {
+        if (!object.parent) return currentPath || '/';
+        const parent = object.parent;
+        const childIndex = parent.children.indexOf(object);
+        const nodeName = object.name || `${object.type}_${childIndex}`;
+        const newPath = `/${nodeName}${currentPath}`;
+        return this.getObjectPath(parent, newPath);
+    }
+    /**
+     * Get the current visibility state of all nodes in the scene hierarchy.
+     * Returns a map of object paths to visibility state.
+     * Object paths are consistent across sessions when loading the same file.
+     * @returns An object mapping paths to state information
+     */ getTreeViewState() {
+        const state = {};
+        const collectState = (object)=>{
+            const path = this.getObjectPath(object);
+            state[path] = {
+                visible: object.visible
+            };
+            if (object.children && object.children.length > 0) object.children.forEach((child)=>collectState(child));
+        };
+        if (this.scene) collectState(this.scene);
+        return state;
+    }
+    /**
+     * Restore the visibility state of nodes from a previously saved state.
+     * @param state - The state object returned from getTreeViewState()
+     */ setTreeViewState(state) {
+        const applyState = (object)=>{
+            const path = this.getObjectPath(object);
+            const savedState = state[path];
+            if (savedState !== undefined) object.visible = savedState.visible;
+            if (object.children && object.children.length > 0) object.children.forEach((child)=>applyState(child));
+        };
+        if (this.scene) applyState(this.scene);
+        // Refresh the tree view UI if it exists
+        this.refreshTreeView();
+    }
+    /**
+     * Refresh the tree view UI to match the current visibility state of objects.
+     * This updates all checkboxes in the tree view to reflect the actual visibility of objects.
+     */ refreshTreeView() {
+        if (!this.treeViewRoot || !this.scene) return;
+        // Recreate the tree view to reflect the current state
+        this.createTreeView(this.scene, this.treeViewRoot);
     }
 }
 

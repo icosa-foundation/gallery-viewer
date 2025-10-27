@@ -9831,9 +9831,9 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
             let nameOrGuid;
             // Try a guid first
             if (extensionsDef?.[this.name]) nameOrGuid = extensionsDef[this.name].guid;
-            else if (material.name.startsWith("material_")) nameOrGuid = material.name.replace("material_", "");
-            else if (material.name.startsWith("ob-")) nameOrGuid = material.name.replace("ob-", "");
-            else {
+            else if (material.name?.startsWith("material_")) nameOrGuid = material.name.replace("material_", "");
+            else if (material.name?.startsWith("ob-")) nameOrGuid = material.name.replace("ob-", "");
+            else if (material.name !== undefined) {
                 let newName = this.tryReplaceBlocksName(material.name);
                 if (newName !== undefined) nameOrGuid = newName;
             }
@@ -9871,9 +9871,9 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 const material = json.materials[prim.material];
                 const extensionsDef = material.extensions;
                 let brushName;
-                if (material.name.startsWith("ob-")) // New glb naming convention
+                if (material.name?.startsWith("ob-")) // New glb naming convention
                 brushName = material.name.replace("ob-", "");
-                else if (material.name.startsWith("material_")) // Some legacy poly files
+                else if (material.name?.startsWith("material_")) // Some legacy poly files
                 // TODO - risk of name collision with non-tilt materials
                 // Maybe we should pass in a flag when a tilt gltf is detected?
                 // Do names in this format use guids or english names?
@@ -9891,6 +9891,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
         return Promise.all(shaderResolves);
     }
     tryReplaceBlocksName(originalName) {
+        if (originalName === undefined) return;
         // Handle naming embedded models exported from newer Open Brush versions
         let newName;
         if (originalName.includes("_BlocksPaper ")) newName = "BlocksPaper";
