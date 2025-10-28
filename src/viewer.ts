@@ -2489,8 +2489,8 @@ export class Viewer {
 
         let cameraOverrides = this.overrides?.camera;
 
-        let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation.toArray() || [0, 1, -1];
-        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
+        let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation?.toArray() || [0, 1, -1];
+        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation?.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
 
         if (this.isNewTiltExporter(this.sceneGltf)) {
             // the scene scale is modified elsewhere but here we correct the camera to match
