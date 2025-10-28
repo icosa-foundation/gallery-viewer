@@ -116,8 +116,8 @@ class SketchMetadata {
         this.SceneLight0Color = new THREE.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new THREE.Color(light1col.r, light1col.g, light1col.b);
 
-        this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'])
-        this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation']);
+        this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'], null)
+        this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation'], null);
     }
 }
 
@@ -580,7 +580,8 @@ export class Viewer {
     }
 
     static parseTBVector3(vectorString: string, defaultValue?: THREE.Vector3) {
-        if (!vectorString) return defaultValue ?? new THREE.Vector3();
+        // Return default value if explicitly null, else return a default vector3
+        if (!vectorString) return defaultValue === undefined ? new THREE.Vector3() : defaultValue;
         const [x, y, z] = vectorString.split(',').map(p => parseFloat(p.trim()));
         return new THREE.Vector3(x, y, z);
     }
