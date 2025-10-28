@@ -2111,8 +2111,8 @@ export class Viewer {
         // The legacy loader has the latter structure
         let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
 
-        this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         this.scaleScene(sceneGltf, true);
+        this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         if (loadEnvironment) {await this.assignEnvironment(sceneGltf);}
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
