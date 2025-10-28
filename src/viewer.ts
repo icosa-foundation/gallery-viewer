@@ -2489,7 +2489,15 @@ export class Viewer {
 
         let cameraOverrides = this.overrides?.camera;
 
-        let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation?.toArray() || [0, 1, -1];
+
+        const userData = this.sceneGltf?.scene?.userData || {};
+        let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
+        let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
+        let poseScale = (userData['TB_PoseScale'] ?? 1);
+
+        let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation?.toArray() || [0, 0.25, -3.5];
+        cameraPos = [cameraPos[0] * poseScale, cameraPos[1] * poseScale, cameraPos[2] * poseScale];
+
         let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation?.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
 
         if (this.isNewTiltExporter(this.sceneGltf)) {
