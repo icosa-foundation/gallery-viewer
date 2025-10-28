@@ -2126,7 +2126,7 @@ export class Viewer {
     }
 
     private isNewTiltExporter(sceneGltf: any) {
-        const generator = sceneGltf.asset?.generator;
+        const generator = sceneGltf?.asset?.generator;
         return generator && generator.includes('Open Brush UnityGLTF Exporter');
     }
 
