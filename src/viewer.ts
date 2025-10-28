@@ -2491,6 +2491,13 @@ export class Viewer {
         let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation.toArray() || [0, 1, -1];
         let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
 
+        if (this.isNewTiltExporter(this.sceneGltf)) {
+            // the scene scale is modified elsewhere but here we correct the camera to match
+            cameraPos = [cameraPos[0] * 0.1, cameraPos[1] * 0.1, cameraPos[2] * 0.1];
+            cameraPos[1] -= 1
+            cameraRot[1] += 180;
+        }
+
         // Fix handedness between Unity and gltf/three.js
         // Should we fix this on export?
         if (cameraRot.length == 3) {
