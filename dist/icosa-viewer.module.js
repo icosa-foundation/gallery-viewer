@@ -3803,8 +3803,8 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         let light1col = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
         this.SceneLight0Color = new $hBQxr$three.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new $hBQxr$three.Color(light1col.r, light1col.g, light1col.b);
-        this.CameraTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTranslation']);
-        this.CameraRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraRotation']);
+        this.CameraTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTranslation'], null);
+        this.CameraRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraRotation'], null);
     }
 }
 class $677737c8a5cbea2f$var$EnvironmentPreset {
@@ -4106,7 +4106,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         animate();
     }
     static parseTBVector3(vectorString, defaultValue) {
-        if (!vectorString) return defaultValue ?? new $hBQxr$three.Vector3();
+        // Return default value if explicitly null, else return a default vector3
+        if (!vectorString) return defaultValue === undefined ? new $hBQxr$three.Vector3() : defaultValue;
         const [x, y, z] = vectorString.split(',').map((p)=>parseFloat(p.trim()));
         return new $hBQxr$three.Vector3(x, y, z);
     }
@@ -5595,8 +5596,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         } else sceneGltf = await this.gltfLoader.loadAsync(url);
         // The legacy loader has the latter structure
         let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
-        this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         this.scaleScene(sceneGltf, true);
+        this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         if (loadEnvironment) await this.assignEnvironment(sceneGltf);
         if (overrides?.tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         this.loadedModel = sceneGltf.scene;
@@ -5608,8 +5609,12 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         return generator && !generator.includes('Tilt Brush');
     }
     isNewTiltExporter(sceneGltf) {
-        const generator = sceneGltf.asset?.generator;
+        const generator = sceneGltf?.asset?.generator;
         return generator && generator.includes('Open Brush UnityGLTF Exporter');
+    }
+    isAnyTiltExporter(sceneGltf) {
+        const generator = sceneGltf?.asset?.generator;
+        return generator && (generator.includes('Tilt Brush') || generator.includes('Open Brush UnityGLTF Exporter'));
     }
     scaleScene(sceneGltf, negate) {
         const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
@@ -5926,23 +5931,33 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     initCameras() {
         let cameraOverrides = this.overrides?.camera;
-        let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation.toArray() || [
+        // const userData = this.sceneGltf?.scene?.userData || {};
+        // let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
+        // let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
+        // let poseScale = (userData['TB_PoseScale'] ?? 1);
+        let sketchCam = this.sketchMetadata?.CameraTranslation?.toArray();
+        if (sketchCam) {
+            let poseScale = this.isAnyTiltExporter(this.sceneGltf) ? 0.1 : 1;
+            console.log("posescale", poseScale);
+            sketchCam = [
+                sketchCam[0] * poseScale,
+                sketchCam[1] * poseScale,
+                sketchCam[2] * poseScale
+            ];
+        }
+        let cameraPos = cameraOverrides?.translation || sketchCam || [
             0,
-            1,
-            -1
+            0.25,
+            -3.5
         ];
-        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation.toArray() || [
+        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation?.toArray() || [
             0,
             0,
             0
         ]; // Could be euler angles or quaternion
         if (this.isNewTiltExporter(this.sceneGltf)) {
             // the scene scale is modified elsewhere but here we correct the camera to match
-            cameraPos = [
-                cameraPos[0] * 0.1,
-                cameraPos[1] * 0.1,
-                cameraPos[2] * 0.1
-            ];
+            //cameraPos = [cameraPos[0] * 0.1, cameraPos[1] * 0.1, cameraPos[2] * 0.1];
             cameraPos[1] -= 1;
             cameraRot[1] += 180;
         }

@@ -2130,10 +2130,14 @@ export class Viewer {
         return generator && generator.includes('Open Brush UnityGLTF Exporter');
     }
 
+    private isAnyTiltExporter(sceneGltf: any) {
+        const generator = sceneGltf?.asset?.generator;
+        return generator && (generator.includes('Tilt Brush') || generator.includes('Open Brush UnityGLTF Exporter'));
+    }
+
     private scaleScene(sceneGltf: any, negate : boolean) {
 
         const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
-
         let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
         let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
         let poseScale = userData['TB_PoseScale'] ?? 1;
@@ -2490,19 +2494,24 @@ export class Viewer {
         let cameraOverrides = this.overrides?.camera;
 
 
-        const userData = this.sceneGltf?.scene?.userData || {};
-        let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
-        let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
-        let poseScale = (userData['TB_PoseScale'] ?? 1);
+        // const userData = this.sceneGltf?.scene?.userData || {};
+        // let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
+        // let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
+        // let poseScale = (userData['TB_PoseScale'] ?? 1);
 
-        let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation?.toArray() || [0, 0.25, -3.5];
-        cameraPos = [cameraPos[0] * poseScale, cameraPos[1] * poseScale, cameraPos[2] * poseScale];
+        let sketchCam = this.sketchMetadata?.CameraTranslation?.toArray();
+        if (sketchCam) {
+            let poseScale = this.isAnyTiltExporter(this.sceneGltf) ? 0.1 : 1;
+            console.log("posescale", poseScale);
+            sketchCam = [sketchCam[0] * poseScale, sketchCam[1] * poseScale, sketchCam[2] * poseScale];
+        }
 
+        let cameraPos = cameraOverrides?.translation || sketchCam || [0, 0.25, -3.5];
         let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation?.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
 
         if (this.isNewTiltExporter(this.sceneGltf)) {
             // the scene scale is modified elsewhere but here we correct the camera to match
-            cameraPos = [cameraPos[0] * 0.1, cameraPos[1] * 0.1, cameraPos[2] * 0.1];
+            //cameraPos = [cameraPos[0] * 0.1, cameraPos[1] * 0.1, cameraPos[2] * 0.1];
             cameraPos[1] -= 1
             cameraRot[1] += 180;
         }
