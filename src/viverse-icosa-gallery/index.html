@@ -4,10 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>icosa viewer v251028 x joserpagil@gmail.com</title>
+    <title>icosa viewer v251101 x joserpagil@gmail.com</title>
 </head>
 
 <style>
+
+	@font-face {
+		font-family: 'MundialRegular';
+		src: url('../MundialRegular.otf') format('opentype');
+		font-weight: normal;
+		font-style: normal;
+	}
+
+	* {
+		font-family: 'MundialRegular', sans-serif;
+	}
 
 	.container {
 		position         : absolute;
@@ -15,7 +26,7 @@
 		flex-direction   : column;
 		gap              : 20px;
 		padding          : 20px;
-		background-color : rgba( 0, 0, 0, 0.6 );
+		background-color : rgba( 0, 0, 0, .5 );
 		color            : white;
 		text-shadow      :
 			-1px -1px 0 black,
@@ -24,37 +35,85 @@
 			 1px  1px 0 black;
 	}
 	
+	input {
+		background-color : rgba( 0, 0, 0, 0.6 );
+		color : white;
+	}
+	
+	button {
+		background-color : rgba( 0, 0, 0, 0.6 );
+		border : none;
+		color : white;
+	}
+	
 	#out {
 		left                       : 0;
 		bottom                     : 0;
+		width : 25%;
+		height : 25%;
 		border-top-right-radius : 10%; 
 	}
 	
-	#positions_div {
-		left                       : 0;
-		top                        : 0;
-		border-bottom-right-radius : 10%; 
-	}
-	
-	#actors_div {
-		right                  : 0;
-		bottom                 : 0;
-		border-top-left-radius : 10%; 
-	}
-	
-	#container {
+	#ui_div {
 		right                     : 0;
 		border-bottom-left-radius : 10%; 
 	}
 	
+	.rounded-input {
+		border: 2px solid #ccc;
+		border-radius: 25px; 
+		outline: none;
+		transition: border-color 0.3s ease;
+	}
+	
+	#virtual_reality_button {
+		border : none;
+		background : transparent;
+	}
+	
+	.unselectable {
+		user-select: none;            
+		-webkit-user-select: none;    
+		-moz-user-select: none;       
+		-ms-user-select: none;        
+	}
+
 </style>
 
 <body style = "touch-action: none; margin: 0; position: relative; width: 100dvw; height: 100dvh; overflow: hidden;">
 
-<div id = 'positions_div' class = 'container'></div>
-<div id = 'out'           class = 'container'></div>
-<div id = 'actors_div'    class = 'container'></div>
-  
+<div class = 'unselectable' style="display: flex; position: absolute; bottom: 0; width: 100%;">
+	<div style="flex-shrink: 0;">
+		<div style="height: 20vmin;"></div>
+		<img id = 'mobile_touchpad_svg' src = '1x1.png' style="width: 20vmin; height: 20vmin;" />
+	</div>
+
+	<div style = 'flex-shrink: 0; width : 2vmin;'></div>
+
+	<div id="chat_div" style="flex-grow : 1; height: 40vmin; min-width: 0;">
+		<div id="msgs_div" style="height : 20vmin; color: gray;">
+		</div>
+		<div>
+			<div style = 'height : 5vmin;'></div>
+			<input id="chat_input" type="text" class="rounded-input" style = "width : 36vmin; height : 10vmin;"/>
+		</div>
+	</div>
+
+	<div style = 'flex-shrink: 0; width : 2vmin;'></div>
+
+	<div style="flex-shrink: 0;">
+		<div style="height: 20vmin;"></div>
+		<button id="virtual_reality_button" style="width: 20vmin; height: 20vmin;" disabled>
+			<img id = 'vr_svg' src = '1x1.png' style="width: 20vmin; height: 20vmin;" />
+		</button>
+	</div>
+
+	<div style="flex-shrink: 0;">
+		<div style="height: 20vmin;"></div>
+		<img id = 'orientation_controls_svg' src = '1x1.png' style="width: 20vmin; height: 20vmin;" />
+	</div>
+</div>  
+
 <script type = "importmap">
 	{
 		"imports": {
@@ -65,20 +124,20 @@
 </script>
 
 <script type = 'module'>
-
+//💬
 addEventListener( "error", event =>{ out.innerHTML += event.lineno + " = " + event.message + '<br>' })
 
 /*
 
 	viverse-cli auth login -e joserpagil@gmail.com -p rcfdve.1a
 	viverse-cli auth login -e inteligentin@msn.com -p exdscw.1
-	viverse-cli app create --name "g"
+	viverse-cli app create --name "t"
 	viverse-cli app list
-	viverse-cli app publish dist --app-id 3j2gjrpaxq
+	viverse-cli app publish dist --app-id dyyja3mfjk
 
 */
 
-const app = '3j2gjrpaxq'
+const app = 'dyyja3mfjk'
 
 import * as THREE                               from 'three'
 import { RoomEnvironment }                      from "three/addons/environments/RoomEnvironment.js"
@@ -94,38 +153,66 @@ import { Client, Avatar, Play }                 from '@viverse/sdk'
 let   canvas, renderer, vr_button, scene, camera_group, camera, clock, orbit_controls, forward_speed = 0, lateral_speed = 0, keys = {}, hands =[], beep
 let   client, token, auth, avatar, play, match, profile, room, actor, multi, update_position_interval, update_position_time = 30, actors =[], session_id
 const pointer_data ={ button : -1 }
+let   nipple_canvas, nipple_context
 
+document.getElementById( 'virtual_reality_button' ).onclick =_=>{
+	vr_button.click()
+}
+
+const send         =       _=>{
+	if( multi && multi.general ) multi.general.sendMessage (_)
+}
+const receive      =       _=>{
+	msgs_div.innerHTML += _ + '<br>'
+	beep.play()
+}
 const create_world =       _=>{
-	const move =_=>{
+	const move         =       _=>{
 		const speed             = 0.1
 		const dir               = new THREE.Vector3()
 		camera.getWorldDirection( dir )
-		const up                 = new THREE.Vector3( 0 , 1 , 0 ).applyQuaternion( camera.quaternion ).normalize()
-		const right              = new THREE.Vector3().crossVectors( camera.up, dir ).normalize()
+		const up                = new THREE.Vector3( 0 , 1 , 0 ).applyQuaternion( camera.quaternion ).normalize()
+		const right             = new THREE.Vector3().crossVectors( camera.up, dir ).normalize()
 		
 		Gamepad.update()		
 		VR.update()		
 
-		if( keys['w']) camera_group.position.addScaledVector( dir,    speed )
-		if( keys['s']) camera_group.position.addScaledVector( dir,   -speed )
-		if( keys['a']) camera_group.position.addScaledVector( right,  speed )
-		if( keys['d']) camera_group.position.addScaledVector( right, -speed )
-		if( keys['q']) camera_group.position.addScaledVector( up,     speed )
-		if( keys['e']) camera_group.position.addScaledVector( up,    -speed )
+		if( keys[ 'w' ]) camera_group.position.addScaledVector( dir,    speed )
+		if( keys[ 's' ]) camera_group.position.addScaledVector( dir,   -speed )
+		if( keys[ 'a' ]) camera_group.rotation.y              +=  Math.PI / 100 //.addScaledVector( right,  speed )
+		if( keys[ 'd' ]) camera_group.rotation.y              += -Math.PI / 100 //.addScaledVector( right,  speed )
+		if( keys[ 'q' ]) camera_group.position.addScaledVector( up,     speed * .5 )
+		if( keys[ 'e' ]) camera_group.position.addScaledVector( up,    -speed * .5 )
 		
 		//orbit_controls.update()
 	}
 
+	//nipple_canvas            = document.getElementById( 'nipple_canvas' )
+	//nipple_context           = nipple_canvas.getContext( '2d' )
+	
 	canvas                   = document.createElement( 'canvas' )
 	renderer                 = new THREE.WebGLRenderer({ canvas, antialias : true })
 	renderer.xr.enabled      = true
 	document.body.appendChild( renderer.domElement )
+	
 	vr_button                = VRButton.createButton( renderer, { requiredFeatures : [ "hand-tracking" ]})
-	document.body.appendChild( vr_button )
+	const show_vr_interval = setInterval(_=>{
+		if( vr_button.textContent == 'ENTER VR' ){
+			virtual_reality_button.disabled = false
+			document.getElementById( 'vr_svg' ).src = 'VR_headset_icon.svg'
+			clearInterval( show_vr_interval )
+		} //else document.getElementById( 'vr_svg' ).src = 'no_VR_icon.svg'
+	}, 1000 )
+	
+	if ( window.matchMedia('(pointer: coarse)').matches ){
+		document.getElementById( 'mobile_touchpad_svg'      ).src = 'mobile_touchpad.svg'
+		document.getElementById( 'orientation_controls_svg' ).src = 'orientation_controls.svg'
+	}
+	
 	scene                    = new THREE.Scene()
 	//scene.background         = new THREE.Color( 'blue' )
 	scene.environment        = new THREE.PMREMGenerator( renderer ).fromScene( new RoomEnvironment(), 0.04 ).texture		
-	camera                   = new THREE.PerspectiveCamera( 50 )
+	camera                   = new THREE.PerspectiveCamera( 50, 1, .01, 10000 )
 	camera_group             = new THREE.Group()
 	camera_group.position.set( 0, 5, 15 )
 	scene.add                ( camera_group )
@@ -476,13 +563,63 @@ const create_world =       _=>{
 		}
 	}
 
+	// sky
+	new THREE.TextureLoader().load( 'skies/milkyway_PNG.png', texture =>{
+		const material      = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide, color : 'white' })
+		material.fog        = false
+		material.toneMapped = false
+		const geometry      = new THREE.SphereGeometry( 5000, 64, 64 )
+		const sky_sphere    = new THREE.Mesh( geometry, material )
+		sky_sphere.name     = "environmentSky"
+		scene.add           ( sky_sphere )
+	})
+			
 	const gltf_loader   = new GLTFLoader()
 	gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'brushes/' ))
-	gltf_loader.load    ( 'ushio-and-tora.glb', gltf =>{
+	//gltf_loader.load    ( 'ushio-and-tora.glb', gltf =>{
+	gltf_loader.load    ( '002-muse.glb', gltf =>{
+		/*
+		const parser = gltf.parser
+		const json   = parser.json
+		const jsonString = JSON.stringify(json, null, 2);
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'data.json';
+		a.click();
+		URL.revokeObjectURL(url)
+		*/
+		
 		const brush      = gltf.scene
 		brush.rotation.y = Math.PI
 		scene.add        ( brush )
-		
+
+		/*
+            "extras": {
+                "TB_EnvironmentGuid": "ab080599-e465-4a6d-8587-43bf495af68b",
+                "TB_Environment": "Standard",
+                "TB_UseGradient": "true",
+                "TB_SkyColorA": "0.2745098, 0.2745098, 0.3176471",
+                "TB_SkyColorB": "0.03529412, 0.03529412, 0.08627451",
+                "TB_SkyGradientDirection": "0, 1, 0",
+                "TB_FogColor": "0.1647059, 0.1647059, 0.2078431",
+                "TB_FogDensity": "0.0025",
+                "TB_AmbientLightColor": "0.3921569, 0.3921569, 0.3921569",
+                "TB_SceneLight0Color": "0.7780392, 0.8156863, 0.9913726",
+                "TB_SceneLight0Rotation": "60, -1.707548E-06, 334",
+                "TB_SceneLight1Color": "0.4282353, 0.4211765, 0.3458824",
+                "TB_SceneLight1Rotation": "40, 180, 140",
+                "TB_PoseTranslation": "-0.6559011, 7.412807, 4.213572",
+                "TB_PoseRotation": "0, 224.0852, 0",
+                "TB_PoseScale": 0.113527037,
+                "TB_ExportedFromVersion": "2.0.0",
+                "TB_CameraTranslation": "23.65104, 18.53613, 6.477695",
+                "TB_CameraRotation": "38.93238, 100.4957, 1.318866"
+            }
+        }		
+		*/
+
 		//Orbit.frame_target( scene )
 	})
 
@@ -506,31 +643,68 @@ const create_world =       _=>{
 		move()
 		//Orbit.update()
 		
+		//nipple_context.fillStyle = 'blue'
+		//nipple_context.fillRect( 0, 0, nipple_canvas.width, nipple_canvas.height )
+		
 		renderer.render( scene, camera )
 	})
 	}
-	
+		
+    addEventListener( "contextmenu", _=>{ 
+        _.preventDefault()
+    })		
+		
 	addEventListener( 'pointerdown', event =>{
 		pointer_data.button = event.button
+		
+		if( pointer_data.button == 0 ) keys.w = true
+		if( pointer_data.button == 2 ) keys.s = true
 				
 		//Orbit.set_enabled( "CANVAS" == event.target.tagName )
 		//if( Orbit.enabled ){
-			Orbit.set_pointer_down( event.clientX, event.clientY )
+			//Orbit.set_pointer_down( event.clientX, event.clientY )
 		//}
 	})
 	addEventListener( 'pointermove', event =>{		
 		if( pointer_data.button == -1 ) return
 		
-		if( pointer_data.button == 0 ) Orbit.set_pointer_move( event.clientX, event.clientY )
+		if( pointer_data.button == 0 ) keys.w = true
+		if( pointer_data.button == 2 ) keys.s = true
+		
+		//if( pointer_data.button == 0 ) Orbit.set_pointer_move( event.clientX, event.clientY )
+		
+		const deltaMove = {
+			x: event.movementX,
+			y: event.movementY
+		};
+
+		const rotationSpeed = 0.001
+		camera.rotation.y -= deltaMove.x * rotationSpeed;
+		camera.rotation.x -= deltaMove.y * rotationSpeed;		
 	})
 	addEventListener( 'pointerup',   event =>{
 		pointer_data.button = -1
+		
+		keys.w = false
+		keys.s = false
 	})
 
-	document.addEventListener( 'keydown', e => keys[ e.key.toLowerCase()] = true )
-	document.addEventListener( 'keyup',   e => keys[ e.key.toLowerCase()] = false )
+	addEventListener( 'keydown', e =>{
+		if( 'INPUT' == event.target.tagName ){
+			if( 'Enter' == event.key ){
+				const msg = chat_input.value
+				send      ( msg)
+				receive   ( msg )
+				
+				chat_input.value = ''
+			}
+		} else keys[ e.key.toLowerCase()] = true
+	})
+	addEventListener( 'keyup',   e =>{
+		if( 'INPUT' == event.target.tagName ){
+		} else keys[ e.key.toLowerCase()] = false 
+	})
 }
-
 const authorize    = async _=>{
 	const find_actor =( session_id )=>{
 		for( const actor of actors )
@@ -610,9 +784,6 @@ const authorize    = async _=>{
 			error =>{ out.innerHTML += 'error : ' + error + '<br>' })		
 		}
 		for( const actor of removed ) if( actor.properties.character ) scene.remove( actor.properties.character )
-
-		actors_div.innerHTML = 'actors :<br>'
-		for( const actor of actors ) actors_div.innerHTML += actor.name + '<br>'	
 	})
 	match.on( 'onConnect',         async  _=>{
 		session_id             = crypto.randomUUID()
@@ -645,11 +816,9 @@ const authorize    = async _=>{
 		multi            = await play.newMultiplayerClient( room.id, app )
 		const info       = await multi.init()
 		multi.onConnected(_=>{ 
-		
-			//multi.onClientConnected   ( data =>{ out.innerHTML += data.user_id + ' onClientConnected<br>' })
-			//multi.onClientDisconnected( data =>{ out.innerHTML += data.user_id + ' onClientDisconnected<br>' })
-			//multi.general.onMessage   ( message =>{ out.innerHTML += message + ' onMessage<br>' })
-			//multi.general.sendMessage ({ x : 1, y : 2, z : 3 })
+			multi.general.onMessage( msg =>{
+				receive( msg )
+			})
 			
 			out.innerHTML += 'Multiplayer client connected<br>'
 			
@@ -664,9 +833,9 @@ const authorize    = async _=>{
 			update_position_interval = setInterval( event =>{
 				multi.networksync.updateMyPosition({
 					session_id, 
-					px         : camera.position.x, 
-					py         : camera.position.y, 
-					pz         : camera.position.z,
+					px         : camera_group.position.x, 
+					py         : camera_group.position.y, 
+					pz         : camera_group.position.z,
 					rx         : camera.rotation.x, 
 					ry         : camera.rotation.y, 
 					rz         : camera.rotation.z 
@@ -680,7 +849,5 @@ create_world()
 authorize()
 
 </script>
-
 </body>
-
 </html>

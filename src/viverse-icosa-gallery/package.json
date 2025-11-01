@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite --host",
     "build": "vite build",
-    "deploy": "vite build && viverse-cli app publish ./dist --app-id 3j2gjrpaxq"
+    "deploy": "vite build && viverse-cli app publish ./dist --app-id dyyja3mfjk"
   },
   "keywords": [],
   "author": "",
