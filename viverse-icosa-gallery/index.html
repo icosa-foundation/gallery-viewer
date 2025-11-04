@@ -4,29 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>icosa viewer v251029 x joserpagil@gmail.com</title>
+    <title>icosa viewer v251104 x joserpagil@gmail.com</title>
 </head>
 
 <style>
 
-	.container {
-		position         : absolute;
-		display          : flex;
-		flex-direction   : column;
-		gap              : 20px;
-		padding          : 20px;
-		background-color : rgba( 0, 0, 0, 0.6 );
-		color            : white;
-		text-shadow      :
-			-1px -1px 0 black,
- 			 1px -1px 0 black,
-			-1px  1px 0 black,
-			 1px  1px 0 black;
+	@font-face {
+		font-family: 'MundialRegular';
+		src: url('assets/MundialRegular.otf') format('opentype');
+		font-weight: normal;
+		font-style: normal;
 	}
-	
+
+	* {
+		font-family: 'MundialRegular', sans-serif;
+	}
+
 	input {
 		background-color : rgba( 0, 0, 0, 0.6 );
-		color : white;
+		color            : white;
 	}
 	
 	button {
@@ -35,37 +31,39 @@
 		color : white;
 	}
 	
-	#out {
-		left                       : 0;
-		bottom                     : 0;
-		border-top-right-radius : 10%; 
+	.rounded-input {
+		border: 2px solid #ccc;
+		border-radius: 25px; 
+		outline: none;
+		transition: border-color 0.3s ease;
 	}
 	
-	#actors_div {
-		right                  : 0;
-		bottom                 : 0;
-		border-top-left-radius : 10%; 
+	#virtual_reality_button {
+		border : none;
+		background : transparent;
 	}
 	
-	#container {
-		right                     : 0;
-		border-bottom-left-radius : 10%; 
+	.unselectable {
+		user-select: none;            
+		-webkit-user-select: none;    
+		-moz-user-select: none;       
+		-ms-user-select: none;        
 	}
-	
+
 </style>
 
 <body style = "touch-action: none; margin: 0; position: relative; width: 100dvw; height: 100dvh; overflow: hidden;">
 
-<div id = 'out'           class = 'container'>
-	<div id = 'msg_div'>
-	</div>
-	<div>
-		<input id = 'chat_input' type = 'text'></input>
-		<!-- <button id ='send_button'>send</button> -->
-	</div>
+<div     id = 'chat_div'                                       style = 'position : absolute; bottom : 0; background : transparent; color : white;'>
+	<div   id = "msgs_div"                                       style="overflow : hidden; color: gray;"></div>
+	<input id = "chat_input" type="text" class="rounded-input"   style = "width : 100%;"/>
 </div>
-<div id = 'actors_div'    class = 'container'></div>
-  
+<img     id = 'orientation_img'                                style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden/>
+<button  id = 'virtual_reality_button'                         style = 'position : absolute; bottom : 0; background : transparent;' hidden>
+	<img id = 'VR_headset_icon' src = 'assets/VR_headset_icon.svg'/>
+</button>
+<canvas  id = 'nipple_canvas'                                  style = 'position : absolute; bottom : 0; left : 0;'></canvas>
+
 <script type = "importmap">
 	{
 		"imports": {
@@ -75,76 +73,91 @@
 	}
 </script>
 
+<script src = "./libs/index.umd.cjs"></script>
+
 <script type = 'module'>
 //💬
-addEventListener( "error", event =>{ out.innerHTML += event.lineno + " = " + event.message + '<br>' })
 
-/*
+addEventListener( "error", event =>{ msgs_div.innerHTML += event.lineno + " = " + event.message + '<br>' })
 
-	viverse-cli auth login -e joserpagil@gmail.com -p rcfdve.1a
-	viverse-cli auth login -e inteligentin@msn.com -p exdscw.1
-	viverse-cli app create --name "g"
-	viverse-cli app list
-	viverse-cli app publish dist --app-id qqx3uxq6kq
-
-*/
-
-const app = 'qqx3uxq6kq'
+const app = 'mys5esf8fu'
 
 import * as THREE                               from 'three'
 import { RoomEnvironment }                      from "three/addons/environments/RoomEnvironment.js"
 import { GLTFLoader }                           from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls }                        from 'three/addons/controls/OrbitControls.js'
-import { GLTFGoogleTiltBrushMaterialExtension } from '/src/three-icosa.module.js'
 import { VRButton }                             from 'three/addons/webxr/VRButton.js'
 import { XRControllerModelFactory }             from "three/addons/webxr/XRControllerModelFactory.js"
-import { XRHandModelFactory }                   from "three/addons/webxr/XRHandModelFactory.js"
-import { OculusHandModel }                      from "three/addons/webxr/OculusHandModel.js"
-import { Client, Avatar, Play }                 from '@viverse/sdk'
+import { GLTFGoogleTiltBrushMaterialExtension } from '/libs/three-icosa.module.js'
 		 
-let   canvas, renderer, vr_button, scene, camera_group, camera, clock, orbit_controls, forward_speed = 0, lateral_speed = 0, keys = {}, hands =[], beep
+let   canvas, renderer, vr_button, scene, camera_group, camera, clock, forward_speed = 0, lateral_speed = 0, keys = {}, beep
 let   client, token, auth, avatar, play, match, profile, room, actor, multi, update_position_interval, update_position_time = 30, actors =[], session_id
-const pointer_data ={ button : -1 }
+let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
+let   nipple_context
+let   touch = false
+let   speed           = 0.05
+let   angular_speed   = Math.PI / 500
+let   delta_threshold = 20
 
-const send =_=>{
+document.getElementById( 'virtual_reality_button' ).onclick =_=>{
+	vr_button.click()
+}
+
+const send         =       _=>{
 	if( multi && multi.general ) multi.general.sendMessage (_)
 }
-const receive =_=>{
-	//for( const key in _ ) out.innerHTML += key + ' : ' + _[ key ] + '<br>'
-	msg_div.innerHTML += _ + '<br>'
+const receive      =       _=>{
+	msgs_div.innerHTML = _ + '<br>' + msgs_div.innerHTML
+	beep.play()
 }
-
 const create_world =       _=>{
-	const move =_=>{
-		const speed             = 0.1
+	const move         =       _=>{
 		const dir               = new THREE.Vector3()
 		camera.getWorldDirection( dir )
-		const up                 = new THREE.Vector3( 0 , 1 , 0 ).applyQuaternion( camera.quaternion ).normalize()
-		const right              = new THREE.Vector3().crossVectors( camera.up, dir ).normalize()
+		const up                = new THREE.Vector3( 0 , 1 , 0 ).applyQuaternion( camera.quaternion ).normalize()
+		const right             = new THREE.Vector3().crossVectors( camera.up, dir ).normalize()
 		
 		Gamepad.update()		
 		VR.update()		
 
-		if( keys['w']) camera_group.position.addScaledVector( dir,    speed )
-		if( keys['s']) camera_group.position.addScaledVector( dir,   -speed )
-		if( keys['a']) camera_group.rotation.y +=  Math.PI / 100 //.addScaledVector( right,  speed )
-		if( keys['d']) camera_group.rotation.y += -Math.PI / 100 //.addScaledVector( right,  speed )
-		if( keys['q']) camera_group.position.addScaledVector( up,     speed * .5 )
-		if( keys['e']) camera_group.position.addScaledVector( up,    -speed * .5 )
-		
-		//orbit_controls.update()
+		if( keys[ 'w' ]) camera_group.position.addScaledVector( dir,    speed )
+		if( keys[ 's' ]) camera_group.position.addScaledVector( dir,   -speed )
+		if( keys[ 'a' ]) camera_group.rotation.y              +=   angular_speed
+		if( keys[ 'd' ]) camera_group.rotation.y              += - angular_speed
+		if( keys[ 'q' ]) camera_group.position.addScaledVector( up,     speed * .5 )
+		if( keys[ 'e' ]) camera_group.position.addScaledVector( up,    -speed * .5 )
+		if( keys[ 'r' ]) camera_group.rotation.x              +=   angular_speed
+		if( keys[ 'f' ]) camera_group.rotation.x              += - angular_speed
 	}
-
+	
 	canvas                   = document.createElement( 'canvas' )
 	renderer                 = new THREE.WebGLRenderer({ canvas, antialias : true })
 	renderer.xr.enabled      = true
 	document.body.appendChild( renderer.domElement )
-	vr_button                = VRButton.createButton( renderer, { requiredFeatures : [ "hand-tracking" ]})
-	document.body.appendChild( vr_button )
+	
+	vr_button                = VRButton.createButton( renderer )
+	const show_vr_interval = setInterval(_=>{
+		if( vr_button.textContent == 'ENTER VR' ){
+			clearInterval( show_vr_interval )
+			
+			virtual_reality_button.style.display = 'block'
+			
+			//resize()	
+		}
+	}, 1000 )
+	
+	if ( window.matchMedia('(pointer: coarse)').matches ){
+		touch = true
+		
+		nipple_canvas.style.display   = "block"
+		orientation_img.style.display = "block"
+	}
+	nipple_context = nipple_canvas.getContext( '2d' )	
+	
 	scene                    = new THREE.Scene()
 	//scene.background         = new THREE.Color( 'blue' )
 	scene.environment        = new THREE.PMREMGenerator( renderer ).fromScene( new RoomEnvironment(), 0.04 ).texture		
-	camera                   = new THREE.PerspectiveCamera( 50 )
+	camera                   = new THREE.PerspectiveCamera( 50, 1, .01, 10000 )
 	camera_group             = new THREE.Group()
 	camera_group.position.set( 0, 5, 15 )
 	scene.add                ( camera_group )
@@ -153,8 +166,6 @@ const create_world =       _=>{
 	beep     = new Audio()
 	beep.src = 'data:audio/mpeg;base64,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VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVCGh9CTiMBlA3QYQKEGUA9AbQcQS8MwSdYjL2uOo9zLVhlKVDlZ1oLDuO//vUZBUP+DJgJgH4w3AAAA0gAAABAAABpAAAACAAADSAAAAE+UPQDEIu6rDlAS6ohAMDJBIT0iE+1aVfKDJop3KHrCL3Y6yZnK5V5KOrwYe0xzmWsSUCSpRmQLT0VOvRZyVpaUGiEByVAqUuogukAoUj8jyjsm+l4rGuFayxVMU9lZVgFh2COe2rjM6YauZaKwSqKfib6dibybaijA2IN+9r9Q7GYaf12mksiYSo0o+tlbC82IMXXqu5gLPmfM/aw27etecF4oLj8xXrUsqgGAnpbq2Bw3Ub5lrKm4tibs9bwQ3DkvsZ3JqblkjflynBbs2FurYHTfyFwLGpTQXLtZVMQU1FMy45OC40VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV'	
 	
-	//orbit_controls = new OrbitControls( camera_group, renderer.domElement )
-
 	clock = new THREE.Clock()
 	
 	class Gamepad                                     {
@@ -240,50 +251,12 @@ const create_world =       _=>{
 			pinky_tip  : 24,
 		}
 		static                 {
-			const setup_controller_and_hand = args =>{
+			const setup_controller = args =>{
 				const controller_grip  = renderer.xr.getControllerGrip( args.index )
 				const controller_model = VR.xr_controller_model_factory.createControllerModel( controller_grip )
 				controller_grip.add    ( controller_model )
 				camera_group.add       ( controller_grip )
-/*				
-				const hand           = renderer.xr.getHand( args.index )
-				//const hand_model     = VR.xr_hand_model_factory.createHandModel( hand, "mesh" )
-				const hand_model     = new OculusHandModel( hand )				
-				hand.add             ( hand_model )
-				hand.userData        ={ positions :[], quaternions :[]}
-				hand.addEventListener( "pinchstart", event =>{})
-				hand.addEventListener( "pinchend",   event =>{})
-				hands.push           ( hand )
-				camera_group.add     ( hand )			
-				hand.addEventListener( "connected",    event =>{
-					VR.joints[ event.data.handedness ][ "wrist" ]            = event.target.joints[ "wrist" ]
-					VR.joints[ event.data.handedness ][ "thumb-tip" ]        = event.target.joints[ "thumb-tip" ]
-					VR.joints[ event.data.handedness ][ "index-finger-tip" ] = event.target.joints[ "index-finger-tip" ]
-					
-					if( event.data.handedness == "left" ){
-						const thumb_sphere = new THREE.Mesh( new THREE.SphereGeometry( TOUCH_RADIUS ), new THREE.MeshStandardMaterial({ color : new THREE.Color( winner_hdr, 0, 0 )}))
-						VR.joints[ event.data.handedness ][ "thumb-tip" ].add( thumb_sphere )
-						const index_sphere = new THREE.Mesh( new THREE.SphereGeometry( TOUCH_RADIUS ), new THREE.MeshStandardMaterial({ color : new THREE.Color( 0, winner_hdr, 0 )}))
-						VR.joints[ event.data.handedness ][ "index-finger-tip" ].add( index_sphere )
-					}					
-					if( event.data.handedness == "right" ){
-						const thumb_sphere = new THREE.Mesh( new THREE.SphereGeometry( TOUCH_RADIUS ), new THREE.MeshStandardMaterial({ color : new THREE.Color( 0, 0, winner_hdr )}))
-						VR.joints[ "right" ][ "thumb-tip" ].add( thumb_sphere )
-						const index_sphere = new THREE.Mesh( new THREE.SphereGeometry( TOUCH_RADIUS ), new THREE.MeshStandardMaterial({ color : new THREE.Color( winner_hdr, winner_hdr, 0 )}))
-						VR.joints[ "right" ][ "index-finger-tip" ].add( index_sphere )
-						
-						const watch_geometry = new THREE.CylinderGeometry( .05, .05, .1 )
-						watch_geometry.rotateX( -Math.PI / 2 )
-						const watch = new THREE.Mesh( watch_geometry , new THREE.MeshStandardMaterial({ color : new THREE.Color( 0, winner_hdr, 0 )}))
-						VR.joints[ "right" ][ "wrist" ].add( watch )
-					}
-				})
-				hand.addEventListener( "disconnected", event =>{})
-*/
 			}
-			
-			//VR.thumb0_sphere = new THREE.Mesh( new THREE.SphereGeometry( .0125 ), new THREE.MeshStandardMaterial({ color : new THREE.Color( winner_hdr, 0, 0 )}))
-			//scene.add( VR.thumb0_sphere )
 			
 			VR.controller1                 = renderer.xr.getController( 0 )
 			VR.controller1.addEventListener( 'selectstart', event =>{})
@@ -292,7 +265,6 @@ const create_world =       _=>{
 				VR.controller1.gamepad = event.data.gamepad
 				Gamepad.add_gamepad    ({ gamepad : VR.controller1.gamepad })
 				//controller1.handedness
-				
 			})
 			VR.controller1.addEventListener( "disconnected", event =>{
 				delete VR.controller1.gamepad
@@ -311,87 +283,13 @@ const create_world =       _=>{
 			camera_group.add               ( VR.controller2 )
 
 			VR.xr_controller_model_factory = new XRControllerModelFactory()
-			VR.xr_hand_model_factory       = new XRHandModelFactory()
 			
-			setup_controller_and_hand      ({ index : 0 })
-			setup_controller_and_hand      ({ index : 1 })
+			setup_controller({ index : 0 })
+			setup_controller({ index : 1 })
 		}		
 		static update = args =>{
 			if( "gamepad" in VR.controller1 ) Gamepad.process_gamepad({ gamepad : VR.controller1.gamepad })
 			if( "gamepad" in VR.controller2 ) Gamepad.process_gamepad({ gamepad : VR.controller2.gamepad })
-		
-			return
-		
-			const hand0  = renderer.xr.getHand( 0 )
-			if( hand0 ){
-				const thumb0 = hand0.joints[ "thumb-tip" ]
-				if( thumb0 ){
-					VR.thumb0_sphere.position.copy  ( thumb0.position )
-					VR.thumb0_sphere.quaternion.copy( thumb0.quaternion )
-				}
-			}
-
-		
-			return
-		
-			if( ! args.frame || ! args.frame.session ) return
-		
-			const inputSources = args.frame.session.inputSources
-			for( const source of inputSources ) {
-				if( source.hand ){
-				
-					let s =""
-					for( const key in source.hand ){
-						s += key + ", "
-					}
-					alert( s )
-					
-					const thumbTip = source.hand.get( "thumb-tip" );
-					if( thumbTip && thumbTip.children.length == 0 ){
-						const thumb_sphere = new THREE.Mesh( new THREE.SphereGeometry( .0125 ), new THREE.MeshStandardMaterial({ color : new THREE.Color( winner_hdr, 0, 0 )}))
-						thumbTip.add( thumb_sphere )
-						
-						const thumbPos = frame.getJointPose( thumbTip, referenceSpace );
-						// Use thumbPos.position.x/y/z here
-					}
-				}
-			}
-			
-			if( ! args.frame ) return
-			
-			//if( "gamepad" in VR.controller1 ) Gamepad.process_gamepad({ gamepad : VR.controller1.gamepad })
-			//if( "gamepad" in VR.controller2 ) Gamepad.process_gamepad({ gamepad : VR.controller2.gamepad })
-			
-			/*
-			const session = renderer.xr.getSession()
-			if( ! session ) return
-			session.inputSources.forEach( source =>{
-				if( source.hand ){
-					if( source.hand.joints ){
-						const thumbTip = source.hand.joints.get( "thumb-tip" )
-						const indexTip = source.hand.joints.get( "index-finger-tip" )
-						
-						alert( thumbTip )
-						alert( indexTip )
-					}
-				}
-			})
-			*/
- 			//if( ! hands.length ) return
-			
-			//alert( hands[ 0 ].joints[ 0 ] )
-			//alert( hands[ 0 ].joints[ "pinky-finger-tip" ])
-			
-			//const right_thumb_tip = args.frame.getJointPose( hands[ 0 ].joints[ "thumb-tip" ], renderer.xr.getReferenceSpace())
-			//const right_pinky_tip = args.frame.getJointPose( hands[ 0 ].joints[ "pinky-finger-tip" ], renderer.xr.getReferenceSpace())
-			
-			/*
-			let s = "right_thumb_tip = "
-			for( const key in right_thumb_tip )
-				s += key + " , "
-			alert( s )
-			*/
-			
 		}
 	}
 	class Orbit                                       {
@@ -495,27 +393,96 @@ const create_world =       _=>{
 		}
 	}
 
+	// sky
+	new THREE.TextureLoader().load( './assets/skies/milkyway_PNG.png', texture =>{
+		const material      = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide, color : 'white' })
+		material.fog        = false
+		material.toneMapped = false
+		const geometry      = new THREE.SphereGeometry( 5000, 64, 64 )
+		const sky_sphere    = new THREE.Mesh( geometry, material )
+		sky_sphere.name     = "environmentSky"
+		scene.add           ( sky_sphere )
+	})
+			
 	const gltf_loader   = new GLTFLoader()
-	gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'brushes/' ))
-	gltf_loader.load    ( 'ushio-and-tora.glb', gltf =>{
+	gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'assets/brushes/' ))
+	gltf_loader.load    ( './assets/scene.glb', gltf =>{
+		/*
+		const parser = gltf.parser
+		const json   = parser.json
+		const jsonString = JSON.stringify(json, null, 2);
+		const blob = new Blob([jsonString], { type: 'application/json' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'data.json';
+		a.click();
+		URL.revokeObjectURL(url)
+		*/
+		
 		const brush      = gltf.scene
 		brush.rotation.y = Math.PI
 		scene.add        ( brush )
-		
+
+		/*
+            "extras": {
+                "TB_EnvironmentGuid": "ab080599-e465-4a6d-8587-43bf495af68b",
+                "TB_Environment": "Standard",
+                "TB_UseGradient": "true",
+                "TB_SkyColorA": "0.2745098, 0.2745098, 0.3176471",
+                "TB_SkyColorB": "0.03529412, 0.03529412, 0.08627451",
+                "TB_SkyGradientDirection": "0, 1, 0",
+                "TB_FogColor": "0.1647059, 0.1647059, 0.2078431",
+                "TB_FogDensity": "0.0025",
+                "TB_AmbientLightColor": "0.3921569, 0.3921569, 0.3921569",
+                "TB_SceneLight0Color": "0.7780392, 0.8156863, 0.9913726",
+                "TB_SceneLight0Rotation": "60, -1.707548E-06, 334",
+                "TB_SceneLight1Color": "0.4282353, 0.4211765, 0.3458824",
+                "TB_SceneLight1Rotation": "40, 180, 140",
+                "TB_PoseTranslation": "-0.6559011, 7.412807, 4.213572",
+                "TB_PoseRotation": "0, 224.0852, 0",
+                "TB_PoseScale": 0.113527037,
+                "TB_ExportedFromVersion": "2.0.0",
+                "TB_CameraTranslation": "23.65104, 18.53613, 6.477695",
+                "TB_CameraRotation": "38.93238, 100.4957, 1.318866"
+            }
+        }		
+		*/
+
 		//Orbit.frame_target( scene )
 	})
 
-	{ // resize
 	const resize =()=>{
 		camera.aspect                = innerWidth / innerHeight
 		camera.updateProjectionMatrix()
 		
 		renderer.setSize( innerWidth, innerHeight )
+		
+		const size           = Math.min( innerWidth, innerHeight ) / 5
+		nipple_canvas.width  = size
+		nipple_canvas.height = size
+		
+		orientation_img.style.left   = innerWidth - size + 'px'
+		orientation_img.style.width  = size + 'px'
+		orientation_img.style.height = size + 'px'
+		
+		virtual_reality_button.style.left   = innerWidth - size * 2 + 'px'
+		virtual_reality_button.style.width  = size + 'px'
+		virtual_reality_button.style.height = size + 'px'
+		
+		VR_headset_icon.style.width  = size + 'px'
+		VR_headset_icon.style.height = size + 'px'
+		
+		const height            = innerHeight / 2
+		chat_div.style.left     = size + 'px'
+		chat_div.style.width    = innerWidth - size * 3 + 'px'
+		chat_div.style.height   = height + 'px'
+		msgs_div.style.height   = height - size + size / 4 + 'px'
+		chat_input.style.height = size / 2 + 'px'
 	}
 	resize()
 	addEventListener( "resize", resize )
-	}	
-	{ // render
+	
 	renderer.setAnimationLoop( args =>{
 		const delta = clock.getDelta()
 		for( const actor of actors ){
@@ -525,28 +492,56 @@ const create_world =       _=>{
 		move()
 		//Orbit.update()
 		
+		const size                 = nipple_canvas.width
+		nipple_context.clearRect   ( 0, 0, nipple_canvas.width, nipple_canvas.height )
+		nipple_context.strokeStyle = 'white'
+		nipple_context.lineWidth   = 2
+		nipple_context.beginPath   ()
+		nipple_context.arc         ( size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2 )
+		nipple_context.stroke      ()
+		
+		const small_radius = size / 8
+		
+		let y_offset = keys.w ? - small_radius : keys.s ? small_radius : 0
+		let x_offset = keys.a ? - small_radius : keys.d ? small_radius : 0
+		
+		nipple_context.lineWidth   = 2
+		nipple_context.beginPath   ()
+		nipple_context.arc         ( size / 2 + x_offset, size / 2 + y_offset, size / 8, 0, Math.PI * 2 )
+		nipple_context.stroke      ()
+		
 		renderer.render( scene, camera )
 	})
-	}
 		
-    addEventListener( "contextmenu1", _=>{ 
+    addEventListener( "contextmenu", _=>{ 
         _.preventDefault()
     })		
 		
 	addEventListener( 'pointerdown', event =>{
 		pointer_data.button = event.button
 		
-		if( pointer_data.button == 0 ) keys.w = true
-		if( pointer_data.button == 2 ) keys.s = true
-				
-		//Orbit.set_enabled( "CANVAS" == event.target.tagName )
-		//if( Orbit.enabled ){
-			//Orbit.set_pointer_down( event.clientX, event.clientY )
-		//}
+		pointer_data.down ={ x : event.clientX, y : event.clientY }
 	})
 	addEventListener( 'pointermove', event =>{		
 		if( pointer_data.button == -1 ) return
 		
+		pointer_data.position ={ x : event.clientX, y : event.clientY }
+		
+		const delta ={ x : pointer_data.position.x - pointer_data.down.x, 
+		               y : pointer_data.position.y - pointer_data.down.y }
+		
+		if( pointer_data.down.x < innerWidth / 2 ){
+			keys.a = delta.x < -delta_threshold
+			keys.d = delta.x >  delta_threshold
+			keys.w = delta.y < -delta_threshold
+			keys.s = delta.y >  delta_threshold
+		} else {
+			keys.r = delta.y >  delta_threshold
+			keys.f = delta.y < -delta_threshold
+		}
+		
+		return
+
 		if( pointer_data.button == 0 ) keys.w = true
 		if( pointer_data.button == 2 ) keys.s = true
 		
@@ -565,24 +560,29 @@ const create_world =       _=>{
 		pointer_data.button = -1
 		
 		keys.w = false
+		keys.a = false
 		keys.s = false
+		keys.d = false
+		keys.r = false
+		keys.f = false
 	})
 
-	addEventListener( 'keydown', e =>{
+	addEventListener( 'keydown', event =>{
 		if( 'INPUT' == event.target.tagName ){
 			if( 'Enter' == event.key ){
 				const msg = chat_input.value
 				send      ( msg)
 				receive   ( msg )
+				
+				chat_input.value = ''
 			}
-		} else keys[ e.key.toLowerCase()] = true
+		} else keys[ event.key.toLowerCase()] = true
 	})
-	addEventListener( 'keyup',   e =>{
+	addEventListener( 'keyup',   event =>{
 		if( 'INPUT' == event.target.tagName ){
-		} else keys[ e.key.toLowerCase()] = false 
+		} else keys[ event.key.toLowerCase()] = false 
 	})
 }
-
 const authorize    = async _=>{
 	const find_actor =( session_id )=>{
 		for( const actor of actors )
@@ -591,7 +591,7 @@ const authorize    = async _=>{
 		return null
 	}
 
-	client         = new Client({ clientId : app, domain : 'https://account.htcvive.com/' })
+	client         = new viverse.Client({ clientId : app, domain : 'https://account.htcvive.com/' })
 	if( ! client ) return
 	
 	auth         = await client.checkAuth()
@@ -599,7 +599,7 @@ const authorize    = async _=>{
 	
 	token = await client.getToken()
 	
-	avatar = new Avatar({ 
+	avatar = new viverse.Avatar({ 
 		token,
 		baseURL : 'https://sdk-api.viverse.com/' 
 	})
@@ -607,7 +607,7 @@ const authorize    = async _=>{
 	
 	profile = await avatar.getProfile()
 
-	play         = new Play()
+	play         = new viverse.Play()
 	if( ! play ) return
 	
 	match = await play.newMatchmakingClient( app, true )
@@ -659,12 +659,9 @@ const authorize    = async _=>{
 				const action           = actor.properties.mixer.clipAction( animation_clip )
 				action.play()
 			}, progress =>{},
-			error =>{ out.innerHTML += 'error : ' + error + '<br>' })		
+			error =>{ msgs_div.innerHTML += 'error : ' + error + '<br>' })		
 		}
 		for( const actor of removed ) if( actor.properties.character ) scene.remove( actor.properties.character )
-
-		actors_div.innerHTML = 'actors :<br>'
-		for( const actor of actors ) actors_div.innerHTML += actor.name + '<br>'	
 	})
 	match.on( 'onConnect',         async  _=>{
 		session_id             = crypto.randomUUID()
@@ -682,12 +679,12 @@ const authorize    = async _=>{
 			room               = rooms_result.rooms[ 0 ]
 			const join_result  = await match.joinRoom( room.id )
 		} else {
-			const create_result    = await match.createRoom({
+			const create_result = await match.createRoom({
 				name       : 'icosa gallery',
 				mode       : 'team',
 				maxPlayers : 12,
 				minPlayers : 1,
-				properties : {
+				properties :{
 					"level": 1,
 					"skill": 1
 				}
@@ -697,27 +694,9 @@ const authorize    = async _=>{
 		multi            = await play.newMultiplayerClient( room.id, app )
 		const info       = await multi.init()
 		multi.onConnected(_=>{ 
-		
-			/*
-			document.getElementById( 'send_button' ).onclick =_=>{
-				out.innerHTML += 'send<br>'
-				const msg = { text : chat_input.value }
-				send      ( msg)
-				receive   ( msg )
-			}
-			*/
-			
 			multi.general.onMessage( msg =>{
-				//out.innerHTML += msg + '<br>'
 				receive( msg )
 			})
-			
-			//multi.onClientConnected   ( data =>{ out.innerHTML += data.user_id + ' onClientConnected<br>' })
-			//multi.onClientDisconnected( data =>{ out.innerHTML += data.user_id + ' onClientDisconnected<br>' })
-			//multi.general.onMessage   ( message =>{ out.innerHTML += message + ' onMessage<br>' })
-			//multi.general.sendMessage ({ x : 1, y : 2, z : 3 })
-			
-			out.innerHTML += 'Multiplayer client connected<br>'
 			
 			multi.networksync.onNotifyPositionUpdate( data =>{ 
 				const actor = find_actor( data.data.session_id )
