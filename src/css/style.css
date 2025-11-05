@@ -85,3 +85,40 @@
         background-position: -6144px;
     }
 }
+
+.export-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.export-button {
+    background: url("../img/download_white_24dp.svg");
+}
+
+.export-dropdown {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 8px;
+    background-color: rgba(29, 34, 46, 0.95);
+    border-radius: 4px;
+    padding: 8px 0;
+    min-width: 160px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.export-option {
+    padding: 8px 16px;
+    cursor: pointer;
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.export-option:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}

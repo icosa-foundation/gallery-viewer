@@ -11,6 +11,12 @@ import {VOXLoader as $hBQxr$VOXLoader, VOXMesh as $hBQxr$VOXMesh} from "three/ex
 import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension} from "three-icosa";
 import {TiltLoader as $hBQxr$TiltLoader} from "three-tiltloader";
 import {XRControllerModelFactory as $hBQxr$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
+import {GLTFExporter as $hBQxr$GLTFExporter} from "three/examples/jsm/exporters/GLTFExporter.js";
+import {OBJExporter as $hBQxr$OBJExporter} from "three/examples/jsm/exporters/OBJExporter.js";
+import {PLYExporter as $hBQxr$PLYExporter} from "three/examples/jsm/exporters/PLYExporter.js";
+import {STLExporter as $hBQxr$STLExporter} from "three/examples/jsm/exporters/STLExporter.js";
+import {USDZExporter as $hBQxr$USDZExporter} from "three/examples/jsm/exporters/USDZExporter.js";
+import {ColladaExporter as $hBQxr$ColladaExporter} from "three/examples/jsm/exporters/ColladaExporter.js";
 
 // Copyright 2021-2022 Icosa Gallery
 //
@@ -3759,6 +3765,12 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
 
 
 
+
+
+
+
+
+
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
@@ -3843,11 +3855,73 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         initCustomUi(this.icosa_frame);
         const controlPanel = document.createElement('div');
         controlPanel.classList.add('control-panel');
+        // Export button with dropdown
+        const exportContainer = document.createElement('div');
+        exportContainer.classList.add('export-container');
+        const exportButton = document.createElement('button');
+        exportButton.classList.add('panel-button', 'export-button');
+        exportButton.title = 'Export Scene';
+        exportButton.onclick = ()=>{
+            exportDropdown.style.display = exportDropdown.style.display === 'block' ? 'none' : 'block';
+        };
+        const exportDropdown = document.createElement('div');
+        exportDropdown.classList.add('export-dropdown');
+        const exportFormats = [
+            {
+                label: 'GLTF (.gltf)',
+                value: 'gltf'
+            },
+            {
+                label: 'GLB (.glb)',
+                value: 'glb'
+            },
+            {
+                label: 'OBJ (.obj)',
+                value: 'obj'
+            },
+            {
+                label: 'PLY (.ply)',
+                value: 'ply'
+            },
+            {
+                label: 'STL (.stl)',
+                value: 'stl'
+            },
+            {
+                label: 'STL Binary (.stl)',
+                value: 'stl-binary'
+            },
+            {
+                label: 'USDZ (.usdz)',
+                value: 'usdz'
+            },
+            {
+                label: 'Collada (.dae)',
+                value: 'dae'
+            }
+        ];
+        exportFormats.forEach((format)=>{
+            const option = document.createElement('div');
+            option.classList.add('export-option');
+            option.textContent = format.label;
+            option.onclick = ()=>{
+                this.exportScene(format.value);
+                exportDropdown.style.display = 'none';
+            };
+            exportDropdown.appendChild(option);
+        });
+        exportContainer.appendChild(exportButton);
+        exportContainer.appendChild(exportDropdown);
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e)=>{
+            if (!exportContainer.contains(e.target)) exportDropdown.style.display = 'none';
+        });
         const fullscreenButton = document.createElement('button');
         fullscreenButton.classList.add('panel-button', 'fullscreen-button');
         fullscreenButton.onclick = ()=>{
             this.toggleFullscreen(fullscreenButton);
         };
+        controlPanel.appendChild(exportContainer);
         controlPanel.appendChild(fullscreenButton);
         this.icosa_frame.appendChild(controlPanel);
         //loadscreen
@@ -4102,6 +4176,128 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             // Clean up
             renderTarget.dispose();
             return dataUrl;
+        };
+        // Export functionality
+        this.downloadFile = (blob, filename)=>{
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        };
+        this.exportScene = (format)=>{
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            switch(format){
+                case 'gltf':
+                    this.exportGLTF(false, `scene-${timestamp}.gltf`);
+                    break;
+                case 'glb':
+                    this.exportGLTF(true, `scene-${timestamp}.glb`);
+                    break;
+                case 'obj':
+                    this.exportOBJ(`scene-${timestamp}.obj`);
+                    break;
+                case 'ply':
+                    this.exportPLY(`scene-${timestamp}.ply`);
+                    break;
+                case 'stl':
+                    this.exportSTL(`scene-${timestamp}.stl`);
+                    break;
+                case 'stl-binary':
+                    this.exportSTL(`scene-${timestamp}.stl`, true);
+                    break;
+                case 'usdz':
+                    this.exportUSDZ(`scene-${timestamp}.usdz`);
+                    break;
+                case 'dae':
+                    this.exportCollada(`scene-${timestamp}.dae`);
+                    break;
+                default:
+                    console.error('Unknown export format:', format);
+            }
+        };
+        this.exportGLTF = (binary, filename)=>{
+            const exporter = new (0, $hBQxr$GLTFExporter)();
+            const options = {
+                binary: binary,
+                maxTextureSize: 4096
+            };
+            exporter.parse(this.scene, (result)=>{
+                if (binary) this.downloadFile(new Blob([
+                    result
+                ], {
+                    type: 'application/octet-stream'
+                }), filename);
+                else {
+                    const output = JSON.stringify(result, null, 2);
+                    this.downloadFile(new Blob([
+                        output
+                    ], {
+                        type: 'text/plain'
+                    }), filename);
+                }
+            }, (error)=>{
+                console.error('Error exporting GLTF:', error);
+            }, options);
+        };
+        this.exportOBJ = (filename)=>{
+            const exporter = new (0, $hBQxr$OBJExporter)();
+            const result = exporter.parse(this.scene);
+            this.downloadFile(new Blob([
+                result
+            ], {
+                type: 'text/plain'
+            }), filename);
+        };
+        this.exportPLY = (filename)=>{
+            const exporter = new (0, $hBQxr$PLYExporter)();
+            exporter.parse(this.scene, (result)=>{
+                this.downloadFile(new Blob([
+                    result
+                ], {
+                    type: 'application/octet-stream'
+                }), filename);
+            }, {
+                binary: true
+            });
+        };
+        this.exportSTL = (filename, binary = false)=>{
+            const exporter = new (0, $hBQxr$STLExporter)();
+            const result = exporter.parse(this.scene, {
+                binary: binary
+            });
+            const blob = binary ? new Blob([
+                result
+            ], {
+                type: 'application/octet-stream'
+            }) : new Blob([
+                result
+            ], {
+                type: 'text/plain'
+            });
+            this.downloadFile(blob, filename);
+        };
+        this.exportUSDZ = async (filename)=>{
+            const exporter = new (0, $hBQxr$USDZExporter)();
+            try {
+                const arraybuffer = await exporter.parse(this.scene);
+                this.downloadFile(new Blob([
+                    arraybuffer
+                ], {
+                    type: 'application/octet-stream'
+                }), filename);
+            } catch (error) {
+                console.error('Error exporting USDZ:', error);
+            }
+        };
+        this.exportCollada = (filename)=>{
+            const exporter = new (0, $hBQxr$ColladaExporter)();
+            const result = exporter.parse(this.scene);
+            this.downloadFile(new Blob([
+                result.data
+            ], {
+                type: 'text/plain'
+            }), filename);
         };
         animate();
     }

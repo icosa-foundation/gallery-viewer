@@ -39,6 +39,12 @@ import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
 // import { OutputPass } from 'three/addons';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter.js';
+import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter.js';
+import { PLYExporter } from 'three/examples/jsm/exporters/PLYExporter.js';
+import { STLExporter } from 'three/examples/jsm/exporters/STLExporter.js';
+import { USDZExporter } from 'three/examples/jsm/exporters/USDZExporter.js';
+import { ColladaExporter } from 'three/examples/jsm/exporters/ColladaExporter.js';
 
 class SketchMetadata {
     public EnvironmentGuid: string;
@@ -180,6 +186,14 @@ export class Viewer {
     public three : any;
     public captureThumbnail : (width : number, height : number) => string;
     public dataURLtoBlob : (dataURL : string) => Blob;
+    public downloadFile : (blob: Blob, filename: string) => void;
+    public exportScene : (format: string) => void;
+    public exportGLTF : (binary: boolean, filename: string) => void;
+    public exportOBJ : (filename: string) => void;
+    public exportPLY : (filename: string) => void;
+    public exportSTL : (filename: string, binary?: boolean) => void;
+    public exportUSDZ : (filename: string) => Promise<void>;
+    public exportCollada : (filename: string) => void;
     public modelBoundingBox?: THREE.Box3;
 
     private icosa_frame? : HTMLElement | null;
@@ -227,10 +241,57 @@ export class Viewer {
         const controlPanel = document.createElement('div');
         controlPanel.classList.add('control-panel');
 
+        // Export button with dropdown
+        const exportContainer = document.createElement('div');
+        exportContainer.classList.add('export-container');
+
+        const exportButton = document.createElement('button');
+        exportButton.classList.add('panel-button', 'export-button');
+        exportButton.title = 'Export Scene';
+        exportButton.onclick = () => {
+            exportDropdown.style.display = exportDropdown.style.display === 'block' ? 'none' : 'block';
+        };
+
+        const exportDropdown = document.createElement('div');
+        exportDropdown.classList.add('export-dropdown');
+
+        const exportFormats = [
+            { label: 'GLTF (.gltf)', value: 'gltf' },
+            { label: 'GLB (.glb)', value: 'glb' },
+            { label: 'OBJ (.obj)', value: 'obj' },
+            { label: 'PLY (.ply)', value: 'ply' },
+            { label: 'STL (.stl)', value: 'stl' },
+            { label: 'STL Binary (.stl)', value: 'stl-binary' },
+            { label: 'USDZ (.usdz)', value: 'usdz' },
+            { label: 'Collada (.dae)', value: 'dae' }
+        ];
+
+        exportFormats.forEach(format => {
+            const option = document.createElement('div');
+            option.classList.add('export-option');
+            option.textContent = format.label;
+            option.onclick = () => {
+                this.exportScene(format.value);
+                exportDropdown.style.display = 'none';
+            };
+            exportDropdown.appendChild(option);
+        });
+
+        exportContainer.appendChild(exportButton);
+        exportContainer.appendChild(exportDropdown);
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!exportContainer.contains(e.target as Node)) {
+                exportDropdown.style.display = 'none';
+            }
+        });
+
         const fullscreenButton = document.createElement('button');
         fullscreenButton.classList.add('panel-button', 'fullscreen-button');
         fullscreenButton.onclick = () => { this.toggleFullscreen(fullscreenButton); }
 
+        controlPanel.appendChild(exportContainer);
         controlPanel.appendChild(fullscreenButton);
 
         this.icosa_frame.appendChild(controlPanel);
@@ -574,6 +635,114 @@ export class Viewer {
             renderTarget.dispose();
 
             return dataUrl;
+        };
+
+        // Export functionality
+        this.downloadFile = (blob: Blob, filename: string) => {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        };
+
+        this.exportScene = (format: string) => {
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+
+            switch(format) {
+                case 'gltf':
+                    this.exportGLTF(false, `scene-${timestamp}.gltf`);
+                    break;
+                case 'glb':
+                    this.exportGLTF(true, `scene-${timestamp}.glb`);
+                    break;
+                case 'obj':
+                    this.exportOBJ(`scene-${timestamp}.obj`);
+                    break;
+                case 'ply':
+                    this.exportPLY(`scene-${timestamp}.ply`);
+                    break;
+                case 'stl':
+                    this.exportSTL(`scene-${timestamp}.stl`);
+                    break;
+                case 'stl-binary':
+                    this.exportSTL(`scene-${timestamp}.stl`, true);
+                    break;
+                case 'usdz':
+                    this.exportUSDZ(`scene-${timestamp}.usdz`);
+                    break;
+                case 'dae':
+                    this.exportCollada(`scene-${timestamp}.dae`);
+                    break;
+                default:
+                    console.error('Unknown export format:', format);
+            }
+        };
+
+        this.exportGLTF = (binary: boolean, filename: string) => {
+            const exporter = new GLTFExporter();
+            const options = {
+                binary: binary,
+                maxTextureSize: 4096
+            };
+
+            exporter.parse(
+                this.scene,
+                (result) => {
+                    if (binary) {
+                        this.downloadFile(new Blob([result as ArrayBuffer], { type: 'application/octet-stream' }), filename);
+                    } else {
+                        const output = JSON.stringify(result, null, 2);
+                        this.downloadFile(new Blob([output], { type: 'text/plain' }), filename);
+                    }
+                },
+                (error) => {
+                    console.error('Error exporting GLTF:', error);
+                },
+                options
+            );
+        };
+
+        this.exportOBJ = (filename: string) => {
+            const exporter = new OBJExporter();
+            const result = exporter.parse(this.scene);
+            this.downloadFile(new Blob([result], { type: 'text/plain' }), filename);
+        };
+
+        this.exportPLY = (filename: string) => {
+            const exporter = new PLYExporter();
+            exporter.parse(
+                this.scene,
+                (result) => {
+                    this.downloadFile(new Blob([result], { type: 'application/octet-stream' }), filename);
+                },
+                { binary: true }
+            );
+        };
+
+        this.exportSTL = (filename: string, binary: boolean = false) => {
+            const exporter = new STLExporter();
+            const result = exporter.parse(this.scene, { binary: binary });
+            const blob = binary
+                ? new Blob([result], { type: 'application/octet-stream' })
+                : new Blob([result], { type: 'text/plain' });
+            this.downloadFile(blob, filename);
+        };
+
+        this.exportUSDZ = async (filename: string) => {
+            const exporter = new USDZExporter();
+            try {
+                const arraybuffer = await exporter.parse(this.scene);
+                this.downloadFile(new Blob([arraybuffer], { type: 'application/octet-stream' }), filename);
+            } catch (error) {
+                console.error('Error exporting USDZ:', error);
+            }
+        };
+
+        this.exportCollada = (filename: string) => {
+            const exporter = new ColladaExporter();
+            const result = exporter.parse(this.scene);
+            this.downloadFile(new Blob([result.data], { type: 'text/plain' }), filename);
         };
 
         animate();
