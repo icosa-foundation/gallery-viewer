@@ -5875,6 +5875,18 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
                 if (this.isNewTiltExporter(sceneGltf)) envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
                 envGltf.scene.scale.set(.1, .1, .1);
+                // Enable fog on all materials in the environment
+                envGltf.scene.traverse((object)=>{
+                    if (object.isMesh) {
+                        const mesh = object;
+                        if (mesh.material) {
+                            if (Array.isArray(mesh.material)) mesh.material.forEach((mat)=>{
+                                if (mat) mat.fog = true;
+                            });
+                            else mesh.material.fog = true;
+                        }
+                    }
+                });
                 scene.attach(envGltf.scene);
                 this.environmentObject = envGltf.scene;
             } catch (error) {
