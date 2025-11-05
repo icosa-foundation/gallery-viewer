@@ -15,13 +15,39 @@
 }
 
 .control-panel {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     opacity: 1;
     position: absolute;
     right: 12px;
     bottom: 12px;
     border: 0;
     z-index: 5;
+    color: white;
+}
+
+.camera-dropdown {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    cursor: pointer;
+    outline: none;
+    min-width: 140px;
+    backdrop-filter: blur(10px);
+}
+
+.camera-dropdown:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.camera-dropdown option {
+    background-color: #1d222e;
     color: white;
 }
 

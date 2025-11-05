@@ -3805,6 +3805,14 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         this.SceneLight1Color = new $hBQxr$three.Color(light1col.r, light1col.g, light1col.b);
         this.CameraTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTranslation'], null);
         this.CameraRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraRotation'], null);
+        // Parse multiple camera definitions if present
+        this.Cameras = [];
+        if (userData['TB_Cameras']) try {
+            const camerasData = typeof userData['TB_Cameras'] === 'string' ? JSON.parse(userData['TB_Cameras']) : userData['TB_Cameras'];
+            if (Array.isArray(camerasData)) this.Cameras = camerasData;
+        } catch (e) {
+            console.warn('Failed to parse TB_Cameras metadata:', e);
+        }
     }
 }
 class $677737c8a5cbea2f$var$EnvironmentPreset {
@@ -3831,6 +3839,9 @@ class $677737c8a5cbea2f$var$EnvironmentPreset {
 }
 class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     constructor(assetBaseUrl, frame){
+        // Multi-camera support
+        this.availableCameras = [];
+        this.currentCameraIndex = 0;
         this.loadingError = false;
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
@@ -3843,6 +3854,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         initCustomUi(this.icosa_frame);
         const controlPanel = document.createElement('div');
         controlPanel.classList.add('control-panel');
+        // Camera dropdown (will be populated when cameras are loaded)
+        this.cameraDropdown = document.createElement('select');
+        this.cameraDropdown.classList.add('camera-dropdown');
+        this.cameraDropdown.style.display = 'none'; // Hidden until cameras are loaded
+        this.cameraDropdown.onchange = ()=>{
+            const selectedIndex = parseInt(this.cameraDropdown.value);
+            this.switchCamera(selectedIndex);
+        };
+        controlPanel.appendChild(this.cameraDropdown);
         const fullscreenButton = document.createElement('button');
         fullscreenButton.classList.add('panel-button', 'fullscreen-button');
         fullscreenButton.onclick = ()=>{
@@ -6018,15 +6038,152 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
         this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
         (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
-    // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
-    // this.trackballControls.target = cameraTarget;
-    // this.trackballControls.rotateSpeed = 1.0;
-    // this.trackballControls.zoomSpeed = 1.2;
-    // this.trackballControls.panSpeed = 0.8;
-    // let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
-    // if (noOverrides) {
-    //     this.frameScene();
-    // }
+        // Add keyboard shortcut for camera switching (C key)
+        document.addEventListener('keydown', (event)=>{
+            if (event.key === 'c' || event.key === 'C') this.nextCamera();
+        });
+        // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
+        // this.trackballControls.target = cameraTarget;
+        // this.trackballControls.rotateSpeed = 1.0;
+        // this.trackballControls.zoomSpeed = 1.2;
+        // this.trackballControls.panSpeed = 0.8;
+        // let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
+        // if (noOverrides) {
+        //     this.frameScene();
+        // }
+        // Collect all available cameras after initialization
+        this.collectAvailableCameras();
+    }
+    /**
+     * Collects all available cameras from glTF file, metadata, and default camera
+     */ collectAvailableCameras() {
+        this.availableCameras = [];
+        let cameraIndex = 1;
+        // 1. Add cameras from glTF file if available
+        if (this.sceneGltf?.cameras && this.sceneGltf.cameras.length > 0) {
+            for (const gltfCamera of this.sceneGltf.cameras)if (gltfCamera.type === 'PerspectiveCamera') {
+                const perspCamera = gltfCamera;
+                // Get world position and rotation
+                const position = new $hBQxr$three.Vector3();
+                const quaternion = new $hBQxr$three.Quaternion();
+                const scale = new $hBQxr$three.Vector3();
+                perspCamera.matrixWorld.decompose(position, quaternion, scale);
+                const camDef = {
+                    name: perspCamera.name || `glTF Camera ${cameraIndex}`,
+                    position: position.clone(),
+                    rotation: quaternion.clone(),
+                    fov: perspCamera.fov,
+                    near: perspCamera.near,
+                    far: perspCamera.far
+                };
+                this.availableCameras.push(camDef);
+                cameraIndex++;
+            }
+        }
+        // 2. Add cameras from metadata (TB_Cameras)
+        if (this.sketchMetadata?.Cameras && this.sketchMetadata.Cameras.length > 0) for (const metaCamera of this.sketchMetadata.Cameras){
+            const position = new $hBQxr$three.Vector3(metaCamera.position?.[0] ?? 0, metaCamera.position?.[1] ?? 0, metaCamera.position?.[2] ?? 0);
+            // Apply pose scale if needed
+            if (this.isAnyTiltExporter(this.sceneGltf)) position.multiplyScalar(0.1);
+            let rotation;
+            if (metaCamera.rotation && metaCamera.rotation.length === 4) // Quaternion
+            rotation = new $hBQxr$three.Quaternion(metaCamera.rotation[0], metaCamera.rotation[1], metaCamera.rotation[2], metaCamera.rotation[3]);
+            else {
+                // Euler angles (in degrees, convert to radians)
+                const euler = new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(metaCamera.rotation?.[0] ?? 0), $hBQxr$three.MathUtils.degToRad((metaCamera.rotation?.[1] ?? 0) + 180), $hBQxr$three.MathUtils.degToRad(metaCamera.rotation?.[2] ?? 0));
+                rotation = euler;
+            }
+            const camDef = {
+                name: metaCamera.name || `Metadata Camera ${cameraIndex}`,
+                position: position,
+                rotation: rotation,
+                fov: metaCamera.fov ?? 75,
+                near: metaCamera.near ?? 0.1,
+                far: metaCamera.far ?? 6000
+            };
+            this.availableCameras.push(camDef);
+            cameraIndex++;
+        }
+        // 3. Add default camera from TB_CameraTranslation/Rotation or current flatCamera
+        const defaultCamDef = {
+            name: 'Default Camera',
+            position: this.flatCamera.position.clone(),
+            rotation: this.flatCamera.quaternion.clone(),
+            fov: this.flatCamera.fov,
+            near: this.flatCamera.near,
+            far: this.flatCamera.far
+        };
+        this.availableCameras.push(defaultCamDef);
+        console.log(`Collected ${this.availableCameras.length} camera(s)`);
+        // Update the UI dropdown
+        this.updateCameraDropdown();
+    }
+    /**
+     * Updates the camera dropdown UI with available cameras
+     */ updateCameraDropdown() {
+        if (!this.cameraDropdown) return;
+        // Clear existing options
+        this.cameraDropdown.innerHTML = '';
+        // Add options for each camera
+        this.availableCameras.forEach((cam, index)=>{
+            const option = document.createElement('option');
+            option.value = index.toString();
+            option.textContent = cam.name;
+            this.cameraDropdown.appendChild(option);
+        });
+        // Show dropdown only if there are multiple cameras
+        if (this.availableCameras.length > 1) {
+            this.cameraDropdown.style.display = 'block';
+            this.cameraDropdown.value = this.currentCameraIndex.toString();
+        } else this.cameraDropdown.style.display = 'none';
+    }
+    /**
+     * Switches to a different camera by index
+     */ switchCamera(index) {
+        if (index < 0 || index >= this.availableCameras.length) {
+            console.warn(`Invalid camera index: ${index}`);
+            return;
+        }
+        this.currentCameraIndex = index;
+        const camDef = this.availableCameras[index];
+        console.log(`Switching to camera: ${camDef.name}`);
+        // Update flat camera
+        this.flatCamera.position.copy(camDef.position);
+        if (camDef.rotation instanceof $hBQxr$three.Quaternion) this.flatCamera.quaternion.copy(camDef.rotation);
+        else this.flatCamera.rotation.copy(camDef.rotation);
+        this.flatCamera.fov = camDef.fov;
+        this.flatCamera.near = camDef.near;
+        this.flatCamera.far = camDef.far;
+        this.flatCamera.updateProjectionMatrix();
+        // Update camera rig for VR
+        if (this.cameraRig) {
+            this.cameraRig.position.copy(camDef.position);
+            if (camDef.rotation instanceof $hBQxr$three.Quaternion) this.cameraRig.quaternion.copy(camDef.rotation);
+            else this.cameraRig.rotation.copy(camDef.rotation);
+        }
+        // Update xr camera properties
+        if (this.xrCamera) {
+            this.xrCamera.fov = camDef.fov;
+            this.xrCamera.near = camDef.near;
+            this.xrCamera.far = camDef.far;
+            this.xrCamera.updateProjectionMatrix();
+        }
+        // Update camera controls with smooth transition
+        if (this.cameraControls) {
+            this.cameraControls.setPosition(camDef.position.x, camDef.position.y, camDef.position.z, true // smooth transition
+            );
+            // Update target if specified, otherwise keep current
+            if (camDef.target) this.cameraControls.setTarget(camDef.target.x, camDef.target.y, camDef.target.z, true);
+        }
+        // Update dropdown if it exists
+        if (this.cameraDropdown) this.cameraDropdown.value = index.toString();
+    }
+    /**
+     * Cycles to the next camera
+     */ nextCamera() {
+        if (this.availableCameras.length <= 1) return;
+        const nextIndex = (this.currentCameraIndex + 1) % this.availableCameras.length;
+        this.switchCamera(nextIndex);
     }
     calculatePivot(camera, centroid) {
         // 1. Get the camera's forward vector
