@@ -2427,6 +2427,23 @@ export class Viewer {
                     envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
                 }
                 envGltf.scene.scale.set(.1, .1, .1);
+
+                // Enable fog on all materials in the environment
+                envGltf.scene.traverse((object) => {
+                    if ((object as THREE.Mesh).isMesh) {
+                        const mesh = object as THREE.Mesh;
+                        if (mesh.material) {
+                            if (Array.isArray(mesh.material)) {
+                                mesh.material.forEach((mat) => {
+                                    if (mat) mat.fog = true;
+                                });
+                            } else {
+                                mesh.material.fog = true;
+                            }
+                        }
+                    }
+                });
+
                 scene.attach(envGltf.scene);
                 this.environmentObject = envGltf.scene;
             } catch (error) {
