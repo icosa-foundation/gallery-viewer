@@ -2726,6 +2726,9 @@ export class Viewer {
         this.cameraControls.minDistance = boxSize * 0.01;
         this.cameraControls.maxDistance = boxSize * 10;
 
+        // Update camera near/far planes based on scene scale
+        this.updateCameraNearFar(boxSize);
+
         const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
         this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
         let sphere = new THREE.Sphere();
@@ -2733,6 +2736,30 @@ export class Viewer {
         let fullDistance = sphere.radius * 1.75;
         this.cameraControls.dollyTo(fullDistance, true);
         this.cameraControls.saveState();
+    }
+
+    private updateCameraNearFar(sceneSize: number) {
+        // Calculate sensible near and far planes based on scene scale
+        // Near plane: small enough to see close objects, but not so small it causes z-fighting
+        // Far plane: large enough to see the entire scene from any reasonable distance
+
+        const near = Math.max(0.01, sceneSize * 0.001);
+        const far = Math.max(1000, sceneSize * 20);
+
+        // Update both cameras
+        if (this.flatCamera) {
+            this.flatCamera.near = near;
+            this.flatCamera.far = far;
+            this.flatCamera.updateProjectionMatrix();
+        }
+
+        if (this.xrCamera) {
+            this.xrCamera.near = near;
+            this.xrCamera.far = far;
+            this.xrCamera.updateProjectionMatrix();
+        }
+
+        console.log(`Updated camera near/far planes: near=${near.toFixed(3)}, far=${far.toFixed(1)} (scene size=${sceneSize.toFixed(1)})`);
     }
 
     public levelCamera() {
