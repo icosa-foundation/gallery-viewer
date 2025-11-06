@@ -639,13 +639,15 @@ export class Viewer {
         this.initLights();
         this.initCameras();
 
-        // Compensate for insanely large models
-        const LIMIT = 100000;
+        // Scale down large models to maintain good depth precision with fixed camera planes
+        // Max radius of 2700 ensures environments (2100 Unity units) fit comfortably
+        const MAX_RADIUS = 2700;
         let radius = this.overrides?.geometryData?.stats?.radius;
-        if (radius > LIMIT) {
-            let excess = radius - LIMIT;
+        if (radius > MAX_RADIUS) {
+            let scaleFactor = MAX_RADIUS / radius;
             let sceneNode = this.scene.add(this.loadedModel);
-            sceneNode.scale.divideScalar(excess);
+            sceneNode.scale.setScalar(scaleFactor);
+            console.log(`Scaled scene from radius ${radius.toFixed(1)} to ${MAX_RADIUS} (factor: ${scaleFactor.toFixed(4)})`);
             // Reframe the scaled scene
             this.frameNode(sceneNode);
         } else {
@@ -2468,7 +2470,8 @@ export class Viewer {
         const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
         material.fog = false;
         material.toneMapped = false;
-        const geometry = new THREE.SphereGeometry(5000, 64, 64);
+        // Skybox radius set to 8000 to work with fixed far plane (80,000:1 ratio with near=0.1)
+        const geometry = new THREE.SphereGeometry(8000, 64, 64);
         const skysphere = new THREE.Mesh(geometry, material);
         skysphere.name = "environmentSky"
         const defaultUp = new THREE.Vector3(0, 1, 0);
@@ -2724,10 +2727,11 @@ export class Viewer {
         const boxCenter = box.getCenter(new THREE.Vector3());
 
         this.cameraControls.minDistance = boxSize * 0.01;
-        this.cameraControls.maxDistance = boxSize * 10;
+        // Cap max distance at 7000 to ensure camera stays inside skybox (radius 8000)
+        this.cameraControls.maxDistance = Math.min(boxSize * 10, 7000);
 
-        // Update camera near/far planes based on scene scale
-        this.updateCameraNearFar(boxSize);
+        // Update camera near/far planes with fixed 80,000:1 ratio for consistent depth precision
+        this.updateCameraNearFar();
 
         const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
         this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
@@ -2738,14 +2742,12 @@ export class Viewer {
         this.cameraControls.saveState();
     }
 
-    private updateCameraNearFar(sceneSize: number) {
-        // Calculate sensible near and far planes based on scene scale
-        // Near plane: small enough to see close objects, but not so small it causes z-fighting
-        // Far plane: large enough to see the entire scene, including large skyboxes
-
-        const near = Math.max(0.01, sceneSize * 0.001);
-        // Use a high minimum (50000) to accommodate large skyboxes, scale up even more for large scenes
-        const far = Math.max(50000, sceneSize * 50);
+    private updateCameraNearFar() {
+        // Fixed near/far planes maintaining 80,000:1 ratio for excellent depth precision
+        // near=0.1 handles close objects without z-fighting
+        // far=8000 renders skybox (radius 8000) and all scaled scenes (max radius 2700)
+        const near = 0.1;
+        const far = 8000;
 
         // Update both cameras
         if (this.flatCamera) {
@@ -2760,7 +2762,7 @@ export class Viewer {
             this.xrCamera.updateProjectionMatrix();
         }
 
-        console.log(`Updated camera near/far planes: near=${near.toFixed(3)}, far=${far.toFixed(1)} (scene size=${sceneSize.toFixed(1)})`);
+        console.log(`Camera near/far planes: near=${near}, far=${far} (ratio ${far/near}:1)`);
     }
 
     public levelCamera() {

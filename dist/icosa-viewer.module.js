@@ -4148,13 +4148,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.initFog();
         this.initLights();
         this.initCameras();
-        // Compensate for insanely large models
-        const LIMIT = 100000;
+        // Scale down large models to maintain good depth precision with fixed camera planes
+        // Max radius of 2700 ensures environments (2100 Unity units) fit comfortably
+        const MAX_RADIUS = 2700;
         let radius = this.overrides?.geometryData?.stats?.radius;
-        if (radius > LIMIT) {
-            let excess = radius - LIMIT;
+        if (radius > MAX_RADIUS) {
+            let scaleFactor = MAX_RADIUS / radius;
             let sceneNode = this.scene.add(this.loadedModel);
-            sceneNode.scale.divideScalar(excess);
+            sceneNode.scale.setScalar(scaleFactor);
+            console.log(`Scaled scene from radius ${radius.toFixed(1)} to ${MAX_RADIUS} (factor: ${scaleFactor.toFixed(4)})`);
             // Reframe the scaled scene
             this.frameNode(sceneNode);
         } else this.scene.add(this.loadedModel);
@@ -5911,7 +5913,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         });
         material.fog = false;
         material.toneMapped = false;
-        const geometry = new $hBQxr$three.SphereGeometry(5000, 64, 64);
+        // Skybox radius set to 8000 to work with fixed far plane (80,000:1 ratio with near=0.1)
+        const geometry = new $hBQxr$three.SphereGeometry(8000, 64, 64);
         const skysphere = new $hBQxr$three.Mesh(geometry, material);
         skysphere.name = "environmentSky";
         const defaultUp = new $hBQxr$three.Vector3(0, 1, 0);
@@ -6118,9 +6121,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         const boxSize = box.getSize(new $hBQxr$three.Vector3()).length();
         const boxCenter = box.getCenter(new $hBQxr$three.Vector3());
         this.cameraControls.minDistance = boxSize * 0.01;
-        this.cameraControls.maxDistance = boxSize * 10;
-        // Update camera near/far planes based on scene scale
-        this.updateCameraNearFar(boxSize);
+        // Cap max distance at 7000 to ensure camera stays inside skybox (radius 8000)
+        this.cameraControls.maxDistance = Math.min(boxSize * 10, 7000);
+        // Update camera near/far planes with fixed 80,000:1 ratio for consistent depth precision
+        this.updateCameraNearFar();
         const midDistance = this.cameraControls.minDistance + (boxSize - this.cameraControls.minDistance) / 2;
         this.cameraControls.setTarget(boxCenter.x, boxCenter.y, boxCenter.z);
         let sphere = new $hBQxr$three.Sphere();
@@ -6129,13 +6133,12 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.cameraControls.dollyTo(fullDistance, true);
         this.cameraControls.saveState();
     }
-    updateCameraNearFar(sceneSize) {
-        // Calculate sensible near and far planes based on scene scale
-        // Near plane: small enough to see close objects, but not so small it causes z-fighting
-        // Far plane: large enough to see the entire scene, including large skyboxes
-        const near = Math.max(0.01, sceneSize * 0.001);
-        // Use a high minimum (50000) to accommodate large skyboxes, scale up even more for large scenes
-        const far = Math.max(50000, sceneSize * 50);
+    updateCameraNearFar() {
+        // Fixed near/far planes maintaining 80,000:1 ratio for excellent depth precision
+        // near=0.1 handles close objects without z-fighting
+        // far=8000 renders skybox (radius 8000) and all scaled scenes (max radius 2700)
+        const near = 0.1;
+        const far = 8000;
         // Update both cameras
         if (this.flatCamera) {
             this.flatCamera.near = near;
@@ -6147,7 +6150,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.xrCamera.far = far;
             this.xrCamera.updateProjectionMatrix();
         }
-        console.log(`Updated camera near/far planes: near=${near.toFixed(3)}, far=${far.toFixed(1)} (scene size=${sceneSize.toFixed(1)})`);
+        console.log(`Camera near/far planes: near=${near}, far=${far} (ratio ${far / near}:1)`);
     }
     levelCamera() {
         // Sets the camera target so that the camera is looking forward and level
