@@ -6132,9 +6132,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     updateCameraNearFar(sceneSize) {
         // Calculate sensible near and far planes based on scene scale
         // Near plane: small enough to see close objects, but not so small it causes z-fighting
-        // Far plane: large enough to see the entire scene from any reasonable distance
+        // Far plane: large enough to see the entire scene, including large skyboxes
         const near = Math.max(0.01, sceneSize * 0.001);
-        const far = Math.max(1000, sceneSize * 20);
+        // Use a high minimum (50000) to accommodate large skyboxes, scale up even more for large scenes
+        const far = Math.max(50000, sceneSize * 50);
         // Update both cameras
         if (this.flatCamera) {
             this.flatCamera.near = near;
