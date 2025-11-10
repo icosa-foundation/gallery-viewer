@@ -5789,7 +5789,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             for(let i = 0; i < chunks.length; i++){
                 const chunk = chunks[i];
                 const mesh = new (0, $hBQxr$VOXMesh)(chunk);
-                mesh.scale.setScalar(0.0015);
+                mesh.scale.setScalar(0.15);
                 voxModel.add(mesh);
             }
             this.loadedModel = voxModel;

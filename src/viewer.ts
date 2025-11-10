@@ -2336,7 +2336,7 @@ export class Viewer {
             for ( let i = 0; i < chunks.length; i ++ ) {
                 const chunk = chunks[ i ];
                 const mesh = new VOXMesh( chunk );
-                mesh.scale.setScalar( 0.0015 );
+                mesh.scale.setScalar( 0.15 );
                 voxModel.add( mesh );
             }
             this.loadedModel = voxModel;
