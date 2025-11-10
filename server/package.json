@@ -1,0 +1,29 @@
+{
+  "name": "gallery-viewer-multiplayer-server",
+  "version": "1.0.0",
+  "description": "Self-contained WebSocket server for gallery-viewer multiplayer support",
+  "main": "multiplayer-server.js",
+  "scripts": {
+    "start": "node multiplayer-server.js",
+    "dev": "nodemon multiplayer-server.js",
+    "test": "node test-server.js"
+  },
+  "keywords": [
+    "websocket",
+    "multiplayer",
+    "gallery-viewer",
+    "3d",
+    "collaboration"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
