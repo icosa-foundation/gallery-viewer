@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>icosa viewer v251104 x joserpagil@gmail.com</title>
+    <title>icosa viewer v251112 x joserpagil@gmail.com</title>
 </head>
 
 <style>
@@ -18,6 +18,11 @@
 
 	* {
 		font-family: 'MundialRegular', sans-serif;
+	}
+	
+	body { 
+		margin   : 0; 
+		overflow : hidden; 
 	}
 
 	input {
@@ -44,7 +49,7 @@
 	}
 	
 	.unselectable {
-		user-select: none;            
+		user-select: none;      
 		-webkit-user-select: none;    
 		-moz-user-select: none;       
 		-ms-user-select: none;        
@@ -52,52 +57,65 @@
 
 </style>
 
-<body style = "touch-action: none; margin: 0; position: relative; width: 100dvw; height: 100dvh; overflow: hidden;">
+<body>
 
-<div     id = 'chat_div'                                       style = 'position : absolute; bottom : 0; background : transparent; color : white;'>
-	<div   id = "msgs_div"                                       style="overflow : hidden; color: gray;"></div>
-	<input id = "chat_input" type="text" class="rounded-input"   style = "width : 100%;"/>
+<canvas    id = 'nipple_canvas'          class = 'unselectable'  style = 'position : absolute; bottom : 0; left : 0;'></canvas>
+<div       id = 'chat_div'                                       style = 'position : absolute; bottom : 0; background : transparent; color : white;'>
+	<div   id = "msgs_div"                                       style = "overflow : hidden; color: gray;"></div>
+	<input id = "chat_input" type="text" class = "rounded-input" style = "width : 100%;" placeholder = "type message here" autocomplete = "off"/>
 </div>
-<img     id = 'orientation_img'                                style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden/>
-<button  id = 'virtual_reality_button'                         style = 'position : absolute; bottom : 0; background : transparent;' hidden>
-	<img id = 'VR_headset_icon' src = 'assets/VR_headset_icon.svg'/>
+<img       id = 'orientation_img'        class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden/>
+<img       id = 'pc_img'                 class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent; right : 0;' src = 'assets/PC_controls.svg' hidden/>
+<button    id = 'virtual_reality_button' class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' hidden>
+	<img   id = 'VR_headset_icon' src = 'assets/VR_headset_icon.svg'/>
 </button>
-<canvas  id = 'nipple_canvas'                                  style = 'position : absolute; bottom : 0; left : 0;'></canvas>
 
-<script type = "importmap">
+<!-- <script type = "importmap">
 	{
 		"imports": {
 			"three"         : "https://unpkg.com/three@0.161.0/build/three.module",
 			"three/addons/" : "https://unpkg.com/three@0.161.0/examples/jsm/"
 		}
 	}
-</script>
+</script> -->
+
+<script type = "importmap">
+	{
+		"imports": {
+			"three"         : "./libs/three.js/build/three.module.js",
+			"three/addons/" : "./libs/three.js/jsm/"
+		}
+	}
+</script>	
 
 <script src = "./libs/index.umd.cjs"></script>
 
 <script type = 'module'>
+
 //💬
 
 addEventListener( "error", event =>{ msgs_div.innerHTML += event.lineno + " = " + event.message + '<br>' })
 
-const app = 'mys5esf8fu'
+const app = 'xct74jt6vs'
 
 import * as THREE                               from 'three'
 import { RoomEnvironment }                      from "three/addons/environments/RoomEnvironment.js"
 import { GLTFLoader }                           from 'three/addons/loaders/GLTFLoader.js'
-import { OrbitControls }                        from 'three/addons/controls/OrbitControls.js'
 import { VRButton }                             from 'three/addons/webxr/VRButton.js'
 import { XRControllerModelFactory }             from "three/addons/webxr/XRControllerModelFactory.js"
 import { GLTFGoogleTiltBrushMaterialExtension } from '/libs/three-icosa.module.js'
-		 
-let   canvas, renderer, vr_button, scene, camera_group, camera, clock, forward_speed = 0, lateral_speed = 0, keys = {}, beep
+import { OrbitControls }                        from 'three/addons/controls/OrbitControls.js'
+
+let   canvas, renderer, vr_button, scene, camera_group, camera, clock, orbit_controls, keys = {}, beep
 let   client, token, auth, avatar, play, match, profile, room, actor, multi, update_position_interval, update_position_time = 30, actors =[], session_id
 let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 let   nipple_context
-let   touch = false
+let   touch = true
+let   vr    = false
 let   speed           = 0.05
 let   angular_speed   = Math.PI / 500
 let   delta_threshold = 20
+let   msgs =[], max_msgs = 5
 
 document.getElementById( 'virtual_reality_button' ).onclick =_=>{
 	vr_button.click()
@@ -107,7 +125,14 @@ const send         =       _=>{
 	if( multi && multi.general ) multi.general.sendMessage (_)
 }
 const receive      =       _=>{
-	msgs_div.innerHTML = _ + '<br>' + msgs_div.innerHTML
+	msgs.push(_)
+	
+	if( msgs.length > max_msgs ) msgs.shift()
+	
+	msgs_div.innerHTML = ''
+	for( const msg of msgs )
+		msgs_div.innerHTML += msg + '<br>'
+		
 	beep.play()
 }
 const create_world =       _=>{
@@ -120,17 +145,25 @@ const create_world =       _=>{
 		Gamepad.update()		
 		VR.update()		
 
-		if( keys[ 'w' ]) camera_group.position.addScaledVector( dir,    speed )
-		if( keys[ 's' ]) camera_group.position.addScaledVector( dir,   -speed )
-		if( keys[ 'a' ]) camera_group.rotation.y              +=   angular_speed
-		if( keys[ 'd' ]) camera_group.rotation.y              += - angular_speed
-		if( keys[ 'q' ]) camera_group.position.addScaledVector( up,     speed * .5 )
-		if( keys[ 'e' ]) camera_group.position.addScaledVector( up,    -speed * .5 )
-		if( keys[ 'r' ]) camera_group.rotation.x              +=   angular_speed
-		if( keys[ 'f' ]) camera_group.rotation.x              += - angular_speed
+		if( keys[ 'w' ]) camera.position.addScaledVector( dir,    speed )
+		if( keys[ 's' ]) camera.position.addScaledVector( dir,   -speed )
+		if( keys[ 'a' ]) camera.position.addScaledVector( right,  speed )
+		if( keys[ 'd' ]) camera.position.addScaledVector( right, -speed )
+		if( keys[ 'q' ]) camera.position.addScaledVector( up,     speed * .5 )
+		if( keys[ 'e' ]) camera.position.addScaledVector( up,    -speed * .5 )
+		
+		camera_group.position.copy( camera.position )
+		camera_group.rotation.copy( camera.rotation )
+		
+		//if( keys[ 'a' ]) camera.rotation.y              +=   angular_speed
+		//if( keys[ 'd' ]) camera.rotation.y              += - angular_speed
+		//if( keys[ 'r' ]) camera.rotation.x              +=   angular_speed
+		//if( keys[ 'f' ]) camera.rotation.x              += - angular_speed
 	}
 	
-	canvas                   = document.createElement( 'canvas' )
+	canvas           = document.createElement( 'canvas' )
+	canvas.draggable = false
+
 	renderer                 = new THREE.WebGLRenderer({ canvas, antialias : true })
 	renderer.xr.enabled      = true
 	document.body.appendChild( renderer.domElement )
@@ -140,17 +173,14 @@ const create_world =       _=>{
 		if( vr_button.textContent == 'ENTER VR' ){
 			clearInterval( show_vr_interval )
 			
-			virtual_reality_button.style.display = 'block'
+			vr = true
 			
-			//resize()	
+			resize()	
 		}
 	}, 1000 )
 	
-	if ( window.matchMedia('(pointer: coarse)').matches ){
+	if ( window.matchMedia( '( pointer: coarse )' ).matches ){
 		touch = true
-		
-		nipple_canvas.style.display   = "block"
-		orientation_img.style.display = "block"
 	}
 	nipple_context = nipple_canvas.getContext( '2d' )	
 	
@@ -160,13 +190,16 @@ const create_world =       _=>{
 	camera                   = new THREE.PerspectiveCamera( 50, 1, .01, 10000 )
 	camera_group             = new THREE.Group()
 	camera_group.position.set( 0, 5, 15 )
+	camera.position.set( 0, 5, 15 )
 	scene.add                ( camera_group )
-	camera_group.add         ( camera )
+	//camera_group.add         ( camera )
 	
 	beep     = new Audio()
 	beep.src = 'data:audio/mpeg;base64,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VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVCGh9CTiMBlA3QYQKEGUA9AbQcQS8MwSdYjL2uOo9zLVhlKVDlZ1oLDuO//vUZBUP+DJgJgH4w3AAAA0gAAABAAABpAAAACAAADSAAAAE+UPQDEIu6rDlAS6ohAMDJBIT0iE+1aVfKDJop3KHrCL3Y6yZnK5V5KOrwYe0xzmWsSUCSpRmQLT0VOvRZyVpaUGiEByVAqUuogukAoUj8jyjsm+l4rGuFayxVMU9lZVgFh2COe2rjM6YauZaKwSqKfib6dibybaijA2IN+9r9Q7GYaf12mksiYSo0o+tlbC82IMXXqu5gLPmfM/aw27etecF4oLj8xXrUsqgGAnpbq2Bw3Ub5lrKm4tibs9bwQ3DkvsZ3JqblkjflynBbs2FurYHTfyFwLGpTQXLtZVMQU1FMy45OC40VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV'	
 	
 	clock = new THREE.Clock()
+	
+	orbit_controls = new OrbitControls( camera, renderer.domElement )
 	
 	class Gamepad                                     {
 		static                          {
@@ -243,8 +276,8 @@ const create_world =       _=>{
 	}
 	class VR                                          {
 		static thumb0_sphere
-		static joints        =        { left :[], right :[]}
-		static tips          =        {
+		static joints         ={ left :[], right :[]}
+		static tips           ={
 			thumb_tip  :  4,
 			middle_tip : 14,
 			ring_tip   : 19,
@@ -286,113 +319,23 @@ const create_world =       _=>{
 			
 			setup_controller({ index : 0 })
 			setup_controller({ index : 1 })
+			
+			renderer.xr.addEventListener('sessionstart', () => {
+				camera_group.add( camera )
+				console.log('Entered VR');
+			})
+
+			renderer.xr.addEventListener('sessionend', () => {
+				camera_group.remove( camera )
+				console.log('Exited VR');
+			})
 		}		
 		static update = args =>{
 			if( "gamepad" in VR.controller1 ) Gamepad.process_gamepad({ gamepad : VR.controller1.gamepad })
 			if( "gamepad" in VR.controller2 ) Gamepad.process_gamepad({ gamepad : VR.controller2.gamepad })
 		}
 	}
-	class Orbit                                       {
-		static enabled        = true
-		static theta          = 0
-		static phi            = 0
-		static zoom_speed     = 1
-		static rotation_speed = .5
-		static target         = new THREE.Vector3()
-		static pointer_down   = new THREE.Vector2()
-		static pointer_move   = new THREE.Vector2()
-		
-		static set_enabled      = enable =>{
-			Orbit.enabled = enable
-		}
-		static zoom             = factor =>{
-			const offset = new THREE.Vector3()
-			offset.copy( camera.position ).sub( this.target )
-			let   radius
-			if( factor < 0 ) radius = offset.length() / 1.25
-			else             radius = offset.length() * 1.25
-			
-			const direction = camera.position.clone().sub( Orbit.target ).normalize()
-			
-			// Set camera position
-			camera.position.set( Orbit.target.x + direction.x * radius, Orbit.target.y + direction.y * radius, Orbit.target.z + direction.z * radius )
-			camera.lookAt      ( Orbit.target )	
-		}
-		static frame_target     = object =>{
-			// Compute bounding box
-			const box = new THREE.Box3().setFromObject(object);
-			const center = box.getCenter(new THREE.Vector3());
-			const size = box.getSize(new THREE.Vector3());
-
-			// Compute ideal distance
-			const maxDim = Math.max( size.x, size.y, size.z )
-			const fov    = camera.fov * ( Math.PI / 180 )
-			let distance = maxDim / ( 2 * Math.tan( fov / 2 ))
-			distance    *= 5
-			
-			const direction = camera.position.clone().sub( Orbit.target ).normalize()
-			
-			// Set camera position
-			camera.position.set( 
-				center.x + direction.x * distance,
-				center.y + direction.y * distance,
-				center.z + direction.z * distance )
-			camera.lookAt( center )
-
-			// Adjust target
-			Orbit.target.copy( center )
-		}
-		static set_pointer_down =( x, y )=>{
-			Orbit.pointer_down.set( x, y )
-			Orbit.pointer_move.set( x, y )
-		}
-		static set_pointer_move =( x, y )=>{
-			if( ! Orbit.enabled ) return
-			
-			Orbit.pointer_move.set( x, y )
-			
-			const delta = new THREE.Vector2().subVectors( Orbit.pointer_move, Orbit.pointer_down ).multiplyScalar( Orbit.rotation_speed )
-
-			Orbit.theta -= 2 * Math.PI * delta.x / innerHeight
- 			Orbit.phi   -= 2 * Math.PI * delta.y / innerHeight
-			
-			Orbit.pointer_down.set( x, y )
-		}
-		static set_pointer_up   =()=>{
-			Orbit.theta = 0
-			Orbit.phi   = 0
-		}
-		static set_target       =( x, y, z )=>{
-			Orbit.target.set( x, y, z )
-		}
-		static update           =( delta_x, delta_y )=>{
-			
-			// Get current position in spherical coordinates
-			const offset = new THREE.Vector3()
-			offset.copy( camera.position ).sub( this.target )
-			let   radius = offset.length()
-			let   theta  = Math.atan2( offset.x, offset.z )
-			let   phi    = Math.acos( Math.min( Math.max( offset.y / radius, -1 ), 1 ))
-
-			// Apply delta rotations
-			theta += Orbit.theta
-			phi   += Orbit.phi
-			
-			Orbit.theta = 0
-			Orbit.phi   = 0
-
-			// Convert back from spherical to cartesian
-			const sinPhiRadius = radius * Math.sin( phi )
-			offset.x = sinPhiRadius * Math.sin( theta )
-			offset.y = radius * Math.cos( phi )
-			offset.z = sinPhiRadius * Math.cos( theta )
-
-			// Update camera position and make it look at target
-			camera.position.copy( this.target ).add( offset )
-			camera.lookAt       ( this.target )
-		}
-	}
-
+	
 	// sky
 	new THREE.TextureLoader().load( './assets/skies/milkyway_PNG.png', texture =>{
 		const material      = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide, color : 'white' })
@@ -405,7 +348,8 @@ const create_world =       _=>{
 	})
 			
 	const gltf_loader   = new GLTFLoader()
-	gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'assets/brushes/' ))
+	//gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'assets/brushes/' ))
+	gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/brushes/' ))
 	gltf_loader.load    ( './assets/scene.glb', gltf =>{
 		/*
 		const parser = gltf.parser
@@ -448,8 +392,6 @@ const create_world =       _=>{
             }
         }		
 		*/
-
-		//Orbit.frame_target( scene )
 	})
 
 	const resize =()=>{
@@ -458,27 +400,53 @@ const create_world =       _=>{
 		
 		renderer.setSize( innerWidth, innerHeight )
 		
-		const size           = Math.min( innerWidth, innerHeight ) / 5
-		nipple_canvas.width  = size
-		nipple_canvas.height = size
+		const put_chat = args =>{
+			const height                 = innerHeight / 4
+			chat_div.style.padding       = '1vh'
+			chat_div.style.left          = x + 'px'
+			chat_div.style.width         = innerWidth - size * 3 + 'px'
+			chat_div.style.height        = height + 'px'
+			msgs_div.style.height        = height - size + size / 4 + 'px'
+			msgs_div.style.paddingLeft   = '2vh'
+			chat_input.style.height      = size / 2 + 'px'
+			chat_input.style.width       = size * 3 + 'px'
+			chat_input.style.paddingLeft = '2vh'
+		}
+		const put_vr_button = args =>{
+			if( ! vr ) return
+			
+			virtual_reality_button.style.display = 'block'
+			
+			virtual_reality_button.style.left   = args.left + 'px'
+			virtual_reality_button.style.width  = size + 'px'
+			virtual_reality_button.style.height = size + 'px'
+			VR_headset_icon.style.width         = size + 'px'
+			VR_headset_icon.style.height        = size + 'px'			
+		}
 		
-		orientation_img.style.left   = innerWidth - size + 'px'
-		orientation_img.style.width  = size + 'px'
-		orientation_img.style.height = size + 'px'
-		
-		virtual_reality_button.style.left   = innerWidth - size * 2 + 'px'
-		virtual_reality_button.style.width  = size + 'px'
-		virtual_reality_button.style.height = size + 'px'
-		
-		VR_headset_icon.style.width  = size + 'px'
-		VR_headset_icon.style.height = size + 'px'
-		
-		const height            = innerHeight / 2
-		chat_div.style.left     = size + 'px'
-		chat_div.style.width    = innerWidth - size * 3 + 'px'
-		chat_div.style.height   = height + 'px'
-		msgs_div.style.height   = height - size + size / 4 + 'px'
-		chat_input.style.height = size / 2 + 'px'
+		let   x    = 0
+		const size = Math.min( innerWidth, innerHeight )/ 10
+		if( touch ){
+			nipple_canvas.width         = size
+			nipple_canvas.height        = size
+			nipple_canvas.style.display = "block"
+			x                    += size
+			
+			orientation_img.style.left    = innerWidth - size + 'px'
+			orientation_img.style.width   = size + 'px'
+			orientation_img.style.height  = size + 'px'
+			orientation_img.style.display = "block"			
+			
+			put_vr_button({ left : innerWidth - 2 * size })
+			put_chat     ({ left : x, width : size })
+		} else {
+			put_vr_button        ({ left : innerWidth - 3 * size })
+			put_chat             ({ left : 0, width : size * 5 })
+			
+			pc_img.style.width   = size * 2 + 'px'
+			pc_img.style.height  = size + 'px'
+			pc_img.style.display = "block"	
+		}
 	}
 	resize()
 	addEventListener( "resize", resize )
@@ -490,39 +458,40 @@ const create_world =       _=>{
 		}
 		
 		move()
-		//Orbit.update()
+		orbit_controls.update()
 		
-		const size                 = nipple_canvas.width
-		nipple_context.clearRect   ( 0, 0, nipple_canvas.width, nipple_canvas.height )
-		nipple_context.strokeStyle = 'white'
-		nipple_context.lineWidth   = 2
-		nipple_context.beginPath   ()
-		nipple_context.arc         ( size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2 )
-		nipple_context.stroke      ()
-		
-		const small_radius = size / 8
-		
-		let y_offset = keys.w ? - small_radius : keys.s ? small_radius : 0
-		let x_offset = keys.a ? - small_radius : keys.d ? small_radius : 0
-		
-		nipple_context.lineWidth   = 2
-		nipple_context.beginPath   ()
-		nipple_context.arc         ( size / 2 + x_offset, size / 2 + y_offset, size / 8, 0, Math.PI * 2 )
-		nipple_context.stroke      ()
+		if( touch ){
+			const size                 = nipple_canvas.width
+			nipple_context.clearRect   ( 0, 0, nipple_canvas.width, nipple_canvas.height )
+			nipple_context.strokeStyle = 'white'
+			nipple_context.lineWidth   = 2
+			nipple_context.beginPath   ()
+			nipple_context.arc         ( size / 2, size / 2, size / 2 - 4, 0, Math.PI * 2 )
+			nipple_context.stroke      ()
+			const small_radius = size / 8
+			let y_offset = keys.w ? - small_radius : keys.s ? small_radius : 0
+			let x_offset = keys.a ? - small_radius : keys.d ? small_radius : 0
+			nipple_context.lineWidth   = 2
+			nipple_context.beginPath   ()
+			nipple_context.arc         ( size / 2 + x_offset, size / 2 + y_offset, size / 8, 0, Math.PI * 2 )
+			nipple_context.stroke      ()
+		}
 		
 		renderer.render( scene, camera )
-	})
+	})	
 		
     addEventListener( "contextmenu", _=>{ 
         _.preventDefault()
     })		
 		
-	addEventListener( 'pointerdown', event =>{
+	addEventListener( 'pointerdown1', event =>{ return
+		event.preventDefault()
+		
 		pointer_data.button = event.button
 		
 		pointer_data.down ={ x : event.clientX, y : event.clientY }
 	})
-	addEventListener( 'pointermove', event =>{		
+	addEventListener( 'pointermove1', event =>{ return
 		if( pointer_data.button == -1 ) return
 		
 		pointer_data.position ={ x : event.clientX, y : event.clientY }
@@ -530,33 +499,24 @@ const create_world =       _=>{
 		const delta ={ x : pointer_data.position.x - pointer_data.down.x, 
 		               y : pointer_data.position.y - pointer_data.down.y }
 		
-		if( pointer_data.down.x < innerWidth / 2 ){
+		if( touch ){
+			if( pointer_data.down.x < innerWidth / 2 ){
+				keys.a = delta.x < -delta_threshold
+				keys.d = delta.x >  delta_threshold
+				keys.w = delta.y < -delta_threshold
+				keys.s = delta.y >  delta_threshold
+			} else {
+				keys.r = delta.y >  delta_threshold
+				keys.f = delta.y < -delta_threshold
+			}	
+		} else {
 			keys.a = delta.x < -delta_threshold
 			keys.d = delta.x >  delta_threshold
 			keys.w = delta.y < -delta_threshold
-			keys.s = delta.y >  delta_threshold
-		} else {
-			keys.r = delta.y >  delta_threshold
-			keys.f = delta.y < -delta_threshold
+			keys.s = delta.y >  delta_threshold		
 		}
-		
-		return
-
-		if( pointer_data.button == 0 ) keys.w = true
-		if( pointer_data.button == 2 ) keys.s = true
-		
-		//if( pointer_data.button == 0 ) Orbit.set_pointer_move( event.clientX, event.clientY )
-		
-		const deltaMove = {
-			x: event.movementX,
-			y: event.movementY
-		};
-
-		const rotationSpeed = 0.001
-		camera.rotation.y -= deltaMove.x * rotationSpeed;
-		camera.rotation.x -= deltaMove.y * rotationSpeed;		
 	})
-	addEventListener( 'pointerup',   event =>{
+	addEventListener( 'pointerup1',   event =>{ return
 		pointer_data.button = -1
 		
 		keys.w = false
@@ -709,9 +669,9 @@ const authorize    = async _=>{
 			update_position_interval = setInterval( event =>{
 				multi.networksync.updateMyPosition({
 					session_id, 
-					px         : camera_group.position.x, 
-					py         : camera_group.position.y, 
-					pz         : camera_group.position.z,
+					px         : camera.position.x, 
+					py         : camera.position.y, 
+					pz         : camera.position.z,
 					rx         : camera.rotation.x, 
 					ry         : camera.rotation.y, 
 					rz         : camera.rotation.z 
