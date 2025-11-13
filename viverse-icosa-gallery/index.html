@@ -84,7 +84,7 @@
 
 <script type = 'module'>
 
-addEventListener( "error", event =>{ msgs_div.innerHTML += event.lineno + " = " + event.message + '<br>' })
+addEventListener( "error", event =>{ alert( event.lineno + " = " + event.message + '<br>' )})
 
 const app = 'xct74jt6vs'
 
@@ -101,7 +101,7 @@ let   client, token, auth, avatar, play, match, profile, room, actor, multi, upd
 let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 let   nipple_context
 let   touch = true
-let   vr    = false
+let   vr    = false, in_vr = false, can_rotate = true, can_rotate_time = 500
 let   speed           = 0.05
 let   angular_speed   = Math.PI / 500
 let   delta_threshold = 20
@@ -109,6 +109,15 @@ let   msgs =[], max_msgs = 5
 
 document.getElementById( 'virtual_reality_button' ).onclick =_=>{
 	vr_button.click()
+}
+document.getElementById( 'send_img' ).onclick =_=>{
+	const msg = chat_input.value
+	if( ! msg.length ) return
+	
+	send      ( msg)
+	receive   ( msg )
+
+	chat_input.value = ''
 }
 
 const send         =       _=>{
@@ -133,22 +142,16 @@ const create_world =       _=>{
 		const right             = new THREE.Vector3().crossVectors( camera.up, dir ).normalize()
 		
 		Gamepad.update()		
-		VR.update()		
+		VR.update()
+		
+		const kam = in_vr ? camera_group : camera
 
-		if( keys[ 'w' ]) camera.position.addScaledVector( dir,    speed )
-		if( keys[ 's' ]) camera.position.addScaledVector( dir,   -speed )
-		if( keys[ 'a' ]) camera.position.addScaledVector( right,  speed )
-		if( keys[ 'd' ]) camera.position.addScaledVector( right, -speed )
-		if( keys[ 'q' ]) camera.position.addScaledVector( up,     speed * .5 )
-		if( keys[ 'e' ]) camera.position.addScaledVector( up,    -speed * .5 )
-		
-		camera_group.position.copy( camera.position )
-		camera_group.rotation.copy( camera.rotation )
-		
-		//if( keys[ 'a' ]) camera.rotation.y              +=   angular_speed
-		//if( keys[ 'd' ]) camera.rotation.y              += - angular_speed
-		//if( keys[ 'r' ]) camera.rotation.x              +=   angular_speed
-		//if( keys[ 'f' ]) camera.rotation.x              += - angular_speed
+		if( keys[ 'w' ]) kam.position.addScaledVector( dir,    speed )
+		if( keys[ 's' ]) kam.position.addScaledVector( dir,   -speed )
+		if( keys[ 'a' ]) kam.position.addScaledVector( right,  speed )
+		if( keys[ 'd' ]) kam.position.addScaledVector( right, -speed )
+		if( keys[ 'q' ]) kam.position.addScaledVector( up,     speed * .5 )
+		if( keys[ 'e' ]) kam.position.addScaledVector( up,    -speed * .5 )
 	}
 	
 	canvas           = document.createElement( 'canvas' )
@@ -198,6 +201,13 @@ const create_world =       _=>{
 			})
 		}
 		static process_gamepad = args =>{
+			const cool_down =_=>{
+				can_rotate = false
+				setTimeout(_=>{
+					can_rotate = true
+				}, can_rotate_time )
+			}
+			
 			const axes    ={
 				a : 0,
 				b : 1,
@@ -220,22 +230,24 @@ const create_world =       _=>{
 				y : 3,
 			}
 				
-			//if( Gamepad.clicked({ button : Gamepad.buttons.a, gamepad : args.gamepad })) beep.play()
-			
 			keys.w = args.gamepad.buttons[ buttons.index  ].value > .5
 			keys.s = args.gamepad.buttons[ buttons.middle ].value > .5
-			keys.a = args.gamepad.axes[ axes.c ] >  .5
-			keys.d = args.gamepad.axes[ axes.c ] < -.5
+			if( in_vr ){				
+				if( can_rotate && args.gamepad.axes[ axes.c ] < -.5 ){
+					camera_group.rotation.y += Math.PI / 4
+					cool_down()
+				}	
+				if( args.gamepad.axes[ axes.c ] >  .5 ){
+					camera_group.rotation.y -= Math.PI / 4
+					cool_down()
+				}
+			} else {
+				keys.a = args.gamepad.axes[ axes.c ] < -.5
+				keys.d = args.gamepad.axes[ axes.c ] >  .5
+			}
 			keys.q = args.gamepad.axes[ axes.d ] < -.5
 			keys.e = args.gamepad.axes[ axes.d ] >  .5
 		
-			/*
-			if( Gamepad.clicked({ button : Gamepad.buttons.y, gamepad : args.gamepad })) pallete_index = next_pallete_index()
-			if( Gamepad.clicked({ button : Gamepad.buttons.b, gamepad : args.gamepad })) audio_element.play()
-			if( Gamepad.clicked({ button : Gamepad.buttons.a, gamepad : args.gamepad })) load_demo_song({ url : apt })
-			if( Gamepad.clicked({ button : Gamepad.buttons.x, gamepad : args.gamepad })) load_demo_song({ url : fortuna })
-			*/	
-			//Gamepad.gamepads[ gamepad.index] = gamepad.buttons.map( button => button.pressed )
 			Gamepad.old_buttons = args.gamepad.buttons.map( button => button.pressed )
 		}
 		static add_gamepad     = args =>{
@@ -311,16 +323,20 @@ const create_world =       _=>{
 			setup_controller({ index : 1 })
 			
 			renderer.xr.addEventListener('sessionstart', () => {
-				camera_group.add( camera )
-				console.log('Entered VR');
+				in_vr                     = true
+				camera_group.position.copy( camera.position )
+				camera_group.add          ( camera )
 			})
 
 			renderer.xr.addEventListener('sessionend', () => {
-				camera_group.remove( camera )
-				console.log('Exited VR');
+				in_vr               = false
+				camera.position.copy( camera_group.position )
+				camera_group.remove ( camera )
 			})
 		}		
 		static update = args =>{
+			if( ! in_vr ) return
+			
 			if( "gamepad" in VR.controller1 ) Gamepad.process_gamepad({ gamepad : VR.controller1.gamepad })
 			if( "gamepad" in VR.controller2 ) Gamepad.process_gamepad({ gamepad : VR.controller2.gamepad })
 		}
@@ -338,7 +354,6 @@ const create_world =       _=>{
 //	})
 			
 	const gltf_loader   = new GLTFLoader()
-	//gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'assets/brushes/' ))
 	gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/brushes/' ))
 	gltf_loader.load    ( './assets/scene.glb', gltf =>{
 		/*
@@ -357,31 +372,6 @@ const create_world =       _=>{
 		const brush      = gltf.scene
 		brush.rotation.y = Math.PI
 		scene.add        ( brush )
-
-		/*
-            "extras": {
-                "TB_EnvironmentGuid": "ab080599-e465-4a6d-8587-43bf495af68b",
-                "TB_Environment": "Standard",
-                "TB_UseGradient": "true",
-                "TB_SkyColorA": "0.2745098, 0.2745098, 0.3176471",
-                "TB_SkyColorB": "0.03529412, 0.03529412, 0.08627451",
-                "TB_SkyGradientDirection": "0, 1, 0",
-                "TB_FogColor": "0.1647059, 0.1647059, 0.2078431",
-                "TB_FogDensity": "0.0025",
-                "TB_AmbientLightColor": "0.3921569, 0.3921569, 0.3921569",
-                "TB_SceneLight0Color": "0.7780392, 0.8156863, 0.9913726",
-                "TB_SceneLight0Rotation": "60, -1.707548E-06, 334",
-                "TB_SceneLight1Color": "0.4282353, 0.4211765, 0.3458824",
-                "TB_SceneLight1Rotation": "40, 180, 140",
-                "TB_PoseTranslation": "-0.6559011, 7.412807, 4.213572",
-                "TB_PoseRotation": "0, 224.0852, 0",
-                "TB_PoseScale": 0.113527037,
-                "TB_ExportedFromVersion": "2.0.0",
-                "TB_CameraTranslation": "23.65104, 18.53613, 6.477695",
-                "TB_CameraRotation": "38.93238, 100.4957, 1.318866"
-            }
-        }		
-		*/
 	})
 
 	const resize =()=>{
@@ -659,14 +649,17 @@ const authorize    = async _=>{
 			})
 			
 			update_position_interval = setInterval( event =>{
+			
+				const kam = in_vr ? camera_group : camera
+				
 				multi.networksync.updateMyPosition({
 					session_id, 
-					px         : camera.position.x, 
-					py         : camera.position.y, 
-					pz         : camera.position.z,
-					rx         : camera.rotation.x, 
-					ry         : camera.rotation.y, 
-					rz         : camera.rotation.z 
+					px         : kam.position.x, 
+					py         : kam.position.y, 
+					pz         : kam.position.z,
+					rx         : kam.rotation.x, 
+					ry         : kam.rotation.y, 
+					rz         : kam.rotation.z 
 				})	
 			}, update_position_time )
 		})
