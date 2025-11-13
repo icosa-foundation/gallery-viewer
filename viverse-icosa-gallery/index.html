@@ -100,8 +100,8 @@ let   canvas, renderer, vr_button, scene, camera_group, camera, clock, orbit_con
 let   client, token, auth, avatar, play, match, profile, room, actor, multi, update_position_interval, update_position_time = 30, actors =[], session_id
 let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 let   nipple_context
-let   touch = true
-let   vr    = false, in_vr = false, can_rotate = true, can_rotate_time = 500
+let   touch = false
+let   vr    = false, in_vr = false, can_rotate = true, can_rotate_time = 1000
 let   speed           = 0.05
 let   angular_speed   = Math.PI / 500
 let   delta_threshold = 20
@@ -152,6 +152,8 @@ const create_world =       _=>{
 		if( keys[ 'd' ]) kam.position.addScaledVector( right, -speed )
 		if( keys[ 'q' ]) kam.position.addScaledVector( up,     speed * .5 )
 		if( keys[ 'e' ]) kam.position.addScaledVector( up,    -speed * .5 )
+		if( keys[ 'r' ]) kam.rotation.x              += angular_speed
+		if( keys[ 'f' ]) kam.rotation.x              -= angular_speed
 	}
 	
 	canvas           = document.createElement( 'canvas' )
@@ -174,6 +176,50 @@ const create_world =       _=>{
 	
 	if ( window.matchMedia( '( pointer: coarse )' ).matches ){
 		touch = true
+		if( orbit_controls ) orbit_controls.enabled = false
+		addEventListener( 'pointerdown', event =>{
+			event.preventDefault()
+			
+			pointer_data.button = event.button
+			
+			pointer_data.down ={ x : event.clientX, y : event.clientY }
+		})
+		addEventListener( 'pointermove', event =>{
+			if( pointer_data.button == -1 ) return
+			
+			pointer_data.position ={ x : event.clientX, y : event.clientY }
+			
+			const delta ={ x : pointer_data.position.x - pointer_data.down.x, 
+						   y : pointer_data.position.y - pointer_data.down.y }
+			
+			if( touch ){
+				if( pointer_data.down.x < innerWidth / 2 ){
+					keys.a = delta.x < -delta_threshold
+					keys.d = delta.x >  delta_threshold
+					keys.w = delta.y < -delta_threshold
+					keys.s = delta.y >  delta_threshold
+				} else {
+					keys.r = delta.y >  delta_threshold
+					keys.f = delta.y < -delta_threshold
+				}	
+			} else {
+				keys.a = delta.x < -delta_threshold
+				keys.d = delta.x >  delta_threshold
+				keys.w = delta.y < -delta_threshold
+				keys.s = delta.y >  delta_threshold		
+			}
+		})
+		addEventListener( 'pointerup',   event =>{
+			pointer_data.button = -1
+			
+			keys.w = false
+			keys.a = false
+			keys.s = false
+			keys.d = false
+			keys.r = false
+			keys.f = false
+		})
+		
 	}
 	nipple_context = nipple_canvas.getContext( '2d' )	
 	
@@ -237,7 +283,7 @@ const create_world =       _=>{
 					camera_group.rotation.y += Math.PI / 4
 					cool_down()
 				}	
-				if( args.gamepad.axes[ axes.c ] >  .5 ){
+				if( can_rotate && args.gamepad.axes[ axes.c ] >  .5 ){
 					camera_group.rotation.y -= Math.PI / 4
 					cool_down()
 				}
@@ -440,7 +486,7 @@ const create_world =       _=>{
 		}
 		
 		move()
-		orbit_controls.update()
+		if( ! touch ) orbit_controls.update()
 		
 		if( touch ){
 			const size                 = nipple_canvas.width
@@ -466,49 +512,6 @@ const create_world =       _=>{
         _.preventDefault()
     })		
 		
-	addEventListener( 'pointerdown1', event =>{ return
-		event.preventDefault()
-		
-		pointer_data.button = event.button
-		
-		pointer_data.down ={ x : event.clientX, y : event.clientY }
-	})
-	addEventListener( 'pointermove1', event =>{ return
-		if( pointer_data.button == -1 ) return
-		
-		pointer_data.position ={ x : event.clientX, y : event.clientY }
-		
-		const delta ={ x : pointer_data.position.x - pointer_data.down.x, 
-		               y : pointer_data.position.y - pointer_data.down.y }
-		
-		if( touch ){
-			if( pointer_data.down.x < innerWidth / 2 ){
-				keys.a = delta.x < -delta_threshold
-				keys.d = delta.x >  delta_threshold
-				keys.w = delta.y < -delta_threshold
-				keys.s = delta.y >  delta_threshold
-			} else {
-				keys.r = delta.y >  delta_threshold
-				keys.f = delta.y < -delta_threshold
-			}	
-		} else {
-			keys.a = delta.x < -delta_threshold
-			keys.d = delta.x >  delta_threshold
-			keys.w = delta.y < -delta_threshold
-			keys.s = delta.y >  delta_threshold		
-		}
-	})
-	addEventListener( 'pointerup1',   event =>{ return
-		pointer_data.button = -1
-		
-		keys.w = false
-		keys.a = false
-		keys.s = false
-		keys.d = false
-		keys.r = false
-		keys.f = false
-	})
-
 	addEventListener( 'keydown',      event =>{
 		if( 'INPUT' == event.target.tagName ){
 			if( 'Enter' == event.key ){
