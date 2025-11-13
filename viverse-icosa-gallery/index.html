@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>icosa viewer v251112 x joserpagil@gmail.com</title>
+    <title>icosa viewer v251113 x joserpagil@gmail.com</title>
 </head>
 
 <style>
@@ -62,7 +62,8 @@
 <canvas    id = 'nipple_canvas'          class = 'unselectable'  style = 'position : absolute; bottom : 0; left : 0;'></canvas>
 <div       id = 'chat_div'                                       style = 'position : absolute; bottom : 0; background : transparent; color : white;'>
 	<div   id = "msgs_div"                                       style = "overflow : hidden; color: gray;"></div>
-	<input id = "chat_input" type="text" class = "rounded-input" style = "width : 100%;" placeholder = "type message here" autocomplete = "off"/>
+	<input id = "chat_input" type="text" class = "rounded-input" style = "width : 100%;" placeholder = "send message" autocomplete = "off"/>
+	<img   id = 'send_img'               class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/send.png' hidden/>
 </div>
 <img       id = 'orientation_img'        class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden/>
 <img       id = 'pc_img'                 class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent; right : 0;' src = 'assets/PC_controls.svg' hidden/>
@@ -70,29 +71,18 @@
 	<img   id = 'VR_headset_icon' src = 'assets/VR_headset_icon.svg'/>
 </button>
 
-<!-- <script type = "importmap">
+<script type = "importmap">
 	{
 		"imports": {
 			"three"         : "https://unpkg.com/three@0.161.0/build/three.module",
 			"three/addons/" : "https://unpkg.com/three@0.161.0/examples/jsm/"
 		}
 	}
-</script> -->
-
-<script type = "importmap">
-	{
-		"imports": {
-			"three"         : "./libs/three.js/build/three.module.js",
-			"three/addons/" : "./libs/three.js/jsm/"
-		}
-	}
-</script>	
+</script>
 
 <script src = "./libs/index.umd.cjs"></script>
 
 <script type = 'module'>
-
-//💬
 
 addEventListener( "error", event =>{ msgs_div.innerHTML += event.lineno + " = " + event.message + '<br>' })
 
@@ -337,15 +327,15 @@ const create_world =       _=>{
 	}
 	
 	// sky
-	new THREE.TextureLoader().load( './assets/skies/milkyway_PNG.png', texture =>{
-		const material      = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide, color : 'white' })
+//	new THREE.TextureLoader().load( './assets/skies/milkyway_PNG.png', texture =>{
+		const material      = new THREE.MeshBasicMaterial({ /*map: texture,*/ side: THREE.BackSide, color : 'black' })
 		material.fog        = false
 		material.toneMapped = false
 		const geometry      = new THREE.SphereGeometry( 5000, 64, 64 )
 		const sky_sphere    = new THREE.Mesh( geometry, material )
 		sky_sphere.name     = "environmentSky"
 		scene.add           ( sky_sphere )
-	})
+//	})
 			
 	const gltf_loader   = new GLTFLoader()
 	//gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'assets/brushes/' ))
@@ -411,6 +401,8 @@ const create_world =       _=>{
 			chat_input.style.height      = size / 2 + 'px'
 			chat_input.style.width       = size * 3 + 'px'
 			chat_input.style.paddingLeft = '2vh'
+			send_img.style.height        = size + 'px'
+			send_img.hidden              = false
 		}
 		const put_vr_button = args =>{
 			if( ! vr ) return
@@ -430,7 +422,7 @@ const create_world =       _=>{
 			nipple_canvas.width         = size
 			nipple_canvas.height        = size
 			nipple_canvas.style.display = "block"
-			x                    += size
+			x                          += size
 			
 			orientation_img.style.left    = innerWidth - size + 'px'
 			orientation_img.style.width   = size + 'px'
@@ -527,7 +519,7 @@ const create_world =       _=>{
 		keys.f = false
 	})
 
-	addEventListener( 'keydown', event =>{
+	addEventListener( 'keydown',      event =>{
 		if( 'INPUT' == event.target.tagName ){
 			if( 'Enter' == event.key ){
 				const msg = chat_input.value
@@ -538,7 +530,7 @@ const create_world =       _=>{
 			}
 		} else keys[ event.key.toLowerCase()] = true
 	})
-	addEventListener( 'keyup',   event =>{
+	addEventListener( 'keyup',        event =>{
 		if( 'INPUT' == event.target.tagName ){
 		} else keys[ event.key.toLowerCase()] = false 
 	})
