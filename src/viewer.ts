@@ -116,8 +116,8 @@ class SketchMetadata {
         this.SceneLight0Color = new THREE.Color(light0col.r, light0col.g, light0col.b);
         this.SceneLight1Color = new THREE.Color(light1col.r, light1col.g, light1col.b);
 
-        this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'])
-        this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation']);
+        this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'], null)
+        this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation'], null);
     }
 }
 
@@ -204,6 +204,7 @@ export class Viewer {
     private overrides: any;
     private cameraRig: THREE.Group;
     public selectedNode: THREE.Object3D | null;
+    private treeViewRoot: HTMLElement | null;
     public showErrorIcon: () => void;
     public loadingError: boolean;
 
@@ -337,6 +338,7 @@ export class Viewer {
 
         this.cameraRig = new THREE.Group();
         this.selectedNode = null;
+        this.treeViewRoot = null;
 
         let controller0: THREE.Group;
         let controller1: THREE.Group;
@@ -580,7 +582,8 @@ export class Viewer {
     }
 
     static parseTBVector3(vectorString: string, defaultValue?: THREE.Vector3) {
-        if (!vectorString) return defaultValue ?? new THREE.Vector3();
+        // Return default value if explicitly null, else return a default vector3
+        if (!vectorString) return defaultValue === undefined ? new THREE.Vector3() : defaultValue;
         const [x, y, z] = vectorString.split(',').map(p => parseFloat(p.trim()));
         return new THREE.Vector3(x, y, z);
     }
@@ -2110,8 +2113,8 @@ export class Viewer {
         // The legacy loader has the latter structure
         let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
 
-        this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         this.scaleScene(sceneGltf, true);
+        this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         if (loadEnvironment) {await this.assignEnvironment(sceneGltf);}
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
         this.loadedModel = sceneGltf.scene;
@@ -2119,19 +2122,30 @@ export class Viewer {
         this.initializeScene();
     }
 
-    private isLegacyExporter(sceneGltf: any) {
+    private isLegacyTiltExporter(sceneGltf: any) {
         const generator = sceneGltf.asset?.generator;
-        return generator && !generator.includes('Open Brush UnityGLTF Exporter');
+        return generator && !generator.includes('Tilt Brush');
+    }
+
+    private isNewTiltExporter(sceneGltf: any) {
+        const generator = sceneGltf?.asset?.generator;
+        return generator && generator.includes('Open Brush UnityGLTF Exporter');
+    }
+
+    private isAnyTiltExporter(sceneGltf: any) {
+        const generator = sceneGltf?.asset?.generator;
+        return generator && (generator.includes('Tilt Brush') || generator.includes('Open Brush UnityGLTF Exporter'));
     }
 
     private scaleScene(sceneGltf: any, negate : boolean) {
 
         const userData = sceneGltf.scene?.userData || sceneGltf.userData || {};
-
         let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
         let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
         let poseScale = userData['TB_PoseScale'] ?? 1;
-
+        if (this.isNewTiltExporter(sceneGltf)) {
+            poseScale *= negate ? 10 : 0.1;
+        }
         if (negate) {
             // Create inverse transformation matrix: (T * R * S)^-1 = S^-1 * R^-1 * T^-1
             const inverseScale = 1.0 / poseScale;
@@ -2324,7 +2338,7 @@ export class Viewer {
             for ( let i = 0; i < chunks.length; i ++ ) {
                 const chunk = chunks[ i ];
                 const mesh = new VOXMesh( chunk );
-                mesh.scale.setScalar( 0.0015 );
+                mesh.scale.setScalar( 0.15 );
                 voxModel.add( mesh );
             }
             this.loadedModel = voxModel;
@@ -2411,9 +2425,7 @@ export class Viewer {
                 // Use the standard GLTFLoader for environments
                 const standardLoader = new GLTFLoader();
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
-                if (!this.isLegacyExporter(sceneGltf))
-                {
-                    console.log("Rotating environment 180 degrees for legacy exporter");
+                if (this.isNewTiltExporter(sceneGltf)) {
                     envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
                 }
                 envGltf.scene.scale.set(.1, .1, .1);
@@ -2483,8 +2495,28 @@ export class Viewer {
 
         let cameraOverrides = this.overrides?.camera;
 
-        let cameraPos = cameraOverrides?.translation || this.sketchMetadata?.CameraTranslation.toArray() || [0, 1, -1];
-        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
+
+        // const userData = this.sceneGltf?.scene?.userData || {};
+        // let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
+        // let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
+        // let poseScale = (userData['TB_PoseScale'] ?? 1);
+
+        let sketchCam = this.sketchMetadata?.CameraTranslation?.toArray();
+        if (sketchCam) {
+            let poseScale = this.isAnyTiltExporter(this.sceneGltf) ? 0.1 : 1;
+            console.log("posescale", poseScale);
+            sketchCam = [sketchCam[0] * poseScale, sketchCam[1] * poseScale, sketchCam[2] * poseScale];
+        }
+
+        let cameraPos = cameraOverrides?.translation || sketchCam || [0, 0.25, -3.5];
+        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation?.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
+
+        if (this.isNewTiltExporter(this.sceneGltf)) {
+            // the scene scale is modified elsewhere but here we correct the camera to match
+            //cameraPos = [cameraPos[0] * 0.1, cameraPos[1] * 0.1, cameraPos[2] * 0.1];
+            cameraPos[1] -= 1
+            cameraRot[1] += 180;
+        }
 
         // Fix handedness between Unity and gltf/three.js
         // Should we fix this on export?
@@ -2723,6 +2755,7 @@ export class Viewer {
             console.error('Tree view container not found');
             return;
         }
+        this.treeViewRoot = treeView;
         treeView.innerHTML = '';
         if (model) {
             this.createTreeViewNode(model, treeView);
@@ -2797,5 +2830,87 @@ export class Viewer {
         }
 
         parentElement.appendChild(nodeElement);
+    }
+
+    /**
+     * Generate a consistent path for an object in the scene hierarchy.
+     * Uses object names and child indices to create a unique, reproducible identifier.
+     */
+    private getObjectPath(object: THREE.Object3D, currentPath: string = ''): string {
+        if (!object.parent) {
+            return currentPath || '/';
+        }
+        
+        const parent = object.parent;
+        const childIndex = parent.children.indexOf(object);
+        const nodeName = object.name || `${object.type}_${childIndex}`;
+        const newPath = `/${nodeName}${currentPath}`;
+        
+        return this.getObjectPath(parent, newPath);
+    }
+
+    /**
+     * Get the current visibility state of all nodes in the scene hierarchy.
+     * Returns a map of object paths to visibility state.
+     * Object paths are consistent across sessions when loading the same file.
+     * @returns An object mapping paths to state information
+     */
+    public getTreeViewState(): { [path: string]: { visible: boolean } } {
+        const state: { [path: string]: { visible: boolean } } = {};
+        
+        const collectState = (object: THREE.Object3D) => {
+            const path = this.getObjectPath(object);
+            state[path] = {
+                visible: object.visible
+            };
+            
+            if (object.children && object.children.length > 0) {
+                object.children.forEach(child => collectState(child));
+            }
+        };
+        
+        if (this.scene) {
+            collectState(this.scene);
+        }
+        
+        return state;
+    }
+
+    /**
+     * Restore the visibility state of nodes from a previously saved state.
+     * @param state - The state object returned from getTreeViewState()
+     */
+    public setTreeViewState(state: { [path: string]: { visible: boolean } }): void {
+        const applyState = (object: THREE.Object3D) => {
+            const path = this.getObjectPath(object);
+            const savedState = state[path];
+            if (savedState !== undefined) {
+                object.visible = savedState.visible;
+            }
+            
+            if (object.children && object.children.length > 0) {
+                object.children.forEach(child => applyState(child));
+            }
+        };
+        
+        if (this.scene) {
+            applyState(this.scene);
+        }
+        
+        // Refresh the tree view UI if it exists
+        this.refreshTreeView();
+    }
+
+    /**
+     * Refresh the tree view UI to match the current visibility state of objects.
+     * This updates all checkboxes in the tree view to reflect the actual visibility of objects.
+     */
+    public refreshTreeView(): void {
+        if (!this.treeViewRoot || !this.scene) {
+            return;
+        }
+        
+        // Recreate the tree view to reflect the current state
+        this.createTreeView(this.scene, this.treeViewRoot);
     }
 }
