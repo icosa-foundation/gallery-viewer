@@ -96,6 +96,28 @@ import { XRControllerModelFactory }             from "three/addons/webxr/XRContr
 import { GLTFGoogleTiltBrushMaterialExtension } from '/libs/three-icosa.module.js'
 import { OrbitControls }                        from 'three/addons/controls/OrbitControls.js'
 
+const axes    ={
+	a : 0,
+	b : 1,
+	c : 2,
+	d : 3,
+	x : 2,
+	y : 3,
+	
+	z : 0,
+}
+const buttons ={
+	index      : 0,
+	middle     : 1,
+	menu       : 2,
+	thumbstick : 3,
+	
+	a : 0,
+	b : 1,
+	x : 2,
+	y : 3,
+}
+			
 let   canvas, renderer, vr_button, scene, camera_group, camera, clock, orbit_controls, keys = {}, beep
 let   client, token, auth, avatar, play, match, profile, room, actor, multi, update_position_interval, update_position_time = 30, actors =[], session_id
 let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
@@ -148,8 +170,10 @@ const create_world =       _=>{
 
 		if( keys[ 'w' ]) kam.position.addScaledVector( dir,    speed )
 		if( keys[ 's' ]) kam.position.addScaledVector( dir,   -speed )
-		if( keys[ 'a' ]) kam.position.addScaledVector( right,  speed )
-		if( keys[ 'd' ]) kam.position.addScaledVector( right, -speed )
+		//if( keys[ 'a' ]) kam.position.addScaledVector( right,  speed )
+		//if( keys[ 'd' ]) kam.position.addScaledVector( right, -speed )
+		if( keys[ 'a' ]) kam.rotation.y              += angular_speed
+		if( keys[ 'd' ]) kam.rotation.y              -= angular_speed
 		if( keys[ 'q' ]) kam.position.addScaledVector( up,     speed * .5 )
 		if( keys[ 'e' ]) kam.position.addScaledVector( up,    -speed * .5 )
 		if( keys[ 'r' ]) kam.rotation.x              += angular_speed
@@ -239,6 +263,54 @@ const create_world =       _=>{
 	clock = new THREE.Clock()
 	
 	orbit_controls = new OrbitControls( camera, renderer.domElement )
+
+	if ( window.matchMedia( '( pointer: coarse )' ).matches ){
+		touch = true
+		orbit_controls.enabled = false
+		addEventListener( 'pointerdown', event =>{
+			event.preventDefault()
+			
+			pointer_data.button = event.button
+			
+			pointer_data.down ={ x : event.clientX, y : event.clientY }
+		})
+		addEventListener( 'pointermove', event =>{
+			if( pointer_data.button == -1 ) return
+			
+			pointer_data.position ={ x : event.clientX, y : event.clientY }
+			
+			const delta ={ x : pointer_data.position.x - pointer_data.down.x, 
+						   y : pointer_data.position.y - pointer_data.down.y }
+			
+			if( touch ){
+				if( pointer_data.down.x < innerWidth / 2 ){
+					keys.a = delta.x < -delta_threshold
+					keys.d = delta.x >  delta_threshold
+					keys.w = delta.y < -delta_threshold
+					keys.s = delta.y >  delta_threshold
+				} else {
+					keys.r = delta.y >  delta_threshold
+					keys.f = delta.y < -delta_threshold
+				}	
+			} else {
+				keys.a = delta.x < -delta_threshold
+				keys.d = delta.x >  delta_threshold
+				keys.w = delta.y < -delta_threshold
+				keys.s = delta.y >  delta_threshold		
+			}
+		})
+		addEventListener( 'pointerup',   event =>{
+			pointer_data.button = -1
+			
+			keys.w = false
+			keys.a = false
+			keys.s = false
+			keys.d = false
+			keys.r = false
+			keys.f = false
+		})
+		
+	}
 	
 	class Gamepad                                     {
 		static                          {
@@ -254,28 +326,6 @@ const create_world =       _=>{
 				}, can_rotate_time )
 			}
 			
-			const axes    ={
-				a : 0,
-				b : 1,
-				c : 2,
-				d : 3,
-				x : 2,
-				y : 3,
-				
-				z : 0,
-			}
-			const buttons ={
-				index      : 0,
-				middle     : 1,
-				menu       : 2,
-				thumbstick : 3,
-				
-				a : 0,
-				b : 1,
-				x : 2,
-				y : 3,
-			}
-				
 			keys.w = args.gamepad.buttons[ buttons.index  ].value > .5
 			keys.s = args.gamepad.buttons[ buttons.middle ].value > .5
 			if( in_vr ){				
@@ -383,8 +433,36 @@ const create_world =       _=>{
 		static update = args =>{
 			if( ! in_vr ) return
 			
-			if( "gamepad" in VR.controller1 ) Gamepad.process_gamepad({ gamepad : VR.controller1.gamepad })
-			if( "gamepad" in VR.controller2 ) Gamepad.process_gamepad({ gamepad : VR.controller2.gamepad })
+			if( "gamepad" in VR.controller1 ){
+				const gamepad = VR.controller1.gamepad
+				keys.w = gamepad.buttons[ buttons.index  ].value > .5
+				keys.s = gamepad.buttons[ buttons.middle ].value > .5
+				if( can_rotate && gamepad.axes[ axes.c ] < -.5 ){
+					camera_group.rotation.y += Math.PI / 4
+					cool_down()
+				}	
+				if( can_rotate && gamepad.axes[ axes.c ] >  .5 ){
+					camera_group.rotation.y -= Math.PI / 4
+					cool_down()
+				}
+				keys.q = gamepad.axes[ axes.d ] < -.5
+				keys.e = gamepad.axes[ axes.d ] >  .5
+			}
+			if( "gamepad" in VR.controller2 ){
+				const gamepad = VR.controller2.gamepad
+				keys.w = keys.w || gamepad.buttons[ buttons.index  ].value > .5
+				keys.w = keys.w || gamepad.axes[ axes.d ] < -.5
+				keys.s = keys.s || gamepad.buttons[ buttons.middle ].value > .5
+				keys.s = keys.s || gamepad.axes[ axes.d ] >  .5
+				
+				const dir               = new THREE.Vector3()
+				camera.getWorldDirection( dir )
+				const up                = new THREE.Vector3( 0 , 1 , 0 ).applyQuaternion( camera.quaternion ).normalize()
+				const right             = new THREE.Vector3().crossVectors( camera.up, dir ).normalize()
+						
+				if( gamepad.axes[ axes.d ] >  .5 ) kam.position.addScaledVector( right,  speed )
+				if( gamepad.axes[ axes.d ] < -.5 ) kam.position.addScaledVector( right, -speed )
+			}
 		}
 	}
 	
