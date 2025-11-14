@@ -143,6 +143,49 @@ document.getElementById( 'send_img' ).onclick =_=>{
 	chat_input.value = ''
 }
 
+const generateSkyGeometry = ( texture, direction )=>{
+        texture.colorSpace = THREE.SRGBColorSpace;
+        //const material = new THREE.MeshBasicMaterial({ color : 'red', side: THREE.BackSide });
+        const material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
+        material.fog = false;
+        material.toneMapped = false;
+        const geometry = new THREE.SphereGeometry(5000, 64, 64);
+        const skysphere = new THREE.Mesh(geometry, material);
+        skysphere.name = "environmentSky"
+        const defaultUp = new THREE.Vector3(0, 1, 0);
+        const quaternion = new THREE.Quaternion().setFromUnitVectors(defaultUp, direction);
+        //skysphere.applyQuaternion(quaternion);
+        return skysphere;
+}
+const generateGradientSky = ( colorA, colorB, direction )=>{
+        const canvas = document.createElement('canvas');
+        canvas.id = "skyCanvas";
+        canvas.width = 1;
+        canvas.height = 256;
+        const context = canvas.getContext('2d');
+		
+		//debugger
+        const gradient = context.createLinearGradient(0, 0, 0, 256);
+		const style_b = 'rgb(' + colorB[ 0 ]* 255 + ',' + colorB[ 1 ]* 255 + ',' + colorB[ 2 ]* 255 + ')'
+		const style_a = 'rgb(' + colorA[ 0 ]* 255 + ',' + colorA[ 1 ]* 255 + ',' + colorA[ 2 ]* 255 + ')'
+        gradient.addColorStop( 0, style_b )
+        gradient.addColorStop( 1, style_a )
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, 1, 256);
+
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+        return generateSkyGeometry( texture, direction );
+}
+const frame                       = mesh =>{
+	const box3                   = new THREE.Box3().setFromObject( mesh )
+	const size                   = box3.getSize( new THREE.Vector3())
+	const distance               = 5 * Math.max( size.x, size.y, size.z )
+	camera.position.set          (  distance, distance,  distance )
+	camera.updateProjectionMatrix()
+	//orbit_controls.update        ()
+}
 const send         =       _=>{
 	if( multi && multi.general ){
 		if( profile ) _ = profile.name + ' : ' + _
@@ -254,8 +297,8 @@ const create_world =       _=>{
 	scene.environment        = new THREE.PMREMGenerator( renderer ).fromScene( new RoomEnvironment(), 0.04 ).texture		
 	camera                   = new THREE.PerspectiveCamera( 50, 1, .01, 10000 )
 	camera_group             = new THREE.Group()
-	camera_group.position.set( 0, 5, 15 )
-	camera.position.set( 0, 5, 15 )
+	camera_group.position.set( 0.153300497174421, -0.14091464583527746, 0.8125655485292499 )
+	//camera.position.set      ( 0, 5, 15 )
 	scene.add                ( camera_group )
 	//camera_group.add         ( camera )
 	
@@ -458,37 +501,26 @@ const create_world =       _=>{
 			}
 		}
 	}
-	
-	// sky
-//	new THREE.TextureLoader().load( './assets/skies/milkyway_PNG.png', texture =>{
-		const material      = new THREE.MeshBasicMaterial({ /*map: texture,*/ side: THREE.BackSide, color : 'black' })
-		material.fog        = false
-		material.toneMapped = false
-		const geometry      = new THREE.SphereGeometry( 5000, 64, 64 )
-		const sky_sphere    = new THREE.Mesh( geometry, material )
-		sky_sphere.name     = "environmentSky"
-		scene.add           ( sky_sphere )
-//	})
 			
 	const gltf_loader   = new GLTFLoader()
 	gltf_loader.register( parser => new GLTFGoogleTiltBrushMaterialExtension( parser, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/brushes/' ))
 	gltf_loader.load    ( './assets/scene.glb', gltf =>{
-		/*
-		const parser = gltf.parser
-		const json   = parser.json
-		const jsonString = JSON.stringify(json, null, 2);
-		const blob = new Blob([jsonString], { type: 'application/json' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = 'data.json';
-		a.click();
-		URL.revokeObjectURL(url)
-		*/
-		
 		const brush      = gltf.scene
 		brush.rotation.y = Math.PI
 		scene.add        ( brush )
+		
+		const extras = brush.userData
+		if( extras ){
+			const sky_color_a            = extras.TB_SkyColorA.split( "," )
+			const sky_color_b            = extras.TB_SkyColorB.split( "," )
+			const sky_gradient_direction = extras.TB_SkyGradientDirection.split( "," )
+			scene.add                    ( generateGradientSky( sky_color_a, sky_color_b, sky_gradient_direction ))
+		}
+		//const boxHelper = new THREE.BoxHelper( brush, 0xffff00); // yellow wireframe
+		//scene.add(boxHelper);
+		
+		frame( brush )
+		orbit_controls.target.set( brush.position.x, brush.position.y, brush.position.z )
 	})
 
 	const resize =()=>{
