@@ -86,7 +86,7 @@
 
 addEventListener( "error", event =>{ alert( event.lineno + " = " + event.message + '<br>' )})
 
-const app = '33f5px2j7n'
+const app = 'v3sqp77tbd'
 
 import * as THREE                               from 'three'
 import { RoomEnvironment }                      from "three/addons/environments/RoomEnvironment.js"
@@ -450,13 +450,11 @@ const create_world =       _=>{
 				
 				const dir               = new THREE.Vector3()
 				camera.getWorldDirection( dir )
-				const up                = new THREE.Vector3( 0 , 1 , 0 ).applyQuaternion( camera.quaternion ).normalize()
+				const up                = new THREE.Vector3( 0, 1, 0 ).applyQuaternion( camera.quaternion ).normalize()
 				const right             = new THREE.Vector3().crossVectors( camera.up, dir ).normalize()
 						
 				if( gamepad.axes[ axes.c ] >  .5 ) camera_group.position.addScaledVector( right,  speed )
 				if( gamepad.axes[ axes.c ] < -.5 ) camera_group.position.addScaledVector( right, -speed )
-				if( gamepad.axes[ axes.d ] >  .5 ) camera_group.position.addScaledVector( up,     speed )
-				if( gamepad.axes[ axes.d ] < -.5 ) camera_group.position.addScaledVector( up,    -speed )
 			}
 		}
 	}
