@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>icosa viewer v251113 x joserpagil@gmail.com</title>
+    <title>icosa viewer v251114 x joserpagil@gmail.com</title>
 </head>
 
 <style>
@@ -61,7 +61,7 @@
 
 <canvas    id = 'nipple_canvas'          class = 'unselectable'  style = 'position : absolute; bottom : 0; left : 0;'></canvas>
 <div       id = 'chat_div'                                       style = 'position : absolute; bottom : 0; background : transparent; color : white;'>
-	<div   id = "msgs_div"                                       style = "overflow : hidden; color: gray;"></div>
+	<div   id = "msgs_div"                                       style = "overflow : hidden;   color: white;"></div>
 	<input id = "chat_input" type="text" class = "rounded-input" style = "width : 100%;" placeholder = "send message" autocomplete = "off"/>
 	<img   id = 'send_img'               class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/send.png' hidden/>
 </div>
@@ -86,7 +86,7 @@
 
 addEventListener( "error", event =>{ alert( event.lineno + " = " + event.message + '<br>' )})
 
-const app = 'xct74jt6vs'
+const app = '33f5px2j7n'
 
 import * as THREE                               from 'three'
 import { RoomEnvironment }                      from "three/addons/environments/RoomEnvironment.js"
@@ -123,7 +123,7 @@ let   client, token, auth, avatar, play, match, profile, room, actor, multi, upd
 let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 let   nipple_context
 let   touch = false
-let   vr    = false, in_vr = false, can_rotate = true, can_rotate_time = 1000
+let   vr    = false, in_vr = false, can_rotate = true, can_rotate_time = 125
 let   speed           = 0.05
 let   angular_speed   = Math.PI / 500
 let   delta_threshold = 20
@@ -137,13 +137,17 @@ document.getElementById( 'send_img' ).onclick =_=>{
 	if( ! msg.length ) return
 	
 	send      ( msg)
+	//if( profile ) msg = profile.name + ' : ' + msg
 	receive   ( msg )
 
 	chat_input.value = ''
 }
 
 const send         =       _=>{
-	if( multi && multi.general ) multi.general.sendMessage (_)
+	if( multi && multi.general ){
+		if( profile ) _ = profile.name + ' : ' + _
+		multi.general.sendMessage (_)
+	}
 }
 const receive      =       _=>{
 	msgs.push(_)
@@ -170,10 +174,8 @@ const create_world =       _=>{
 
 		if( keys[ 'w' ]) kam.position.addScaledVector( dir,    speed )
 		if( keys[ 's' ]) kam.position.addScaledVector( dir,   -speed )
-		//if( keys[ 'a' ]) kam.position.addScaledVector( right,  speed )
-		//if( keys[ 'd' ]) kam.position.addScaledVector( right, -speed )
-		if( keys[ 'a' ]) kam.rotation.y              += angular_speed
-		if( keys[ 'd' ]) kam.rotation.y              -= angular_speed
+		if( keys[ 'a' ]) kam.position.addScaledVector( right,  speed )
+		if( keys[ 'd' ]) kam.position.addScaledVector( right, -speed )
 		if( keys[ 'q' ]) kam.position.addScaledVector( up,     speed * .5 )
 		if( keys[ 'e' ]) kam.position.addScaledVector( up,    -speed * .5 )
 		if( keys[ 'r' ]) kam.rotation.x              += angular_speed
@@ -319,28 +321,10 @@ const create_world =       _=>{
 			})
 		}
 		static process_gamepad = args =>{
-			const cool_down =_=>{
-				can_rotate = false
-				setTimeout(_=>{
-					can_rotate = true
-				}, can_rotate_time )
-			}
-			
 			keys.w = args.gamepad.buttons[ buttons.index  ].value > .5
 			keys.s = args.gamepad.buttons[ buttons.middle ].value > .5
-			if( in_vr ){				
-				if( can_rotate && args.gamepad.axes[ axes.c ] < -.5 ){
-					camera_group.rotation.y += Math.PI / 4
-					cool_down()
-				}	
-				if( can_rotate && args.gamepad.axes[ axes.c ] >  .5 ){
-					camera_group.rotation.y -= Math.PI / 4
-					cool_down()
-				}
-			} else {
-				keys.a = args.gamepad.axes[ axes.c ] < -.5
-				keys.d = args.gamepad.axes[ axes.c ] >  .5
-			}
+			keys.a = args.gamepad.axes[ axes.c ] < -.5
+			keys.d = args.gamepad.axes[ axes.c ] >  .5
 			keys.q = args.gamepad.axes[ axes.d ] < -.5
 			keys.e = args.gamepad.axes[ axes.d ] >  .5
 		
@@ -433,6 +417,13 @@ const create_world =       _=>{
 		static update = args =>{
 			if( ! in_vr ) return
 			
+			const cool_down =_=>{
+				can_rotate = false
+				setTimeout(_=>{
+					can_rotate = true
+				}, can_rotate_time )
+			}			
+			
 			if( "gamepad" in VR.controller1 ){
 				const gamepad = VR.controller1.gamepad
 				keys.w = gamepad.buttons[ buttons.index  ].value > .5
@@ -448,6 +439,8 @@ const create_world =       _=>{
 				keys.q = gamepad.axes[ axes.d ] < -.5
 				keys.e = gamepad.axes[ axes.d ] >  .5
 			}
+			
+			
 			if( "gamepad" in VR.controller2 ){
 				const gamepad = VR.controller2.gamepad
 				keys.w = keys.w || gamepad.buttons[ buttons.index  ].value > .5
@@ -460,8 +453,10 @@ const create_world =       _=>{
 				const up                = new THREE.Vector3( 0 , 1 , 0 ).applyQuaternion( camera.quaternion ).normalize()
 				const right             = new THREE.Vector3().crossVectors( camera.up, dir ).normalize()
 						
-				if( gamepad.axes[ axes.d ] >  .5 ) kam.position.addScaledVector( right,  speed )
-				if( gamepad.axes[ axes.d ] < -.5 ) kam.position.addScaledVector( right, -speed )
+				if( gamepad.axes[ axes.c ] >  .5 ) camera_group.position.addScaledVector( right,  speed )
+				if( gamepad.axes[ axes.c ] < -.5 ) camera_group.position.addScaledVector( right, -speed )
+				if( gamepad.axes[ axes.d ] >  .5 ) camera_group.position.addScaledVector( up,     speed )
+				if( gamepad.axes[ axes.d ] < -.5 ) camera_group.position.addScaledVector( up,    -speed )
 			}
 		}
 	}
@@ -595,6 +590,7 @@ const create_world =       _=>{
 			if( 'Enter' == event.key ){
 				const msg = chat_input.value
 				send      ( msg)
+				//if( profile ) msg = profile.name + ' : ' + msg
 				receive   ( msg )
 				
 				chat_input.value = ''
