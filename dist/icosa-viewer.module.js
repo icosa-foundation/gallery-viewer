@@ -6045,6 +6045,14 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             return null; // Handle the error case gracefully.
         }
     }
+    modelHasEmbeddedLights() {
+        // Check if the loaded model already contains light objects
+        let hasLights = false;
+        this.loadedModel?.traverse((node)=>{
+            if (node.isLight) hasLights = true;
+        });
+        return hasLights;
+    }
     initLights() {
         // Logic for scene light creation:
         // 1. Are there explicit GLTF scene lights? If so use them and skip the rest
@@ -6057,10 +6065,28 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             return new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(rot.x), $hBQxr$three.MathUtils.degToRad(rot.y), $hBQxr$three.MathUtils.degToRad(rot.z));
         }
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+            // If model already has embedded lights, don't create default lights
+            if (this.modelHasEmbeddedLights()) return;
             const light = new $hBQxr$three.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 10).normalize();
             this.loadedModel.add(light);
             return;
+        }
+        // Check if lights are explicitly defined via metadata or environment
+        const userData = this.loadedModel?.userData || {};
+        const hasExplicitLightMetadata = userData['TB_SceneLight0Color'] || userData['TB_SceneLight0Rotation'] || userData['TB_SceneLight1Color'] || userData['TB_SceneLight1Rotation'];
+        const hasEnvironment = this.sketchMetadata.EnvironmentGuid && this.sketchMetadata.EnvironmentGuid !== '';
+        const hasSceneLightNodes = this.loadedModel && (()=>{
+            let found = false;
+            this.loadedModel.traverse((node)=>{
+                if (node.name && node.name.startsWith("node_SceneLight_")) found = true;
+            });
+            return found;
+        })();
+        // Only add lights if the scene defines them via metadata, environment, or scene light nodes
+        // If none of these exist and the model has embedded lights, don't create default lights
+        if (!hasExplicitLightMetadata && !hasEnvironment && !hasSceneLightNodes) {
+            if (this.modelHasEmbeddedLights()) return;
         }
         let l0 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         let l1 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
