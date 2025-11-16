@@ -2613,6 +2613,17 @@ export class Viewer {
         }
     }
 
+    private modelHasEmbeddedLights(): boolean {
+        // Check if the loaded model already contains light objects
+        let hasLights = false;
+        this.loadedModel?.traverse((node: any) => {
+            if (node.isLight) {
+                hasLights = true;
+            }
+        });
+        return hasLights;
+    }
+
     private initLights() {
         // Logic for scene light creation:
         // 1. Are there explicit GLTF scene lights? If so use them and skip the rest
@@ -2631,10 +2642,37 @@ export class Viewer {
         }
 
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
+            // If model already has embedded lights, don't create default lights
+            if (this.modelHasEmbeddedLights()) {
+                return;
+            }
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 10).normalize();
             this.loadedModel.add(light);
             return;
+        }
+
+        // Check if lights are explicitly defined via metadata or environment
+        const userData = this.loadedModel?.userData || {};
+        const hasExplicitLightMetadata = userData['TB_SceneLight0Color'] || userData['TB_SceneLight0Rotation'] ||
+                                          userData['TB_SceneLight1Color'] || userData['TB_SceneLight1Rotation'];
+        const hasEnvironment = this.sketchMetadata.EnvironmentGuid && this.sketchMetadata.EnvironmentGuid !== '';
+        const hasSceneLightNodes = this.loadedModel && (() => {
+            let found = false;
+            this.loadedModel.traverse((node: any) => {
+                if (node.name && node.name.startsWith("node_SceneLight_")) {
+                    found = true;
+                }
+            });
+            return found;
+        })();
+
+        // Only add lights if the scene defines them via metadata, environment, or scene light nodes
+        // If none of these exist and the model has embedded lights, don't create default lights
+        if (!hasExplicitLightMetadata && !hasEnvironment && !hasSceneLightNodes) {
+            if (this.modelHasEmbeddedLights()) {
+                return;
+            }
         }
 
         let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
