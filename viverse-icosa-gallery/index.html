@@ -93,9 +93,10 @@
 
 			const app = '543hm3fpks'
 		
-            import { Viewer }   from "./icosa-viewer.module.js"
-			import * as THREE   from 'three'
-			import { VRButton } from 'three/addons/webxr/VRButton.js'
+            import { Viewer }     from "./icosa-viewer.module.js"
+			import * as THREE     from 'three'
+			import { VRButton }   from 'three/addons/webxr/VRButton.js'
+			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 			
 			let   viewer
 			let   vr_button, clock, camera_group, orbit_controls, keys = {}, beep
@@ -192,8 +193,6 @@
             viewer        = new Viewer( pre_render, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/' )
             window.viewer = viewer
 			
-			//for( const key in viewer.xrButton ) msgs_div.innerHTML += key + ' : ' + viewer.xrButton[ key ] + ', '
-			
 			viewer.renderer.xr.addEventListener( 'sessionstart', () => {
 				in_vr = true
 			})
@@ -202,7 +201,7 @@
 				in_vr = false
 			})
 			
-			vr_button                = VRButton.createButton( viewer.renderer )
+			vr_button              = VRButton.createButton( viewer.renderer )
 			const show_vr_interval = setInterval(_=>{
 				if( vr_button.textContent == 'ENTER VR' ){
 					clearInterval( show_vr_interval )
@@ -361,8 +360,12 @@
 				client         = new viverse.Client({ clientId : app, domain : 'https://account.htcvive.com/' })
 				if( ! client ) return
 				
+				msgs_div.innerHTML += 'client<br>'
+				
 				auth         = await client.checkAuth()
 				if( ! auth ) return
+
+				msgs_div.innerHTML += 'auth<br>'
 				
 				token = await client.getToken()
 				
@@ -372,15 +375,25 @@
 				})
 				if( ! avatar ) return
 				
-				profile = await avatar.getProfile()
+				msgs_div.innerHTML += 'avatar<br>'
 
+				profile = await avatar.getProfile()
+				
+				msgs_div.innerHTML += 'profile<br>'
+				
 				play         = new viverse.Play()
 				if( ! play ) return
+				
+				msgs_div.innerHTML += 'play<br>'
 				
 				match = await play.newMatchmakingClient( app, true )
 				if( ! match ) return
 				
+				msgs_div.innerHTML += 'mathch<br>'				
+				
 				match.on( 'onRoomActorChange', new_actors  =>{
+					msgs_div.innerHTML += 'onRoomActorChange<br>'
+				
 					const olds    = new Map          ( actors.map    ( actor =>[ actor.session_id, actor ]))
 					const news    = new Map          ( new_actors.map( actor =>[ actor.session_id, actor ]))
 					const removed = actors.filter    ( actor => ! news.has( actor.session_id ))
@@ -388,6 +401,8 @@
 					actors        = actors.filter    ( actor => news.has( actor.session_id ))
 					
 					for( const actor of added   ){
+						msgs_div.innerHTML += 'added ' + actor.name + '<br>'
+						
 						actors.push( actor )
 
 						actor.properties.mixer = null
@@ -395,9 +410,6 @@
 						if( session_id == actor.session_id ) continue
 									
 						new GLTFLoader().load( actor.properties.vrmUrl, gltf =>{ 
-							for( const key in actor )
-								msgs_div.innerHTML += key + ' : ' + actor[ key ] + ', '
-
 							actor.properties.character = gltf.scene
 							viewer.scene.add           ( actor.properties.character )
 							
@@ -431,7 +443,12 @@
 						}, progress =>{},
 						error =>{ msgs_div.innerHTML += 'error : ' + error + '<br>' })		
 					}
-					for( const actor of removed ) if( actor.properties.character ) viewer.scene.remove( actor.properties.character )
+					for( const actor of removed ){
+						msgs_div.innerHTML += 'removed ' + actor.name + '<br>'
+						
+						if( actor.properties.character ) 
+							viewer.scene.remove( actor.properties.character )
+					}
 				})
 				match.on( 'onConnect',         async  _=>{
 					session_id             = crypto.randomUUID()
@@ -479,7 +496,7 @@
 						
 						update_position_interval = setInterval( event =>{
 						
-							const kam = in_vr ? camera_group : viewer.activeCamera
+							const kam = in_vr ? viewer.cameraRig : viewer.activeCamera
 							
 							multi.networksync.updateMyPosition({
 								session_id, 
