@@ -91,7 +91,7 @@
 
 			addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = 'uhkjey23wp'
+			const app = '543hm3fpks'
 		
             import { Viewer }   from "./icosa-viewer.module.js"
 			import * as THREE   from 'three'
@@ -164,7 +164,9 @@
 			}
 			const pre_render          =_=>{
 				const delta = clock.getDelta()
-				for( const actor of actors ) if( actor.properties.mixer ) actor.properties.mixer.update( delta )
+				for( const actor of actors ){
+					if( actor.properties.mixer ) actor.properties.mixer.update( delta )
+				}				
 				
 				move()
 				//if( ! touch ) orbit_controls.update()
@@ -187,16 +189,16 @@
 				}
 			}
 			
-            viewer    = new Viewer( pre_render, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/' )
+            viewer        = new Viewer( pre_render, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/' )
             window.viewer = viewer
 			
 			//for( const key in viewer.xrButton ) msgs_div.innerHTML += key + ' : ' + viewer.xrButton[ key ] + ', '
 			
-			viewer.renderer.xr.addEventListener('sessionstart', () => {
+			viewer.renderer.xr.addEventListener( 'sessionstart', () => {
 				in_vr = true
 			})
 
-			viewer.renderer.xr.addEventListener('sessionend', () => {
+			viewer.renderer.xr.addEventListener( 'sessionend', () => {
 				in_vr = false
 			})
 			
@@ -393,6 +395,9 @@
 						if( session_id == actor.session_id ) continue
 									
 						new GLTFLoader().load( actor.properties.vrmUrl, gltf =>{ 
+							for( const key in actor )
+								msgs_div.innerHTML += key + ' : ' + actor[ key ] + ', '
+
 							actor.properties.character = gltf.scene
 							viewer.scene.add           ( actor.properties.character )
 							
@@ -469,6 +474,7 @@
 								actor.properties.character.position.set( data.data.px, data.data.py, data.data.pz )
 								actor.properties.character.rotation.set( data.data.rx, data.data.ry, data.data.rz )
 							}
+							msgs_div.innerHTML = 'position : ' + data.data.px + ', ' + data.data.py + ', ' + data.data.pz + '<br>'
 						})
 						
 						update_position_interval = setInterval( event =>{
