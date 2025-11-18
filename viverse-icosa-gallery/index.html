@@ -93,10 +93,12 @@
 
 			const app = 'uhkjey23wp'
 		
-            import { Viewer }                   from "./icosa-viewer.module.js"
-			import * as THREE                   from 'three'
-
-			let   clock, camera_group, orbit_controls, keys = {}, beep
+            import { Viewer }   from "./icosa-viewer.module.js"
+			import * as THREE   from 'three'
+			import { VRButton } from 'three/addons/webxr/VRButton.js'
+			
+			let   viewer
+			let   vr_button, clock, camera_group, orbit_controls, keys = {}, beep
 			let   client, token, auth, avatar, play, match, profile, room, actor, multi, update_position_interval, update_position_time = 30, actors =[], session_id
 			let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 			let   nipple_context
@@ -185,8 +187,10 @@
 				}
 			}
 			
-            let viewer    = new Viewer( pre_render, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/' )
+            viewer    = new Viewer( pre_render, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/' )
             window.viewer = viewer
+			
+			//for( const key in viewer.xrButton ) msgs_div.innerHTML += key + ' : ' + viewer.xrButton[ key ] + ', '
 			
 			viewer.renderer.xr.addEventListener('sessionstart', () => {
 				in_vr = true
@@ -196,8 +200,9 @@
 				in_vr = false
 			})
 			
+			vr_button                = VRButton.createButton( viewer.renderer )
 			const show_vr_interval = setInterval(_=>{
-				if( viewer.xrButton.textContent == 'START XR' ){
+				if( vr_button.textContent == 'ENTER VR' ){
 					clearInterval( show_vr_interval )
 					
 					vr = true
