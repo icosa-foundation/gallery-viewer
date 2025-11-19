@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v251118</title>
+        <title>viverse icosa viewer v251119</title>
         <style>
             html, body {
                 height: 100%;
@@ -34,7 +34,6 @@
 			
 			button {
 				background-color : rgba( 0, 0, 0, 0.6 );
-				border : none;
 				color : white;
 			}
 			
@@ -77,8 +76,8 @@
 		<canvas    id = 'nipple_canvas'          class = 'unselectable'  style = 'position : absolute; bottom : 0; left : 0;'></canvas>
 		<div       id = 'chat_div'                                       style = 'position : absolute; bottom : 0; background : transparent; color : white;'>
 			<div   id = "msgs_div"                                       style = "color : white; max-width : 100%; overflow-y : auto; overflow-x : hidden; white-space : pre-wrap; word-break : break-word; line-height : 1;"></div>
-			<input id = "chat_input" type="text" class = "rounded-input" style = "width : 100%;" placeholder = "send message" autocomplete = "off"/>
-			<img   id = 'send_img'               class = 'unselectable'  style = 'position : absolute; bottom : 11px; background : transparent;' src = 'assets/send.svg' hidden/>
+			<input id = "chat_input" type="text" class = "rounded-input"               style = "width : 100%;" placeholder = "send message" autocomplete = "off" hidden/>
+			<img   id = 'send_img'               class = 'unselectable rounded-input'  style = 'position : absolute; bottom : 13px; background : transparent;' src = 'assets/send.svg' />
 		</div>
 		<img       id = 'orientation_img'        class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden/>
 		<img       id = 'pc_img'                 class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent; right : 0;' src = 'assets/PC_controls.svg' hidden/>
@@ -92,7 +91,7 @@
 
 			addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = 'g3wh9fpct3'
+			const app = '3yhwr8ne54'
 		
             import { Viewer }     from "./icosa-viewer.module.js"
 			import * as THREE     from 'three'
@@ -107,7 +106,7 @@
 			let   touch = false
 			let   vr = false, in_vr = false
 			let   speed = 0.05
-			let   angular_speed   = Math.PI / 500
+			let   angular_speed = Math.PI / 500
 			let   delta_threshold = 20
 			let   msgs =[], vector3 = new THREE.Vector3();
 			
@@ -197,7 +196,6 @@
 			viewer.renderer.xr.addEventListener( 'sessionstart', () => {
 				in_vr = true
 			})
-
 			viewer.renderer.xr.addEventListener( 'sessionend', () => {
 				in_vr = false
 			})
@@ -267,16 +265,23 @@
 			const resize =()=>{
 				const put_chat = args =>{
 					const height                 = innerHeight / 4
+					const width                  = innerWidth  / 2
 					chat_div.style.padding       = '1vh'
 					chat_div.style.left          = x + 'px'
 					chat_div.style.width         = innerWidth - size * 3 + 'px'
 					chat_div.style.height        = height + 'px'
+					
 					msgs_div.style.height        = height - size + size / 4 + 'px'
+					msgs_div.style.width         = width + 'px'
 					msgs_div.style.paddingLeft   = '2vh'
+					
 					chat_input.style.height      = size / 2 + 'px'
 					chat_input.style.width       = size * 3 + 'px'
 					chat_input.style.paddingLeft = '2vh'
-					send_img.style.height        = size * .7 + 'px'
+					chat_input.style.paddingLeft = '2vh'
+					chat_input.hidden              = false
+					
+					send_img.style.height        = size / 2 + 2+ 'px'
 					send_img.hidden              = false
 				}
 				const put_vr_button = args =>{
@@ -341,7 +346,7 @@
 				//keys[ event.key.toLowerCase()] = false 
 			})
 			
-			const authorize           = async _=>{
+			const authorize = async _=>{
 				const find_actor =( session_id )=>{
 					for( const actor of actors )
 						if( actor.session_id == session_id ) return actor
