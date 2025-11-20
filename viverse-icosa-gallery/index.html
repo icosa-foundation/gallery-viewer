@@ -2,12 +2,13 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v251119</title>
+        <title>viverse icosa viewer v251120</title>
         <style>
             html, body {
                 height: 100%;
                 width: 100%;
                 margin: 0;
+				overflow : hidden;
 				touch-action: none;
 			}
 			
@@ -21,11 +22,6 @@
 			* {
 				font-family: 'MundialRegular', sans-serif;
 			}
-			
-			body { 
-				margin   : 0; 
-				overflow : hidden; 
-			}
 
 			input {
 				background-color : rgba( 0, 0, 0, 0.6 );
@@ -34,14 +30,13 @@
 			
 			button {
 				background-color : rgba( 0, 0, 0, 0.6 );
-				color : white;
+				color            : white;
 			}
 			
-			.rounded-input {
-				border: 2px solid #ccc;
+			.rounded {
 				border-radius: 25px; 
+				border : 2px solid lightGray;
 				outline: none;
-				transition: border-color 0.3s ease;
 			}
 			
 			#virtual_reality_button {
@@ -72,17 +67,21 @@
     </head>
     <body style="overflow : hidden; margin: 0; background-color: black; display: flex; justify-content: center; align-items: center; height: 100vh;">
 
-        <div id="icosa-viewer" style="width: 100%; height: 100%;"></div>
-		<canvas    id = 'nipple_canvas'          class = 'unselectable'  style = 'position : absolute; bottom : 0; left : 0;'></canvas>
-		<div       id = 'chat_div'                                       style = 'position : absolute; bottom : 0; background : transparent; color : white;'>
-			<div   id = "msgs_div"                                       style = "color : white; max-width : 100%; overflow-y : auto; overflow-x : hidden; white-space : pre-wrap; word-break : break-word; line-height : 1;"></div>
-			<input id = "chat_input" type="text" class = "rounded-input"               style = "width : 100%;" placeholder = "send message" autocomplete = "off" hidden/>
-			<img   id = 'send_img'               class = 'unselectable rounded-input'  style = 'position : absolute; bottom : 13px; background : transparent;' src = 'assets/send.svg' />
+        <div           id = "icosa-viewer"                                   style = "width: 100%; height: 100%;"></div>
+		<canvas        id = 'nipple_canvas'          class = 'unselectable'  style = 'position : absolute; bottom : 0; left : 0;'></canvas>
+		
+		<div           id = 'chat_div'                                       style = 'position : absolute; bottom : 1%; background : transparent; color : white;'>
+			<div       id = "msgs_div"                                       style = "margin-left : 5px; padding : 1%; color : white; max-width : 100%; overflow-y : auto; overflow-x : hidden; white-space : pre-wrap; word-break : break-word; line-height : 1;"></div>
+			<div       id = 'input_div'                                      style = 'display : flex; align-items : center;'>
+			<input     id = "chat_input" type="text" class = "rounded"       style = "margin-left : 5px; " placeholder = "send message" autocomplete = "off" hidden>
+				<img   id = 'send_img'               class = 'rounded'       style = 'margin-left : 5px; background : transparent;' src = 'assets/send.png' hidden>
+			</div>
 		</div>
-		<img       id = 'orientation_img'        class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden/>
-		<img       id = 'pc_img'                 class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent; right : 0;' src = 'assets/PC_controls.svg' hidden/>
-		<button    id = 'virtual_reality_button' class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' hidden>
-			<img   id = 'VR_headset_icon' src = 'assets/VR_headset_icon.svg'/>
+		
+		<img          id = 'orientation_img'        class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden>
+		<img          id = 'pc_img'                 class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent; right : 0;' src = 'assets/PC_controls.svg' hidden>
+		<button       id = 'virtual_reality_button' class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' hidden>
+			<img      id = 'VR_headset_icon'        src = 'assets/VR_headset_icon.svg'/>
 		</button>
 		
 		<script src = "./libs/index.umd.cjs"></script>		
@@ -91,7 +90,7 @@
 
 			addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = '3yhwr8ne54'
+			const app = 'cus88fybes'
 		
             import { Viewer }     from "./icosa-viewer.module.js"
 			import * as THREE     from 'three'
@@ -263,25 +262,25 @@
 			}
 			
 			const resize =()=>{
-				const put_chat = args =>{
+				const put_chat      = args =>{
 					const height                 = innerHeight / 4
 					const width                  = innerWidth  / 2
-					chat_div.style.padding       = '1vh'
-					chat_div.style.left          = x + 'px'
-					chat_div.style.width         = innerWidth - size * 3 + 'px'
+					
+					chat_div.style.left          = args.left + 'px'
+					chat_div.style.width         = width  + 'px'
 					chat_div.style.height        = height + 'px'
 					
-					msgs_div.style.height        = height - size + size / 4 + 'px'
+					msgs_div.style.height        = height - size + 'px'
 					msgs_div.style.width         = width + 'px'
-					msgs_div.style.paddingLeft   = '2vh'
+					
+					input_div.style.height      = size + 'px'
 					
 					chat_input.style.height      = size / 2 + 'px'
 					chat_input.style.width       = size * 3 + 'px'
 					chat_input.style.paddingLeft = '2vh'
-					chat_input.style.paddingLeft = '2vh'
-					chat_input.hidden              = false
+					chat_input.hidden            = false
 					
-					send_img.style.height        = size / 2 + 2+ 'px'
+					send_img.style.height        = size / 2 + 'px'
 					send_img.hidden              = false
 				}
 				const put_vr_button = args =>{
