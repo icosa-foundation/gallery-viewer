@@ -486,6 +486,8 @@ export class Viewer {
                 if (viewer?.trackballControls) viewer.trackballControls.update();
             }
 
+            // SparkRenderer stochastic setup is now handled by GUI toggle
+
             if (viewer?.activeCamera) {
                 this.renderer.render(viewer.scene, viewer.activeCamera);
             }
@@ -2360,7 +2362,7 @@ export class Viewer {
                 throw new Error("SplatMesh not found in Spark module exports");
             }
 
-            return sparkModule.SplatMesh;
+            return sparkModule;
         } catch (error) {
             throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error.message}`);
         }
@@ -2379,9 +2381,9 @@ export class Viewer {
                 };
             }
             // Dynamic import for optional Spark dependency
-            let SplatMesh;
+            let SparkModule;
             try {
-                SplatMesh = await this.loadSparkModule();
+                SparkModule = await this.loadSparkModule();
             } catch (importError) {
                 console.error(importError.message);
                 this.showErrorIcon();
@@ -2389,7 +2391,7 @@ export class Viewer {
                 return;
             }
 
-            const splatModel = new SplatMesh({ url });
+            const splatModel = new SparkModule.SplatMesh({ url });
             await splatModel.initialized;
 
             // Apply coordinate system correction - splat files are upside-down compared to other formats
