@@ -1829,6 +1829,8 @@ class $e1f901905a002d12$export$2e2bcd8739ae039 extends $e1f901905a002d12$export$
      * @returns updated
      * @category Methods
      */ update(delta) {
+		if( ! this._enabled ) return ///
+		
         const deltaTheta = this._sphericalEnd.theta - this._spherical.theta;
         const deltaPhi = this._sphericalEnd.phi - this._spherical.phi;
         const deltaRadius = this._sphericalEnd.radius - this._spherical.radius;
@@ -3830,7 +3832,7 @@ class $677737c8a5cbea2f$var$EnvironmentPreset {
     }
 }
 class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
-    constructor( pre_render, assetBaseUrl, frame){///
+    constructor( assetBaseUrl, pre_render, frame ){///
 		this.pre_render = pre_render
 		
         this.loadingError = false;
@@ -3990,7 +3992,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 viewer1.activeCamera = viewer1?.xrCamera;
                 const inputSources = Array.from(session.inputSources);
                 const moveSpeed = 0.05;
-                const snapAngle = 15;
+                const snapAngle = 45; ///
                 inputSources.forEach((inputSource)=>{
                     const controllerData = handleController(inputSource);
                     if (controllerData) {
