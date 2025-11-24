@@ -11,6 +11,7 @@ import {VOXLoader as $hBQxr$VOXLoader, VOXMesh as $hBQxr$VOXMesh} from "three/ex
 import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension} from "three-icosa";
 import {TiltLoader as $hBQxr$TiltLoader} from "three-tiltloader";
 import {XRControllerModelFactory as $hBQxr$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
+import { XRHandModelFactory as $hBQxr$XRHandModelFactory } from "three/examples/jsm/webxr/XRHandModelFactory.js"///
 
 // Copyright 2021-2022 Icosa Gallery
 //
@@ -3936,10 +3937,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let controllerGrip0;
         let controllerGrip1;
         let previousLeftThumbstickX = 0;
+        viewer1.flying_value = 0 ///
         controller0 = this.renderer.xr.getController(0);
-        this.scene.add(controller0);
+		controller0.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
+		controller0.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
+		this.scene.add(controller0);
         controller1 = this.renderer.xr.getController(1);
-        this.scene.add(controller1);
+		controller1.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
+		controller1.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
+		this.scene.add(controller1);		
         const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
         controllerGrip0 = this.renderer.xr.getControllerGrip(0);
         controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
@@ -3947,8 +3953,28 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.scene.add(controllerGrip1);
+        controllerGrip1 = this.renderer.xr.getControllerGrip(1);
+        controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer);
+        ///let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, { requiredFeatures : [ "hand-tracking" ]});
 		/* /// */ this.xrButton = xrButton
+		
+		/*
+        const handModelFactory = new (0, $hBQxr$XRHandModelFactory)();///
+		
+        const hand0 = this.renderer.xr.getHand( 0 ) ///
+		hand0.add( handModelFactory.createHandModel( hand0, "mesh" ))///
+        hand0.addEventListener( 'pinchstart', _=>{ viewer1.flying_value = 1 })///
+		hand0.addEventListener( 'pinchend',   _=>{ viewer1.flying_value = 0 })///
+		this.scene.add( hand0 );
+		
+		const hand1 = this.renderer.xr.getHand( 1 ) ///
+		hand1.add( handModelFactory.createHandModel( hand1, "mesh" ))///
+        hand1.addEventListener( 'pinchstart', _=>{ viewer1.flying_value = -1 })///
+		hand1.addEventListener( 'pinchend',   _=>{ viewer1.flying_value = 0 })///
+		this.scene.add( hand1 );
+		*/
+		
         /* ///this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement('button');
@@ -3999,9 +4025,9 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                         const axes = controllerData.axes;
                         if (inputSource.handedness === 'left') // Movement (left thumbstick)
                         {
-                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
+                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1 || viewer1.flying_value ) {///
                                 const moveX = axes[2] * moveSpeed;
-                                const moveZ = -axes[3] * moveSpeed;
+                                const moveZ = -axes[3] * moveSpeed + viewer1.flying_value * 0.09;///
                                 // Get the camera's forward and right vectors
                                 const forward = new $hBQxr$three.Vector3();
                                 viewer1.activeCamera.getWorldDirection(forward);

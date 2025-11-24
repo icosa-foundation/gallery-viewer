@@ -2,55 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v251121</title>
-        <style>
-            html, body {
-                height: 100%;
-                width: 100%;
-                margin: 0;
-				overflow : hidden;
-				touch-action: none;
-			}
-			
-			@font-face {
-				font-family: 'MundialRegular';
-				src: url('assets/MundialRegular.otf') format('opentype');
-				font-weight: normal;
-				font-style: normal;
-			}
-
-			* {
-				font-family: 'MundialRegular', sans-serif;
-			}
-
-			input {
-				background-color : rgba( 0, 0, 0, 0.6 );
-				color            : white;
-			}
-			
-			button {
-				background-color : rgba( 0, 0, 0, 0.6 );
-				color            : white;
-			}
-			
-			.rounded {
-				border-radius: 25px; 
-				border : 2px solid lightGray;
-				outline: none;
-			}
-			
-			#virtual_reality_button {
-				border : none;
-				background : transparent;
-			}
-			
-			.unselectable {
-				user-select: none;      
-				-webkit-user-select: none;    
-				-moz-user-select: none;       
-				-ms-user-select: none;        
-			}
-		</style>
+        <title>viverse icosa viewer v251124</title>
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
@@ -63,34 +15,83 @@
                 }
             }
         </script>
-        <link rel="stylesheet" href="css/style.css">
-    </head>
-    <body style="overflow : hidden; margin: 0; background-color: black; display: flex; justify-content: center; align-items: center; height: 100vh;">
+		<link rel="stylesheet" href="css/style.css">    
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<style>
+		html, body {
+			height: 100%;
+			width: 100%;
+			margin: 0;
+			overflow : hidden;
+			touch-action: none;
+			-webkit-text-size-adjust: 100%;
+		}
+		
+		@font-face {
+			font-family: 'MundialRegular';
+			src: url('assets/MundialRegular.otf') format('opentype');
+			font-weight: normal;
+			font-style: normal;
+		}
 
-        <div           id = "icosa-viewer"                                   style = "width: 100%; height: 100%;"></div>
-		<canvas        id = 'nipple_canvas'          class = 'unselectable'  style = 'position : absolute; bottom : 0; left : 0;' hidden></canvas>
+		* {
+			font-family: 'MundialRegular', sans-serif;
+		}
+
+		button {
+			background-color : rgba( 0, 0, 0, 0.6 );
+			color            : white;
+		}
 		
-		<div           id = 'chat_div'                                       style = 'position : absolute; bottom : 1%; background : transparent; color : white;'>
-			<div       id = "msgs_div"                                       style = "border-radius : 10px; border-top : 2px solid #444;  border-right : 2px solid #444; margin-left : 5px; padding : 1%; color : white; max-width : 100%; overflow-y : auto; overflow-x : hidden; white-space : pre-wrap; word-break : break-word; line-height : 1;"></div>
-			<div       id = 'input_div'                                      style = 'display : flex; align-items : center;'>
-			<input     id = "chat_input" type="text" class = "rounded"       style = "margin-left : 5px; " placeholder = "send message" autocomplete = "off" hidden>
-				<img   id = 'send_img'               class = 'rounded'       style = 'margin-left : 5px; background : transparent;' src = 'assets/send.png' hidden>
+		.rounded {
+			border-radius: 25px; 
+			border : 2px solid lightGray;
+			outline: none;
+		}
+		
+		#virtual_reality_button {
+			border : none;
+			background : transparent;
+		}
+		
+		.unselectable {
+			user-select: none;      
+			-webkit-user-select: none;    
+			-moz-user-select: none;       
+			-ms-user-select: none;        
+		}
+		
+		input, img {
+			font-size: 16px;
+			background-color : rgba( 0, 0, 0, 0.6 );
+			color            : white;
+		}		
+	</style>
+    <body style = 'margin : 0;'>
+	
+        <div             id = "icosa-viewer"           style = "width: 100%; height: 100%;"></div>
+		<div             id = 'tool_div'               style = 'pointer-events: none; position : absolute; left : 1%; bottom : 1%; width : 98%; background : transparent;'>
+			<div         id = 'msgs_div'               style = "color : white; max-width : 100%; overflow : hidden; white-space : pre-wrap; word-break : break-word; line-height : 1;"></div>
+			<div         id = 'ui_div'                 style = 'background : transparent; color : white; display : flex; align-items : center;'>
+				<canvas  id = 'nipple_canvas'          style = 'hidden'></canvas>
+				<input   id = "chat_input" type="text" style = 'pointer-events: auto; margin-left : 5px;' class = 'rounded' placeholder = "send message" autocomplete = "off" hidden>
+				<img     id = 'send_img'               style = 'pointer-events: auto; margin-left : 5px;' class = 'rounded' src = 'assets/send.png' hidden/>
+				<img     id = 'orientation_img'        style = 'position : absolute; right : 0; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden/>
+				<img     id = 'pc_img'                 style = 'position : absolute; bottom : 0; background : transparent; right : 0;' src = 'assets/PC_controls.svg' hidden/>
+				<button  id = 'virtual_reality_button' style = 'pointer-events: auto; position : absolute; bottom : 0; margin-left : 5px; background : transparent;' hidden>
+					<img id = 'VR_headset_icon'        class = 'rounded' src = 'assets/VR_headset_icon.svg'/>
+				</button>
 			</div>
-		</div>
-		
-		<img          id = 'orientation_img'        class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden>
-		<img          id = 'pc_img'                 class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent; right : 0;' src = 'assets/PC_controls.svg' hidden>
-		<button       id = 'virtual_reality_button' class = 'unselectable'  style = 'position : absolute; bottom : 0; background : transparent;' hidden>
-			<img      id = 'VR_headset_icon'        src = 'assets/VR_headset_icon.svg'/>
-		</button>
+		</di>
 		
 		<script src = "./libs/index.umd.cjs"></script>		
 
-        <script type="module">
+        <script type = "module">
 
 			addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = 'ctbh2sd23p'
+			const app = 'x98d4z6dey'
 		
             import { Viewer }     from "./icosa-viewer.module.js"
 			import * as THREE     from 'three'
@@ -107,7 +108,7 @@
 			let   speed = 0.05
 			let   angular_speed = Math.PI / 500
 			let   delta_threshold = 20
-			let   msgs =[], vector3 = new THREE.Vector3();
+			let   vector3 = new THREE.Vector3();
 			
 			document.getElementById( 'virtual_reality_button' ).onclick =_=>{
 				viewer.xrButton.click()
@@ -137,7 +138,8 @@
 				const { dir, up, right } = get_dir_up_right()
 				if( ! dir ) return
 				
-				viewer.cameraControls.getPosition( vector3 )
+				//viewer.cameraControls.getPosition( vector3 )
+				vector3.copy( viewer.activeCamera.position )
 				
 				if( keys[ 'w' ]) vector3.addScaledVector( dir,    speed )
 				if( keys[ 's' ]) vector3.addScaledVector( dir,   -speed )
@@ -147,7 +149,8 @@
 				if( keys[ 'r' ]) vector3.addScaledVector( up,     speed )
 				if( keys[ 'f' ]) vector3.addScaledVector( up,    -speed )
 				
-				viewer.cameraControls.setPosition( vector3.x, vector3.y, vector3.z, false )
+				//viewer.cameraControls.setPosition( vector3.x, vector3.y, vector3.z, false )
+				viewer.activeCamera.position.copy( vector3 )
 			}
 			const send                =_=>{
 				if( multi && multi.general ){
@@ -190,7 +193,7 @@
 			clock = new THREE.Clock()
 			nipple_context = nipple_canvas.getContext( '2d' )	
 			
-            viewer        = new Viewer( pre_render, 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/' )
+            viewer        = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
             window.viewer = viewer
 			 
 			await viewer.loadGltf( "./assets/scene.glb", true )	
@@ -218,16 +221,16 @@
 			
 			if( window.matchMedia( '( pointer: coarse )' ).matches ){
 				touch = true				
-				viewer.cameraControls.enabled = false
+				viewer.cameraControls._enabled = false
 				addEventListener( 'pointerdown', event =>{
-					event.preventDefault()
+					//event.preventDefault()
 					
 					pointer_data.button = event.button
 					
 					pointer_data.down ={ x : event.clientX, y : event.clientY }
 				})
 				addEventListener( 'pointermove', event =>{
-					viewer.cameraControls.enabled = false
+					viewer.cameraControls._enabled = false
 					
 					event.preventDefault()
 					
@@ -264,61 +267,46 @@
 			}
 			
 			const resize =()=>{
-				const put_chat      = args =>{
-					const height                 = innerHeight / 4
-					const width                  = innerWidth  / 2
+				let size = Math.min( innerWidth, innerHeight )/ 10
+				if( ! touch ) size *= .7
+
+				tool_div.style.height = size * 4 + 'px'
+				
+				msgs_div.style.height = size * 3 + 'px'
+				
+				ui_div.style.height = size + 'px'
+				
+				if( touch ){
+					nipple_canvas.width  = size
+					nipple_canvas.height = size
+					nipple_canvas.hidden = false
 					
-					chat_div.style.left          = args.left + 'px'
-					chat_div.style.width         = width  + 'px'
-					chat_div.style.height        = height + 'px'
+					orientation_img.style.width  = size + 'px'
+					orientation_img.style.height = size + 'px'
+					orientation_img.hidden       = false
+				} else {
+					nipple_canvas.width  = 0
+					nipple_canvas.height = 0
 					
-					msgs_div.style.height        = height - size + 'px'
-					msgs_div.style.width         = width + 'px'
-					
-					input_div.style.height      = size + 'px'
-					
-					chat_input.style.height      = size / 2 + 'px'
-					chat_input.style.width       = size * 3 + 'px'
-					chat_input.style.paddingLeft = '2vh'
-					chat_input.hidden            = false
-					
-					send_img.style.height        = size / 2 + 'px'
-					send_img.hidden              = false
-				}
-				const put_vr_button = args =>{
-					if( ! vr ) return
-					
-					virtual_reality_button.style.display = 'block'
-					
-					virtual_reality_button.style.left   = args.left + 'px'
-					virtual_reality_button.style.width  = size + 'px'
-					virtual_reality_button.style.height = size + 'px'
-					VR_headset_icon.style.width         = size + 'px'
-					VR_headset_icon.style.height        = size + 'px'			
+					pc_img.style.height = size + 'px'
+					pc_img.hidden       = false
 				}
 				
-				let   x    = 0
-				const size = Math.min( innerWidth, innerHeight )/ 10
-				if( touch ){
-					nipple_canvas.width         = size
-					nipple_canvas.height        = size
-					nipple_canvas.style.display = "block"
-					x                          += size
-					
-					orientation_img.style.left    = innerWidth - size + 'px'
-					orientation_img.style.width   = size + 'px'
-					orientation_img.style.height  = size + 'px'
-					orientation_img.style.display = "block"			
-					
-					put_vr_button({ left : innerWidth - 2 * size })
-					put_chat     ({ left : x, width : size })
-				} else {
-					put_vr_button        ({ left : innerWidth - 3 * size })
-					put_chat             ({ left : 0, width : size * 5 })
-					
-					pc_img.style.width   = size * 2 + 'px'
-					pc_img.style.height  = size + 'px'
-					pc_img.style.display = "block"	
+				chat_input.style.width       = size * 4 + 'px'
+				chat_input.style.height      = size * 2 / 3 + 'px'
+				chat_input.style.paddingLeft = '2vh'
+				chat_input.hidden            = false
+				
+				send_img.style.height = size * 2 / 3 + 'px'
+				send_img.hidden       = false
+				
+				if( vr ){
+					virtual_reality_button.style.right  = touch ? size * 2 + 'px' : size * 3 + 'px'
+					virtual_reality_button.style.width  = size + 'px'
+					virtual_reality_button.style.height = size + 'px'
+					VR_headset_icon.style.width         = size * 1.125 + 'px'
+					VR_headset_icon.style.height        = size * 2 / 3 + 'px'						
+					virtual_reality_button.hidden       = false
 				}
 			}
 			resize()
@@ -328,7 +316,7 @@
 				_.preventDefault()
 			})		
 	
-			addEventListener( 'keydown',      event =>{
+			addEventListener( 'keydown', event =>{
 				//if( 'INPUT' == event.target.tagName ){
 					if( 'Enter' == event.key ){
 						const msg = chat_input.value
@@ -341,7 +329,7 @@
 				//} else 
 				//keys[ event.key.toLowerCase()] = true
 			})
-			addEventListener( 'keyup',        event =>{
+			addEventListener( 'keyup',   event =>{
 				//if( 'INPUT' == event.target.tagName ){
 				//} else 
 				//keys[ event.key.toLowerCase()] = false 
@@ -422,9 +410,9 @@
 							actor.properties.mixer = new THREE.AnimationMixer( actor.properties.character )
 							const action           = actor.properties.mixer.clipAction( animation_clip )
 							action.play()
-						}, progress =>{},
-						error =>{ msgs_div.innerHTML += 'error : ' + error + '<br>' })		
-					}
+						}, progress =>{}
+						//error =>{ msgs_div.innerHTML += 'error : ' + error + '<br>' }
+					)}
 					for( const actor of removed ){
 						if( actor.properties.character ) 
 							viewer.scene.remove( actor.properties.character )
