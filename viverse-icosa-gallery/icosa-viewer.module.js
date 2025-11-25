@@ -3939,7 +3939,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let previousLeftThumbstickX = 0;
         viewer1.flying_value = 0 ///
 		
-		try{
+		try{///
 			controller0 = this.renderer.xr.getController(0);
 			controller0.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
 			controller0.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
@@ -3955,11 +3955,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
 			controllerGrip1 = this.renderer.xr.getControllerGrip(1);
 			controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
 			this.scene.add(controllerGrip1);
-		} catch( error ){}
+		} catch( error ){}///
 		
         let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer);
         ///let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, { requiredFeatures : [ "hand-tracking" ]});
-		/* /// */ this.xrButton = xrButton
+		/*///*/ this.xrButton = xrButton
 		
 		/*
         const handModelFactory = new (0, $hBQxr$XRHandModelFactory)();///
@@ -3977,7 +3977,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
 		this.scene.add( hand1 );
 		*/
 		
-        /* ///this.icosa_frame.appendChild(xrButton);
+        /*///this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement('button');
             button.innerHTML = `<?xml version="1.0" encoding="utf-8"?>
@@ -4053,7 +4053,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                             }
                             previousLeftThumbstickX = axes[2];
                             // Up/down position right thumbstick y)
-                            if (Math.abs(axes[3]) > 0.5) viewer1.cameraRig.position.y += axes[3] * moveSpeed;
+                            if (Math.abs(axes[3]) > 0.5) viewer1.cameraRig.position.y -= axes[3] * moveSpeed; ///
                         }
                     }
                 });
