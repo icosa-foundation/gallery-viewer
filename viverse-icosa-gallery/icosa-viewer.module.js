@@ -3938,23 +3938,25 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let controllerGrip1;
         let previousLeftThumbstickX = 0;
         viewer1.flying_value = 0 ///
-        controller0 = this.renderer.xr.getController(0);
-		controller0.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
-		controller0.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
-		this.scene.add(controller0);
-        controller1 = this.renderer.xr.getController(1);
-		controller1.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
-		controller1.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
-		this.scene.add(controller1);		
-        const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
-        controllerGrip0 = this.renderer.xr.getControllerGrip(0);
-        controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
-        this.scene.add(controllerGrip0);
-        controllerGrip1 = this.renderer.xr.getControllerGrip(1);
-        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-        this.scene.add(controllerGrip1);
-        controllerGrip1 = this.renderer.xr.getControllerGrip(1);
-        controllerGrip1 = this.renderer.xr.getControllerGrip(1);
+		
+		try{
+			controller0 = this.renderer.xr.getController(0);
+			controller0.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
+			controller0.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
+			this.scene.add(controller0);
+			controller1 = this.renderer.xr.getController(1);
+			controller1.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
+			controller1.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
+			this.scene.add(controller1);		
+			const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
+			controllerGrip0 = this.renderer.xr.getControllerGrip(0);
+			controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
+			this.scene.add(controllerGrip0);
+			controllerGrip1 = this.renderer.xr.getControllerGrip(1);
+			controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+			this.scene.add(controllerGrip1);
+		} catch( error ){}
+		
         let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer);
         ///let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, { requiredFeatures : [ "hand-tracking" ]});
 		/* /// */ this.xrButton = xrButton
