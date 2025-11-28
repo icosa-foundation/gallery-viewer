@@ -1,3 +1,5 @@
+/// icosa-viewer.module.js v251128-3
+
 import * as $hBQxr$three from "three";
 import {DRACOLoader as $hBQxr$DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader.js";
 import {GLTFLoader as $hBQxr$GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader.js";
@@ -6049,7 +6051,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             THREE: $hBQxr$three
         });
         this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
-        this.cameraControls.smoothTime = 1;
+        this.cameraControls.smoothTime = .5; //1;///
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
         this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
         this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
