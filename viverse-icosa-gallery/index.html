@@ -193,11 +193,13 @@
 			
 			viewer.renderer.xr.addEventListener( 'sessionstart', () => {
 				in_vr = true
-				viewer.cameraRig.position.copy( viewer.activeCamera.position )
+				viewer.cameraRig.position.copy  ( viewer.activeCamera.position )
+				viewer.cameraRig.quaternion.copy( viewer.activeCamera.quaternion )
 			})
 			viewer.renderer.xr.addEventListener( 'sessionend',   () => {
 				in_vr = false
 				viewer.activeCamera.position.copy( viewer.cameraRig.position )
+				viewer.activeCamera.quaternion.copy( viewer.cameraRig.quaternion )
 			})
 			
 			const vr_button        = VRButton.createButton( viewer.renderer )
