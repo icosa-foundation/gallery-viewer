@@ -1,4 +1,4 @@
-/// icosa-viewer.module.js v251128-3
+/// icosa-viewer.module.js v251129-2
 
 import * as $hBQxr$three from "three";
 import {DRACOLoader as $hBQxr$DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader.js";
@@ -1832,8 +1832,8 @@ class $e1f901905a002d12$export$2e2bcd8739ae039 extends $e1f901905a002d12$export$
      * @returns updated
      * @category Methods
      */ update(delta) {
-		if( ! this._enabled ) return ///
-		
+		if( ! this._enabled ) return ///		 
+		 
         const deltaTheta = this._sphericalEnd.theta - this._spherical.theta;
         const deltaPhi = this._sphericalEnd.phi - this._spherical.phi;
         const deltaRadius = this._sphericalEnd.radius - this._spherical.radius;
@@ -3802,12 +3802,24 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         }
         let light0rot = sceneLights.length >= 1 ? radToDeg3(sceneLights[0].rotation) : null;
         let light1rot = sceneLights.length >= 2 ? radToDeg3(sceneLights[1].rotation) : null;
-        this.SceneLight0Rotation = userData['TB_SceneLight0Rotation'] ?? light0rot ?? this.EnvironmentPreset.SceneLight0Rotation;
-        this.SceneLight1Rotation = userData['TB_SceneLight1Rotation'] ?? light1rot ?? this.EnvironmentPreset.SceneLight1Rotation;
-        let light0col = userData['TB_SceneLight0Color'] ?? this.EnvironmentPreset.SceneLight0Color;
-        let light1col = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
-        this.SceneLight0Color = new $hBQxr$three.Color(light0col.r, light0col.g, light0col.b);
-        this.SceneLight1Color = new $hBQxr$three.Color(light1col.r, light1col.g, light1col.b);
+        // Light 0 Rotation
+        if (userData['TB_SceneLight0Rotation']) this.SceneLight0Rotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_SceneLight0Rotation']);
+        else if (light0rot) this.SceneLight0Rotation = new $hBQxr$three.Vector3(light0rot.x, light0rot.y, light0rot.z);
+        else this.SceneLight0Rotation = this.EnvironmentPreset.SceneLight0Rotation;
+        // Light 1 Rotation
+        if (userData['TB_SceneLight1Rotation']) this.SceneLight1Rotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_SceneLight1Rotation']);
+        else if (light1rot) this.SceneLight1Rotation = new $hBQxr$three.Vector3(light1rot.x, light1rot.y, light1rot.z);
+        else this.SceneLight1Rotation = this.EnvironmentPreset.SceneLight1Rotation;
+        // Light 0 Color
+        if (userData['TB_SceneLight0Color']) this.SceneLight0Color = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBColorString(userData['TB_SceneLight0Color'], this.EnvironmentPreset.SceneLight0Color);
+        else this.SceneLight0Color = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBColorString(null, this.EnvironmentPreset.SceneLight0Color);
+        // Light 1 Color
+        if (userData['TB_SceneLight1Color']) this.SceneLight1Color = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBColorString(userData['TB_SceneLight1Color'], this.EnvironmentPreset.SceneLight1Color);
+        else this.SceneLight1Color = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBColorString(null, this.EnvironmentPreset.SceneLight1Color);
+        // Remove original GLTF lights since we'll create new ones from metadata
+        sceneLights.forEach((light)=>{
+            light.parent?.remove(light);
+        });
         this.CameraTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTranslation'], null);
         this.CameraRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraRotation'], null);
     }
@@ -3835,8 +3847,8 @@ class $677737c8a5cbea2f$var$EnvironmentPreset {
     }
 }
 class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
-    constructor( assetBaseUrl, pre_render, frame ){///
-		this.pre_render = pre_render
+    constructor(assetBaseUrl, pre_render, frame){///
+		this.pre_render = pre_render ///
 		
         this.loadingError = false;
         this.icosa_frame = frame;
@@ -3847,17 +3859,16 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.icosa_frame = document.createElement('div');
             this.icosa_frame.id = 'icosa-viewer';
         }
-        //initCustomUi(this.icosa_frame);
-        //const controlPanel = document.createElement('div');
-        //controlPanel.classList.add('control-panel');
-        //const fullscreenButton = document.createElement('button');
-        //fullscreenButton.classList.add('panel-button', 'fullscreen-button');
-        //fullscreenButton.onclick = ()=>{
-        //    this.toggleFullscreen(fullscreenButton);
-        //};
-        //controlPanel.appendChild(fullscreenButton);
-        //this.icosa_frame.appendChild(controlPanel);
-		
+        ///initCustomUi(this.icosa_frame);
+        ///const controlPanel = document.createElement('div');
+        ///controlPanel.classList.add('control-panel');
+        ///const fullscreenButton = document.createElement('button');
+        ///fullscreenButton.classList.add('panel-button', 'fullscreen-button');
+        ///fullscreenButton.onclick = ()=>{
+        ///    this.toggleFullscreen(fullscreenButton);
+        ///};
+        ///controlPanel.appendChild(fullscreenButton);
+        ///this.icosa_frame.appendChild(controlPanel);
         //loadscreen
         const loadscreen = document.createElement('div');
         loadscreen.id = 'loadscreen';
@@ -3939,9 +3950,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let controllerGrip0;
         let controllerGrip1;
         let previousLeftThumbstickX = 0;
-        viewer1.flying_value = 0 ///
-		
-		try{///
+
+		viewer1.flying_value = 0 ///
+
+		try { ///
 			controller0 = this.renderer.xr.getController(0);
 			controller0.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
 			controller0.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
@@ -3949,7 +3961,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
 			controller1 = this.renderer.xr.getController(1);
 			controller1.addEventListener( 'selectstart', _=>{ viewer1.flying_value = 1 })///
 			controller1.addEventListener( 'selectend',   _=>{ viewer1.flying_value = 0 })///
-			this.scene.add(controller1);		
+			this.scene.add(controller1);
 			const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
 			controllerGrip0 = this.renderer.xr.getControllerGrip(0);
 			controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
@@ -3957,29 +3969,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
 			controllerGrip1 = this.renderer.xr.getControllerGrip(1);
 			controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
 			this.scene.add(controllerGrip1);
-		} catch( error ){}///
+		} catch( error ){} ///
 		
         let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer);
         ///let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, { requiredFeatures : [ "hand-tracking" ]});
 		/*///*/ this.xrButton = xrButton
 		
-		/*
-        const handModelFactory = new (0, $hBQxr$XRHandModelFactory)();///
-		
-        const hand0 = this.renderer.xr.getHand( 0 ) ///
-		hand0.add( handModelFactory.createHandModel( hand0, "mesh" ))///
-        hand0.addEventListener( 'pinchstart', _=>{ viewer1.flying_value = 1 })///
-		hand0.addEventListener( 'pinchend',   _=>{ viewer1.flying_value = 0 })///
-		this.scene.add( hand0 );
-		
-		const hand1 = this.renderer.xr.getHand( 1 ) ///
-		hand1.add( handModelFactory.createHandModel( hand1, "mesh" ))///
-        hand1.addEventListener( 'pinchstart', _=>{ viewer1.flying_value = -1 })///
-		hand1.addEventListener( 'pinchend',   _=>{ viewer1.flying_value = 0 })///
-		this.scene.add( hand1 );
-		*/
-		
-        /*///this.icosa_frame.appendChild(xrButton);
+		/* ///this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement('button');
             button.innerHTML = `<?xml version="1.0" encoding="utf-8"?>
@@ -4070,6 +4066,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
                 if (viewer1?.trackballControls) viewer1.trackballControls.update();
             }
+            // SparkRenderer stochastic setup is now handled by GUI toggle
             if (viewer1?.activeCamera) this.renderer.render(viewer1.scene, viewer1.activeCamera);
         };
         this.dataURLtoBlob = (dataURL)=>{
@@ -5846,7 +5843,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             const moduleName = "@sparkjsdev/spark";
             const sparkModule = await import(/* webpackIgnore: true */ moduleName);
             if (!sparkModule.SplatMesh) throw new Error("SplatMesh not found in Spark module exports");
-            return sparkModule.SplatMesh;
+            return sparkModule;
         } catch (error) {
             throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error.message}`);
         }
@@ -5872,16 +5869,16 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 };
             }
             // Dynamic import for optional Spark dependency
-            let SplatMesh;
+            let SparkModule;
             try {
-                SplatMesh = await this.loadSparkModule();
+                SparkModule = await this.loadSparkModule();
             } catch (importError) {
                 console.error(importError.message);
                 this.showErrorIcon();
                 this.loadingError = true;
                 return;
             }
-            const splatModel = new SplatMesh({
+            const splatModel = new SparkModule.SplatMesh({
                 url: url
             });
             await splatModel.initialized;
@@ -5976,7 +5973,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let sketchCam = this.sketchMetadata?.CameraTranslation?.toArray();
         if (sketchCam) {
             let poseScale = this.isAnyTiltExporter(this.sceneGltf) ? 0.1 : 1;
-            console.log("posescale", poseScale);
             sketchCam = [
                 sketchCam[0] * poseScale,
                 sketchCam[1] * poseScale,
@@ -6051,7 +6047,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             THREE: $hBQxr$three
         });
         this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
-        this.cameraControls.smoothTime = .5; //1;///
+        this.cameraControls.smoothTime = 1;
         this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
         this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
         this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
@@ -6091,7 +6087,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // 4. Does the GLTF have an environment preset guid? If so use the light transform and colors from that
         // 5. If there's neither custom metadata, an environment guid or explicit GLTF lights - create some default lighting.
         function convertTBEuler(rot) {
-            const deg2rad = Math.PI / 180;
             return new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(rot.x), $hBQxr$three.MathUtils.degToRad(rot.y), $hBQxr$three.MathUtils.degToRad(rot.z));
         }
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
@@ -6102,15 +6097,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
         let l0 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         let l1 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
-        // Convert rotation to position for directional lights
+        // Position lights based on rotation metadata
         const light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
         const light0Direction = new $hBQxr$three.Vector3(0, 0, 1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
-        l0.lookAt(0, 0, 0);
         const light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
         const light1Direction = new $hBQxr$three.Vector3(0, 0, 1).applyEuler(light1Euler);
         l1.position.copy(light1Direction.multiplyScalar(10));
-        l1.lookAt(0, 0, 0);
         l0.castShadow = true;
         l1.castShadow = false;
         this.loadedModel?.add(l0);
