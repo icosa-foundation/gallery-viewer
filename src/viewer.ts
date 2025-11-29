@@ -236,6 +236,7 @@ export class Viewer {
     private treeViewRoot: HTMLElement | null;
     public showErrorIcon: () => void;
     public loadingError: boolean;
+    private isV1: boolean;
 
     constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.loadingError = false;
@@ -2132,7 +2133,8 @@ export class Viewer {
     private async _loadGltf(url : string, loadEnvironment : boolean, overrides : any, isV1: boolean) {
         let sceneGltf : GLTF;
         this.overrides = overrides;
-        if (isV1) {
+        this.isV1 = isV1;
+        if (this.isV1) {
             sceneGltf = <GLTF>await this.gltfLegacyLoader.loadAsync(url);
             await this.replaceGltf1Materials(<Object3D>sceneGltf.scene, this.brushPath.toString());
         } else {
@@ -2175,6 +2177,12 @@ export class Viewer {
         if (this.isNewTiltExporter(sceneGltf)) {
             poseScale *= negate ? 10 : 0.1;
         }
+
+        // Sigh. Really not sure if this is the right heuristic but it seems to fix the realworld cases I've found so far
+        if (this.isV1) {
+            poseRotation.y += 180;
+        }
+
         if (negate) {
             // Create inverse transformation matrix: (T * R * S)^-1 = S^-1 * R^-1 * T^-1
             const inverseScale = 1.0 / poseScale;
@@ -2204,10 +2212,6 @@ export class Viewer {
             ));
             sceneGltf.scene.scale.multiplyScalar(poseScale);
         }
-
-        console.log(`scene Position: ${sceneGltf.scene.position.x}, ${sceneGltf.scene.position.y}, ${sceneGltf.scene.position.z}`);
-        console.log(`scene Rotation: ${sceneGltf.scene.rotation.x}, ${sceneGltf.scene.rotation.y}, ${sceneGltf.scene.rotation.z}`);
-        console.log(`scene Scale: ${sceneGltf.scene.scale.x}`);
     }
 
     public async loadTilt(url: string, overrides : any) {
