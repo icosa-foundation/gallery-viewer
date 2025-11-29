@@ -107,14 +107,43 @@ class SketchMetadata {
 
         let light0rot = sceneLights.length >= 1 ? radToDeg3(sceneLights[0].rotation) : null;
         let light1rot = sceneLights.length >= 2 ? radToDeg3(sceneLights[1].rotation) : null;
-        
-        this.SceneLight0Rotation = userData['TB_SceneLight0Rotation'] ?? light0rot ?? this.EnvironmentPreset.SceneLight0Rotation;
-        this.SceneLight1Rotation = userData['TB_SceneLight1Rotation'] ?? light1rot ?? this.EnvironmentPreset.SceneLight1Rotation;
 
-        let light0col = userData['TB_SceneLight0Color'] ?? this.EnvironmentPreset.SceneLight0Color;
-        let light1col = userData['TB_SceneLight1Color'] ?? this.EnvironmentPreset.SceneLight1Color;
-        this.SceneLight0Color = new THREE.Color(light0col.r, light0col.g, light0col.b);
-        this.SceneLight1Color = new THREE.Color(light1col.r, light1col.g, light1col.b);
+        // Light 0 Rotation
+        if (userData['TB_SceneLight0Rotation']) {
+            this.SceneLight0Rotation = Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']);
+        } else if (light0rot) {
+            this.SceneLight0Rotation = new THREE.Vector3(light0rot.x, light0rot.y, light0rot.z);
+        } else {
+            this.SceneLight0Rotation = this.EnvironmentPreset.SceneLight0Rotation;
+        }
+
+        // Light 1 Rotation
+        if (userData['TB_SceneLight1Rotation']) {
+            this.SceneLight1Rotation = Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']);
+        } else if (light1rot) {
+            this.SceneLight1Rotation = new THREE.Vector3(light1rot.x, light1rot.y, light1rot.z);
+        } else {
+            this.SceneLight1Rotation = this.EnvironmentPreset.SceneLight1Rotation;
+        }
+
+        // Light 0 Color
+        if (userData['TB_SceneLight0Color']) {
+            this.SceneLight0Color = Viewer.parseTBColorString(userData['TB_SceneLight0Color'], this.EnvironmentPreset.SceneLight0Color);
+        } else {
+            this.SceneLight0Color = Viewer.parseTBColorString(null, this.EnvironmentPreset.SceneLight0Color);
+        }
+
+        // Light 1 Color
+        if (userData['TB_SceneLight1Color']) {
+            this.SceneLight1Color = Viewer.parseTBColorString(userData['TB_SceneLight1Color'], this.EnvironmentPreset.SceneLight1Color);
+        } else {
+            this.SceneLight1Color = Viewer.parseTBColorString(null, this.EnvironmentPreset.SceneLight1Color);
+        }
+
+        // Remove original GLTF lights since we'll create new ones from metadata
+        sceneLights.forEach(light => {
+            light.parent?.remove(light);
+        });
 
         this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'], null)
         this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation'], null);
@@ -2504,7 +2533,6 @@ export class Viewer {
         let sketchCam = this.sketchMetadata?.CameraTranslation?.toArray();
         if (sketchCam) {
             let poseScale = this.isAnyTiltExporter(this.sceneGltf) ? 0.1 : 1;
-            console.log("posescale", poseScale);
             sketchCam = [sketchCam[0] * poseScale, sketchCam[1] * poseScale, sketchCam[2] * poseScale];
         }
 
@@ -2623,8 +2651,7 @@ export class Viewer {
         // 4. Does the GLTF have an environment preset guid? If so use the light transform and colors from that
         // 5. If there's neither custom metadata, an environment guid or explicit GLTF lights - create some default lighting.
 
-        function convertTBEuler(rot: THREE.Vector3) : THREE.Euler {
-            const deg2rad = Math.PI / 180;
+        function convertTBEuler(rot: THREE.Vector3 | any) : THREE.Euler {
             return new THREE.Euler(
                 THREE.MathUtils.degToRad(rot.x),
                 THREE.MathUtils.degToRad(rot.y),
@@ -2641,17 +2668,16 @@ export class Viewer {
 
         let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
-        
-        // Convert rotation to position for directional lights
+
+        // Position lights based on rotation metadata
         const light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
         const light0Direction = new THREE.Vector3(0, 0, 1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
-        l0.lookAt(0, 0, 0);
-        
+
         const light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
         const light1Direction = new THREE.Vector3(0, 0, 1).applyEuler(light1Euler);
         l1.position.copy(light1Direction.multiplyScalar(10));
-        l1.lookAt(0, 0, 0);
+
         l0.castShadow = true;
         l1.castShadow = false;
         this.loadedModel?.add(l0);
