@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v251128-3</title>
+        <title>viverse icosa viewer v251129</title>
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
@@ -89,18 +89,19 @@
 
         <script type = "module">
 
-			addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
+			//addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = '7jc8ubqxr9'
+			const app = 'bjbbvw9ydp'
 		
-            import { Viewer }     from "./icosa-viewer.module.js"
-			import * as THREE     from 'three'
-			import { VRButton }   from 'three/addons/webxr/VRButton.js'
-			import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-			
+            import { Viewer }              from "./icosa-viewer.module.js"
+			import * as THREE              from 'three'
+			import { VRButton }            from 'three/addons/webxr/VRButton.js'
+			import { GLTFLoader }          from 'three/addons/loaders/GLTFLoader.js'
+			import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js'
+						
 			let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 			const update_position_time = 30, speed = 0.05, angular_speed = Math.PI / 500, delta_threshold = 20, vector3 = new THREE.Vector3()
-			let   actors =[], keys = {}, session_id, room, multi, touch = false, vr = false, in_vr = false
+			let   actors =[], keys ={}, session_id, room, multi, touch = false, vr = false, in_vr = false
 			
 			document.getElementById( 'virtual_reality_button' ).onclick =_=>{
 				viewer.xrButton.click()
@@ -183,20 +184,23 @@
 				}
 			}
 			
-			const clock          = new THREE.Clock()
+			const clock                 = new THREE.Clock()
+			
 			const nipple_context = nipple_canvas.getContext( '2d' )	
 			
-            const viewer        = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
-            window.viewer = viewer
-			 
-			await viewer.loadGltf( "./assets/scene.glb", true )	
+            const viewer                   = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
+            window.viewer                  = viewer
+			await viewer.loadGltf          ( "./assets/scene.glb", true )
+			viewer.cameraControls._enabled = false
 			
-			viewer.renderer.xr.addEventListener( 'sessionstart', () => {
+			const pointer_lock_controls = new PointerLockControls( viewer.activeCamera, document.body )
+			
+			viewer.renderer.xr.addEventListener( 'sessionstart', _=> {
 				in_vr = true
 				viewer.cameraRig.position.copy  ( viewer.activeCamera.position )
 				viewer.cameraRig.quaternion.copy( viewer.activeCamera.quaternion )
 			})
-			viewer.renderer.xr.addEventListener( 'sessionend',   () => {
+			viewer.renderer.xr.addEventListener( 'sessionend',   _=> {
 				in_vr = false
 				viewer.activeCamera.position.copy( viewer.cameraRig.position )
 				viewer.activeCamera.quaternion.copy( viewer.cameraRig.quaternion )
@@ -267,7 +271,7 @@
 				})
 			}
 			
-			const resize =()=>{
+			const resize    =()=>{
 				let size = Math.min( innerWidth, innerHeight )/ 10
 				if( ! touch ) size *= .7
 
@@ -310,30 +314,29 @@
 					virtual_reality_button.hidden       = false
 				}
 			}
-			resize()
+			resize          ()
 			addEventListener( "resize", resize )
 			
 			addEventListener( "contextmenu", _=>{ 
 				_.preventDefault()
 			})		
 	
+			addEventListener( 'pointerdown', _=>{
+				pointer_lock_controls.lock()
+			})
+	
 			addEventListener( 'keydown', event =>{
-				//if( 'INPUT' == event.target.tagName ){
-					if( 'Enter' == event.key ){
-						const msg = chat_input.value
-						send      ( msg)
-						//if( profile ) msg = profile.name + ' : ' + msg
-						receive   ( msg )
-						
-						chat_input.value = ''
-					}
-				//} else 
-				//keys[ event.key.toLowerCase()] = true
+				if( 'Enter' == event.key ){
+					const msg = chat_input.value
+					send      ( msg)
+					//if( profile ) msg = profile.name + ' : ' + msg
+					receive   ( msg )
+					
+					chat_input.value = ''
+				} else keys[ event.key.toLowerCase()] = true
 			})
 			addEventListener( 'keyup',   event =>{
-				//if( 'INPUT' == event.target.tagName ){
-				//} else 
-				//keys[ event.key.toLowerCase()] = false 
+				keys[ event.key.toLowerCase()] = false 
 			})
 			
 			const authorize = async _=>{
@@ -479,7 +482,7 @@
 					})
 				})
 			}
-			authorize()
+			authorize       ()
         </script>
     </body>
 </html>
