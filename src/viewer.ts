@@ -2178,11 +2178,6 @@ export class Viewer {
             poseScale *= negate ? 10 : 0.1;
         }
 
-        // Sigh. Really not sure if this is the right heuristic but it seems to fix the realworld cases I've found so far
-        if (this.isV1) {
-            poseRotation.y += 180;
-        }
-
         if (negate) {
             // Create inverse transformation matrix: (T * R * S)^-1 = S^-1 * R^-1 * T^-1
             const inverseScale = 1.0 / poseScale;
@@ -2458,7 +2453,7 @@ export class Viewer {
                 // Use the standard GLTFLoader for environments
                 const standardLoader = new GLTFLoader();
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
-                if (this.isNewTiltExporter(sceneGltf)) {
+                if (this.isNewTiltExporter(sceneGltf) || this.isV1) {
                     envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
                 }
                 envGltf.scene.scale.set(.1, .1, .1);
@@ -2544,8 +2539,7 @@ export class Viewer {
         let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation?.toArray() || [0, 0, 0]; // Could be euler angles or quaternion
 
         if (this.isNewTiltExporter(this.sceneGltf)) {
-            // the scene scale is modified elsewhere but here we correct the camera to match
-            //cameraPos = [cameraPos[0] * 0.1, cameraPos[1] * 0.1, cameraPos[2] * 0.1];
+            // Scene scale is modified elsewhere but here we correct the camera to match
             cameraPos[1] -= 1
             cameraRot[1] += 180;
         }
