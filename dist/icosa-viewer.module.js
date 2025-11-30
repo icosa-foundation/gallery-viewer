@@ -6072,11 +6072,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
         let l0 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         let l1 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
-        // Position lights based on rotation metadata
-        const light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
+        let light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
+        let light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
+        // Same rotation adjustment we apply to scene and environment
+        if (this.isNewTiltExporter(this.sceneGltf) || this.isV1) {
+            light0Euler.y += Math.PI;
+            light1Euler.y += Math.PI;
+        }
         const light0Direction = new $hBQxr$three.Vector3(0, 0, 1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
-        const light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
         const light1Direction = new $hBQxr$three.Vector3(0, 0, 1).applyEuler(light1Euler);
         l1.position.copy(light1Direction.multiplyScalar(10));
         l0.castShadow = true;
