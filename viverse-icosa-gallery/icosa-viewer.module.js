@@ -1,4 +1,4 @@
-/// icosa-viewer.module.js v251129-2
+/// icosa-viewer.module.js v251203-3
 
 import * as $hBQxr$three from "three";
 import {DRACOLoader as $hBQxr$DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader.js";
@@ -3848,7 +3848,7 @@ class $677737c8a5cbea2f$var$EnvironmentPreset {
 }
 class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     constructor(assetBaseUrl, pre_render, frame){///
-		this.pre_render = pre_render ///
+		this.pre_render  = pre_render ///
 		
         this.loadingError = false;
         this.icosa_frame = frame;
@@ -4046,8 +4046,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                         if (inputSource.handedness === 'right') {
                             // Rotation (right thumbstick x)
                             if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
-                                if (axes[2] > 0) viewer1.cameraRig.rotation.y -= $hBQxr$three.MathUtils.degToRad(snapAngle);
-                                else viewer1.cameraRig.rotation.y += $hBQxr$three.MathUtils.degToRad(snapAngle);
+                                if (axes[2] > 0) viewer1.cameraRig.rotateOnWorldAxis( viewer1.activeCamera.up,  $hBQxr$three.MathUtils.degToRad(snapAngle)) /// viewer1.cameraRig.rotation.y -= $hBQxr$three.MathUtils.degToRad(snapAngle);
+                                else             viewer1.cameraRig.rotateOnWorldAxis( viewer1.activeCamera.up, -$hBQxr$three.MathUtils.degToRad(snapAngle)) /// viewer1.cameraRig.rotation.y += $hBQxr$three.MathUtils.degToRad(snapAngle);
                             }
                             previousLeftThumbstickX = axes[2];
                             // Up/down position right thumbstick y)
