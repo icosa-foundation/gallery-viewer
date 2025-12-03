@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>w</title>
+        <title>viverse icosa viewer v251203</title>
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
@@ -91,7 +91,7 @@
 
 			//addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = 'j722v4quch'
+			const app = 'ne7tqe26hg'
 		
             import { Viewer }              from "./icosa-viewer.module.js"
 			import * as THREE              from 'three'
@@ -99,10 +99,11 @@
 			import { GLTFLoader }          from 'three/addons/loaders/GLTFLoader.js'
 			import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js'
 						
+			let viewer
 			let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 			const update_position_time = 30, speed = 0.05, angular_speed = Math.PI / 500, delta_threshold = 20, vector3 = new THREE.Vector3()
 			let   actors =[], keys ={}, session_id, room, multi, touch = false, vr = false, in_vr = false
-			let   pointer_lock_controls
+			let   pre_renders = 0, pointer_lock_controls
 			
 			document.getElementById( 'virtual_reality_button' ).onclick =_=>{
 				viewer.xrButton.click()
@@ -124,11 +125,11 @@
 				const dir               = new THREE.Vector3()
 				viewer.activeCamera.getWorldDirection( dir )
 				const up                = new THREE.Vector3( 0, 1, 0 ).applyQuaternion( viewer.activeCamera.quaternion ).normalize()
-				const right             = new THREE.Vector3().crossVectors( viewer.activeCamera.up, dir ).normalize()								
+				const right             = new THREE.Vector3().crossVectors( viewer.activeCamera.up, dir ).normalize()
 				
 				return { dir, up, right }
 			}		
-			const move                =_=>{
+			const move                =_=>{			
 				const { dir, up, right } = get_dir_up_right()
 				if( ! dir ) return
 				
@@ -139,11 +140,11 @@
 				if( keys[ 'a' ]) vector3.addScaledVector( right,  speed )
 				if( keys[ 'd' ]) vector3.addScaledVector( right, -speed )
 				
-				if( keys[ 'r' ]) viewer.activeCamera.rotation.x += angular_speed
-				if( keys[ 'f' ]) viewer.activeCamera.rotation.x -= angular_speed
+				if( keys[ 'r' ]) viewer.activeCamera.rotateOnWorldAxis( right,  angular_speed )
+				if( keys[ 'f' ]) viewer.activeCamera.rotateOnWorldAxis( right, -angular_speed )
 				
-				if( keys[ 'q' ]) viewer.activeCamera.rotation.y += angular_speed
-				if( keys[ 'e' ]) viewer.activeCamera.rotation.y -= angular_speed
+				if( keys[ 'q' ]) viewer.activeCamera.rotateOnWorldAxis( up,  angular_speed )
+				if( keys[ 'e' ]) viewer.activeCamera.rotateOnWorldAxis( up, -angular_speed )
 				
 				viewer.activeCamera.position.copy( vector3 )
 			}
@@ -159,7 +160,7 @@
 					
 				beep.play()
 			}
-			const pre_render          =_=>{ 
+			const pre_render          =_=>{
 				const delta = clock.getDelta()
 				for( const actor of actors ){
 					if( actor.properties.mixer ) actor.properties.mixer.update( delta )
@@ -183,15 +184,16 @@
 					nipple_context.arc         ( size / 2 + x_offset, size / 2 + y_offset, size / 8, 0, Math.PI * 2 )
 					nipple_context.stroke      ()
 				}
+				++pre_renders
 			}
 			
 			const clock                 = new THREE.Clock()
 			
 			const nipple_context = nipple_canvas.getContext( '2d' )	
 			
-            const viewer                   = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
-            window.viewer                  = viewer
-			await viewer.loadGltf          ( "./assets/scene.glb", true )
+            viewer               = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
+            window.viewer        = viewer
+			await viewer.loadGltf( "./assets/scene.glb", true )
 			
 			viewer.renderer.xr.addEventListener( 'sessionstart', _=> {
 				in_vr = true
@@ -220,16 +222,15 @@
 			
 			if( window.matchMedia('( pointer: coarse )').matches ){
 				touch = true				
-				viewer.cameraControls._enabled = false
 				addEventListener( 'pointerdown', event =>{
-					//event.preventDefault()
+					if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
 					
 					pointer_data.button = event.button
 					
 					pointer_data.down ={ x : event.clientX, y : event.clientY }
 				})
 				addEventListener( 'pointermove', event =>{
-					viewer.cameraControls._enabled = false
+					if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
 					
 					event.preventDefault()
 					
@@ -319,9 +320,10 @@
 				_.preventDefault()
 			})		
 	
-			addEventListener( 'pointerdown', _=>{
-				viewer.cameraControls._enabled = false
-				pointer_lock_controls          = new PointerLockControls( viewer.activeCamera, document.body )
+			addEventListener( 'mousedown', _=>{
+				if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
+				
+				pointer_lock_controls     = new PointerLockControls( viewer.activeCamera, document.body )
 				pointer_lock_controls.lock()
 			})
 	
