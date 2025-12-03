@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v251129</title>
+        <title>w</title>
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
@@ -83,7 +83,7 @@
 					<img id = 'VR_headset_icon'        class = 'rounded' src = 'assets/VR_headset_icon.svg'/>
 				</button>
 			</div>
-		</di>
+		</div>
 		
 		<script src = "./libs/index.umd.cjs"></script>		
 
@@ -91,7 +91,7 @@
 
 			//addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = 'bjbbvw9ydp'
+			const app = 'j722v4quch'
 		
             import { Viewer }              from "./icosa-viewer.module.js"
 			import * as THREE              from 'three'
@@ -102,6 +102,7 @@
 			let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 			const update_position_time = 30, speed = 0.05, angular_speed = Math.PI / 500, delta_threshold = 20, vector3 = new THREE.Vector3()
 			let   actors =[], keys ={}, session_id, room, multi, touch = false, vr = false, in_vr = false
+			let   pointer_lock_controls
 			
 			document.getElementById( 'virtual_reality_button' ).onclick =_=>{
 				viewer.xrButton.click()
@@ -191,9 +192,6 @@
             const viewer                   = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
             window.viewer                  = viewer
 			await viewer.loadGltf          ( "./assets/scene.glb", true )
-			viewer.cameraControls._enabled = false
-			
-			const pointer_lock_controls = new PointerLockControls( viewer.activeCamera, document.body )
 			
 			viewer.renderer.xr.addEventListener( 'sessionstart', _=> {
 				in_vr = true
@@ -322,6 +320,8 @@
 			})		
 	
 			addEventListener( 'pointerdown', _=>{
+				viewer.cameraControls._enabled = false
+				pointer_lock_controls          = new PointerLockControls( viewer.activeCamera, document.body )
 				pointer_lock_controls.lock()
 			})
 	
