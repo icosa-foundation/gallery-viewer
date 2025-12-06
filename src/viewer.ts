@@ -56,6 +56,7 @@ class SketchMetadata {
     public SceneLight1Rotation: THREE.Vector3;
     public CameraTranslation: THREE.Vector3;
     public CameraRotation: THREE.Vector3;
+    public CameraTarget: THREE.Vector3;
     public EnvironmentPreset: EnvironmentPreset;
     public SkyTexture: string;
     public ReflectionTexture: string;
@@ -147,6 +148,7 @@ class SketchMetadata {
 
         this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'], null)
         this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation'], null);
+        this.CameraTarget = Viewer.parseTBVector3(userData['TB_CameraTarget'], null);
     }
 }
 
@@ -2581,9 +2583,12 @@ export class Viewer {
 
         this.activeCamera = this.flatCamera;
 
-        let cameraTarget;
+        let cameraTarget : THREE.Vector3;
+        let metadataCameraTarget = this.sketchMetadata.CameraTarget;
         let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot
-        if (pivot) {
+        if (metadataCameraTarget) {
+            cameraTarget = metadataCameraTarget;
+        } else if (pivot) {
             cameraTarget = new THREE.Vector3(pivot[0], pivot[1], pivot[2]);
         } else {
             let vp =  this.overrides?.geometryData?.visualCenterPoint;

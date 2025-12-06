@@ -3817,6 +3817,7 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         });
         this.CameraTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTranslation'], null);
         this.CameraRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraRotation'], null);
+        this.CameraTarget = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTarget'], null);
     }
 }
 class $677737c8a5cbea2f$var$EnvironmentPreset {
@@ -5999,8 +6000,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.xrCamera.updateProjectionMatrix();
         this.activeCamera = this.flatCamera;
         let cameraTarget;
+        let metadataCameraTarget = this.sketchMetadata.CameraTarget;
         let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot;
-        if (pivot) cameraTarget = new $hBQxr$three.Vector3(pivot[0], pivot[1], pivot[2]);
+        if (metadataCameraTarget) cameraTarget = metadataCameraTarget;
+        else if (pivot) cameraTarget = new $hBQxr$three.Vector3(pivot[0], pivot[1], pivot[2]);
         else {
             let vp = this.overrides?.geometryData?.visualCenterPoint;
             if (!vp) {
