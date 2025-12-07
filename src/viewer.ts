@@ -2098,7 +2098,7 @@ export class Viewer {
             }
         };
         const extension = new GLTFGoogleTiltBrushMaterialExtension(mockParser, brushPath, true);
-        
+
         // Collect all meshes first, then process them with async/await
         const meshes: THREE.Mesh[] = [];
         model.traverse((object) => {
@@ -2106,7 +2106,7 @@ export class Viewer {
                 meshes.push(object as THREE.Mesh);
             }
         });
-        
+
         // Process all meshes asynchronously
         for (const mesh of meshes) {
             // Use material name directly - strip "material_" prefix if present
@@ -2432,7 +2432,7 @@ export class Viewer {
             this.modelBoundingBox = splatModel.getBoundingBox(false);
             this.scene.add(this.loadedModel);
             this.initializeScene();
-            
+
             // Manually trigger loading screen fade-out since SplatMesh doesn't use LoadingManager
             let loadscreen = document.getElementById('loadscreen');
             if (loadscreen && !loadscreen.classList.contains('loaderror')) {
@@ -2572,6 +2572,7 @@ export class Viewer {
             this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
         }
         this.flatCamera.updateProjectionMatrix();
+        this.flatCamera.updateMatrixWorld();
 
         this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this.cameraRig = new THREE.Group();
@@ -2604,10 +2605,19 @@ export class Viewer {
             cameraTarget = cameraTarget || visualCenterPoint;
         }
 
+        let initTargetPos = true;
+        if (initTargetPos) {
+            // Capture camera direction BEFORE CameraControls modifies anything
+            const forward = new THREE.Vector3();
+            this.flatCamera.getWorldDirection(forward);
+            cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(10));
+        }
+
         CameraControls.install({THREE: THREE});
         this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
-        this.cameraControls.smoothTime = 1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+        this.cameraControls.smoothTime = 0.1;
+        this.cameraControls.draggingSmoothTime = 0.1;
+        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
         this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
         this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
         setupNavigation(this.cameraControls);
@@ -2875,12 +2885,12 @@ export class Viewer {
         if (!object.parent) {
             return currentPath || '/';
         }
-        
+
         const parent = object.parent;
         const childIndex = parent.children.indexOf(object);
         const nodeName = object.name || `${object.type}_${childIndex}`;
         const newPath = `/${nodeName}${currentPath}`;
-        
+
         return this.getObjectPath(parent, newPath);
     }
 
@@ -2892,22 +2902,22 @@ export class Viewer {
      */
     public getTreeViewState(): { [path: string]: { visible: boolean } } {
         const state: { [path: string]: { visible: boolean } } = {};
-        
+
         const collectState = (object: THREE.Object3D) => {
             const path = this.getObjectPath(object);
             state[path] = {
                 visible: object.visible
             };
-            
+
             if (object.children && object.children.length > 0) {
                 object.children.forEach(child => collectState(child));
             }
         };
-        
+
         if (this.scene) {
             collectState(this.scene);
         }
-        
+
         return state;
     }
 
@@ -2922,16 +2932,16 @@ export class Viewer {
             if (savedState !== undefined) {
                 object.visible = savedState.visible;
             }
-            
+
             if (object.children && object.children.length > 0) {
                 object.children.forEach(child => applyState(child));
             }
         };
-        
+
         if (this.scene) {
             applyState(this.scene);
         }
-        
+
         // Refresh the tree view UI if it exists
         this.refreshTreeView();
     }
@@ -2944,7 +2954,7 @@ export class Viewer {
         if (!this.treeViewRoot || !this.scene) {
             return;
         }
-        
+
         // Recreate the tree view to reflect the current state
         this.createTreeView(this.scene, this.treeViewRoot);
     }

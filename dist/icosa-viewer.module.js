@@ -5991,6 +5991,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (cameraRot.length == 3) this.flatCamera.rotation.setFromVector3(new $hBQxr$three.Vector3(cameraRot[0], cameraRot[1], cameraRot[2]));
         else this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
         this.flatCamera.updateProjectionMatrix();
+        this.flatCamera.updateMatrixWorld();
         this.xrCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
         this.cameraRig = new $hBQxr$three.Group();
         this.scene.add(this.cameraRig);
@@ -6021,12 +6022,20 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
             cameraTarget = cameraTarget || visualCenterPoint;
         }
+        let initTargetPos = true;
+        if (initTargetPos) {
+            // Capture camera direction BEFORE CameraControls modifies anything
+            const forward = new $hBQxr$three.Vector3();
+            this.flatCamera.getWorldDirection(forward);
+            cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(10));
+        }
         (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
             THREE: $hBQxr$three
         });
         this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
-        this.cameraControls.smoothTime = 1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 0.5;
+        this.cameraControls.smoothTime = 0.1;
+        this.cameraControls.draggingSmoothTime = 0.1;
+        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
         this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
         this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
         (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
