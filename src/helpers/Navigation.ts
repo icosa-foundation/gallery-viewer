@@ -29,28 +29,58 @@ export function setupNavigation(cameraControls : CameraControls): void {
         ARROW_RIGHT: 39,
         ARROW_DOWN : 40,
     };
-    
-    const wKey = new holdEvent.KeyboardKeyHold( KEYCODE.W, 1);
-    const aKey = new holdEvent.KeyboardKeyHold( KEYCODE.A, 1);
-    const sKey = new holdEvent.KeyboardKeyHold( KEYCODE.S, 1);
-    const dKey = new holdEvent.KeyboardKeyHold( KEYCODE.D, 1);
-    const qKey = new holdEvent.KeyboardKeyHold( KEYCODE.Q, 1);
-    const eKey = new holdEvent.KeyboardKeyHold( KEYCODE.E, 1);
-    aKey.addEventListener( 'holding', function( event ) { cameraControls.truck(- 0.01 * event?.deltaTime, 0, true ) } );
-    dKey.addEventListener( 'holding', function( event ) { cameraControls.truck(  0.01 * event?.deltaTime, 0, true ) } );
-    wKey.addEventListener( 'holding', function( event ) { cameraControls.forward(   0.01 * event?.deltaTime, true ) } );
-    sKey.addEventListener( 'holding', function( event ) { cameraControls.forward( - 0.01 * event?.deltaTime, true ) } );
-    qKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,  0.01 * event?.deltaTime, true ) } );
-    eKey.addEventListener( 'holding', function( event ) { cameraControls.truck( 0,- 0.01 * event?.deltaTime, true ) } );
-    // Leaving this here because I hope I can use it later somehow.
-    // cameraControls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
-    
-    const leftKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_LEFT,  1);
-    const rightKey = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_RIGHT, 1);
-    const upKey    = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_UP,    1);
-    const downKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_DOWN,  1);
-    leftKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate(   0.1 * MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
-    rightKey.addEventListener( 'holding', function( event ) { cameraControls.rotate( - 0.1 * MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
-    upKey.addEventListener   ( 'holding', function( event ) { cameraControls.rotate( 0, - 0.05 * MathUtils.DEG2RAD * event?.deltaTime, true ) } );
-    downKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate( 0,   0.05 * MathUtils.DEG2RAD * event?.deltaTime, true ) } );
+
+    let baseTranslationSpeed = 0.0001;
+    let rotSpeed = 1;
+    let holdInterval = 0.1;
+    let maxSpeedMultiplier = 20;
+    let accelerationTime = 1500;
+
+    const getSpeedMultiplier = (elapsedTime: number): number => {
+        const t = Math.min(elapsedTime / accelerationTime, 1);
+        return 1 + (maxSpeedMultiplier - 1) * t;
+    };
+
+    const wKey = new holdEvent.KeyboardKeyHold( KEYCODE.W, holdInterval);
+    const aKey = new holdEvent.KeyboardKeyHold( KEYCODE.A, holdInterval);
+    const sKey = new holdEvent.KeyboardKeyHold( KEYCODE.S, holdInterval);
+    const dKey = new holdEvent.KeyboardKeyHold( KEYCODE.D, holdInterval);
+    const qKey = new holdEvent.KeyboardKeyHold( KEYCODE.Q, holdInterval);
+    const eKey = new holdEvent.KeyboardKeyHold( KEYCODE.E, holdInterval);
+
+    aKey.addEventListener( 'holding', function( event ) {
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.truck(-speed, 0, true );
+    } );
+    dKey.addEventListener( 'holding', function( event ) {
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.truck(speed, 0, true );
+    } );
+    wKey.addEventListener( 'holding', function( event ) {
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.forward(speed, true );
+    } );
+    sKey.addEventListener( 'holding', function( event ) {
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.forward(-speed, true );
+    } );
+    qKey.addEventListener( 'holding', function( event ) {
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.truck(0, speed, true );
+    } );
+    eKey.addEventListener( 'holding', function( event ) {
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.truck(0, -speed, true );
+    } );
+
+
+    const leftKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_LEFT,  holdInterval);
+    const rightKey = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_RIGHT, holdInterval);
+    const upKey    = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_UP,    holdInterval);
+    const downKey  = new holdEvent.KeyboardKeyHold( KEYCODE.ARROW_DOWN,  holdInterval);
+
+    leftKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate(rotSpeed * MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
+    rightKey.addEventListener( 'holding', function( event ) { cameraControls.rotate(-rotSpeed * MathUtils.DEG2RAD * event?.deltaTime, 0, true ) } );
+    upKey.addEventListener   ( 'holding', function( event ) { cameraControls.rotate(0, -rotSpeed * MathUtils.DEG2RAD * event?.deltaTime, true ) } );
+    downKey.addEventListener ( 'holding', function( event ) { cameraControls.rotate(0, rotSpeed * MathUtils.DEG2RAD * event?.deltaTime, true ) } );
 }

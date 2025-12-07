@@ -38,7 +38,6 @@ import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
-import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 
 class SketchMetadata {
@@ -58,7 +57,7 @@ class SketchMetadata {
     public CameraTranslation: THREE.Vector3;
     public CameraRotation: THREE.Vector3;
     public CameraTargetDistance: number | null;
-    public FlyMode: boolean; // Whether to use fly controls or orbit controls
+    public FlyMode: boolean; // Whether to use fly mode or orbit mode
     public EnvironmentPreset: EnvironmentPreset;
     public SkyTexture: string;
     public ReflectionTexture: string;
@@ -230,7 +229,6 @@ export class Viewer {
     private flatCamera: THREE.PerspectiveCamera;
     private xrCamera: THREE.PerspectiveCamera;
     private cameraControls: CameraControls;
-    private flyControls: FlyControls;
     private trackballControls: TrackballControls;
     private loadedModel?: THREE.Object3D;
     private sceneGltf?: GLTF;
@@ -521,7 +519,6 @@ export class Viewer {
                     viewer.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer?.cameraControls) viewer.cameraControls.update(delta);
-                if (viewer?.flyControls) viewer.flyControls.update(delta);
                 if (viewer?.trackballControls) viewer.trackballControls.update();
             }
 
@@ -2592,8 +2589,19 @@ export class Viewer {
         this.activeCamera = this.flatCamera;
 
         if (this.sketchMetadata.FlyMode) {
-            this.flyControls = new FlyControls(this.flatCamera, viewer.canvas);
-            this.flyControls.dragToLook = true;
+            // Simulate fly mode by setting target point in front of camera
+            let cameraTarget : THREE.Vector3;
+            const forward = new THREE.Vector3();
+            this.flatCamera.getWorldDirection(forward);
+            cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(0.05));
+            CameraControls.install({THREE: THREE});
+            this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
+            this.cameraControls.smoothTime = 0.1;
+            this.cameraControls.draggingSmoothTime = 0.1;
+            this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
+            this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+            this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
+            setupNavigation(this.cameraControls);
         } else {
             let cameraTarget : THREE.Vector3;
             let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot

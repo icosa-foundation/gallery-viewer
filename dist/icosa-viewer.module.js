@@ -10,7 +10,6 @@ import {USDZLoader as $hBQxr$USDZLoader} from "three/examples/jsm/loaders/USDZLo
 import {VOXLoader as $hBQxr$VOXLoader, VOXMesh as $hBQxr$VOXMesh} from "three/examples/jsm/loaders/VOXLoader.js";
 import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension} from "three-icosa";
 import {TiltLoader as $hBQxr$TiltLoader} from "three-tiltloader";
-import {FlyControls as $hBQxr$FlyControls} from "three/examples/jsm/controls/FlyControls.js";
 import {XRControllerModelFactory as $hBQxr$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
 
 // Copyright 2021-2022 Icosa Gallery
@@ -2602,47 +2601,60 @@ function $7f098f70bc341b4e$export$fc22e28a11679cb8(cameraControls) {
         ARROW_RIGHT: 39,
         ARROW_DOWN: 40
     };
-    const wKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.W, 1);
-    const aKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.A, 1);
-    const sKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.S, 1);
-    const dKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.D, 1);
-    const qKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.Q, 1);
-    const eKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.E, 1);
+    let baseTranslationSpeed = 0.0001;
+    let rotSpeed = 1;
+    let holdInterval = 0.1;
+    let maxSpeedMultiplier = 20;
+    let accelerationTime = 1500;
+    const getSpeedMultiplier = (elapsedTime)=>{
+        const t = Math.min(elapsedTime / accelerationTime, 1);
+        return 1 + (maxSpeedMultiplier - 1) * t;
+    };
+    const wKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.W, holdInterval);
+    const aKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.A, holdInterval);
+    const sKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.S, holdInterval);
+    const dKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.D, holdInterval);
+    const qKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.Q, holdInterval);
+    const eKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.E, holdInterval);
     aKey.addEventListener('holding', function(event) {
-        cameraControls.truck(-0.01 * event?.deltaTime, 0, true);
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.truck(-speed, 0, true);
     });
     dKey.addEventListener('holding', function(event) {
-        cameraControls.truck(0.01 * event?.deltaTime, 0, true);
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.truck(speed, 0, true);
     });
     wKey.addEventListener('holding', function(event) {
-        cameraControls.forward(0.01 * event?.deltaTime, true);
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.forward(speed, true);
     });
     sKey.addEventListener('holding', function(event) {
-        cameraControls.forward(-0.01 * event?.deltaTime, true);
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.forward(-speed, true);
     });
     qKey.addEventListener('holding', function(event) {
-        cameraControls.truck(0, 0.01 * event?.deltaTime, true);
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.truck(0, speed, true);
     });
     eKey.addEventListener('holding', function(event) {
-        cameraControls.truck(0, -0.01 * event?.deltaTime, true);
+        const speed = baseTranslationSpeed * getSpeedMultiplier(event?.elapsedTime) * event?.deltaTime;
+        cameraControls.truck(0, -speed, true);
     });
-    // Leaving this here because I hope I can use it later somehow.
-    // cameraControls.mouseButtons.wheel = CameraControls.ACTION.ZOOM;
-    const leftKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_LEFT, 1);
-    const rightKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_RIGHT, 1);
-    const upKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_UP, 1);
-    const downKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_DOWN, 1);
+    const leftKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_LEFT, holdInterval);
+    const rightKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_RIGHT, holdInterval);
+    const upKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_UP, holdInterval);
+    const downKey = new $8ae143a90d3c4f75$export$b930b29ba9cf39c9(KEYCODE.ARROW_DOWN, holdInterval);
     leftKey.addEventListener('holding', function(event) {
-        cameraControls.rotate(0.1 * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, 0, true);
+        cameraControls.rotate(rotSpeed * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, 0, true);
     });
     rightKey.addEventListener('holding', function(event) {
-        cameraControls.rotate(-0.1 * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, 0, true);
+        cameraControls.rotate(-rotSpeed * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, 0, true);
     });
     upKey.addEventListener('holding', function(event) {
-        cameraControls.rotate(0, -0.05 * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, true);
+        cameraControls.rotate(0, -rotSpeed * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, true);
     });
     downKey.addEventListener('holding', function(event) {
-        cameraControls.rotate(0, 0.05 * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, true);
+        cameraControls.rotate(0, rotSpeed * (0, $hBQxr$MathUtils).DEG2RAD * event?.deltaTime, true);
     });
 }
 
@@ -3760,7 +3772,6 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
 
 
 
-
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
@@ -4047,7 +4058,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                     viewer1.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
-                if (viewer1?.flyControls) viewer1.flyControls.update(delta);
                 if (viewer1?.trackballControls) viewer1.trackballControls.update();
             }
             // SparkRenderer stochastic setup is now handled by GUI toggle
@@ -6006,8 +6016,21 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.xrCamera.updateProjectionMatrix();
         this.activeCamera = this.flatCamera;
         if (this.sketchMetadata.FlyMode) {
-            this.flyControls = new (0, $hBQxr$FlyControls)(this.flatCamera, viewer.canvas);
-            this.flyControls.dragToLook = true;
+            // Simulate fly mode by setting target point in front of camera
+            let cameraTarget;
+            const forward = new $hBQxr$three.Vector3();
+            this.flatCamera.getWorldDirection(forward);
+            cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(0.05));
+            (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
+                THREE: $hBQxr$three
+            });
+            this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
+            this.cameraControls.smoothTime = 0.1;
+            this.cameraControls.draggingSmoothTime = 0.1;
+            this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
+            this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+            this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
+            (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
         } else {
             let cameraTarget;
             let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot;
