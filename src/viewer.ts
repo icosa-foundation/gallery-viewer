@@ -38,6 +38,7 @@ import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
+import { FlyControls } from 'three/examples/jsm/controls/FlyControls.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 
 class SketchMetadata {
@@ -56,7 +57,8 @@ class SketchMetadata {
     public SceneLight1Rotation: THREE.Vector3;
     public CameraTranslation: THREE.Vector3;
     public CameraRotation: THREE.Vector3;
-    public CameraTarget: THREE.Vector3;
+    public CameraTargetDistance: number | null;
+    public FlyMode: boolean; // Whether to use fly controls or orbit controls
     public EnvironmentPreset: EnvironmentPreset;
     public SkyTexture: string;
     public ReflectionTexture: string;
@@ -148,7 +150,10 @@ class SketchMetadata {
 
         this.CameraTranslation = Viewer.parseTBVector3(userData['TB_CameraTranslation'], null)
         this.CameraRotation = Viewer.parseTBVector3(userData['TB_CameraRotation'], null);
-        this.CameraTarget = Viewer.parseTBVector3(userData['TB_CameraTarget'], null);
+        const parsed = parseFloat(userData['TB_CameraTargetDistance']);
+        this.CameraTargetDistance = Number.isFinite(parsed) ? parsed : null;
+
+        this.FlyMode = userData['TB_FlyMode'] ? JSON.parse(userData['TB_FlyMode'].toLowerCase()) : false;
     }
 }
 
@@ -225,6 +230,7 @@ export class Viewer {
     private flatCamera: THREE.PerspectiveCamera;
     private xrCamera: THREE.PerspectiveCamera;
     private cameraControls: CameraControls;
+    private flyControls: FlyControls;
     private trackballControls: TrackballControls;
     private loadedModel?: THREE.Object3D;
     private sceneGltf?: GLTF;
@@ -515,6 +521,7 @@ export class Viewer {
                     viewer.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer?.cameraControls) viewer.cameraControls.update(delta);
+                if (viewer?.flyControls) viewer.flyControls.update(delta);
                 if (viewer?.trackballControls) viewer.trackballControls.update();
             }
 
@@ -2552,7 +2559,7 @@ export class Viewer {
             // Assume euler angles in degrees
             cameraRot[0] += 0;
             cameraRot[1] += 180;
-            cameraRot[2] += 0;
+            cameraRot[2] += 0
 
             cameraRot[0] = THREE.MathUtils.degToRad(cameraRot[0]);
             cameraRot[1] = THREE.MathUtils.degToRad(cameraRot[1]);
@@ -2584,43 +2591,62 @@ export class Viewer {
 
         this.activeCamera = this.flatCamera;
 
-        let cameraTarget : THREE.Vector3;
-        let metadataCameraTarget = this.sketchMetadata.CameraTarget;
-        let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot
-        if (metadataCameraTarget) {
-            cameraTarget = metadataCameraTarget;
-        } else if (pivot) {
-            cameraTarget = new THREE.Vector3(pivot[0], pivot[1], pivot[2]);
+        if (this.sketchMetadata.FlyMode) {
+
+            this.flyControls = new FlyControls(this.flatCamera, viewer.canvas);
+            this.flyControls.movementSpeed = 1.0;
+            this.flyControls.rollSpeed = 0.5;
+            this.flyControls.dragToLook = true;
+
         } else {
-            let vp =  this.overrides?.geometryData?.visualCenterPoint;
-            if (!vp) {
-                const box = this.modelBoundingBox;
-                if (box != undefined) {
-                    const boxCenter = box.getCenter(new THREE.Vector3());
-                    vp = [boxCenter.x, boxCenter.y, boxCenter.z];
+
+            let cameraTarget : THREE.Vector3;
+
+            let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot
+            if (pivot) {
+
+                // TODO this pivot should be recalculated to take into account
+                //  any camera rotation adjustment applied above
+                cameraTarget = new THREE.Vector3(pivot[0], pivot[1], pivot[2]);
+
+            } else {
+
+                // We don't know the camera pivot
+
+                if (this.sketchMetadata.CameraTargetDistance) {
+                    // We do have a distance so can calculate target point
+                    // Capture camera direction BEFORE CameraControls modifies anything
+                    const forward = new THREE.Vector3();
+                    this.flatCamera.getWorldDirection(forward);
+                    let cameraTargetDistance = this.sketchMetadata.CameraTargetDistance;
+                    cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(cameraTargetDistance));
+                } else {
+
+                    // No pivot or distance - try and figure out a good target point
+
+                    let vp = this.overrides?.geometryData?.visualCenterPoint;
+                    if (!vp) {
+                        const box = this.modelBoundingBox;
+                        if (box != undefined) {
+                            const boxCenter = box.getCenter(new THREE.Vector3());
+                            vp = [boxCenter.x, boxCenter.y, boxCenter.z];
+                        }
+                    }
+                    let visualCenterPoint = new THREE.Vector3(vp[0], vp[1], vp[2]);
+                    cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
+                    cameraTarget = visualCenterPoint;
                 }
+
+                CameraControls.install({THREE: THREE});
+                this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
+                this.cameraControls.smoothTime = 0.1;
+                this.cameraControls.draggingSmoothTime = 0.1;
+                this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
+                this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+                this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
+                setupNavigation(this.cameraControls);
             }
-            let visualCenterPoint = new THREE.Vector3(vp[0], vp[1], vp[2]);
-            cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
-            cameraTarget = cameraTarget || visualCenterPoint;
         }
-
-        let initTargetPos = true;
-        if (initTargetPos) {
-            // Capture camera direction BEFORE CameraControls modifies anything
-            const forward = new THREE.Vector3();
-            this.flatCamera.getWorldDirection(forward);
-            cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(10));
-        }
-
-        CameraControls.install({THREE: THREE});
-        this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
-        this.cameraControls.smoothTime = 0.1;
-        this.cameraControls.draggingSmoothTime = 0.1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
-        this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
-        this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
-        setupNavigation(this.cameraControls);
 
         // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
         // this.trackballControls.target = cameraTarget;

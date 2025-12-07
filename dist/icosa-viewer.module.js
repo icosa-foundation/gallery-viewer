@@ -10,6 +10,7 @@ import {USDZLoader as $hBQxr$USDZLoader} from "three/examples/jsm/loaders/USDZLo
 import {VOXLoader as $hBQxr$VOXLoader, VOXMesh as $hBQxr$VOXMesh} from "three/examples/jsm/loaders/VOXLoader.js";
 import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension} from "three-icosa";
 import {TiltLoader as $hBQxr$TiltLoader} from "three-tiltloader";
+import {FlyControls as $hBQxr$FlyControls} from "three/examples/jsm/controls/FlyControls.js";
 import {XRControllerModelFactory as $hBQxr$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
 
 // Copyright 2021-2022 Icosa Gallery
@@ -3759,6 +3760,7 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
 
 
 
+
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
@@ -3817,7 +3819,9 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         });
         this.CameraTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTranslation'], null);
         this.CameraRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraRotation'], null);
-        this.CameraTarget = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_CameraTarget'], null);
+        const parsed = parseFloat(userData['TB_CameraTargetDistance']);
+        this.CameraTargetDistance = Number.isFinite(parsed) ? parsed : null;
+        this.FlyMode = userData['TB_FlyMode'] ? JSON.parse(userData['TB_FlyMode'].toLowerCase()) : false;
     }
 }
 class $677737c8a5cbea2f$var$EnvironmentPreset {
@@ -4043,6 +4047,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                     viewer1.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
+                if (viewer1?.flyControls) viewer1.flyControls.update(delta);
                 if (viewer1?.trackballControls) viewer1.trackballControls.update();
             }
             // SparkRenderer stochastic setup is now handled by GUI toggle
@@ -6000,45 +6005,56 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.cameraRig.add(this.xrCamera);
         this.xrCamera.updateProjectionMatrix();
         this.activeCamera = this.flatCamera;
-        let cameraTarget;
-        let metadataCameraTarget = this.sketchMetadata.CameraTarget;
-        let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot;
-        if (metadataCameraTarget) cameraTarget = metadataCameraTarget;
-        else if (pivot) cameraTarget = new $hBQxr$three.Vector3(pivot[0], pivot[1], pivot[2]);
-        else {
-            let vp = this.overrides?.geometryData?.visualCenterPoint;
-            if (!vp) {
-                const box = this.modelBoundingBox;
-                if (box != undefined) {
-                    const boxCenter = box.getCenter(new $hBQxr$three.Vector3());
-                    vp = [
-                        boxCenter.x,
-                        boxCenter.y,
-                        boxCenter.z
-                    ];
+        if (this.sketchMetadata.FlyMode) {
+            this.flyControls = new (0, $hBQxr$FlyControls)(this.flatCamera, viewer.canvas);
+            this.flyControls.movementSpeed = 1.0;
+            this.flyControls.rollSpeed = 0.5;
+            this.flyControls.dragToLook = true;
+        } else {
+            let cameraTarget;
+            let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot;
+            if (pivot) // TODO this pivot should be recalculated to take into account
+            //  any camera rotation adjustment applied above
+            cameraTarget = new $hBQxr$three.Vector3(pivot[0], pivot[1], pivot[2]);
+            else {
+                // We don't know the camera pivot
+                if (this.sketchMetadata.CameraTargetDistance) {
+                    // We do have a distance so can calculate target point
+                    // Capture camera direction BEFORE CameraControls modifies anything
+                    const forward = new $hBQxr$three.Vector3();
+                    this.flatCamera.getWorldDirection(forward);
+                    let cameraTargetDistance = this.sketchMetadata.CameraTargetDistance;
+                    cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(cameraTargetDistance));
+                } else {
+                    // No pivot or distance - try and figure out a good target point
+                    let vp = this.overrides?.geometryData?.visualCenterPoint;
+                    if (!vp) {
+                        const box = this.modelBoundingBox;
+                        if (box != undefined) {
+                            const boxCenter = box.getCenter(new $hBQxr$three.Vector3());
+                            vp = [
+                                boxCenter.x,
+                                boxCenter.y,
+                                boxCenter.z
+                            ];
+                        }
+                    }
+                    let visualCenterPoint = new $hBQxr$three.Vector3(vp[0], vp[1], vp[2]);
+                    cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
+                    cameraTarget = visualCenterPoint;
                 }
+                (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
+                    THREE: $hBQxr$three
+                });
+                this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
+                this.cameraControls.smoothTime = 0.1;
+                this.cameraControls.draggingSmoothTime = 0.1;
+                this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
+                this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+                this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
+                (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
             }
-            let visualCenterPoint = new $hBQxr$three.Vector3(vp[0], vp[1], vp[2]);
-            cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
-            cameraTarget = cameraTarget || visualCenterPoint;
         }
-        let initTargetPos = true;
-        if (initTargetPos) {
-            // Capture camera direction BEFORE CameraControls modifies anything
-            const forward = new $hBQxr$three.Vector3();
-            this.flatCamera.getWorldDirection(forward);
-            cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(10));
-        }
-        (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
-            THREE: $hBQxr$three
-        });
-        this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
-        this.cameraControls.smoothTime = 0.1;
-        this.cameraControls.draggingSmoothTime = 0.1;
-        this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
-        this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
-        this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
-        (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
     // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
     // this.trackballControls.target = cameraTarget;
     // this.trackballControls.rotateSpeed = 1.0;
