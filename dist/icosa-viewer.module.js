@@ -6007,8 +6007,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.activeCamera = this.flatCamera;
         if (this.sketchMetadata.FlyMode) {
             this.flyControls = new (0, $hBQxr$FlyControls)(this.flatCamera, viewer.canvas);
-            this.flyControls.movementSpeed = 1.0;
-            this.flyControls.rollSpeed = 0.5;
             this.flyControls.dragToLook = true;
         } else {
             let cameraTarget;
@@ -6016,44 +6014,40 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             if (pivot) // TODO this pivot should be recalculated to take into account
             //  any camera rotation adjustment applied above
             cameraTarget = new $hBQxr$three.Vector3(pivot[0], pivot[1], pivot[2]);
-            else {
-                // We don't know the camera pivot
-                if (this.sketchMetadata.CameraTargetDistance) {
-                    // We do have a distance so can calculate target point
-                    // Capture camera direction BEFORE CameraControls modifies anything
-                    const forward = new $hBQxr$three.Vector3();
-                    this.flatCamera.getWorldDirection(forward);
-                    let cameraTargetDistance = this.sketchMetadata.CameraTargetDistance;
-                    cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(cameraTargetDistance));
-                } else {
-                    // No pivot or distance - try and figure out a good target point
-                    let vp = this.overrides?.geometryData?.visualCenterPoint;
-                    if (!vp) {
-                        const box = this.modelBoundingBox;
-                        if (box != undefined) {
-                            const boxCenter = box.getCenter(new $hBQxr$three.Vector3());
-                            vp = [
-                                boxCenter.x,
-                                boxCenter.y,
-                                boxCenter.z
-                            ];
-                        }
+            else if (this.sketchMetadata.CameraTargetDistance) {
+                // We do have a distance so can calculate target point
+                // Capture camera direction BEFORE CameraControls modifies anything
+                const forward = new $hBQxr$three.Vector3();
+                this.flatCamera.getWorldDirection(forward);
+                let cameraTargetDistance = this.sketchMetadata.CameraTargetDistance;
+                cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(cameraTargetDistance));
+            } else {
+                let vp = this.overrides?.geometryData?.visualCenterPoint;
+                if (!vp) {
+                    const box = this.modelBoundingBox;
+                    if (box != undefined) {
+                        const boxCenter = box.getCenter(new $hBQxr$three.Vector3());
+                        vp = [
+                            boxCenter.x,
+                            boxCenter.y,
+                            boxCenter.z
+                        ];
                     }
-                    let visualCenterPoint = new $hBQxr$three.Vector3(vp[0], vp[1], vp[2]);
-                    cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
-                    cameraTarget = visualCenterPoint;
                 }
-                (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
-                    THREE: $hBQxr$three
-                });
-                this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
-                this.cameraControls.smoothTime = 0.1;
-                this.cameraControls.draggingSmoothTime = 0.1;
-                this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
-                this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
-                this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
-                (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
+                let visualCenterPoint = new $hBQxr$three.Vector3(vp[0], vp[1], vp[2]);
+                cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
+                cameraTarget = visualCenterPoint;
             }
+            (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
+                THREE: $hBQxr$three
+            });
+            this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
+            this.cameraControls.smoothTime = 0.1;
+            this.cameraControls.draggingSmoothTime = 0.1;
+            this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
+            this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+            this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
+            (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
         }
     // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
     // this.trackballControls.target = cameraTarget;

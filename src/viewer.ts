@@ -2559,7 +2559,7 @@ export class Viewer {
             // Assume euler angles in degrees
             cameraRot[0] += 0;
             cameraRot[1] += 180;
-            cameraRot[2] += 0
+            cameraRot[2] += 0;
 
             cameraRot[0] = THREE.MathUtils.degToRad(cameraRot[0]);
             cameraRot[1] = THREE.MathUtils.degToRad(cameraRot[1]);
@@ -2592,27 +2592,16 @@ export class Viewer {
         this.activeCamera = this.flatCamera;
 
         if (this.sketchMetadata.FlyMode) {
-
             this.flyControls = new FlyControls(this.flatCamera, viewer.canvas);
-            this.flyControls.movementSpeed = 1.0;
-            this.flyControls.rollSpeed = 0.5;
             this.flyControls.dragToLook = true;
-
         } else {
-
             let cameraTarget : THREE.Vector3;
-
             let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot
             if (pivot) {
-
                 // TODO this pivot should be recalculated to take into account
                 //  any camera rotation adjustment applied above
                 cameraTarget = new THREE.Vector3(pivot[0], pivot[1], pivot[2]);
-
-            } else {
-
-                // We don't know the camera pivot
-
+            } else { // We don't know the camera pivot
                 if (this.sketchMetadata.CameraTargetDistance) {
                     // We do have a distance so can calculate target point
                     // Capture camera direction BEFORE CameraControls modifies anything
@@ -2620,10 +2609,7 @@ export class Viewer {
                     this.flatCamera.getWorldDirection(forward);
                     let cameraTargetDistance = this.sketchMetadata.CameraTargetDistance;
                     cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(cameraTargetDistance));
-                } else {
-
-                    // No pivot or distance - try and figure out a good target point
-
+                } else { // No pivot or distance - try and figure out a good target point
                     let vp = this.overrides?.geometryData?.visualCenterPoint;
                     if (!vp) {
                         const box = this.modelBoundingBox;
@@ -2636,16 +2622,15 @@ export class Viewer {
                     cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
                     cameraTarget = visualCenterPoint;
                 }
-
-                CameraControls.install({THREE: THREE});
-                this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
-                this.cameraControls.smoothTime = 0.1;
-                this.cameraControls.draggingSmoothTime = 0.1;
-                this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
-                this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
-                this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
-                setupNavigation(this.cameraControls);
             }
+            CameraControls.install({THREE: THREE});
+            this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
+            this.cameraControls.smoothTime = 0.1;
+            this.cameraControls.draggingSmoothTime = 0.1;
+            this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
+            this.cameraControls.setPosition(cameraPos[0], cameraPos[1], cameraPos[2], false);
+            this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
+            setupNavigation(this.cameraControls);
         }
 
         // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
