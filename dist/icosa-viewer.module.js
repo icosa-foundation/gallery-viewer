@@ -2604,7 +2604,7 @@ function $7f098f70bc341b4e$export$fc22e28a11679cb8(cameraControls) {
     let baseTranslationSpeed = 0.0001;
     let rotSpeed = 1;
     let holdInterval = 0.1;
-    let maxSpeedMultiplier = 20;
+    let maxSpeedMultiplier = 50;
     let accelerationTime = 1500;
     const getSpeedMultiplier = (elapsedTime)=>{
         const t = Math.min(elapsedTime / accelerationTime, 1);

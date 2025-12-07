@@ -33,7 +33,7 @@ export function setupNavigation(cameraControls : CameraControls): void {
     let baseTranslationSpeed = 0.0001;
     let rotSpeed = 1;
     let holdInterval = 0.1;
-    let maxSpeedMultiplier = 20;
+    let maxSpeedMultiplier = 50;
     let accelerationTime = 1500;
 
     const getSpeedMultiplier = (elapsedTime: number): number => {
