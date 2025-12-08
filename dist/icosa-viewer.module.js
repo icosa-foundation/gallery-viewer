@@ -5981,11 +5981,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             0,
             0
         ]; // Could be euler angles or quaternion
-        if (this.isNewTiltExporter(this.sceneGltf)) {
-            // Scene scale is modified elsewhere but here we correct the camera to match
-            cameraPos[1] -= 1;
-            cameraRot[1] += 180;
-        }
         // Fix handedness between Unity and gltf/three.js
         // Should we fix this on export?
         if (cameraRot.length == 3) {
@@ -6059,7 +6054,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 }
                 let visualCenterPoint = new $hBQxr$three.Vector3(vp[0], vp[1], vp[2]);
                 cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
-                cameraTarget = visualCenterPoint;
+                cameraTarget = cameraTarget || visualCenterPoint;
             }
             (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
                 THREE: $hBQxr$three
