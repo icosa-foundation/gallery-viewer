@@ -2622,7 +2622,7 @@ export class Viewer {
                     }
                     let visualCenterPoint = new THREE.Vector3(vp[0], vp[1], vp[2]);
                     cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
-                    cameraTarget = visualCenterPoint;
+                    cameraTarget = cameraTarget || visualCenterPoint;
                 }
             }
             CameraControls.install({THREE: THREE});
