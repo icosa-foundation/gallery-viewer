@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v251203-3</title>
+        <title>viverse icosa viewer v251208</title>
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
@@ -91,7 +91,7 @@
 
 			//addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = 'tpa958czj7'
+			const app = 'e56b2dqbze'
 		
             import { Viewer }              from "./icosa-viewer.module.js"
 			import * as THREE              from 'three'
@@ -99,12 +99,17 @@
 			import { GLTFLoader }          from 'three/addons/loaders/GLTFLoader.js'
 			import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js'
 						
-			let viewer
+			let   viewer
 			let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
 			const update_position_time = 30, speed = 0.05, angular_speed = Math.PI / 500, delta_threshold = 20, vector3 = new THREE.Vector3()
 			let   actors =[], keys ={}, session_id, room, multi, touch = false, vr = false, in_vr = false
-			let   pre_renders = 0, pointer_lock_controls
+			let   pointer_lock_controls
+			let   profile
 			
+			document.getElementById( 'chat_input' ).addEventListener( 'focus', _=>{
+				//document.ownerDocument.exitPointerLock();   // release lock
+			});
+
 			document.getElementById( 'virtual_reality_button' ).onclick =_=>{
 				viewer.xrButton.click()
 			}
@@ -184,7 +189,6 @@
 					nipple_context.arc         ( size / 2 + x_offset, size / 2 + y_offset, size / 8, 0, Math.PI * 2 )
 					nipple_context.stroke      ()
 				}
-				++pre_renders
 			}
 			
 			const clock                 = new THREE.Clock()
@@ -223,14 +227,16 @@
 			if( window.matchMedia('( pointer: coarse )').matches ){
 				touch = true				
 				addEventListener( 'pointerdown', event =>{
-					if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
+					if( "CANVAS" != event.target.tagName ) return
+					
+					//if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
 					
 					pointer_data.button = event.button
 					
 					pointer_data.down ={ x : event.clientX, y : event.clientY }
 				})
 				addEventListener( 'pointermove', event =>{
-					if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
+					//if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
 					
 					event.preventDefault()
 					
@@ -321,6 +327,8 @@
 			})		
 	
 			addEventListener( 'mousedown', _=>{
+				if( "CANVAS" != event.target.tagName ) return
+				
 				if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
 				
 				pointer_lock_controls     = new PointerLockControls( viewer.activeCamera, document.body )
@@ -337,7 +345,7 @@
 					chat_input.value = ''
 				} else keys[ event.key.toLowerCase()] = true
 			})
-			addEventListener( 'keyup',   event =>{
+			addEventListener           ( 'keyup',   event =>{
 				keys[ event.key.toLowerCase()] = false 
 			})
 			
@@ -363,10 +371,7 @@
 				})
 				if( ! avatar ) return
 				
-				const profile = await avatar.getProfile()
-				
-				const play         = new viverse.Play()
-				if( ! play ) return
+				profile = await avatar.getProfile()
 				
 				const match = await play.newMatchmakingClient( app, true )
 				if( ! match ) return
@@ -430,9 +435,9 @@
 						session_id,
 						name       : profile.name,
 						properties : {
-							"level"     : 1,
-							"skill"     : 1,
-							"vrmUrl"    : profile.activeAvatar.vrmUrl,
+							"level"  : 1,
+							"skill"  : 1,
+							"vrmUrl" : profile.activeAvatar.vrmUrl,
 						}
 					})
 					const rooms_result     = await match.getAvailableRooms()
