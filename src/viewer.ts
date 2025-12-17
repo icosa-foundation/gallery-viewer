@@ -2180,6 +2180,8 @@ export class Viewer {
         let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
         let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
         let poseScale = userData['TB_PoseScale'] ?? 1;
+
+        // Correct the scale for new exporter (handled automatically for the legacy exporter)
         if (this.isNewTiltExporter(sceneGltf)) {
             poseScale *= negate ? 10 : 0.1;
         }
