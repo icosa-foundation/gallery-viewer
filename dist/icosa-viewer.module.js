@@ -5575,13 +5575,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
     }
     async loadGltf(url, loadEnvironment, overrides) {
-        try {
-            await this._loadGltf(url, loadEnvironment, overrides, false);
-        } catch (error) {
-            this.showErrorIcon();
-            console.error("Error loading glTFv2 model");
-            this.loadingError = true;
-        }
+        // try {
+        await this._loadGltf(url, loadEnvironment, overrides, false);
+    // } catch (error) {
+    //     this.showErrorIcon();
+    //     console.error("Error loading glTFv2 model");
+    //     this.loadingError = true;
+    // }
     }
     async replaceGltf1Materials(model, brushPath) {
         // Create a minimal mock parser object with the required options.manager
@@ -5651,6 +5651,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let poseTranslation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseTranslation'], new $hBQxr$three.Vector3(0, 0, 0));
         let poseRotation = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.parseTBVector3(userData['TB_PoseRotation'], new $hBQxr$three.Vector3(0, 0, 0));
         let poseScale = userData['TB_PoseScale'] ?? 1;
+        // Correct the scale for new exporter (handled automatically for the legacy exporter)
         if (this.isNewTiltExporter(sceneGltf)) poseScale *= negate ? 10 : 0.1;
         if (negate) {
             // Create inverse transformation matrix: (T * R * S)^-1 = S^-1 * R^-1 * T^-1
@@ -5958,10 +5959,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     initCameras() {
         let cameraOverrides = this.overrides?.camera;
-        // const userData = this.sceneGltf?.scene?.userData || {};
-        // let poseTranslation = Viewer.parseTBVector3(userData['TB_PoseTranslation'], new THREE.Vector3(0, 0, 0));
-        // let poseRotation = Viewer.parseTBVector3(userData['TB_PoseRotation'], new THREE.Vector3(0, 0, 0));
-        // let poseScale = (userData['TB_PoseScale'] ?? 1);
+        // Check if there's a GLTF camera in the scene
+        let gltfCamera = null;
+        this.loadedModel.traverse((object)=>{
+            if (object instanceof $hBQxr$three.Camera && !gltfCamera) gltfCamera = object;
+        });
         let sketchCam = this.sketchMetadata?.CameraTranslation?.toArray();
         if (sketchCam) {
             let poseScale = this.isAnyTiltExporter(this.sceneGltf) ? 0.1 : 1;
@@ -5971,35 +5973,52 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 sketchCam[2] * poseScale
             ];
         }
-        let cameraPos = cameraOverrides?.translation || sketchCam || [
-            0,
-            0.25,
-            -3.5
-        ];
-        let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation?.toArray() || [
-            0,
-            0,
-            0
-        ]; // Could be euler angles or quaternion
-        // Fix handedness between Unity and gltf/three.js
-        // Should we fix this on export?
-        if (cameraRot.length == 3) {
-            // Assume euler angles in degrees
-            cameraRot[0] += 0;
-            cameraRot[1] += 180;
-            cameraRot[2] += 0;
-            cameraRot[0] = $hBQxr$three.MathUtils.degToRad(cameraRot[0]);
-            cameraRot[1] = $hBQxr$three.MathUtils.degToRad(cameraRot[1]);
-            cameraRot[2] = $hBQxr$three.MathUtils.degToRad(cameraRot[2]);
-        }
         const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 75;
         const aspect = 2;
         const near = cameraOverrides?.perspective?.znear || 0.1;
         const far = 6000;
         this.flatCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
-        this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
-        if (cameraRot.length == 3) this.flatCamera.rotation.setFromVector3(new $hBQxr$three.Vector3(cameraRot[0], cameraRot[1], cameraRot[2]));
-        else this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
+        let cameraPos = [];
+        // Use GLTF camera transform if available AND we are in fly mode
+        // (which currently indicates a recent Open Brush export)
+        if (this.sketchMetadata.FlyMode && gltfCamera) {
+            var worldPos = new $hBQxr$three.Vector3();
+            gltfCamera.getWorldPosition(worldPos);
+            cameraPos[0] = worldPos.x;
+            cameraPos[1] = worldPos.y;
+            cameraPos[2] = worldPos.z;
+            this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+            var worldQuat = new $hBQxr$three.Quaternion();
+            gltfCamera.getWorldQuaternion(worldQuat);
+            var yRotation = new $hBQxr$three.Quaternion().setFromAxisAngle(new $hBQxr$three.Vector3(0, 1, 0), Math.PI);
+            worldQuat.multiply(yRotation);
+            this.flatCamera.quaternion.set(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w);
+        } else {
+            cameraPos = cameraOverrides?.translation || sketchCam || [
+                0,
+                0.25,
+                -3.5
+            ];
+            let cameraRot = cameraOverrides?.rotation || this.sketchMetadata?.CameraRotation?.toArray() || [
+                0,
+                0,
+                0
+            ]; // Could be euler angles or quaternion
+            // Fix handedness between Unity and gltf/three.js
+            // Should we fix this on export?
+            if (cameraRot.length == 3) {
+                // Assume euler angles in degrees
+                cameraRot[0] += 0;
+                cameraRot[1] += 180;
+                cameraRot[2] += 0;
+                cameraRot[0] = $hBQxr$three.MathUtils.degToRad(cameraRot[0]);
+                cameraRot[1] = $hBQxr$three.MathUtils.degToRad(cameraRot[1]);
+                cameraRot[2] = $hBQxr$three.MathUtils.degToRad(cameraRot[2]);
+            }
+            this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+            if (cameraRot.length == 3) this.flatCamera.rotation.setFromVector3(new $hBQxr$three.Vector3(cameraRot[0], cameraRot[1], cameraRot[2]));
+            else this.flatCamera.quaternion.set(cameraRot[0], cameraRot[1], cameraRot[2], cameraRot[3]);
+        }
         this.flatCamera.updateProjectionMatrix();
         this.flatCamera.updateMatrixWorld();
         this.xrCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
@@ -6067,15 +6086,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
             (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
         }
-    // this.trackballControls = new TrackballControls(this.activeCamera, this.canvas);
-    // this.trackballControls.target = cameraTarget;
-    // this.trackballControls.rotateSpeed = 1.0;
-    // this.trackballControls.zoomSpeed = 1.2;
-    // this.trackballControls.panSpeed = 0.8;
-    // let noOverrides = !cameraOverrides || !cameraOverrides?.perspective;
-    // if (noOverrides) {
-    //     this.frameScene();
-    // }
     }
     calculatePivot(camera, centroid) {
         // 1. Get the camera's forward vector
