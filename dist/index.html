@@ -195,6 +195,8 @@
                 sceneTransX: 0,
                 sceneTransY: 0,
                 sceneTransZ: 0,
+                // Selected node controls
+                selectedNodeScale: 1,
                 toggleTreeView: () => viewer.toggleTreeView(document.getElementById('tree-view')),
                 toggleEnvironment: () => viewer.environmentObject && (viewer.environmentObject.visible = !viewer.environmentObject.visible),
                 toggleSky: () => viewer.skyObject && (viewer.skyObject.visible = !viewer.skyObject.visible),
@@ -381,11 +383,28 @@
                         dataUrl: dataUrl.substring(0, 100) + "..." // Show first 100 chars
                     });
                 },
+                saveTreeState: () => {
+                    const state = viewer.getTreeViewState();
+                    localStorage.setItem('treeViewState', JSON.stringify(state));
+                    doLogging({ message: "Tree view state saved to localStorage", stateCount: Object.keys(state).length });
+                },
+                restoreTreeState: () => {
+                    const savedState = localStorage.getItem('treeViewState');
+                    if (savedState) {
+                        const state = JSON.parse(savedState);
+                        viewer.setTreeViewState(state);
+                        doLogging({ message: "Tree view state restored from localStorage", stateCount: Object.keys(state).length });
+                    } else {
+                        doLogging({ message: "No saved tree view state found in localStorage" });
+                    }
+                },
                 logInfo: ""
             };
 
             const toggleTreeView = gui.add(guiParams, 'toggleTreeView').name("Toggle Hierarchy");
             const captureThumbnailBtn = gui.add(guiParams, 'captureThumbnail').name("Capture Thumbnail");
+            const saveTreeStateBtn = gui.add(guiParams, 'saveTreeState').name("Save Tree State");
+            const restoreTreeStateBtn = gui.add(guiParams, 'restoreTreeState').name("Restore Tree State");
 
             // Environment controls folder
             const environmentFolder = gui.addFolder('Environment');
@@ -403,7 +422,7 @@
                     }
                 });
             });
-            
+
             // Environment transform controls
             const envTransformFolder = environmentFolder.addFolder('Environment Transform');
             envTransformFolder.close();
@@ -456,7 +475,38 @@
             sceneTransformFolder.add(guiParams, 'sceneTransX', -10, 10).name('Translation X').onChange(applySceneTransform);
             sceneTransformFolder.add(guiParams, 'sceneTransY', -10, 10).name('Translation Y').onChange(applySceneTransform);
             sceneTransformFolder.add(guiParams, 'sceneTransZ', -10, 10).name('Translation Z').onChange(applySceneTransform);
-            
+
+            // Selected Node controls
+            const selectedNodeFolder = gui.addFolder('Selected Node');
+            selectedNodeFolder.close();
+            const selectedNodeScaleControl = selectedNodeFolder.add(guiParams, 'selectedNodeScale', 0.001, 10).name('Scale').onChange(() => {
+                if (viewer.selectedNode) {
+                    viewer.selectedNode.scale.setScalar(guiParams.selectedNodeScale);
+                }
+            });
+
+            // Update GUI when selection changes
+            viewer.updateSelectedNodeScale = () => {
+                if (viewer.selectedNode) {
+                    guiParams.selectedNodeScale = viewer.selectedNode.scale.x;
+                    selectedNodeScaleControl.updateDisplay();
+                    selectedNodeFolder.open();
+                } else {
+                    selectedNodeFolder.close();
+                }
+            };
+
+            // Monitor for selection changes by watching the tree view
+            const treeViewElement = document.getElementById('tree-view');
+            const observer = new MutationObserver(() => {
+                viewer.updateSelectedNodeScale();
+            });
+            observer.observe(treeViewElement, {
+                attributes: true,
+                subtree: true,
+                attributeFilter: ['class']
+            });
+
             const sceneInfoFolder = gui.addFolder('Scene Info');
             const listCamerasControl = sceneInfoFolder.add(guiParams, 'listCameras').name("List Cameras");
             const listLightsControl = sceneInfoFolder.add(guiParams, 'listLights').name("List Lights");
@@ -464,6 +514,172 @@
             const listSketchMetadataControl = sceneInfoFolder.add(guiParams, 'listSketchMetadata').name("List Sketch MetaData");
 
             const cameraFolder = gui.addFolder( 'Camera' );
+
+            // Camera mode switching
+            // Access private properties via bracket notation since they're not truly private in compiled JS
+            let perspectiveCamera = viewer['flatCamera']; // Store original perspective camera
+            let orthoCamera = null;
+            let axisHelpers = null; // Will hold the axis visualization objects
+            let cameraHelper = null; // Will visualize the perspective camera in ortho mode
+
+            guiParams.cameraMode = 'Perspective';
+            guiParams.orthoView = 'Front';
+
+            const createAxisHelpers = () => {
+                const group = new THREE.Group();
+
+                // Get scene bounds for sizing
+                const box = viewer.modelBoundingBox || new THREE.Box3().setFromObject(viewer['loadedModel']);
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const center = box.getCenter(new THREE.Vector3());
+
+                // Create axes helper
+                const axesHelper = new THREE.AxesHelper(maxDim * 0.6);
+                axesHelper.position.copy(center);
+                group.add(axesHelper);
+
+                // Create grid helpers for the three planes
+                const gridSize = maxDim * 1.5;
+                const divisions = 20;
+
+                // XY plane (at Z center)
+                const gridXY = new THREE.GridHelper(gridSize, divisions, 0x888888, 0x444444);
+                gridXY.rotation.x = Math.PI / 2;
+                gridXY.position.set(center.x, center.y, center.z);
+                group.add(gridXY);
+
+                // XZ plane (at Y center)
+                const gridXZ = new THREE.GridHelper(gridSize, divisions, 0x888888, 0x444444);
+                gridXZ.position.set(center.x, center.y, center.z);
+                group.add(gridXZ);
+
+                // YZ plane (at X center)
+                const gridYZ = new THREE.GridHelper(gridSize, divisions, 0x888888, 0x444444);
+                gridYZ.rotation.z = Math.PI / 2;
+                gridYZ.position.set(center.x, center.y, center.z);
+                group.add(gridYZ);
+
+                return group;
+            };
+
+            const setupOrthographicCamera = (viewType) => {
+                // Calculate bounding box if not available
+                if (!viewer.modelBoundingBox) {
+                    viewer.modelBoundingBox = new THREE.Box3();
+                    if (viewer['loadedModel']) {
+                        viewer.modelBoundingBox.setFromObject(viewer['loadedModel']);
+                    }
+                }
+
+                // Expand bounding box to include origin
+                const box = viewer.modelBoundingBox.clone();
+                box.expandByPoint(new THREE.Vector3(0, 0, 0));
+
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const padding = 1.2;
+                const frustumSize = maxDim * padding;
+
+                // Create or update orthographic camera
+                if (!orthoCamera) {
+                    const aspect = viewer['canvas'].clientWidth / viewer['canvas'].clientHeight;
+                    orthoCamera = new THREE.OrthographicCamera(
+                        frustumSize * aspect / -2,
+                        frustumSize * aspect / 2,
+                        frustumSize / 2,
+                        frustumSize / -2,
+                        0.1,
+                        1000
+                    );
+                } else {
+                    const aspect = viewer['canvas'].clientWidth / viewer['canvas'].clientHeight;
+                    orthoCamera.left = frustumSize * aspect / -2;
+                    orthoCamera.right = frustumSize * aspect / 2;
+                    orthoCamera.top = frustumSize / 2;
+                    orthoCamera.bottom = frustumSize / -2;
+                }
+
+                // Position camera based on view type
+                const distance = maxDim * 2;
+                switch(viewType) {
+                    case 'Front':
+                        orthoCamera.position.set(center.x, center.y, center.z + distance);
+                        orthoCamera.up.set(0, 1, 0);
+                        break;
+                    case 'Side':
+                        orthoCamera.position.set(center.x + distance, center.y, center.z);
+                        orthoCamera.up.set(0, 1, 0);
+                        break;
+                    case 'Top':
+                        orthoCamera.position.set(center.x, center.y + distance, center.z);
+                        orthoCamera.up.set(0, 0, -1);
+                        break;
+                }
+
+                orthoCamera.lookAt(center);
+                orthoCamera.updateProjectionMatrix();
+
+                return orthoCamera;
+            };
+
+            const switchCamera = () => {
+                if (guiParams.cameraMode === 'Orthographic') {
+                    const newCamera = setupOrthographicCamera(guiParams.orthoView);
+                    // The render loop sets activeCamera = flatCamera every frame,
+                    // so we need to replace flatCamera itself
+                    viewer['flatCamera'] = newCamera;
+                    viewer['activeCamera'] = newCamera;
+
+                    // Add axis helpers
+                    if (!axisHelpers) {
+                        axisHelpers = createAxisHelpers();
+                        viewer.scene.add(axisHelpers);
+                    } else {
+                        axisHelpers.visible = true;
+                    }
+
+                    // Add perspective camera helper to visualize its pose
+                    if (!cameraHelper) {
+                        cameraHelper = new THREE.CameraHelper(perspectiveCamera);
+                        viewer.scene.add(cameraHelper);
+                    } else {
+                        cameraHelper.visible = true;
+                    }
+
+                    // Disable camera controls in orthographic mode
+                    viewer.cameraControls.enabled = false;
+                    orthoViewControl.enable();
+                } else {
+                    // Switch back to perspective camera
+                    viewer['flatCamera'] = perspectiveCamera;
+                    viewer['activeCamera'] = perspectiveCamera;
+
+                    // Hide axis helpers
+                    if (axisHelpers) {
+                        axisHelpers.visible = false;
+                    }
+
+                    // Hide camera helper
+                    if (cameraHelper) {
+                        cameraHelper.visible = false;
+                    }
+
+                    // Re-enable camera controls
+                    viewer.cameraControls.enabled = true;
+                    orthoViewControl.disable();
+                }
+            };
+
+            const cameraModeControl = cameraFolder.add(guiParams, 'cameraMode', ['Perspective', 'Orthographic']).name('Camera Mode').onChange(switchCamera);
+            const orthoViewControl = cameraFolder.add(guiParams, 'orthoView', ['Front', 'Side', 'Top']).name('Ortho View').onChange(() => {
+                if (guiParams.cameraMode === 'Orthographic') {
+                    switchCamera();
+                }
+            });
+            orthoViewControl.disable(); // Disabled by default since we start in perspective
+
             const levelCameraControl = cameraFolder.add(guiParams, 'levelCamera').name("Level Camera");
             const frameSceneControl = cameraFolder.add(guiParams, 'frameScene').name("Frame Scene");
             const logTargetPointControl = cameraFolder.add(guiParams, 'logTargetPoint').name("Log Target Point");
@@ -479,99 +695,115 @@
 
             // Lighting controls folder
             const lightsFolder = gui.addFolder('Lighting');
-            
-            // Get references to lights after model is loaded
+
+            // Light references and GUI controls
             let ambientLight = null;
             let directionalLight0 = null;
             let directionalLight1 = null;
-            
-            viewer.scene.traverse((child) => {
-                if (child instanceof THREE.AmbientLight) {
-                    ambientLight = child;
-                } else if (child instanceof THREE.DirectionalLight) {
-                    if (!directionalLight0) {
-                        directionalLight0 = child;
-                    } else if (!directionalLight1) {
-                        directionalLight1 = child;
+            let ambientLightControl = null;
+            let light0ColorControl = null;
+            let light0RotationXControl = null;
+            let light0RotationYControl = null;
+            let light1ColorControl = null;
+            let light1RotationXControl = null;
+            let light1RotationYControl = null;
+
+            // Poll for lights and initialize controls when found
+            const lightPollInterval = setInterval(() => {
+                // Find lights in scene
+                viewer.scene.traverse((child) => {
+                    if (child instanceof THREE.AmbientLight && !ambientLight) {
+                        ambientLight = child;
+                    } else if (child instanceof THREE.DirectionalLight) {
+                        if (!directionalLight0) {
+                            directionalLight0 = child;
+                        } else if (!directionalLight1) {
+                            directionalLight1 = child;
+                        }
                     }
+                });
+
+                // Initialize ambient light control
+                if (ambientLight && !ambientLightControl) {
+                    guiParams.ambientLightColor = '#' + ambientLight.color.getHexString();
+                    ambientLightControl = lightsFolder.addColor(guiParams, 'ambientLightColor').name('Ambient Light Color').onChange(() => {
+                        ambientLight.color.setHex(parseInt(guiParams.ambientLightColor.replace('#', ''), 16));
+                    });
                 }
-            });
-            
-            // Ambient light color control
-            if (ambientLight) {
-                guiParams.ambientLightColor = '#' + ambientLight.color.getHexString();
-                lightsFolder.addColor(guiParams, 'ambientLightColor').name('Ambient Light Color').onChange(() => {
-                    ambientLight.color.setHex(parseInt(guiParams.ambientLightColor.replace('#', ''), 16));
-                });
-            }
-            
-            // Directional Light 0 controls
-            if (directionalLight0) {
-                guiParams.light0Color = '#' + directionalLight0.color.getHexString();
-                const light0Euler = new THREE.Euler().setFromQuaternion(directionalLight0.quaternion);
-                guiParams.light0RotationX = THREE.MathUtils.radToDeg(light0Euler.x);
-                guiParams.light0RotationY = THREE.MathUtils.radToDeg(light0Euler.y);
-                
-                const light0Folder = lightsFolder.addFolder('Light 0');
-                light0Folder.close();
-                light0Folder.addColor(guiParams, 'light0Color').name('Color').onChange(() => {
-                    directionalLight0.color.setHex(parseInt(guiParams.light0Color.replace('#', ''), 16));
-                });
-                light0Folder.add(guiParams, 'light0RotationX', -180, 180).name('Rotation X').onChange(() => {
-                    const euler = new THREE.Euler(
-                        THREE.MathUtils.degToRad(guiParams.light0RotationX),
-                        THREE.MathUtils.degToRad(guiParams.light0RotationY),
-                        0
-                    );
-                    const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
-                    directionalLight0.position.copy(direction.multiplyScalar(10));
-                    directionalLight0.lookAt(0, 0, 0);
-                });
-                light0Folder.add(guiParams, 'light0RotationY', -180, 180).name('Rotation Y').onChange(() => {
-                    const euler = new THREE.Euler(
-                        THREE.MathUtils.degToRad(guiParams.light0RotationX),
-                        THREE.MathUtils.degToRad(guiParams.light0RotationY),
-                        0
-                    );
-                    const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
-                    directionalLight0.position.copy(direction.multiplyScalar(10));
-                    directionalLight0.lookAt(0, 0, 0);
-                });
-            }
-            
-            // Directional Light 1 controls
-            if (directionalLight1) {
-                guiParams.light1Color = '#' + directionalLight1.color.getHexString();
-                const light1Euler = new THREE.Euler().setFromQuaternion(directionalLight1.quaternion);
-                guiParams.light1RotationX = THREE.MathUtils.radToDeg(light1Euler.x);
-                guiParams.light1RotationY = THREE.MathUtils.radToDeg(light1Euler.y);
-                
-                const light1Folder = lightsFolder.addFolder('Light 1');
-                light1Folder.close();
-                light1Folder.addColor(guiParams, 'light1Color').name('Color').onChange(() => {
-                    directionalLight1.color.setHex(parseInt(guiParams.light1Color.replace('#', ''), 16));
-                });
-                light1Folder.add(guiParams, 'light1RotationX', -180, 180).name('Rotation X').onChange(() => {
-                    const euler = new THREE.Euler(
-                        THREE.MathUtils.degToRad(guiParams.light1RotationX),
-                        THREE.MathUtils.degToRad(guiParams.light1RotationY),
-                        0
-                    );
-                    const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
-                    directionalLight1.position.copy(direction.multiplyScalar(10));
-                    directionalLight1.lookAt(0, 0, 0);
-                });
-                light1Folder.add(guiParams, 'light1RotationY', -180, 180).name('Rotation Y').onChange(() => {
-                    const euler = new THREE.Euler(
-                        THREE.MathUtils.degToRad(guiParams.light1RotationX),
-                        THREE.MathUtils.degToRad(guiParams.light1RotationY),
-                        0
-                    );
-                    const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
-                    directionalLight1.position.copy(direction.multiplyScalar(10));
-                    directionalLight1.lookAt(0, 0, 0);
-                });
-            }
+
+                // Initialize directional light 0 controls
+                if (directionalLight0 && !light0ColorControl) {
+                    guiParams.light0Color = '#' + directionalLight0.color.getHexString();
+                    const light0Direction = directionalLight0.position.clone().normalize();
+                    const light0Quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), light0Direction);
+                    const light0Euler = new THREE.Euler().setFromQuaternion(light0Quat);
+                    guiParams.light0RotationX = THREE.MathUtils.radToDeg(light0Euler.x);
+                    guiParams.light0RotationY = THREE.MathUtils.radToDeg(light0Euler.y);
+
+                    const light0Folder = lightsFolder.addFolder('Light 0');
+                    light0Folder.close();
+                    light0ColorControl = light0Folder.addColor(guiParams, 'light0Color').name('Color').onChange(() => {
+                        directionalLight0.color.setHex(parseInt(guiParams.light0Color.replace('#', ''), 16));
+                    });
+                    light0RotationXControl = light0Folder.add(guiParams, 'light0RotationX', -180, 180).name('Rotation X').onChange(() => {
+                        const euler = new THREE.Euler(
+                            THREE.MathUtils.degToRad(guiParams.light0RotationX),
+                            THREE.MathUtils.degToRad(guiParams.light0RotationY),
+                            0
+                        );
+                        const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
+                        directionalLight0.position.copy(direction.multiplyScalar(10));
+                    });
+                    light0RotationYControl = light0Folder.add(guiParams, 'light0RotationY', -180, 180).name('Rotation Y').onChange(() => {
+                        const euler = new THREE.Euler(
+                            THREE.MathUtils.degToRad(guiParams.light0RotationX),
+                            THREE.MathUtils.degToRad(guiParams.light0RotationY),
+                            0
+                        );
+                        const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
+                        directionalLight0.position.copy(direction.multiplyScalar(10));
+                    });
+                }
+
+                // Initialize directional light 1 controls
+                if (directionalLight1 && !light1ColorControl) {
+                    guiParams.light1Color = '#' + directionalLight1.color.getHexString();
+                    const light1Direction = directionalLight1.position.clone().normalize();
+                    const light1Quat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), light1Direction);
+                    const light1Euler = new THREE.Euler().setFromQuaternion(light1Quat);
+                    guiParams.light1RotationX = THREE.MathUtils.radToDeg(light1Euler.x);
+                    guiParams.light1RotationY = THREE.MathUtils.radToDeg(light1Euler.y);
+
+                    const light1Folder = lightsFolder.addFolder('Light 1');
+                    light1Folder.close();
+                    light1ColorControl = light1Folder.addColor(guiParams, 'light1Color').name('Color').onChange(() => {
+                        directionalLight1.color.setHex(parseInt(guiParams.light1Color.replace('#', ''), 16));
+                    });
+                    light1RotationXControl = light1Folder.add(guiParams, 'light1RotationX', -180, 180).name('Rotation X').onChange(() => {
+                        const euler = new THREE.Euler(
+                            THREE.MathUtils.degToRad(guiParams.light1RotationX),
+                            THREE.MathUtils.degToRad(guiParams.light1RotationY),
+                            0
+                        );
+                        const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
+                        directionalLight1.position.copy(direction.multiplyScalar(10));
+                    });
+                    light1RotationYControl = light1Folder.add(guiParams, 'light1RotationY', -180, 180).name('Rotation Y').onChange(() => {
+                        const euler = new THREE.Euler(
+                            THREE.MathUtils.degToRad(guiParams.light1RotationX),
+                            THREE.MathUtils.degToRad(guiParams.light1RotationY),
+                            0
+                        );
+                        const direction = new THREE.Vector3(0, 0, 1).applyEuler(euler);
+                        directionalLight1.position.copy(direction.multiplyScalar(10));
+                    });
+                }
+
+                // Stop polling once all lights are found and initialized
+                if (ambientLightControl && light0ColorControl && light1ColorControl) {
+                    clearInterval(lightPollInterval);
+                }
+            }, 100);
 
             const logInfoControl = gui.add(guiParams, 'logInfo').name('Log Window');
             window.logInfoControl = logInfoControl;
