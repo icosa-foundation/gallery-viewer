@@ -2452,7 +2452,6 @@ export class Viewer {
     }
 
     private async assignEnvironment(sceneGltf : GLTF) {
-        console.log("assigning environment");
         let scene = sceneGltf.scene;
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
