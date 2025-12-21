@@ -359,6 +359,10 @@ export class Viewer {
             this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         }
 
+        // Enable shadow mapping
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
         this.renderer.xr.enabled = true;
 
         function handleController(inputSource: XRInputSource) {
@@ -675,6 +679,7 @@ export class Viewer {
         this.initSceneBackground();
         this.initFog();
         this.initLights();
+        this.initShadows();
         this.initCameras();
 
         // Compensate for insanely large models
@@ -2702,6 +2707,15 @@ export class Viewer {
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 10).normalize();
+            light.castShadow = true;
+            light.shadow.mapSize.width = 2048;
+            light.shadow.mapSize.height = 2048;
+            light.shadow.camera.near = 0.5;
+            light.shadow.camera.far = 500;
+            light.shadow.camera.left = -50;
+            light.shadow.camera.right = 50;
+            light.shadow.camera.top = 50;
+            light.shadow.camera.bottom = -50;
             this.loadedModel.add(light);
             return;
         }
@@ -2725,6 +2739,15 @@ export class Viewer {
         l1.position.copy(light1Direction.multiplyScalar(10));
 
         l0.castShadow = true;
+        l0.shadow.mapSize.width = 2048;
+        l0.shadow.mapSize.height = 2048;
+        l0.shadow.camera.near = 0.5;
+        l0.shadow.camera.far = 500;
+        l0.shadow.camera.left = -50;
+        l0.shadow.camera.right = 50;
+        l0.shadow.camera.top = 50;
+        l0.shadow.camera.bottom = -50;
+
         l1.castShadow = false;
         this.loadedModel?.add(l0);
         this.loadedModel?.add(l1);
@@ -2744,6 +2767,19 @@ export class Viewer {
         );
     }
 
+    private initShadows() {
+        if (!this.loadedModel) {
+            return;
+        }
+
+        // Enable shadow receiving on all meshes in the loaded model
+        this.loadedModel.traverse((node: any) => {
+            if (node.isMesh) {
+                node.receiveShadow = true;
+                node.castShadow = true;
+            }
+        });
+    }
 
     private initSceneBackground() {
 
