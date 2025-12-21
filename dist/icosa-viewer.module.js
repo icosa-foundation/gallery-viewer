@@ -5575,13 +5575,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
     }
     async loadGltf(url, loadEnvironment, overrides) {
-        // try {
-        await this._loadGltf(url, loadEnvironment, overrides, false);
-    // } catch (error) {
-    //     this.showErrorIcon();
-    //     console.error("Error loading glTFv2 model");
-    //     this.loadingError = true;
-    // }
+        try {
+            await this._loadGltf(url, loadEnvironment, overrides, false);
+        } catch (error) {
+            this.showErrorIcon();
+            console.error("Error loading glTFv2 model");
+            this.loadingError = true;
+        }
     }
     async replaceGltf1Materials(model, brushPath) {
         // Create a minimal mock parser object with the required options.manager
