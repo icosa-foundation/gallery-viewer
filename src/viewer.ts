@@ -2558,15 +2558,15 @@ export class Viewer {
         if (this.sketchMetadata.FlyMode && gltfCamera) {
             var worldPos = new THREE.Vector3();
             gltfCamera.getWorldPosition(worldPos);
+            worldPos.multiplyScalar(0.1);
             cameraPos[0] = worldPos.x;
             cameraPos[1] = worldPos.y;
             cameraPos[2] = worldPos.z;
             this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
             var worldQuat = new THREE.Quaternion();
             gltfCamera.getWorldQuaternion(worldQuat);
-            var yRotation = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
-            worldQuat.multiply(yRotation);
-
+            // var yRotation = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+            // worldQuat.multiply(yRotation);
             this.flatCamera.quaternion.set(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w);
 
         } else {

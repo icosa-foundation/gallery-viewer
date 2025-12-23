@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -Command \"(Get-Content ''C:\\Users\\andyb\\Documents\\gallery-viewer\\src\\viewer.ts'' | Select-String -Pattern ''^export|^class Viewer'' -Context 0,20).Line\")",
+      "Bash(powershell -Command \"Get-Content ''C:\\Users\\andyb\\Documents\\gallery-viewer\\dist\\index.html'' | Select-String -Pattern ''new Viewer'' -Context 0,5\")",
+      "mcp__playwright__browser_network_requests",
+      "mcp__playwright__browser_close",
+      "mcp__playwright__browser_snapshot",
+      "Bash(npm run build:*)",
+      "Bash(powershell -Command \"Get-Content ''C:\\Users\\andyb\\Documents\\gallery-viewer\\dist\\index.html'' | Select-String -Pattern ''viewer.scene.traverse'' -Context 0,20\")",
+      "Bash(powershell -Command \"Get-Content ''C:\\Users\\andyb\\Documents\\gallery-viewer\\dist\\index.html'' | Select-String -Pattern ''await viewer.load'' | Select-Object -Last 5\")",
+      "Bash(git checkout:*)",
+      "Bash(powershell -Command \"Get-ChildItem ''C:\\Users\\andyb\\Documents\\gallery-viewer\\dist\\formats\\metafix3'' -Filter ''*.gltf'' -Recurse | Select-Object -First 5 FullName\")",
+      "Bash(powershell -Command \"Get-ChildItem ''C:\\Users\\andyb\\Documents\\Open Brush\\__x_Bad'' -Directory | ForEach-Object { $json = Get-Content (Join-Path $_FullName ''metadata.json'') | ConvertFrom-Json; Write-Host (''BAD '' + $_Name + '': Scene quat W='' + $json.SceneTransformInRoomSpace[1][3] + '', Scale='' + $json.SceneTransformInRoomSpace[2]) }\")",
+      "Bash(for dir in \"C:\\Users\\andyb\\Documents\\Open Brush\\__x_Good\"/*)",
+      "Bash(do grep \"ApplicationVersion\" \"$dir/metadata.json\")",
+      "Bash(done)",
+      "Bash(dir /s /b \"C:\\\\Users\\\\andyb\\\\Documents\\\\three-icosa\\\\*SurfaceShaderIncludes.glsl\")",
+      "Bash(powershell:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "acceptEdits"
+  },
+  "disableAllHooks": true
+}
