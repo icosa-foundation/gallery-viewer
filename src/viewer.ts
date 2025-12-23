@@ -2460,7 +2460,7 @@ export class Viewer {
                 // Use the standard GLTFLoader for environments
                 const standardLoader = new GLTFLoader();
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
-                if (this.isNewTiltExporter(sceneGltf) || this.isV1) {
+                if (this.isV1) {
                     envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
                 }
                 envGltf.scene.scale.set(.1, .1, .1);
