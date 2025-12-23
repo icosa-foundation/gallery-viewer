@@ -2607,7 +2607,6 @@ export class Viewer {
         this.cameraRig = new THREE.Group();
         this.scene.add(this.cameraRig);
         this.cameraRig.rotation.y = this.flatCamera.rotation.y;
-        this.cameraRig.rotation.setFromQuaternion(this.flatCamera.quaternion);
         this.cameraRig.add(this.xrCamera);
         this.xrCamera.updateProjectionMatrix();
 

@@ -6028,7 +6028,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.cameraRig = new $hBQxr$three.Group();
         this.scene.add(this.cameraRig);
         this.cameraRig.rotation.y = this.flatCamera.rotation.y;
-        this.cameraRig.rotation.setFromQuaternion(this.flatCamera.quaternion);
         this.cameraRig.add(this.xrCamera);
         this.xrCamera.updateProjectionMatrix();
         this.activeCamera = this.flatCamera;
