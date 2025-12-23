@@ -2539,7 +2539,7 @@ export class Viewer {
         // Check if there's a GLTF camera in the scene
         let gltfCamera: THREE.Camera | null = null;
         this.loadedModel.traverse((object) => {
-            if (object instanceof THREE.Camera && !gltfCamera) {
+            if (object instanceof THREE.Camera && object.name==="TB_ThumbnailSaveCamera" && !gltfCamera) {
                 gltfCamera = object;
             }
         });
