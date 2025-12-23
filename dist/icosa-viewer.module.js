@@ -4186,7 +4186,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             sceneNode.scale.divideScalar(excess);
             // Reframe the scaled scene
             this.frameNode(sceneNode);
-        } else this.scene.add(this.loadedModel);
+        } else {
+            if (this.isNewTiltExporter(this.sceneGltf)) this.scene.scale.set(0.1, 0.1, 0.1);
+            this.scene.add(this.loadedModel);
+        }
     }
     toggleTreeView(root) {
         if (root.childElementCount == 0) {
@@ -5626,7 +5629,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         } else sceneGltf = await this.gltfLoader.loadAsync(url);
         // The legacy loader has the latter structure
         let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
-        this.scaleScene(sceneGltf, true);
+        if (!this.isNewTiltExporter(sceneGltf)) this.scaleScene(sceneGltf, userData, true);
         this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         if (loadEnvironment) await this.assignEnvironment(sceneGltf);
         if (overrides?.tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
@@ -5892,7 +5895,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
     }
     async assignEnvironment(sceneGltf) {
-        console.log("assigning environment");
         let scene = sceneGltf.scene;
         const guid = this.sketchMetadata?.EnvironmentGuid;
         if (guid) {
@@ -5901,8 +5903,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 // Use the standard GLTFLoader for environments
                 const standardLoader = new (0, $hBQxr$GLTFLoader)();
                 const envGltf = await standardLoader.loadAsync(envUrl.toString());
-                if (this.isNewTiltExporter(sceneGltf) || this.isV1) envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
-                envGltf.scene.scale.set(.1, .1, .1);
+                if (this.isV1) envGltf.scene.setRotationFromEuler(new $hBQxr$three.Euler(0, Math.PI, 0));
+                if (!this.isNewTiltExporter(sceneGltf)) envGltf.scene.scale.set(.1, .1, .1);
                 scene.attach(envGltf.scene);
                 this.environmentObject = envGltf.scene;
             } catch (error) {
@@ -5962,7 +5964,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // Check if there's a GLTF camera in the scene
         let gltfCamera = null;
         this.loadedModel.traverse((object)=>{
-            if (object instanceof $hBQxr$three.Camera && !gltfCamera) gltfCamera = object;
+            if (object instanceof $hBQxr$three.Camera && object.name === "TB_ThumbnailSaveCamera" && !gltfCamera) gltfCamera = object;
         });
         let sketchCam = this.sketchMetadata?.CameraTranslation?.toArray();
         if (sketchCam) {
@@ -5984,14 +5986,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (this.sketchMetadata.FlyMode && gltfCamera) {
             var worldPos = new $hBQxr$three.Vector3();
             gltfCamera.getWorldPosition(worldPos);
+            worldPos.multiplyScalar(0.1);
             cameraPos[0] = worldPos.x;
             cameraPos[1] = worldPos.y;
             cameraPos[2] = worldPos.z;
             this.flatCamera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
             var worldQuat = new $hBQxr$three.Quaternion();
             gltfCamera.getWorldQuaternion(worldQuat);
-            var yRotation = new $hBQxr$three.Quaternion().setFromAxisAngle(new $hBQxr$three.Vector3(0, 1, 0), Math.PI);
-            worldQuat.multiply(yRotation);
+            // var yRotation = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+            // worldQuat.multiply(yRotation);
             this.flatCamera.quaternion.set(worldQuat.x, worldQuat.y, worldQuat.z, worldQuat.w);
         } else {
             cameraPos = cameraOverrides?.translation || sketchCam || [
