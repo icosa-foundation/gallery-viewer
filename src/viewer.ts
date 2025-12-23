@@ -687,6 +687,9 @@ export class Viewer {
             // Reframe the scaled scene
             this.frameNode(sceneNode);
         } else {
+            if (this.isNewTiltExporter(this.sceneGltf)) {
+                this.scene.scale.set(0.1, 0.1, 0.1);
+            }
             this.scene.add(this.loadedModel);
         }
     }
@@ -2149,8 +2152,9 @@ export class Viewer {
 
         // The legacy loader has the latter structure
         let userData = (Object.keys(sceneGltf.userData || {}).length > 0 ? sceneGltf.userData : null) ?? sceneGltf.scene.userData;
-
-        this.scaleScene(sceneGltf, true);
+        if (!this.isNewTiltExporter(sceneGltf)) {
+            this.scaleScene(sceneGltf, userData, true);
+        }
         this.setupSketchMetaDataFromScene(sceneGltf.scene, userData);
         if (loadEnvironment) {await this.assignEnvironment(sceneGltf);}
         if (overrides?.tiltUrl) {this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);}
@@ -2463,7 +2467,9 @@ export class Viewer {
                 if (this.isV1) {
                     envGltf.scene.setRotationFromEuler(new THREE.Euler(0, Math.PI, 0));
                 }
-                envGltf.scene.scale.set(.1, .1, .1);
+                if (!this.isNewTiltExporter(sceneGltf)) {
+                    envGltf.scene.scale.set(.1, .1, .1);
+                }
                 scene.attach(envGltf.scene);
                 this.environmentObject = envGltf.scene;
             } catch (error) {
