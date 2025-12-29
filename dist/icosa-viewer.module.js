@@ -2278,26 +2278,31 @@ class $e1f901905a002d12$export$2e2bcd8739ae039 extends $e1f901905a002d12$export$
 
 class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
     static createButton(renderer, sessionInit = {}, allowAR = true) {
-        const button = document.createElement('button');
-        function showStartXR(mode) {
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.bottom = '20px';
+        container.style.left = '50%';
+        container.style.transform = 'translateX(-50%)';
+        container.style.display = 'flex';
+        container.style.gap = '10px';
+        container.style.zIndex = '999';
+        function createXRButton(mode, label) {
+            const button = document.createElement('button');
             let currentSession = null;
             async function onSessionStarted(session) {
                 session.addEventListener('end', onSessionEnded);
                 await renderer.xr.setSession(session);
-                button.textContent = 'STOP XR';
+                button.textContent = `STOP ${label}`;
                 currentSession = session;
             }
             function onSessionEnded() {
                 currentSession.removeEventListener('end', onSessionEnded);
-                button.textContent = 'START XR';
+                button.textContent = `START ${label}`;
                 currentSession = null;
             }
-            //
-            button.style.display = '';
             button.style.cursor = 'pointer';
-            button.style.left = 'calc(50% - 50px)';
             button.style.width = '100px';
-            button.textContent = 'START XR';
+            button.textContent = `START ${label}`;
             const sessionOptions = {
                 ...sessionInit,
                 optionalFeatures: [
@@ -2324,29 +2329,10 @@ class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
             if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
                 console.warn(err);
             });
-        }
-        function disableButton() {
-            button.style.display = '';
-            button.style.cursor = 'auto';
-            button.style.left = 'calc(50% - 75px)';
-            button.style.width = '150px';
-            button.onmouseenter = null;
-            button.onmouseleave = null;
-            button.onclick = null;
-        }
-        function showXRNotSupported() {
-            disableButton();
-            button.textContent = 'No headset found';
-            button.style.display = 'none';
-        }
-        function showXRNotAllowed(exception) {
-            disableButton();
-            console.warn('Exception when trying to call xr.isSessionSupported', exception);
-            button.textContent = 'XR NOT ALLOWED';
+            stylizeElement(button);
+            return button;
         }
         function stylizeElement(element) {
-            element.style.position = 'absolute';
-            element.style.bottom = '20px';
             element.style.padding = '12px 6px';
             element.style.border = '1px solid #fff';
             element.style.borderRadius = '4px';
@@ -2356,33 +2342,59 @@ class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
             element.style.textAlign = 'center';
             element.style.opacity = '0.5';
             element.style.outline = 'none';
-            element.style.zIndex = '999';
         }
         if ('xr' in navigator) {
-            button.id = 'XRButton';
-            button.style.display = 'none';
-            stylizeElement(button);
-            navigator.xr.isSessionSupported('immersive-ar').then(function(supported) {
-                if (allowAR && supported) showStartXR('immersive-ar');
-                else navigator.xr.isSessionSupported('immersive-vr').then(function(supported) {
-                    if (supported) showStartXR('immersive-vr');
-                    else showXRNotSupported();
-                }).catch(showXRNotAllowed);
-            }).catch(showXRNotAllowed);
-            return button;
+            const promises = [];
+            if (allowAR) promises.push(navigator.xr.isSessionSupported('immersive-ar').then((supported)=>({
+                    mode: 'immersive-ar',
+                    supported: supported,
+                    label: 'AR'
+                })).catch(()=>({
+                    mode: 'immersive-ar',
+                    supported: false,
+                    label: 'AR'
+                })));
+            promises.push(navigator.xr.isSessionSupported('immersive-vr').then((supported)=>({
+                    mode: 'immersive-vr',
+                    supported: supported,
+                    label: 'VR'
+                })).catch(()=>({
+                    mode: 'immersive-vr',
+                    supported: false,
+                    label: 'VR'
+                })));
+            Promise.all(promises).then((results)=>{
+                let supportedModes = results.filter((r)=>r.supported);
+                // For debugging
+                // if (supportedModes.length === 0 || true) {
+                //     supportedModes.push({mode: 'immersive-vr', supported: true, label: 'VR'});
+                //     supportedModes.push({mode: 'immersive-ar', supported: true, label: 'AR'});
+                // }
+                if (supportedModes.length === 0) {
+                    const message = document.createElement('div');
+                    message.textContent = 'No headset found';
+                    message.style.cursor = 'auto';
+                    message.style.width = '150px';
+                    message.style.display = 'none';
+                    stylizeElement(message);
+                    container.appendChild(message);
+                } else supportedModes.forEach(({ mode: mode, label: label })=>{
+                    const button = createXRButton(mode, label);
+                    container.appendChild(button);
+                });
+            });
+            return container;
         } else {
             const message = document.createElement('a');
             if (window.isSecureContext === false) {
                 message.href = document.location.href.replace(/^http:/, 'https:');
-                message.innerHTML = 'WEBXR NEEDS HTTPS'; // TODO Improve message
-            } else // message.href = 'https://immersiveweb.dev/';
-            // message.innerHTML = 'WEBXR NOT AVAILABLE';
-            message.style = 'display: none';
-            message.style.left = 'calc(50% - 90px)';
+                message.innerHTML = 'WEBXR NEEDS HTTPS';
+            } else message.style.display = 'none';
             message.style.width = '180px';
             message.style.textDecoration = 'none';
             stylizeElement(message);
-            return message;
+            container.appendChild(message);
+            return container;
         }
     }
 }
@@ -3970,7 +3982,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.scene.add(controllerGrip1);
-        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {}, false);
+        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {}, true);
         this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement('button');
