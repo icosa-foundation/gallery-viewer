@@ -2277,7 +2277,7 @@ class $e1f901905a002d12$export$2e2bcd8739ae039 extends $e1f901905a002d12$export$
 
 
 class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
-    static createButton(renderer, sessionInit = {}) {
+    static createButton(renderer, sessionInit = {}, allowAR = true) {
         const button = document.createElement('button');
         function showStartXR(mode) {
             let currentSession = null;
@@ -2363,7 +2363,7 @@ class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
             button.style.display = 'none';
             stylizeElement(button);
             navigator.xr.isSessionSupported('immersive-ar').then(function(supported) {
-                if (supported) showStartXR('immersive-ar');
+                if (allowAR && supported) showStartXR('immersive-ar');
                 else navigator.xr.isSessionSupported('immersive-vr').then(function(supported) {
                     if (supported) showStartXR('immersive-vr');
                     else showXRNotSupported();
@@ -3970,7 +3970,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.scene.add(controllerGrip1);
-        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer);
+        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {}, false);
         this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement('button');

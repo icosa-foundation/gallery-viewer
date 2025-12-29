@@ -1,6 +1,6 @@
 class XRButton {
 
-    static createButton(renderer, sessionInit = {}) {
+    static createButton(renderer, sessionInit = {}, allowAR = true) {
 
         const button = document.createElement('button');
 
@@ -128,7 +128,7 @@ class XRButton {
             navigator.xr.isSessionSupported('immersive-ar')
                 .then(function (supported) {
 
-                    if (supported) {
+                    if (allowAR && supported) {
                         showStartXR('immersive-ar');
                     } else {
                         navigator.xr.isSessionSupported('immersive-vr')
@@ -136,7 +136,6 @@ class XRButton {
                                 if (supported) {
                                     showStartXR('immersive-vr');
                                 } else {
-
                                     showXRNotSupported();
                                 }
                             }).catch(showXRNotAllowed);

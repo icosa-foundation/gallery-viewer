@@ -11674,6 +11674,11 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
             if (material?.uniforms?.fogDensity?.value) {
                 if (material.uniforms.u_fogDensity) material.uniforms.u_fogDensity.value = material.uniforms.fogDensity.value;
             }
+            if (material?.alphaToCoverage) {
+                const gl = renderer.getContext();
+                const samples = gl.getParameter(gl.SAMPLES);
+                if (samples > 0) gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+            }
         };
     }
 }

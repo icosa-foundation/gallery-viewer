@@ -399,7 +399,7 @@ export class Viewer {
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.scene.add(controllerGrip1);
 
-        let xrButton = XRButton.createButton( this.renderer );
+        let xrButton = XRButton.createButton( this.renderer, {}, false );
         this.icosa_frame.appendChild(xrButton);
 
         function initCustomUi(viewerContainer : HTMLElement) {
