@@ -2606,15 +2606,14 @@ export class Viewer {
         this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this.cameraRig = new THREE.Group();
         this.scene.add(this.cameraRig);
-        this.cameraRig.rotation.y = this.flatCamera.rotation.y;
         this.cameraRig.add(this.xrCamera);
-        this.xrCamera.updateProjectionMatrix();
 
         this.activeCamera = this.flatCamera;
 
+        let cameraTarget : THREE.Vector3;
+        
         if (this.sketchMetadata.FlyMode) {
             // Simulate fly mode by setting target point in front of camera
-            let cameraTarget : THREE.Vector3;
             const forward = new THREE.Vector3();
             this.flatCamera.getWorldDirection(forward);
             cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(0.05));
@@ -2627,7 +2626,6 @@ export class Viewer {
             this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
             setupNavigation(this.cameraControls);
         } else {
-            let cameraTarget : THREE.Vector3;
             let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot
             if (pivot) {
                 // TODO this pivot should be recalculated to take into account
@@ -2664,6 +2662,28 @@ export class Viewer {
             this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
             setupNavigation(this.cameraControls);
         }
+        
+        // Position and orient the cameraRig to match flatCamera AFTER camera controls are set up
+        // The flatCamera is independent of scene scale, but cameraRig is a child of the scene.
+        // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate
+        // by scaling up the cameraRig position to counteract the scene scale.
+        const sceneScaleFactor = this.isNewTiltExporter(this.sceneGltf) ? 10 : 1;
+        this.cameraRig.position.copy(this.flatCamera.position).multiplyScalar(sceneScaleFactor);
+        
+        // VR cameras should never be tilted - only copy Y-axis rotation (yaw)
+        // Calculate Y rotation from camera position to target (ignoring vertical component)
+        const flatCameraWorldDir = new THREE.Vector3();
+        this.flatCamera.getWorldDirection(flatCameraWorldDir);
+
+        const directionToTarget = new THREE.Vector3().subVectors(cameraTarget, this.flatCamera.position);
+        directionToTarget.y = 0; // Project onto XZ plane
+        directionToTarget.normalize();
+        const yaw = Math.atan2(directionToTarget.x, directionToTarget.z);
+
+        // Add 180 degrees because camera's default forward is -Z, not +Z
+        this.cameraRig.rotation.y = yaw + Math.PI;
+        
+        this.xrCamera.updateProjectionMatrix();
     }
 
     private calculatePivot(camera : THREE.Camera, centroid : THREE.Vector3) {

@@ -1006,6 +1006,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_Cutoff: {
                 value: 0.25
             },
+            u_A2CEnabled: {
+                value: 1.0
+            },
             u_fogColor: {
                 value: new $fugmd$Vector3(0.0196, 0.0196, 0.0196)
             },
@@ -11695,7 +11698,14 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
             if (material?.alphaToCoverage) {
                 const gl = renderer.getContext();
                 const samples = gl.getParameter(gl.SAMPLES);
-                if (samples > 0) gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
+                const a2cEnabled = samples > 0;
+                material.userData = material.userData || {};
+                if (!material.userData._a2cInfoLogged) {
+                    console.warn(`[A2C] material=${material.name || "(unnamed)"} samples=${samples} xrPresenting=${renderer.xr?.isPresenting === true}`);
+                    material.userData._a2cInfoLogged = true;
+                }
+                if (material.uniforms?.u_A2CEnabled) material.uniforms.u_A2CEnabled.value = a2cEnabled ? 1.0 : 0.0;
+                if (a2cEnabled) gl.enable(gl.SAMPLE_ALPHA_TO_COVERAGE);
             }
         };
     }

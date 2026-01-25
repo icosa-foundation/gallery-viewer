@@ -6039,13 +6039,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.xrCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
         this.cameraRig = new $hBQxr$three.Group();
         this.scene.add(this.cameraRig);
-        this.cameraRig.rotation.y = this.flatCamera.rotation.y;
         this.cameraRig.add(this.xrCamera);
-        this.xrCamera.updateProjectionMatrix();
         this.activeCamera = this.flatCamera;
+        let cameraTarget;
         if (this.sketchMetadata.FlyMode) {
             // Simulate fly mode by setting target point in front of camera
-            let cameraTarget;
             const forward = new $hBQxr$three.Vector3();
             this.flatCamera.getWorldDirection(forward);
             cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(0.05));
@@ -6060,7 +6058,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
             (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
         } else {
-            let cameraTarget;
             let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot;
             if (pivot) // TODO this pivot should be recalculated to take into account
             //  any camera rotation adjustment applied above
@@ -6100,6 +6097,35 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.cameraControls.setTarget(cameraTarget.x, cameraTarget.y, cameraTarget.z, false);
             (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
         }
+        // Position and orient the cameraRig to match flatCamera AFTER camera controls are set up
+        // The flatCamera is independent of scene scale, but cameraRig is a child of the scene.
+        // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate
+        // by scaling up the cameraRig position to counteract the scene scale.
+        const sceneScaleFactor = this.isNewTiltExporter(this.sceneGltf) ? 10 : 1;
+        this.cameraRig.position.copy(this.flatCamera.position).multiplyScalar(sceneScaleFactor);
+        // VR cameras should never be tilted - only copy Y-axis rotation (yaw)
+        // Calculate Y rotation from camera position to target (ignoring vertical component)
+        console.log('[VR_ORIENT] flatCamera rotation (euler):', this.flatCamera.rotation);
+        console.log('[VR_ORIENT] flatCamera rotation.y (degrees):', $hBQxr$three.MathUtils.radToDeg(this.flatCamera.rotation.y));
+        const flatCameraWorldDir = new $hBQxr$three.Vector3();
+        this.flatCamera.getWorldDirection(flatCameraWorldDir);
+        console.log('[VR_ORIENT] flatCamera world direction:', flatCameraWorldDir);
+        const directionToTarget = new $hBQxr$three.Vector3().subVectors(cameraTarget, this.flatCamera.position);
+        console.log('[VR_ORIENT] Camera position:', this.flatCamera.position);
+        console.log('[VR_ORIENT] Camera target:', cameraTarget);
+        console.log('[VR_ORIENT] Direction to target (before Y zero):', directionToTarget.clone());
+        directionToTarget.y = 0; // Project onto XZ plane
+        directionToTarget.normalize();
+        console.log('[VR_ORIENT] Direction XZ projected:', directionToTarget);
+        const yaw = Math.atan2(directionToTarget.x, directionToTarget.z);
+        console.log('[VR_ORIENT] Calculated yaw (radians):', yaw);
+        console.log('[VR_ORIENT] Calculated yaw (degrees):', $hBQxr$three.MathUtils.radToDeg(yaw));
+        // Add 180 degrees because camera's default forward is -Z, not +Z
+        this.cameraRig.rotation.y = yaw + Math.PI;
+        console.log('[VR_ORIENT] Adjusted yaw with +180 (radians):', this.cameraRig.rotation.y);
+        console.log('[VR_ORIENT] Adjusted yaw with +180 (degrees):', $hBQxr$three.MathUtils.radToDeg(this.cameraRig.rotation.y));
+        console.log('[VR_ORIENT] Final cameraRig rotation.y:', this.cameraRig.rotation.y);
+        this.xrCamera.updateProjectionMatrix();
     }
     calculatePivot(camera, centroid) {
         // 1. Get the camera's forward vector
