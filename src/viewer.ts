@@ -2665,10 +2665,11 @@ export class Viewer {
         
         // Position and orient the cameraRig to match flatCamera AFTER camera controls are set up
         // The flatCamera is independent of scene scale, but cameraRig is a child of the scene.
-        // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate
-        // by scaling up the cameraRig position to counteract the scene scale.
+        // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate.
+        // We scale the cameraRig itself to make VR head tracking feel natural (1m real = 1m in scene).
         const sceneScaleFactor = this.isNewTiltExporter(this.sceneGltf) ? 10 : 1;
-        this.cameraRig.position.copy(this.flatCamera.position).multiplyScalar(sceneScaleFactor);
+        this.cameraRig.position.copy(this.flatCamera.position);
+        this.cameraRig.scale.set(sceneScaleFactor, sceneScaleFactor, sceneScaleFactor);
         
         // VR cameras should never be tilted - only copy Y-axis rotation (yaw)
         // Calculate Y rotation from camera position to target (ignoring vertical component)

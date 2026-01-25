@@ -6099,32 +6099,21 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
         // Position and orient the cameraRig to match flatCamera AFTER camera controls are set up
         // The flatCamera is independent of scene scale, but cameraRig is a child of the scene.
-        // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate
-        // by scaling up the cameraRig position to counteract the scene scale.
+        // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate.
+        // We scale the cameraRig itself to make VR head tracking feel natural (1m real = 1m in scene).
         const sceneScaleFactor = this.isNewTiltExporter(this.sceneGltf) ? 10 : 1;
-        this.cameraRig.position.copy(this.flatCamera.position).multiplyScalar(sceneScaleFactor);
+        this.cameraRig.position.copy(this.flatCamera.position);
+        this.cameraRig.scale.set(sceneScaleFactor, sceneScaleFactor, sceneScaleFactor);
         // VR cameras should never be tilted - only copy Y-axis rotation (yaw)
         // Calculate Y rotation from camera position to target (ignoring vertical component)
-        console.log('[VR_ORIENT] flatCamera rotation (euler):', this.flatCamera.rotation);
-        console.log('[VR_ORIENT] flatCamera rotation.y (degrees):', $hBQxr$three.MathUtils.radToDeg(this.flatCamera.rotation.y));
         const flatCameraWorldDir = new $hBQxr$three.Vector3();
         this.flatCamera.getWorldDirection(flatCameraWorldDir);
-        console.log('[VR_ORIENT] flatCamera world direction:', flatCameraWorldDir);
         const directionToTarget = new $hBQxr$three.Vector3().subVectors(cameraTarget, this.flatCamera.position);
-        console.log('[VR_ORIENT] Camera position:', this.flatCamera.position);
-        console.log('[VR_ORIENT] Camera target:', cameraTarget);
-        console.log('[VR_ORIENT] Direction to target (before Y zero):', directionToTarget.clone());
         directionToTarget.y = 0; // Project onto XZ plane
         directionToTarget.normalize();
-        console.log('[VR_ORIENT] Direction XZ projected:', directionToTarget);
         const yaw = Math.atan2(directionToTarget.x, directionToTarget.z);
-        console.log('[VR_ORIENT] Calculated yaw (radians):', yaw);
-        console.log('[VR_ORIENT] Calculated yaw (degrees):', $hBQxr$three.MathUtils.radToDeg(yaw));
         // Add 180 degrees because camera's default forward is -Z, not +Z
         this.cameraRig.rotation.y = yaw + Math.PI;
-        console.log('[VR_ORIENT] Adjusted yaw with +180 (radians):', this.cameraRig.rotation.y);
-        console.log('[VR_ORIENT] Adjusted yaw with +180 (degrees):', $hBQxr$three.MathUtils.radToDeg(this.cameraRig.rotation.y));
-        console.log('[VR_ORIENT] Final cameraRig rotation.y:', this.cameraRig.rotation.y);
         this.xrCamera.updateProjectionMatrix();
     }
     calculatePivot(camera, centroid) {
