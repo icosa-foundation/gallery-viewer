@@ -34,11 +34,6 @@ class XRButton {
 
             const sessionOptions = {
                 ...sessionInit,
-                optionalFeatures: [
-                    'local-floor',
-                    'bounded-floor',
-                    ...(sessionInit.optionalFeatures || [])
-                ],
             };
 
             button.onmouseenter = function () {

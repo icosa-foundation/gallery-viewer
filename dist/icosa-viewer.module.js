@@ -2304,12 +2304,7 @@ class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
             button.style.width = '100px';
             button.textContent = `START ${label}`;
             const sessionOptions = {
-                ...sessionInit,
-                optionalFeatures: [
-                    'local-floor',
-                    'bounded-floor',
-                    ...sessionInit.optionalFeatures || []
-                ]
+                ...sessionInit
             };
             button.onmouseenter = function() {
                 button.style.opacity = '1.0';
@@ -3955,6 +3950,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.outputColorSpace = $hBQxr$three.SRGBColorSpace;
         this.renderer.xr.enabled = true;
+        // Use 'local' reference space for full 6DOF tracking without floor offset
+        this.renderer.xr.setReferenceSpaceType('local');
         function handleController(inputSource) {
             const gamepad = inputSource.gamepad;
             if (gamepad) return {
@@ -6100,10 +6097,12 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // Position and orient the cameraRig to match flatCamera AFTER camera controls are set up
         // The flatCamera is independent of scene scale, but cameraRig is a child of the scene.
         // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate.
-        // We scale the cameraRig itself to make VR head tracking feel natural (1m real = 1m in scene).
+        // We scale BOTH the position and the rig scale to counteract the scene scale.
         const sceneScaleFactor = this.isNewTiltExporter(this.sceneGltf) ? 10 : 1;
-        this.cameraRig.position.copy(this.flatCamera.position);
+        this.cameraRig.position.copy(this.flatCamera.position).multiplyScalar(sceneScaleFactor);
         this.cameraRig.scale.set(sceneScaleFactor, sceneScaleFactor, sceneScaleFactor);
+        // Calculate world position after setup
+        this.cameraRig.updateMatrixWorld(true);
         // VR cameras should never be tilted - only copy Y-axis rotation (yaw)
         // Calculate Y rotation from camera position to target (ignoring vertical component)
         const flatCameraWorldDir = new $hBQxr$three.Vector3();
