@@ -5651,8 +5651,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         return generator && !generator.includes('Tilt Brush');
     }
     isNewTiltExporter(sceneGltf) {
-        const generator = sceneGltf?.asset?.generator;
-        return generator && generator.includes('Open Brush UnityGLTF Exporter');
+        return sceneGltf?.scene?.userData?.isNewTiltExporter ?? false;
     }
     isAnyTiltExporter(sceneGltf) {
         const generator = sceneGltf?.asset?.generator;
