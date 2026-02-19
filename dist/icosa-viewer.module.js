@@ -3778,6 +3778,233 @@ class $81e80e8b2d2d5e9f$var$GLTFParser {
 }
 
 
+class $707bd002539ed0ea$export$1b293339dff011f9 {
+    constructor(parser, listener, threeNamespace){
+        this.name = 'KHR_audio_emitter';
+        this.parser = parser;
+        this.listener = listener;
+        this.three = threeNamespace;
+        this.sourceBufferCache = new Map();
+    }
+    createNodeAttachment(nodeIndex) {
+        const nodeDef = this.parser?.json?.nodes?.[nodeIndex];
+        const nodeExt = nodeDef?.extensions?.[this.name];
+        const emitterIndex = nodeExt?.emitter;
+        if (typeof emitterIndex !== 'number') return null;
+        return this.createAudioForEmitter(emitterIndex, true).then((audio)=>{
+            if (audio) return audio;
+            console.warn(`[KHR_audio_emitter] node ${nodeIndex} emitter ${emitterIndex} produced no audio attachment`);
+            return this.createEmptyAttachment();
+        }).catch((err)=>{
+            console.error(`[KHR_audio_emitter] node ${nodeIndex} emitter ${emitterIndex} attachment failed`, err);
+            return this.createEmptyAttachment();
+        });
+    }
+    async afterRoot(result) {
+        const scenes = result?.scenes || [];
+        const processedSceneIndices = new Set();
+        const pending = [];
+        for (const scene of scenes){
+            const sceneIndex = this.parser?.associations?.get(scene)?.scenes;
+            if (typeof sceneIndex !== 'number' || processedSceneIndices.has(sceneIndex)) continue;
+            processedSceneIndices.add(sceneIndex);
+            const sceneDef = this.parser?.json?.scenes?.[sceneIndex];
+            const sceneExt = sceneDef?.extensions?.[this.name];
+            const emitterIndices = this.toIndexList(sceneExt?.emitters);
+            for (const emitterIndex of emitterIndices)pending.push(this.createAudioForEmitter(emitterIndex, false).then((audio)=>{
+                if (audio) scene.add(audio);
+            }).catch(()=>{}));
+        }
+        await Promise.all(pending);
+    }
+    getExtensionRoot() {
+        const rootExt = this.parser?.json?.extensions?.[this.name];
+        return rootExt && typeof rootExt === 'object' ? rootExt : null;
+    }
+    getSource(sourceIndex) {
+        const ext = this.getExtensionRoot();
+        const sources = ext?.sources;
+        return Array.isArray(sources) ? sources[sourceIndex] ?? null : null;
+    }
+    getEmitter(emitterIndex) {
+        const ext = this.getExtensionRoot();
+        const emitters = ext?.emitters;
+        return Array.isArray(emitters) ? emitters[emitterIndex] ?? null : null;
+    }
+    getAudio(audioIndex) {
+        const ext = this.getExtensionRoot();
+        const audioDefs = ext?.audio;
+        return Array.isArray(audioDefs) ? audioDefs[audioIndex] ?? null : null;
+    }
+    async createAudioForEmitter(emitterIndex, positionalPreferred) {
+        try {
+            const emitter = this.getEmitter(emitterIndex);
+            if (!emitter) {
+                console.warn(`[KHR_audio_emitter] missing emitter ${emitterIndex}`);
+                return null;
+            }
+            const sourceIndices = this.toIndexList(emitter.sources);
+            if (sourceIndices.length === 0) {
+                console.warn(`[KHR_audio_emitter] emitter ${emitterIndex} has no sources`);
+                return null;
+            }
+            const audioNodes = [];
+            for (const sourceIndex of sourceIndices){
+                const audioNode = await this.createAudioForSource(emitter, sourceIndex, positionalPreferred);
+                if (audioNode) audioNodes.push(audioNode);
+            }
+            if (audioNodes.length === 0) return null;
+            if (audioNodes.length === 1) return audioNodes[0];
+            const root = audioNodes[0];
+            for(let i = 1; i < audioNodes.length; i++)root.add(audioNodes[i]);
+            return root;
+        } catch (_err) {
+            return null;
+        }
+    }
+    createEmptyAttachment() {
+        const Object3DCtor = this.getThreeCtor([
+            79,
+            98,
+            106,
+            101,
+            99,
+            116,
+            51,
+            68
+        ]); // Object3D
+        return new Object3DCtor();
+    }
+    async createAudioForSource(emitter, sourceIndex, positionalPreferred) {
+        const source = this.getSource(sourceIndex);
+        if (!source) {
+            console.warn(`[KHR_audio_emitter] missing source ${sourceIndex}`);
+            return null;
+        }
+        const emitterType = emitter.type;
+        const isPositional = positionalPreferred && emitterType !== 'global';
+        const ctorNameCodes = isPositional ? [
+            80,
+            111,
+            115,
+            105,
+            116,
+            105,
+            111,
+            110,
+            97,
+            108,
+            65,
+            117,
+            100,
+            105,
+            111
+        ] // PositionalAudio
+         : [
+            65,
+            117,
+            100,
+            105,
+            111
+        ]; // Audio
+        const AudioCtor = this.getThreeCtor(ctorNameCodes);
+        const audio = new AudioCtor(this.listener);
+        const buffer = await this.loadSourceBuffer(sourceIndex);
+        if (!buffer) {
+            console.warn(`[KHR_audio_emitter] source ${sourceIndex} buffer load failed`);
+            return null;
+        }
+        audio.setBuffer(buffer);
+        const sourceGain = typeof source.gain === 'number' ? source.gain : 1.0;
+        const emitterGain = typeof emitter.gain === 'number' ? emitter.gain : 1.0;
+        audio.setVolume(sourceGain * emitterGain);
+        audio.setLoop(Boolean(source.loop));
+        audio.userData = audio.userData || {};
+        audio.userData.__khrAudioAutoPlay = Boolean(source.autoPlay);
+        if (isPositional) this.applyPositionalSettings(audio, emitter);
+        if (source.autoPlay) try {
+            audio.play();
+        } catch (_err) {
+            // Browsers can block autoplay until user interaction.
+            console.warn(`[KHR_audio_emitter] source ${sourceIndex} autoplay blocked (waiting for unlock)`);
+        }
+        return audio;
+    }
+    applyPositionalSettings(audio, emitter) {
+        const positional = emitter?.positional && typeof emitter.positional === 'object' ? emitter.positional : null;
+        if (!positional) return;
+        if (typeof positional.distanceModel === 'string') audio.setDistanceModel(positional.distanceModel);
+        if (typeof positional.maxDistance === 'number') audio.setMaxDistance(positional.maxDistance);
+        if (typeof positional.refDistance === 'number') audio.setRefDistance(positional.refDistance);
+        if (typeof positional.rolloffFactor === 'number') audio.setRolloffFactor(positional.rolloffFactor);
+        const shapeType = positional.shapeType;
+        if (shapeType === 'cone') {
+            const innerAngleRad = positional.coneInnerAngle ?? Math.PI * 2;
+            const outerAngleRad = positional.coneOuterAngle ?? Math.PI * 2;
+            const outerGain = positional.coneOuterGain ?? 0;
+            audio.setDirectionalCone(this.three.MathUtils.radToDeg(innerAngleRad), this.three.MathUtils.radToDeg(outerAngleRad), outerGain);
+        }
+    }
+    loadSourceBuffer(sourceIndex) {
+        const cached = this.sourceBufferCache.get(sourceIndex);
+        if (cached) return cached;
+        const source = this.getSource(sourceIndex);
+        if (!source || typeof source.audio !== 'number') {
+            const missing = Promise.resolve(null);
+            this.sourceBufferCache.set(sourceIndex, missing);
+            return missing;
+        }
+        const promise = this.loadAudioBuffer(source.audio);
+        this.sourceBufferCache.set(sourceIndex, promise);
+        return promise;
+    }
+    toIndexList(value) {
+        if (!Array.isArray(value)) return [];
+        const out = [];
+        for (const item of value)if (typeof item === 'number') out.push(item);
+        return out;
+    }
+    async loadAudioBuffer(audioIndex) {
+        const audioDef = this.getAudio(audioIndex);
+        if (!audioDef) {
+            console.warn(`[KHR_audio_emitter] missing audio entry ${audioIndex}`);
+            return null;
+        }
+        let arrayBuffer = null;
+        if (typeof audioDef.uri === 'string') arrayBuffer = await this.loadArrayBufferFromUri(audioDef.uri);
+        else if (typeof audioDef.bufferView === 'number') arrayBuffer = await this.parser.getDependency('bufferView', audioDef.bufferView);
+        if (!arrayBuffer) {
+            console.warn(`[KHR_audio_emitter] audio ${audioIndex} has no uri/bufferView data`);
+            return null;
+        }
+        const clonedBuffer = arrayBuffer.slice(0);
+        try {
+            const decoded = await this.listener.context.decodeAudioData(clonedBuffer);
+            return decoded;
+        } catch (err) {
+            console.error(`[KHR_audio_emitter] audio ${audioIndex} decode failed`, err);
+            return null;
+        }
+    }
+    loadArrayBufferFromUri(uri) {
+        return new Promise((resolve, reject)=>{
+            const path = this.parser?.options?.path || '';
+            const resolvedUri = this.three.LoaderUtils.resolveURL(uri, path);
+            const loader = new this.three.FileLoader(this.parser?.options?.manager);
+            loader.setResponseType('arraybuffer');
+            loader.setWithCredentials(this.parser?.options?.withCredentials === true);
+            loader.load(resolvedUri, (data)=>resolve(data), undefined, reject);
+        });
+    }
+    getThreeCtor(charCodes) {
+        const key = String.fromCharCode(...charCodes);
+        const ctor = this.three[key];
+        if (typeof ctor !== 'function') throw new Error(`[KHR_audio_emitter] THREE.${key} constructor unavailable`);
+        return ctor;
+    }
+}
+
+
 
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
@@ -3929,8 +4156,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.voxLoader = new (0, $hBQxr$VOXLoader)(manager);
         this.gltfLegacyLoader = new (0, $81e80e8b2d2d5e9f$export$9559c3115faeb0b0)(manager, assetBaseUrl);
         this.gltfLoader = new (0, $hBQxr$GLTFLoader)(manager);
+        this.audioListener = new $hBQxr$three.AudioListener();
         // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
         this.gltfLoader.register((parser)=>new (0, $hBQxr$GLTFGoogleTiltBrushMaterialExtension)(parser, this.brushPath.toString()));
+        this.gltfLoader.register((parser)=>new (0, $707bd002539ed0ea$export$1b293339dff011f9)(parser, this.audioListener, $hBQxr$three));
         const dracoLoader = new (0, $hBQxr$DRACOLoader)();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
         this.gltfLoader.setDRACOLoader(dracoLoader);
@@ -3943,6 +4172,16 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.canvas.onmouseup = ()=>{
             this.canvas.classList.remove('grabbed');
         };
+        const unlockAudio = ()=>{
+            if (this.audioListener.context.state !== 'running') this.audioListener.context.resume().catch(()=>{});
+            this.tryStartAutoplayAudio(this.scene);
+        };
+        window.addEventListener('pointerdown', unlockAudio, {
+            passive: true
+        });
+        window.addEventListener('touchstart', unlockAudio, {
+            passive: true
+        });
         this.renderer = new $hBQxr$three.WebGLRenderer({
             canvas: this.canvas,
             antialias: true
@@ -4069,6 +4308,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
                 if (viewer1?.trackballControls) viewer1.trackballControls.update();
             }
+            if (viewer1?.activeCamera) this.attachAudioListener(viewer1.activeCamera);
+            this.tryStartAutoplayAudio(viewer1.scene);
             // SparkRenderer stochastic setup is now handled by GUI toggle
             if (viewer1?.activeCamera) this.renderer.render(viewer1.scene, viewer1.activeCamera);
         };
@@ -4181,6 +4422,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
         this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
         if (!this.loadedModel) return;
+        this.stopAllAudio(this.scene);
         this.scene.clear();
         this.initSceneBackground();
         this.initFog();
@@ -4199,6 +4441,42 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             if (this.isNewTiltExporter(this.sceneGltf)) this.scene.scale.set(0.1, 0.1, 0.1);
             this.scene.add(this.loadedModel);
         }
+    }
+    attachAudioListener(camera) {
+        if (!camera) return;
+        if (this.audioListener.parent !== camera) {
+            this.audioListener.removeFromParent();
+            camera.add(this.audioListener);
+        }
+    }
+    stopAllAudio(root) {
+        if (!root) return;
+        root.traverse((node)=>{
+            if (node?.isAudio) {
+                const audio = node;
+                if (audio.isPlaying) audio.stop();
+                audio.disconnect();
+            }
+        });
+    }
+    tryStartAutoplayAudio(root) {
+        if (!root || this.audioListener.context.state !== 'running') return;
+        root.traverse((node)=>{
+            if (!node?.isAudio) return;
+            const audio = node;
+            const wantsAutoPlay = Boolean(audio.userData?.__khrAudioAutoPlay);
+            if (!wantsAutoPlay || audio.isPlaying || !audio.buffer) return;
+            try {
+                audio.play();
+                if (!audio.userData?.__khrAudioAutoplayLoggedStart) audio.userData.__khrAudioAutoplayLoggedStart = true;
+            } catch (_err) {
+                // Keep trying in later frames while unlocked.
+                if (!audio.userData?.__khrAudioAutoplayLoggedBlocked) {
+                    console.warn(`[KHR_audio_emitter] autoplay retry failed; will keep trying`);
+                    audio.userData.__khrAudioAutoplayLoggedBlocked = true;
+                }
+            }
+        });
     }
     toggleTreeView(root) {
         if (root.childElementCount == 0) {
