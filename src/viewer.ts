@@ -1,5 +1,3 @@
-/// icosa-viewer.module.js v260220
-
 // Copyright 2021-2022 Icosa Gallery
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -247,11 +245,8 @@ export class Viewer {
     public showErrorIcon: () => void;
     public loadingError: boolean;
     private isV1: boolean;
-    public pre_render: any;
-    
-    constructor(assetBaseUrl: string, pre_render =()=>{ return { speed : 0.05 }}, frame?: HTMLElement) {
-        this.pre_render  = pre_render ///
 
+    constructor(assetBaseUrl: string, frame?: HTMLElement) {
         this.loadingError = false;
         this.icosa_frame = frame;
 
@@ -265,7 +260,7 @@ export class Viewer {
             this.icosa_frame.id = 'icosa-viewer';
         }
 
-        /* ///initCustomUi(this.icosa_frame);
+        initCustomUi(this.icosa_frame);
 
         const controlPanel = document.createElement('div');
         controlPanel.classList.add('control-panel');
@@ -277,7 +272,6 @@ export class Viewer {
         controlPanel.appendChild(fullscreenButton);
 
         this.icosa_frame.appendChild(controlPanel);
-        /// */
 
         //loadscreen
         const loadscreen = document.createElement('div');
@@ -402,28 +396,25 @@ export class Viewer {
         let controllerGrip1;
         let previousLeftThumbstickX = 0;
 
-        try { ///
-                
-            controller0 = this.renderer.xr.getController(0);
-            this.scene.add(controller0);
+        controller0 = this.renderer.xr.getController(0);
+        this.scene.add(controller0);
 
 
-            controller1 = this.renderer.xr.getController(1);
-            this.scene.add(controller1);
+        controller1 = this.renderer.xr.getController(1);
+        this.scene.add(controller1);
 
-            const controllerModelFactory = new XRControllerModelFactory();
+        const controllerModelFactory = new XRControllerModelFactory();
 
-            controllerGrip0 = this.renderer.xr.getControllerGrip(0);
-            controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
-            this.scene.add(controllerGrip0);
+        controllerGrip0 = this.renderer.xr.getControllerGrip(0);
+        controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
+        this.scene.add(controllerGrip0);
 
-            controllerGrip1 = this.renderer.xr.getControllerGrip(1);
-            controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-            this.scene.add(controllerGrip1);
-        } catch( error ){} ///
+        controllerGrip1 = this.renderer.xr.getControllerGrip(1);
+        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+        this.scene.add(controllerGrip1);
 
         let xrButton = XRButton.createButton( this.renderer, {}, true );
-        /* ///this.icosa_frame.appendChild(xrButton);
+        this.icosa_frame.appendChild(xrButton);
 
         function initCustomUi(viewerContainer : HTMLElement) {
 
@@ -456,7 +447,7 @@ export class Viewer {
             });
 
 
-        }/// */
+        }
 
         const animate = () => {
             this.renderer.setAnimationLoop(render);
@@ -465,9 +456,7 @@ export class Viewer {
         }
 
         const render = () => {
-			
-			const { speed : moveSpeed, flight_speed }= this.pre_render() ///
-			
+
             const delta = clock.getDelta();
 
             if (this.renderer.xr.isPresenting) {
@@ -476,8 +465,8 @@ export class Viewer {
                 viewer.activeCamera = viewer?.xrCamera;
 
                 const inputSources = Array.from(session.inputSources);
-                //const moveSpeed = 0.05;
-                const snapAngle = 45; ///15;
+                const moveSpeed = 0.05;
+                const snapAngle = 15;
 
                 inputSources.forEach((inputSource) => {
 
@@ -485,14 +474,13 @@ export class Viewer {
 
                     if (controllerData) {
 
-                        let axes = controllerData.axes ///
-                        if( axes.length < 4 ) axes =[ 0, 0, 0, 0 ] ///
+                        const axes = controllerData.axes;
 
                         if (inputSource.handedness === 'left') {
                             // Movement (left thumbstick)
-                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1 || flight_speed ) {///
+                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
                                 const moveX = axes[2] * moveSpeed;
-                                const moveZ = -axes[3] * moveSpeed + flight_speed * 0.09;///
+                                const moveZ = -axes[3] * moveSpeed;
 
                                 // Get the camera's forward and right vectors
                                 const forward = new THREE.Vector3();
@@ -519,13 +507,18 @@ export class Viewer {
 
                             // Rotation (right thumbstick x)
                             if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
-                                if (axes[2] > 0) viewer.cameraRig.rotateOnWorldAxis( viewer.activeCamera.up,  THREE.MathUtils.degToRad(snapAngle)) /// viewer.cameraRig.rotation.y -= THREE.MathUtils.degToRad(snapAngle);
-                                else             viewer.cameraRig.rotateOnWorldAxis( viewer.activeCamera.up, -THREE.MathUtils.degToRad(snapAngle)) /// viewer.cameraRig.rotation.y += THREE.MathUtils.degToRad(snapAngle);
+                                if (axes[2] > 0) {
+                                    viewer.cameraRig.rotation.y -= THREE.MathUtils.degToRad(snapAngle);
+                                } else {
+                                    viewer.cameraRig.rotation.y += THREE.MathUtils.degToRad(snapAngle);
+                                }
                             }
                             previousLeftThumbstickX = axes[2];
 
                             // Up/down position right thumbstick y)
-                             if (Math.abs(axes[3]) > 0.5) viewer.cameraRig.position.y -= axes[3] * moveSpeed; ///
+                            if (Math.abs(axes[3]) > 0.5) {
+                                viewer.cameraRig.position.y += axes[3] * moveSpeed;
+                            }
                         }
 
 
