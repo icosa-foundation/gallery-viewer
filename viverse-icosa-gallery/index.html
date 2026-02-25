@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v251208</title>
+        <title>viverse icosa viewer v260225</title>
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
@@ -27,6 +27,14 @@
 			touch-action: none;
 			-webkit-text-size-adjust: 100%;
 		}
+
+		.info_img {
+			position: absolute;
+			top: 50%; /* Moves the top edge of the image to the center of the container */
+			left: 50%; /* Moves the left edge of the image to the center of the container */
+			transform: translate(-50%, -50%); /* Shifts the image back by half its own width and height */
+			width : 70vmin;
+		}		
 		
 		@font-face {
 			font-family: 'MundialRegular';
@@ -68,7 +76,11 @@
 			color            : white;
 		}		
 	</style>
+
     <body style = 'margin : 0;'>
+
+		<img id = "touch_info_img" class = "info_img" src = "./assets/mobile_controls2.png" hidden/>
+		<img id = "pc_info_img"    class = "info_img" src = "./assets/DesktopControls.png" hidden/>
 	
         <div             id = "icosa-viewer"           style = "width: 100%; height: 100%;"></div>
 		<div             id = 'tool_div'               style = 'pointer-events: none; position : absolute; left : 1%; bottom : 1%; width : 98%; background : transparent;'>
@@ -91,7 +103,7 @@
 
 			//addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 
-			const app = 'e56b2dqbze'
+			const app = 'ju364h8yc8'
 		
             import { Viewer }              from "./icosa-viewer.module.js"
 			import * as THREE              from 'three'
@@ -99,17 +111,27 @@
 			import { GLTFLoader }          from 'three/addons/loaders/GLTFLoader.js'
 			import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js'
 						
+			const update_position_time = 1000 / 15
+			const texture_filenames    = [ 'VR_controls_L_UI_1024.png', 'VR_controls_R_UI_1024.png', 'VR_pinch_controls_L_UI_1024.png', 'VR_pinch_controls_R_UI_1024.png' ]
+			const texture_scale        = 2.5
+			const angular_speed        = Math.PI / 500
+			const delta_threshold      = 20
+			const vector3              = new THREE.Vector3()
+			
+			let   speed_denominator = 100**2
+			let   speed = 1 / 30
 			let   viewer
 			let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
-			const update_position_time = 30, speed = 0.05, angular_speed = Math.PI / 500, delta_threshold = 20, vector3 = new THREE.Vector3()
-			let   actors =[], keys ={}, session_id, room, multi, touch = false, vr = false, in_vr = false
+			let   actors =[], keys ={}, session_id, room, multi, touch = false, can_do_vr = false, in_vr = false
 			let   pointer_lock_controls
 			let   profile
+			let   info_planes ={}, controller_0, controller_1
+			let   log =''
+			let   flight_speed = 0
 			
-			document.getElementById( 'chat_input' ).addEventListener( 'focus', _=>{
+			document.getElementById( 'chat_input'             ).addEventListener( 'focus', _=>{
 				//document.ownerDocument.exitPointerLock();   // release lock
 			});
-
 			document.getElementById( 'virtual_reality_button' ).onclick =_=>{
 				viewer.xrButton.click()
 			}
@@ -124,6 +146,18 @@
 				chat_input.value = ''
 			}
 			
+			const download_text       =( filename, content )=>{
+				const blob         = new Blob([ content ], { type : 'text/plain' })
+				const url          = window.URL.createObjectURL( blob )
+				const link         = document.createElement( 'a' )
+				link.href          = url
+				link.download      = filename
+				link.style.display = 'none'
+				document.body.appendChild( link )
+				link.click()
+				document.body.removeChild( link )
+				window.URL.revokeObjectURL( url )
+			}
 			const get_dir_up_right    =_=>{
 				if( ! viewer.activeCamera ) return { dir : null }
 				
@@ -163,12 +197,54 @@
 				msgs_div.innerHTML += _ + '<br><br>'
 				msgs_div.scrollTop = msgs_div.scrollHeight
 					
-				beep.play()
+				//beep.play()
 			}
 			const pre_render          =_=>{
-				const delta = clock.getDelta()
+				const delta        = clock.getDelta()
 				for( const actor of actors ){
-					if( actor.properties.mixer ) actor.properties.mixer.update( delta )
+					if( ! actor.properties.mixer ) continue
+					
+					// mix it
+					actor.properties.mixer.update( delta )
+
+					// check data
+					if( !( 'data' in actor.properties )) continue
+
+					// position it
+					const data = actor.properties.data
+
+					// place the eyes_middle at the px, py, pz
+					const eye_right                         = actor.properties.character.getObjectByName( "Avatar_EyeR" )
+					const eye_left                          = actor.properties.character.getObjectByName( "Avatar_EyeL" )
+					const eye_right_position                = eye_right.getWorldPosition( new THREE.Vector3())
+					const eye_left_position                 = eye_left.getWorldPosition( new THREE.Vector3())
+					const eyes_middle                       = eye_right_position.clone().add( eye_left_position ).multiplyScalar( 1 / 2 )
+					const target_position                   = new THREE.Vector3( data.px, data.py, data.pz )
+					const eyes_offset                       = eyes_middle.clone().sub( actor.properties.character.position )
+					actor.properties.character.position.copy( target_position.clone().sub( eyes_offset ))
+					
+					// rotate
+					let y = data.qy
+					let w = data.qw
+					const magnitude = Math.sqrt( y * y + w * w )
+					if( magnitude > 0.0001 ){
+						actor.properties.character.quaternion.x = 0
+						actor.properties.character.quaternion.y = data.qy / magnitude
+						actor.properties.character.quaternion.z = 0
+						actor.properties.character.quaternion.w = data.qw / magnitude
+					}
+
+					// head tracking
+					const neck_bone   = actor.properties.character.getObjectByName( "Avatar_Neck" )
+					if( ! neck_bone ) continue
+					neck_bone.quaternion.x = data.hqx
+					neck_bone.quaternion.y = data.hqy
+					neck_bone.quaternion.z = data.hqz
+					neck_bone.quaternion.w = data.hqw
+					/* // clamp rotation
+					const euler                      = new THREE.Euler().setFromQuaternion( neck_bone.quaternion, 'YXZ' )
+					euler.y                          = THREE.MathUtils.clamp( euler.y, -Math.PI / 2, Math.PI / 2 )
+					neck_bone.quaternion.setFromEuler( euler )*/
 				}				
 				
 				move()
@@ -189,25 +265,82 @@
 					nipple_context.arc         ( size / 2 + x_offset, size / 2 + y_offset, size / 8, 0, Math.PI * 2 )
 					nipple_context.stroke      ()
 				}
+
+				return { speed, flight_speed }
 			}
 			
-			const clock                 = new THREE.Clock()
+			const clock = new THREE.Clock()
 			
 			const nipple_context = nipple_canvas.getContext( '2d' )	
 			
             viewer               = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
             window.viewer        = viewer
 			await viewer.loadGltf( "./assets/scene.glb", true )
-			
-			viewer.renderer.xr.addEventListener( 'sessionstart', _=> {
+
+			// calculate speed
+			const box3     = new THREE.Box3().setFromObject( viewer.loadedModel )
+			const size     = box3.getSize( new THREE.Vector3())
+			const distance = Math.max( size.x, size.y, size.z )
+			speed          = distance / speed_denominator
+
+			viewer.renderer.xr.addEventListener( 'sessionstart', _=>{
 				in_vr = true
-				viewer.cameraRig.position.copy  ( viewer.activeCamera.position )
-				viewer.cameraRig.quaternion.copy( viewer.activeCamera.quaternion )
+				//viewer.cameraRig.position.copy  ( viewer.activeCamera.position )
+				//viewer.cameraRig.quaternion.copy( viewer.activeCamera.quaternion )
+				
+				controller_0                 = viewer.renderer.xr.getController( 0 )
+				controller_0.addEventListener( 'connected',   event =>{
+					controller_0.userData.hand       = event.data.hand
+					controller_0.userData.handedness = event.data.handedness
+					while( controller_0.children.length ) controller_0.remove( controller_0.children[ 0 ])
+					if( controller_0.userData.hand ){
+						if( 'left' == controller_0.userData.handedness ) controller_0.add( info_planes[ 'VR_pinch_controls_L_UI_1024.png' ])
+						else                                             controller_0.add( info_planes[ 'VR_pinch_controls_R_UI_1024.png' ])
+					} else {
+						if( 'left' == controller_0.userData.handedness ) controller_0.add( info_planes[ 'VR_controls_L_UI_1024.png' ])
+						else                                             controller_0.add( info_planes[ 'VR_controls_R_UI_1024.png' ])
+					}
+					viewer.cameraRig.add( controller_0 )
+				})
+				controller_0.addEventListener( 'selectstart', event =>{
+					if( 'right' == controller_0.userData.handedness ){
+						for( const child of controller_0.children ) child.visible = ! child.visible
+						for( const child of controller_1.children ) child.visible = ! child.visible
+					} else flight_speed = 1
+				})
+				controller_0.addEventListener( 'selectend',   event =>{
+					flight_speed = 0
+				})
+
+				controller_1                 = viewer.renderer.xr.getController( 1 )
+				controller_1.addEventListener( 'connected',   event =>{
+					controller_1.userData.hand       = event.data.hand
+					controller_1.userData.handedness = event.data.handedness
+					while( controller_1.children.length ) controller_1.remove( controller_1.children[ 0 ])
+					if( controller_1.userData.hand ){
+						if( 'left' == controller_1.userData.handedness ) controller_1.add( info_planes[ 'VR_pinch_controls_L_UI_1024.png' ])
+						else                                             controller_1.add( info_planes[ 'VR_pinch_controls_R_UI_1024.png' ])
+					} else {
+						if( 'left' == controller_1.userData.handedness ) controller_1.add( info_planes[ 'VR_controls_L_UI_1024.png' ])
+						else                                             controller_1.add( info_planes[ 'VR_controls_R_UI_1024.png' ])
+					}
+					viewer.cameraRig.add( controller_1 )
+				})
+				controller_1.addEventListener( 'selectstart', event =>{
+					if( 'right' == controller_1.userData.handedness ){
+						for( const child of controller_0.children ) child.visible = ! child.visible
+						for( const child of controller_1.children ) child.visible = ! child.visible
+					}  else flight_speed = 1			
+				})
+				controller_1.addEventListener( 'selectend',   event =>{
+					flight_speed = 0
+				})
+
 			})
-			viewer.renderer.xr.addEventListener( 'sessionend',   _=> {
+			viewer.renderer.xr.addEventListener( 'sessionend',   _=>{
 				in_vr = false
-				viewer.activeCamera.position.copy( viewer.cameraRig.position )
-				viewer.activeCamera.quaternion.copy( viewer.cameraRig.quaternion )
+				//viewer.activeCamera.position.copy( viewer.cameraRig.position )
+				//viewer.activeCamera.quaternion.copy( viewer.cameraRig.quaternion )
 			})
 			
 			const vr_button        = VRButton.createButton( viewer.renderer )
@@ -215,8 +348,8 @@
 				if( vr_button.textContent == 'ENTER VR' ){
 					clearInterval( show_vr_interval )
 					
-					vr = true
-					
+					can_do_vr = true
+
 					resize()	
 				}
 			}, 1000 )
@@ -225,8 +358,13 @@
 			beep.src   = 'data:audio/mpeg;base64,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VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVCGh9CTiMBlA3QYQKEGUA9AbQcQS8MwSdYjL2uOo9zLVhlKVDlZ1oLDuO//vUZBUP+DJgJgH4w3AAAA0gAAABAAABpAAAACAAADSAAAAE+UPQDEIu6rDlAS6ohAMDJBIT0iE+1aVfKDJop3KHrCL3Y6yZnK5V5KOrwYe0xzmWsSUCSpRmQLT0VOvRZyVpaUGiEByVAqUuogukAoUj8jyjsm+l4rGuFayxVMU9lZVgFh2COe2rjM6YauZaKwSqKfib6dibybaijA2IN+9r9Q7GYaf12mksiYSo0o+tlbC82IMXXqu5gLPmfM/aw27etecF4oLj8xXrUsqgGAnpbq2Bw3Ub5lrKm4tibs9bwQ3DkvsZ3JqblkjflynBbs2FurYHTfyFwLGpTQXLtZVMQU1FMy45OC40VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV'	
 			
 			if( window.matchMedia('( pointer: coarse )').matches ){
-				touch = true				
+				touch = true
+
+				touch_info_img.style = "display : block;"
+
 				addEventListener( 'pointerdown', event =>{
+					touch_info_img.style = "display : hidden;"
+
 					if( "CANVAS" != event.target.tagName ) return
 					
 					//if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
@@ -274,6 +412,9 @@
 					keys.q = false
 					keys.e = false
 				})
+			} else {
+				// pc info
+				pc_info_img.style = "display : block;"
 			}
 			
 			const resize    =()=>{
@@ -310,7 +451,7 @@
 				send_img.style.height = size * 2 / 3 + 'px'
 				send_img.hidden       = false
 				
-				if( vr ){
+				if( can_do_vr ){
 					virtual_reality_button.style.right  = touch ? size * 2 + 'px' : size * 3 + 'px'
 					virtual_reality_button.style.width  = size + 'px'
 					virtual_reality_button.style.height = size + 'px'
@@ -321,21 +462,21 @@
 			}
 			resize          ()
 			addEventListener( "resize", resize )
-			
-			addEventListener( "contextmenu", _=>{ 
+
+			addEventListener( "contextmenu", _     =>{ 
 				_.preventDefault()
 			})		
-	
-			addEventListener( 'mousedown', _=>{
-				if( "CANVAS" != event.target.tagName ) return
+			addEventListener( 'mousedown',   _     =>{
+				pc_info_img.style = "display : hidden;"
+
+				//if( "CANVAS" != event.target.tagName ) return
 				
 				if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
 				
 				pointer_lock_controls     = new PointerLockControls( viewer.activeCamera, document.body )
 				pointer_lock_controls.lock()
 			})
-	
-			addEventListener( 'keydown', event =>{
+			addEventListener( 'keydown',     event =>{
 				if( 'Enter' == event.key ){
 					const msg = chat_input.value
 					send      ( msg)
@@ -345,10 +486,64 @@
 					chat_input.value = ''
 				} else keys[ event.key.toLowerCase()] = true
 			})
-			addEventListener           ( 'keyup',   event =>{
+			addEventListener( 'keyup',       event =>{
 				keys[ event.key.toLowerCase()] = false 
 			})
 			
+			// vr info
+			for( const texture_filename of texture_filenames ){
+				new THREE.TextureLoader().load( './assets/' + texture_filename, texture =>{
+					const texture_max_size         = Math.max( texture.image.width, texture.image.height ) * texture_scale
+					const info_plane_geometry      = new THREE.PlaneGeometry( texture.image.width / texture_max_size, texture.image.height / texture_max_size )
+					const info_plane_material      = new THREE.MeshBasicMaterial({ map : texture, transparent : true })
+					const info_plane               = new THREE.Mesh( info_plane_geometry, info_plane_material )
+					info_plane.position.z          = -.5
+					info_planes[ texture_filename ]= info_plane
+				})
+			}
+
+			// debug info
+			/*
+			const debug_plane_geometry      = new THREE.PlaneGeometry()
+			const debug_plane_canvas        = document.createElement( 'canvas' )
+			debug_plane_canvas.width        = 1024
+			debug_plane_canvas.height       = 1024
+			const debug_plane_context       = debug_plane_canvas.getContext( '2d' )
+			
+			const font_size                  = 24
+			const row_height                 = font_size * 1.125
+			const margin                     = row_height / 4
+			debug_plane_context.font         = font_size + 'px Arial'
+			debug_plane_context.textBaseline = 'top'
+
+			const debug_plane_canvastexture = new THREE.CanvasTexture( debug_plane_canvas )
+			const debug_plane_material      = new THREE.MeshBasicMaterial({ map : debug_plane_canvastexture, transparent : true, side : THREE.DoubleSide })
+			const debug_plane               = new THREE.Mesh( debug_plane_geometry, debug_plane_material )
+			//debug_plane.position.y          = 1
+			debug_plane.position.z          = -.75
+			viewer.activeCamera.add         ( debug_plane )
+			viewer.scene.add                ( viewer.activeCamera )
+
+			setInterval( _=>{
+				debug_plane_context.clearRect ( 0, 0, debug_plane_canvas.width, debug_plane_canvas.height )
+				debug_plane_context.fillStyle = 'white'
+				let x                         = margin
+				let y                         = 0
+
+				for( const actor of actors ){
+					if( !( 'data' in actor.properties )) continue
+					const p = actor.properties.data
+					for( const key in p ){
+						debug_plane_context.fillText( key + ' : ' + p[ key ], x, y )
+						y += row_height
+					}
+				}
+
+				//const c = viewer.activeCamera
+				//debug_plane_context.fillText( c.position.x.toFixed( 2 ) + ', ' + c.position.y.toFixed( 2 ) + ', ' + c.position.z.toFixed( 2 ), x, y )
+				//debug_plane_canvastexture.needsUpdate = true
+			}, 1000 / 30 )
+			*/
 			const authorize = async _=>{
 				const find_actor =( session_id )=>{
 					for( const actor of actors )
@@ -357,10 +552,10 @@
 					return null
 				}
 
-				const client         = new viverse.Client({ clientId : app, domain : 'https://account.htcvive.com/' })
+				const client   = new viverse.Client({ clientId : app, domain : 'https://account.htcvive.com/' })
 				if( ! client ) return
 				
-				const auth         = await client.checkAuth()
+				const auth   = await client.checkAuth()
 				if( ! auth ) return
 
 				const token = await client.getToken()
@@ -372,6 +567,9 @@
 				if( ! avatar ) return
 				
 				profile = await avatar.getProfile()
+				
+				const play   = new viverse.Play()
+				if( ! play ) return			
 				
 				const match = await play.newMatchmakingClient( app, true )
 				if( ! match ) return
@@ -389,11 +587,13 @@
 						actor.properties.mixer = null
 							
 						if( session_id == actor.session_id ) continue
-									
+						
+						//download_text( 'avatar', actor.properties.vrmUrl )
+
 						new GLTFLoader().load( actor.properties.vrmUrl, gltf =>{ 
 							actor.properties.character = gltf.scene
 							viewer.scene.add           ( actor.properties.character )
-							
+
 							const tracks =[
 								new THREE.QuaternionKeyframeTrack( "Avatar_Neck.quaternion",[0,0.03333333507180214,0.06666667014360428,0.10000000149011612,0.13333334028720856,0.1666666716337204,0.20000000298023224,0.23333333432674408,0.2666666805744171,0.30000001192092896,0.3333333432674408,0.36666667461395264,0.4000000059604645,0.4333333373069763,0.46666666865348816,0.5,0.5333333611488342,0.5666666626930237,0.6000000238418579,0.6333333253860474,0.6666666865348816,0.699999988079071,0.7333333492279053,0.7666666507720947,0.800000011920929,0.8333333134651184,0.8666666746139526,0.8999999761581421,0.9333333373069763,0.9666666388511658,1,1.0333333015441895,1.0666667222976685,1.100000023841858,1.1333333253860474,1.1666666269302368,1.2000000476837158,1.2333333492279053,1.2666666507720947,1.2999999523162842,1.3333333730697632,1.3666666746139526,1.399999976158142,1.4333332777023315,1.4666666984558105,1.5,1.5333333015441895,1.5666667222976685,1.600000023841858,1.6333333253860474,1.6666666269302368,1.7000000476837158,1.7333333492279053,1.7666666507720947,1.7999999523162842,1.8333333730697632,1.8666666746139526,1.899999976158142,1.9333332777023315,1.9666666984558105,2,2.0333333015441895,2.066666603088379,2.0999999046325684,2.133333444595337,2.1666667461395264,2.200000047683716,2.2333333492279053,2.2666666507720947,2.299999952316284,2.3333332538604736,2.366666555404663,2.4000000953674316,2.433333396911621,2.4666666984558105,2.5,2.5333333015441895,2.566666603088379,2.5999999046325684,2.633333444595337,2.6666667461395264,2.700000047683716,2.7333333492279053,2.7666666507720947,2.799999952316284,2.8333332538604736,2.866666555404663,2.9000000953674316,2.933333396911621,2.9666666984558105,3,3.0333333015441895,3.066666603088379,3.0999999046325684,3.133333444595337,3.1666667461395264,3.200000047683716,3.2333333492279053,3.2666666507720947,3.299999952316284,3.3333332538604736,3.366666555404663,3.4000000953674316,3.433333396911621,3.4666666984558105,3.5,3.5333333015441895,3.566666603088379,3.5999999046325684,],[-0.06860239058732986,0.014095889404416084,0.02574879489839077,0.9972121119499207,-0.06915432214736938,0.014313234016299248,0.025435520336031914,0.9971789717674255,-0.06958793103694916,0.014390782453119755,0.025032009929418564,0.997157871723175,-0.06988474726676941,0.014327940531075,0.02462027780711651,0.9971482753753662,-0.07010673731565475,0.014116503298282623,0.024088608101010323,0.9971486926078796,-0.07032053172588348,0.013758901506662369,0.023341139778494835,0.9971563816070557,-0.07057303190231323,0.013267800211906433,0.02232816070318222,0.9971684217453003,-0.07087785005569458,0.012660754844546318,0.02105743996798992,0.9971823692321777,-0.07121724635362625,0.011957419104874134,0.019581712782382965,0.9971969127655029,-0.07155708223581314,0.01117531768977642,0.017973393201828003,0.9972119331359863,-0.07186206430196762,0.01032808143645525,0.016303183510899544,0.9972278475761414,-0.07210586220026016,0.009427528828382492,0.014635855332016945,0.9972450137138367,-0.0722736045718193,0.008490491658449173,0.013042903505265713,0.9972634315490723,-0.07236046344041824,0.00754393870010972,0.011619003489613533,0.9972823262214661,-0.0723702609539032,0.006627364549785852,0.010486701503396034,0.9973006844520569,-0.07231398671865463,0.005785951390862465,0.009775280952453613,0.9973172545433044,-0.07220932841300964,0.005059433169662952,0.009577681310474873,0.9973306655883789,-0.07207535952329636,0.004471209831535816,0.009903647936880589,0.9973400235176086,-0.07192498445510864,0.004023936111479998,0.010656016878783703,0.9973450303077698,-0.07175390422344208,0.0037026756908744574,0.01164697390049696,0.9973474740982056,-0.07153446972370148,0.003483242355287075,0.012650148011744022,0.9973518252372742,-0.0712214857339859,0.003340998198837042,0.01346613373607397,0.9973640441894531,-0.07076691091060638,0.0032566513400524855,0.01397521048784256,0.9973896741867065,-0.07013671100139618,0.0032182009890675545,0.01416067499667406,0.9974316954612732,-0.06932584941387177,0.0032199439592659473,0.014100959524512291,0.9974892139434814,-0.06836015731096268,0.0032596520613878965,0.013936731033027172,0.997558057308197,-0.06729191541671753,0.0033349881414324045,0.013824770227074623,0.9976319670677185,-0.06618983298540115,0.0034396981354802847,0.013890126720070839,0.9977044463157654,-0.06512939929962158,0.0035611188504844904,0.014188910834491253,0.9977695941925049,-0.06418546289205551,0.0036810010205954313,0.014693005941808224,0.9978229999542236,-0.06342773139476776,0.0037800713907927275,0.015304509550333023,0.997861921787262,-0.0629172995686531,0.003844963852316141,0.01589939370751381,0.9978846907615662,-0.06270112097263336,0.003874205518513918,0.01638643629848957,0.997890293598175,-0.06280200928449631,0.003880714066326618,0.016755135729908943,0.9978777766227722,-0.06320608407258987,0.0038898317143321037,0.01708366721868515,0.9978466629981995,-0.06385572999715805,0.003933670464903116,0.01749628409743309,0.9977980256080627,-0.06465237587690353,0.004043467342853546,0.01809040829539299,0.9977356791496277,-0.06547241657972336,0.004242363851517439,0.01887710578739643,0.9976667761802673,-0.06619398295879364,0.004541741218417883,0.01977209560573101,0.9976004958152771,-0.06671985983848572,0.004941771738231182,0.020637933164834976,0.9975460171699524,-0.06699592620134354,0.005435461178421974,0.021348681300878525,0.9975100159645081,-0.06701567769050598,0.006012719590216875,0.021839573979377747,0.9974947571754456,-0.06681238114833832,0.00666335504502058,0.022123267874121666,0.9974979758262634,-0.0664442628622055,0.007380025926977396,0.022274930030107498,0.9975141882896423,-0.06597644090652466,0.008161521516740322,0.022400127723813057,0.9975363612174988,-0.0654664933681488,0.009014368988573551,0.022599950432777405,0.997558057308197,-0.0649581104516983,0.009949506260454655,0.022943129763007164,0.9975745677947998,-0.0644826591014862,0.01097237691283226,0.02344834990799427,0.9975829720497131,-0.06406570971012115,0.012069093994796276,0.024075688794255257,0.997582197189331,-0.06373312324285507,0.013197873719036579,0.02472919225692749,0.9975732564926147,-0.0635138750076294,0.0142926424741745,0.02527657337486744,0.9975584149360657,-0.06344059854745865,0.015279657207429409,0.025588009506464005,0.9975405335426331,-0.06354885548353195,0.016098598018288612,0.02558450773358345,0.9975208044052124,-0.06387200206518173,0.016717882826924324,0.0252725500613451,0.9974979758262634,-0.06443212926387787,0.017136646434664726,0.024745764210820198,0.9974680542945862,-0.06522583216428757,0.01737493835389614,0.024145599454641342,0.9974270462989807,-0.0662107914686203,0.017456689849495888,0.02359696477651596,0.9973738193511963,-0.06730325520038605,0.017395831644535065,0.023150045424699783,0.9973122477531433,-0.06838632375001907,0.01718880981206894,0.02275613136589527,0.9972512125968933,-0.06933283805847168,0.01681787706911564,0.02228991873562336,0.9972027540206909,-0.07003331184387207,0.016262300312519073,0.021604470908641815,0.9971780776977539,-0.07041913270950317,0.01551171112805605,0.020591886714100838,0.9971842765808105,-0.07047832012176514,0.014578117989003658,0.019227012991905212,0.9972214698791504,-0.07025957107543945,0.013500070199370384,0.01758146844804287,0.9972824454307556,-0.06986547261476517,0.012339434586465359,0.015808885917067528,0.9973548054695129,-0.06943279504776001,0.01117232907563448,0.014108601026237011,0.997424304485321,-0.06910568475723267,0.010076452977955341,0.012680656276643276,0.9974778294563293,-0.06900200992822647,0.009118150919675827,0.01168368011713028,0.9975064396858215,-0.06918152421712875,0.008338666521012783,0.011203865520656109,0.997506320476532,-0.06962284445762634,0.007743214722722769,0.011238187551498413,0.997480034828186,-0.07021886110305786,0.007297764997929335,0.01169423945248127,0.9974363446235657,-0.07079702615737915,0.006937312427908182,0.012411477044224739,0.9973893761634827,-0.07116316258907318,0.006586174480617046,0.013205152936279774,0.9973555207252502,-0.07115886360406876,0.006184231955558062,0.01392152439802885,0.9973486661911011,-0.07070969045162201,0.005707015749067068,0.014481608755886555,0.99737548828125,-0.0698440745472908,0.0051704454235732555,0.014893854036927223,0.9974333047866821,-0.0686807632446289,0.004618939012289047,0.015234340913593769,0.9975116848945618,-0.06739301234483719,0.004105126950889826,0.015609490685164928,0.9975959658622742,-0.06616102904081345,0.0036723597440868616,0.01611841842532158,0.9976720213890076,-0.06513162702322006,0.003346815938130021,0.016824722290039062,0.9977292418479919,-0.06439010798931122,0.003138420172035694,0.017739027738571167,0.9977622032165527,-0.06395273655653,0.0030461002606898546,0.018814411014318466,0.9977709054946899,-0.0637786015868187,0.0030627551022917032,0.019957026466727257,0.9977598190307617,-0.06379134207963943,0.003177730133756995,0.021049926057457924,0.9977361559867859,-0.06390347331762314,0.0033769048750400543,0.0219821035861969,0.997708261013031,-0.06403560936450958,0.0036420610267668962,0.022674469277262688,0.9976833462715149,-0.0641297698020935,0.003951846621930599,0.023097608238458633,0.9976664185523987,-0.06416021287441254,0.0042854961939156055,0.023280756548047066,0.9976587891578674,-0.06413622945547104,0.004627961665391922,0.023308176547288895,0.9976581931114197,-0.06409627944231033,0.004972890950739384,0.023299863561987877,0.9976592659950256,-0.06409598886966705,0.005321563687175512,0.023379042744636536,0.9976556301116943,-0.06419017910957336,0.00567813403904438,0.023633450269699097,0.9976416230201721,-0.06441956013441086,0.006044561509042978,0.02408456802368164,0.9976139068603516,-0.06480379402637482,0.006418881472200155,0.024677248671650887,0.9975721836090088,-0.06533979624509811,0.006797467824071646,0.02529658004641533,0.9975191950798035,-0.06600106507539749,0.0071802339516580105,0.025810949504375458,0.9974598288536072,-0.06673572957515717,0.007576122879981995,0.026124868541955948,0.9973998665809631,-0.06747016310691833,0.008004984818398952,0.02621791698038578,0.9973446130752563,-0.06811784952878952,0.008493245579302311,0.026148458942770958,0.9972984194755554,-0.06859970837831497,0.009063233621418476,0.026022644713521004,0.9972636103630066,-0.06886538118124008,0.00971944723278284,0.025946222245693207,0.9972411394119263,-0.06890977919101715,0.010440603829920292,0.025984391570091248,0.997229814529419,-0.06877683848142624,0.011182703077793121,0.026143571361899376,0.9972267746925354,-0.06854715943336487,0.01189303770661354,0.026375383138656616,0.9972282648086548,-0.0683155208826065,0.012527868151664734,0.02659568190574646,0.9972305297851562,-0.06816545128822327,0.013064653612673283,0.026709720492362976,0.9972308278083801,-0.06814908236265182,0.01350403856486082,0.02663683332502842,0.9972280859947205,-0.06827875226736069,0.013863188214600086,0.026329832151532173,0.9972224235534668,-0.06860239058732986,0.014095905236899853,0.02574879303574562,0.9972121119499207,]),
 								new THREE.QuaternionKeyframeTrack( "Avatar_Head.quaternion",[0,0.03333333507180214,0.06666667014360428,0.10000000149011612,0.13333334028720856,0.1666666716337204,0.20000000298023224,0.23333333432674408,0.2666666805744171,0.30000001192092896,0.3333333432674408,0.36666667461395264,0.4000000059604645,0.4333333373069763,0.46666666865348816,0.5,0.5333333611488342,0.5666666626930237,0.6000000238418579,0.6333333253860474,0.6666666865348816,0.699999988079071,0.7333333492279053,0.7666666507720947,0.800000011920929,0.8333333134651184,0.8666666746139526,0.8999999761581421,0.9333333373069763,0.9666666388511658,1,1.0333333015441895,1.0666667222976685,1.100000023841858,1.1333333253860474,1.1666666269302368,1.2000000476837158,1.2333333492279053,1.2666666507720947,1.2999999523162842,1.3333333730697632,1.3666666746139526,1.399999976158142,1.4333332777023315,1.4666666984558105,1.5,1.5333333015441895,1.5666667222976685,1.600000023841858,1.6333333253860474,1.6666666269302368,1.7000000476837158,1.7333333492279053,1.7666666507720947,1.7999999523162842,1.8333333730697632,1.8666666746139526,1.899999976158142,1.9333332777023315,1.9666666984558105,2,2.0333333015441895,2.066666603088379,2.0999999046325684,2.133333444595337,2.1666667461395264,2.200000047683716,2.2333333492279053,2.2666666507720947,2.299999952316284,2.3333332538604736,2.366666555404663,2.4000000953674316,2.433333396911621,2.4666666984558105,2.5,2.5333333015441895,2.566666603088379,2.5999999046325684,2.633333444595337,2.6666667461395264,2.700000047683716,2.7333333492279053,2.7666666507720947,2.799999952316284,2.8333332538604736,2.866666555404663,2.9000000953674316,2.933333396911621,2.9666666984558105,3,3.0333333015441895,3.066666603088379,3.0999999046325684,3.133333444595337,3.1666667461395264,3.200000047683716,3.2333333492279053,3.2666666507720947,3.299999952316284,3.3333332538604736,3.366666555404663,3.4000000953674316,3.433333396911621,3.4666666984558105,3.5,3.5333333015441895,3.566666603088379,3.5999999046325684,],[-0.06562922894954681,0.013214599341154099,0.02007187344133854,0.9975546598434448,-0.06617962568998337,0.013436035253107548,0.019758768379688263,0.9975215792655945,-0.06661231070756912,0.013517240062355995,0.019355086609721184,0.9974995851516724,-0.06690903007984161,0.013457396067678928,0.01894291117787361,0.9974884986877441,-0.06713163107633591,0.0132486242800951,0.018410321325063705,0.9974862933158875,-0.06734651327133179,0.012894726358354092,0.017661577090620995,0.9974899888038635,-0.06760051846504211,0.01240788958966732,0.01664677821099758,0.9974964261054993,-0.06790709495544434,0.011806203052401543,0.015373842790722847,0.9975033402442932,-0.06824877858161926,0.011109122075140476,0.013895601965487003,0.9975097179412842,-0.06859103590250015,0.010333700105547905,0.012284528464078903,0.9975156784057617,-0.06889821588993073,0.009492887184023857,0.010611498728394508,0.9975221157073975,-0.06914502382278442,0.00859884638339281,0.008941306732594967,0.9975295066833496,-0.06931611150503159,0.007667497266083956,0.007345498539507389,0.9975382089614868,-0.06940708309412003,0.0067254891619086266,0.005918297916650772,0.9975482225418091,-0.06942151486873627,0.005812349263578653,0.004782976116985083,0.9975590109825134,-0.06936824321746826,0.004972607363015413,0.004069301299750805,0.9975704550743103,-0.06926736235618591,0.004246062599122524,0.003869637381285429,0.9975816011428833,-0.06913764029741287,0.003656174289062619,0.004193839151412249,0.9975916147232056,-0.06899069249629974,0.003205843036994338,0.004945039749145508,0.9975998997688293,-0.06882262974977493,0.0028807062190026045,0.005935204681009054,0.9976071119308472,-0.06860511749982834,0.0026570551563054323,0.006938072852790356,0.9976162314414978,-0.06829444319009781,0.002510687103495002,0.007753823418170214,0.9976319074630737,-0.06784027069807053,0.0024221965577453375,0.008263176307082176,0.9976590275764465,-0.06721044331789017,0.002379579236730933,0.008449005894362926,0.9977002143859863,-0.06639933586120605,0.0023768821265548468,0.00838999729603529,0.9977550506591797,-0.06543350964784622,0.0024115603882819414,0.008226518519222736,0.9978200793266296,-0.06436415016651154,0.0024810845497995615,0.008115747943520546,0.9978904128074646,-0.0632612332701683,0.002579273423179984,0.008182350546121597,0.9979601502418518,-0.062200337648391724,0.002693731104955077,0.008482357487082481,0.9980239868164062,-0.061256617307662964,0.002806765027344227,0.008987508714199066,0.9980776309967041,-0.0604984425008297,0.0028996814507991076,0.009600086137652397,0.9981179237365723,-0.0599888414144516,0.0029599505942314863,0.010195509530603886,0.9981426000595093,-0.059772640466690063,0.002986500272527337,0.010682973079383373,0.9981504082679749,-0.05987391248345375,0.0029925135895609856,0.011051633395254612,0.998140275478363,-0.0602790005505085,0.003003042656928301,0.011379764415323734,0.9981122016906738,-0.06092854216694832,0.0030493582598865032,0.011792114935815334,0.9980677962303162,-0.06172585114836693,0.003162023611366749,0.012385829351842403,0.9980112910270691,-0.0625453069806099,0.0033632726408541203,0.013172627426683903,0.9979495406150818,-0.06326647102832794,0.0036641880869865417,0.01406797394156456,0.9978907704353333,-0.06379128247499466,0.004064701031893492,0.014934654347598553,0.9978432059288025,-0.0640660896897316,0.004557935521006584,0.01564658060669899,0.9978125691413879,-0.06408262997865677,0.005133823957294226,0.016139362007379532,0.997800886631012,-0.06387601792812347,0.005782483611255884,0.016425160691142082,0.9978058934211731,-0.06350403279066086,0.006496611982584,0.016579272225499153,0.9978227019309998,-0.06303180009126663,0.007275054231286049,0.016707219183444977,0.9978451728820801,-0.06251728534698486,0.008124448359012604,0.016910135746002197,0.9978675246238708,-0.062003929167985916,0.009055503644049168,0.01725638657808304,0.9978856444358826,-0.06152331829071045,0.010074208490550518,0.017765169963240623,0.997896671295166,-0.061101511120796204,0.011166822165250778,0.01839611679315567,0.9978995323181152,-0.06076285243034363,0.012291643768548965,0.019053421914577484,0.9978946447372437,-0.06053811311721802,0.013383637182414532,0.019604358822107315,0.9978836178779602,-0.06045915186405182,0.01436927355825901,0.019918980076909065,0.9978684782981873,-0.06056424602866173,0.015189040452241898,0.01991751417517662,0.9978499412536621,-0.060882702469825745,0.015811054036021233,0.01960739493370056,0.9978270530700684,-0.06143990531563759,0.01623448170721531,0.019081316888332367,0.9977962970733643,-0.062232062220573425,0.016479017212986946,0.018481023609638214,0.9977545142173767,-0.06321563571691513,0.016568103805184364,0.01793188601732254,0.9977012276649475,-0.0643080621957779,0.01651477999985218,0.01748385839164257,0.9976402521133423,-0.0653919205069542,0.01631503738462925,0.017088355496525764,0.9975799322128296,-0.06634010374546051,0.015950985252857208,0.016620274633169174,0.9975311160087585,-0.06704297661781311,0.015401355922222137,0.01593245193362236,0.9975039958953857,-0.06743214279413223,0.014655934646725655,0.014917103573679924,0.997504711151123,-0.06749453395605087,0.01372662652283907,0.01354934461414814,0.9975332021713257,-0.06727970391511917,0.012652058154344559,0.011900587938725948,0.9975829720497131,-0.06688982993364334,0.011494440026581287,0.01012470107525587,0.9976427555084229,-0.06646163016557693,0.01032975409179926,0.008421184495091438,0.9976999759674072,-0.06613881886005402,0.009236140176653862,0.00699011841788888,0.9977431893348694,-0.06603928655385971,0.00828016921877861,0.005990316160023212,0.9977647066116333,-0.06622260063886642,0.007503114175051451,0.005508010275661945,0.9977614879608154,-0.06666828691959381,0.006910220719873905,0.005539973732084036,0.997735857963562,-0.06726662069559097,0.0064668236300349236,0.005994481034576893,0.997696042060852,-0.06784825026988983,0.00610756641253829,0.006710072048008442,0.997654378414154,-0.06821746379137039,0.005756243597716093,0.007502492051571608,0.9976256489753723,-0.06821588426828384,0.005352159962058067,0.008217819035053253,0.9976223707199097,-0.06776989996433258,0.004870720207691193,0.008776867762207985,0.9976505041122437,-0.066907599568367,0.004327999893575907,0.009188252501189709,0.9977074861526489,-0.06574764847755432,0.0037688431330025196,0.00952807068824768,0.9977836608886719,-0.06446259468793869,0.003246539970859885,0.009902898222208023,0.9978656768798828,-0.06323394924402237,0.0028052732814103365,0.01041148416697979,0.9979404807090759,-0.06220701336860657,0.002471771789714694,0.011117714457213879,0.9979982972145081,-0.06146763637661934,0.0022564632818102837,0.012032099068164825,0.9980340003967285,-0.06103220582008362,0.0021585137583315372,0.013107642531394958,0.998047411441803,-0.06085924431681633,0.0021708481945097446,0.014250566251575947,0.9980422854423523,-0.06087268143892288,0.0022826979402452707,0.01534390076994896,0.9980250000953674,-0.06098552793264389,0.00247989222407341,0.016276594251394272,0.998002827167511,-0.061116378754377365,0.002743723103776574,0.01696978509426117,0.9979826211929321,-0.06120947375893593,0.003052813932299614,0.017393801361322403,0.9979687333106995,-0.06123819574713707,0.003386083757504821,0.017577912658452988,0.9979626536369324,-0.06121255084872246,0.0037283459678292274,0.017606349661946297,0.997962474822998,-0.06117040663957596,0.004073048941791058,0.01759912073612213,0.9979638457298279,-0.06116820126771927,0.004421511199325323,0.01767936535179615,0.9979611039161682,-0.061260875314474106,0.004777856636792421,0.017934758216142654,0.9979491829872131,-0.06148862466216087,0.005144286435097456,0.01838681846857071,0.9979251623153687,-0.061871662735939026,0.005519089289009571,0.0189803596585989,0.9978883862495422,-0.062406476587057114,0.005898895673453808,0.019600404426455498,0.9978408813476562,-0.06306633353233337,0.0062840161845088005,0.020115477964282036,0.997786819934845,-0.06379921734333038,0.0066831945441663265,0.020429998636245728,0.9977312088012695,-0.06453147530555725,0.007116035092622042,0.02052377723157406,0.9976792335510254,-0.06517639756202698,0.007608266547322273,0.020455297082662582,0.9976350665092468,-0.06565561890602112,0.008181259036064148,0.02033054456114769,0.9976016879081726,-0.06591707468032837,0.008839226327836514,0.020255984738469124,0.997580349445343,-0.0659574344754219,0.009560512378811836,0.020296286791563034,0.9975701570510864,-0.06582051515579224,0.01030148845165968,0.02045784331858158,0.9975685477256775,-0.065587118268013,0.011009782552719116,0.020691972225904465,0.9975715279579163,-0.06535215675830841,0.011642621830105782,0.02091439999639988,0.9975751042366028,-0.06519924104213715,0.012178223580121994,0.02103022113442421,0.9975762963294983,-0.06518019735813141,0.012617671862244606,0.02095862291753292,0.9975736141204834,-0.06530740112066269,0.012978282757103443,0.02065255679190159,0.9975670576095581,-0.06562924385070801,0.01321460586041212,0.02007187157869339,0.9975546598434448,]),
@@ -459,6 +659,8 @@
 					}
 					multi            = await play.newMultiplayerClient( room.id, app )
 					const info       = await multi.init()
+					//multi.onClientConnected( userSessionID =>{ beep.play()})						
+					//multi.onClientDisconnected( userSessionID =>{})
 					multi.onConnected(_=>{ 
 						multi.general.onMessage( msg =>{
 							receive( msg )
@@ -466,26 +668,28 @@
 						
 						multi.networksync.onNotifyPositionUpdate( data =>{ 
 							const actor = find_actor( data.data.session_id )
-							if( actor ){
-								actor.properties.character.position.set( data.data.px, data.data.py, data.data.pz )
-								actor.properties.character.rotation.set( data.data.rx, data.data.ry, data.data.rz )
-							}
+							if( actor ) actor.properties.data = data.data					
 						})
 						
 						update_position_interval = setInterval( event =>{
-						
-							const kam = in_vr ? viewer.cameraRig : viewer.activeCamera
+							const camera      = in_vr ? viewer.cameraRig : viewer.activeCamera
+							const head_camera = in_vr ? viewer.xrCamera : viewer.activeCamera
 							
 							multi.networksync.updateMyPosition({
 								session_id, 
-								px         : kam.position.x, 
-								py         : kam.position.y, 
-								pz         : kam.position.z,
-								rx         : kam.rotation.x, 
-								ry         : kam.rotation.y, 
-								rz         : kam.rotation.z 
+								px         : camera.position.x,
+								py         : camera.position.y,
+								pz         : camera.position.z,
+								qx         : camera.quaternion.x,
+								qy         : camera.quaternion.y,
+								qz         : camera.quaternion.z,
+								qw         : camera.quaternion.w,
+								hqx        : in_vr ? head_camera.quaternion.x : 0,
+								hqy        : in_vr ? head_camera.quaternion.y : 0,
+								hqz        : in_vr ? head_camera.quaternion.z : 0,
+								hqw        : in_vr ? head_camera.quaternion.w : 1,
 							})	
-						}, update_position_time )
+						}, update_position_time )					
 					})
 				})
 			}
