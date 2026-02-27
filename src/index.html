@@ -104,8 +104,8 @@
 			//addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 			//addEventListener( "error", event =>{ alert( event.lineno + " = " + event.message )})
 
-			///const app = 'apxy57ksb2'
-			const app = '{{APP_ID}}'
+			const app = 'zz5mhs24cb'
+			///const app = '{{APP_ID}}'
 		
             import { Viewer }              from "./icosa-viewer.module.js"
 			import * as THREE              from 'three'
@@ -277,8 +277,8 @@
 			
             viewer               = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
             window.viewer        = viewer
-			///await viewer.loadGltf( "./assets/scene.glb", true )
-			await viewer.loadGltf( ""{{GLB_PATH}}"", true )
+			await viewer.loadGltf( "./assets/scene.glb", true )
+			///await viewer.loadGltf( ""{{GLB_PATH}}"", true )
 
 			viewer.renderer.xr.addEventListener( 'sessionstart', _=>{
 				in_vr = true
@@ -394,16 +394,14 @@
 					touch_info_img.style = "display : hidden;"
 
 					if( "CANVAS" != event.target.tagName ) return
-					
-					//if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
+
+					update_controls = false
 					
 					pointer_data.button = event.button
 					
 					pointer_data.down ={ x : event.clientX, y : event.clientY }
 				})
 				addEventListener( 'pointermove', event =>{
-					//if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
-					
 					event.preventDefault()
 					
 					if( pointer_data.button == -1 ) return
@@ -498,8 +496,6 @@
 				pc_info_img.style = "display : hidden;"
 
 				//if( "CANVAS" != event.target.tagName ) return
-				
-				if( viewer?.cameraControls?._enabled ) viewer.cameraControls._enabled = false
 				
 				pointer_lock_controls     = new PointerLockControls( viewer.activeCamera, document.body )
 				pointer_lock_controls.lock()
