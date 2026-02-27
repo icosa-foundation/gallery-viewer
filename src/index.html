@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v260226</title>
+        <title>viverse icosa viewer v260227</title>
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
@@ -104,7 +104,8 @@
 			//addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 			//addEventListener( "error", event =>{ alert( event.lineno + " = " + event.message )})
 
-			const app = 'g7vwdebv82'
+			///const app = 'apxy57ksb2'
+			const app = '{{APP_ID}}'
 		
             import { Viewer }              from "./icosa-viewer.module.js"
 			import * as THREE              from 'three'
@@ -119,14 +120,13 @@
 			const delta_threshold      = 20
 			const vector3              = new THREE.Vector3()
 			
-			let   speed_denominator = 250**2
-			let   speed = 1 / 30
+			let   speed_denominator = 10000, max_size, speed = 1 / 30
 			let   viewer
 			let   pointer_data ={ button : -1, down :{ x : 0, y : 0 }, position :{ x : 0, y : 0 }}
-			let   actors =[], keys ={}, session_id, room, multi, touch = false, can_do_vr = false, in_vr = false
-			let   pointer_lock_controls
+			let   actors =[], session_id, room, multi, touch = false, can_do_vr = false, in_vr = false
+			let   pointer_lock_controls, keys ={}, controller_0, controller_1, buttons =[ false, false, false, false, false, false ], show_info_interval
 			let   profile
-			let   info_planes ={}, controller_0, controller_1
+			let   info_planes ={}
 			let   log =''
 			let   flight_speed = 0, update_controls = true
 			
@@ -174,6 +174,8 @@
 				if( ! dir ) return
 				
 				vector3.copy( viewer.activeCamera.position )
+
+				//msgs_div.innerHTML = speed.toFixed( 8 ) + ', ' + max_size.toFixed( 2 )
 				
 				if( keys[ 'w' ]) vector3.addScaledVector( dir,    speed )
 				if( keys[ 's' ]) vector3.addScaledVector( dir,   -speed )
@@ -201,7 +203,7 @@
 				//beep.play()
 			}
 			const pre_render          =_=>{
-				const delta        = clock.getDelta()
+				const delta = clock.getDelta()
 				for( const actor of actors ){
 					if( ! actor.properties.mixer ) continue
 					
@@ -214,7 +216,7 @@
 					// position it
 					const data = actor.properties.data
 
-					// place the eyes_middle at the px, py, pz
+					// place the eyes_middle at px, py, pz
 					const eye_right                         = actor.properties.character.getObjectByName( "Avatar_EyeR" )
 					const eye_left                          = actor.properties.character.getObjectByName( "Avatar_EyeL" )
 					const eye_right_position                = eye_right.getWorldPosition( new THREE.Vector3())
@@ -266,7 +268,7 @@
 					nipple_context.stroke      ()
 				}
 
-				return { speed : speed * 10, flight_speed, update_controls }
+				return { speed : speed * 10, flight_speed : flight_speed * 10, update_controls }
 			}
 			
 			const clock = new THREE.Clock()
@@ -275,13 +277,8 @@
 			
             viewer               = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
             window.viewer        = viewer
-			await viewer.loadGltf( "./assets/scene.glb", true )
-
-			// calculate speed
-			const box3     = new THREE.Box3().setFromObject( viewer.loadedModel )
-			const size     = box3.getSize( new THREE.Vector3())
-			const distance = Math.max( size.x, size.y, size.z )
-			speed          = distance / speed_denominator
+			///await viewer.loadGltf( "./assets/scene.glb", true )
+			await viewer.loadGltf( ""{{GLB_PATH}}"", true )
 
 			viewer.renderer.xr.addEventListener( 'sessionstart', _=>{
 				in_vr = true
@@ -290,6 +287,9 @@
 				
 				controller_0                 = viewer.renderer.xr.getController( 0 )
 				controller_0.addEventListener( 'connected',   event =>{
+					controller_0.userData.gamepad    = event.data.gamepad
+					controller_0.userData.button4    = false 
+					controller_0.userData.button5    = false 
 					controller_0.userData.hand       = event.data.hand
 					controller_0.userData.handedness = event.data.handedness
 					while( controller_0.children.length ) controller_0.remove( controller_0.children[ 0 ])
@@ -303,10 +303,7 @@
 					viewer.cameraRig.add( controller_0 )
 				})
 				controller_0.addEventListener( 'selectstart', event =>{
-					if( 'right' == controller_0.userData.handedness ){
-						for( const child of controller_0.children ) child.visible = ! child.visible
-						for( const child of controller_1.children ) child.visible = ! child.visible
-					} else flight_speed = 1
+					flight_speed = speed
 				})
 				controller_0.addEventListener( 'selectend',   event =>{
 					flight_speed = 0
@@ -314,6 +311,9 @@
 
 				controller_1                 = viewer.renderer.xr.getController( 1 )
 				controller_1.addEventListener( 'connected',   event =>{
+					controller_1.userData.gamepad    = event.data.gamepad
+					controller_1.userData.button4    = false 
+					controller_1.userData.button5    = false 
 					controller_1.userData.hand       = event.data.hand
 					controller_1.userData.handedness = event.data.handedness
 					while( controller_1.children.length ) controller_1.remove( controller_1.children[ 0 ])
@@ -327,15 +327,43 @@
 					viewer.cameraRig.add( controller_1 )
 				})
 				controller_1.addEventListener( 'selectstart', event =>{
-					if( 'right' == controller_1.userData.handedness ){
-						for( const child of controller_0.children ) child.visible = ! child.visible
-						for( const child of controller_1.children ) child.visible = ! child.visible
-					}  else flight_speed = 1			
+					flight_speed = speed			
 				})
 				controller_1.addEventListener( 'selectend',   event =>{
 					flight_speed = 0
 				})
-
+				
+				if( ! show_info_interval ){ 
+					show_info_interval = setInterval( _=>{
+						let pressed = false, is04, was04, is05, was05, is14, was14, is15, was15
+						if( controller_0.userData.gamepad ){
+							is04  = controller_0.userData.gamepad.buttons[ 4 ].pressed
+							was04 = controller_0.userData.button4
+							controller_0.userData.button4 = is04
+						}
+						if( controller_0.userData.gamepad ){
+							is05  = controller_0.userData.gamepad.buttons[ 5 ].pressed
+							was05 = controller_0.userData.button5
+							controller_0.userData.button5 = is05
+						}
+						if( controller_1.userData.gamepad ){
+							is14  = controller_1.userData.gamepad.buttons[ 4 ].pressed
+							was14 = controller_1.userData.button4
+							controller_1.userData.button4 = is14
+						}
+						if( controller_1.userData.gamepad ){
+							is15  = controller_1.userData.gamepad.buttons[ 5 ].pressed
+							was15 = controller_1.userData.button5
+							controller_1.userData.button5 = is15
+						}
+						pressed = ( is04 && ! was04 )||( is05 && ! was05 )||
+								( is14 && ! was14 )||( is15 && ! was15 )
+						if( pressed ){
+							for( const child of controller_0.children ) child.visible = ! child.visible
+							for( const child of controller_1.children ) child.visible = ! child.visible
+						}
+					}, 1000 / 30 )
+				}
 			})
 			viewer.renderer.xr.addEventListener( 'sessionend',   _=>{
 				in_vr = false
