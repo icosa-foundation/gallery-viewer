@@ -2,7 +2,7 @@
 <meta charset="utf-8">
 <html>
     <head>
-        <title>viverse icosa viewer v260227</title>
+        <title>viverse icosa viewer v260227 - 3</title>
         <script type="importmap" class="es6_modules_map">
             {
                 "imports": {
@@ -80,7 +80,7 @@
     <body style = 'margin : 0;'>
 
 		<img id = "touch_info_img" class = "info_img" src = "./assets/mobile_controls2.png" hidden/>
-		<img id = "pc_info_img"    class = "info_img" src = "./assets/DesktopControls.png" hidden/>
+		<img id = "pc_info_img"    class = "info_img" src = "./assets/intro3.png" hidden/>
 	
         <div             id = "icosa-viewer"           style = "width: 100%; height: 100%;"></div>
 		<div             id = 'tool_div'               style = 'pointer-events: none; position : absolute; left : 1%; bottom : 1%; width : 98%; background : transparent;'>
@@ -104,8 +104,8 @@
 			//addEventListener( "error", event =>{ msgs_div.innerHTML = event.lineno + " = " + event.message + '<br>' })
 			//addEventListener( "error", event =>{ alert( event.lineno + " = " + event.message )})
 
-			const app = 'zz5mhs24cb'
-			///const app = '{{APP_ID}}'
+			///const app = '822uxdcz5s'
+			const app = '{{APP_ID}}'
 		
             import { Viewer }              from "./icosa-viewer.module.js"
 			import * as THREE              from 'three'
@@ -268,6 +268,14 @@
 					nipple_context.stroke      ()
 				}
 
+				// keep the hands windows straight
+				const info_plane_L = info_planes[ 'VR_pinch_controls_L_UI_1024.png' ]
+				if( controller_0 ) if( controller_0.children.indexOf( info_plane_L ) != -1 ) info_plane_L.rotation.z = -controller_0.rotation.z
+				if( controller_1 ) if( controller_1.children.indexOf( info_plane_L ) != -1 ) info_plane_L.rotation.z = -controller_1.rotation.z
+				const info_plane_R = info_planes[ 'VR_pinch_controls_R_UI_1024.png' ]
+				if( controller_0 ) if( controller_0.children.indexOf( info_plane_R ) != -1 ) info_plane_R.rotation.z = -controller_0.rotation.z
+				if( controller_1 ) if( controller_1.children.indexOf( info_plane_R ) != -1 ) info_plane_R.rotation.z = -controller_1.rotation.z
+
 				return { speed : speed * 10, flight_speed : flight_speed * 10, update_controls }
 			}
 			
@@ -277,8 +285,8 @@
 			
             viewer               = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
             window.viewer        = viewer
-			await viewer.loadGltf( "./assets/scene.glb", true )
-			///await viewer.loadGltf( ""{{GLB_PATH}}"", true )
+			///await viewer.loadGltf( "./assets/scene.glb", true )
+			await viewer.loadGltf( ""{{GLB_PATH}}"", true )
 
 			viewer.renderer.xr.addEventListener( 'sessionstart', _=>{
 				in_vr = true
@@ -303,7 +311,10 @@
 					viewer.cameraRig.add( controller_0 )
 				})
 				controller_0.addEventListener( 'selectstart', event =>{
-					flight_speed = speed
+					if( controller_0.userData.hand && 'right' == controller_0.userData.handedness ){
+						for( const child of controller_0.children ) child.visible = ! child.visible
+						for( const child of controller_1.children ) child.visible = ! child.visible
+					} else flight_speed = speed
 				})
 				controller_0.addEventListener( 'selectend',   event =>{
 					flight_speed = 0
@@ -327,7 +338,10 @@
 					viewer.cameraRig.add( controller_1 )
 				})
 				controller_1.addEventListener( 'selectstart', event =>{
-					flight_speed = speed			
+					if( controller_1.userData.hand && 'right' == controller_1.userData.handedness ){
+						for( const child of controller_0.children ) child.visible = ! child.visible
+						for( const child of controller_1.children ) child.visible = ! child.visible
+					} else flight_speed = speed
 				})
 				controller_1.addEventListener( 'selectend',   event =>{
 					flight_speed = 0
@@ -356,8 +370,7 @@
 							was15 = controller_1.userData.button5
 							controller_1.userData.button5 = is15
 						}
-						pressed = ( is04 && ! was04 )||( is05 && ! was05 )||
-								( is14 && ! was14 )||( is15 && ! was15 )
+						pressed = ( is04 && ! was04 )||( is05 && ! was05 )||( is14 && ! was14 )||( is15 && ! was15 )
 						if( pressed ){
 							for( const child of controller_0.children ) child.visible = ! child.visible
 							for( const child of controller_1.children ) child.visible = ! child.visible
