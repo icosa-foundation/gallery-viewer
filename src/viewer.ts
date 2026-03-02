@@ -35,6 +35,7 @@ import {CanvasTexture, Object3D, Object3DEventMap} from "three";
 import { setupNavigation } from './helpers/Navigation';
 import { LegacyGLTFLoader } from './legacy/LegacyGLTFLoader.js';
 import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
+import { GLTFAudioEmitterExtension } from './extensions/GLTFAudioEmitterExtension';
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
@@ -228,6 +229,7 @@ export class Viewer {
     private activeCamera: THREE.PerspectiveCamera;
     private flatCamera: THREE.PerspectiveCamera;
     private xrCamera: THREE.PerspectiveCamera;
+    private audioListener: THREE.AudioListener;
     private cameraControls: CameraControls;
     private trackballControls: TrackballControls;
     private loadedModel?: THREE.Object3D;
@@ -332,8 +334,10 @@ export class Viewer {
 
         this.gltfLegacyLoader = new LegacyGLTFLoader(manager, assetBaseUrl);
         this.gltfLoader = new GLTFLoader(manager);
+        this.audioListener = new THREE.AudioListener();
         // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
         this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, this.brushPath.toString()));
+        this.gltfLoader.register(parser => new GLTFAudioEmitterExtension(parser, this.audioListener, THREE));
 
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
@@ -344,6 +348,14 @@ export class Viewer {
         this.icosa_frame.appendChild(this.canvas);
         this.canvas.onmousedown = () => { this.canvas.classList.add('grabbed'); }
         this.canvas.onmouseup = () => { this.canvas.classList.remove('grabbed'); }
+        const unlockAudio = () => {
+            if (this.audioListener.context.state !== 'running') {
+                this.audioListener.context.resume().catch(() => {});
+            }
+            this.tryStartAutoplayAudio(this.scene);
+        };
+        window.addEventListener('pointerdown', unlockAudio, { passive: true });
+        window.addEventListener('touchstart', unlockAudio, { passive: true });
 
         this.renderer = new THREE.WebGLRenderer({
             canvas : this.canvas,
@@ -524,6 +536,11 @@ export class Viewer {
                 if (viewer?.trackballControls) viewer.trackballControls.update();
             }
 
+            if (viewer?.activeCamera) {
+                this.attachAudioListener(viewer.activeCamera);
+            }
+            this.tryStartAutoplayAudio(viewer.scene);
+
             // SparkRenderer stochastic setup is now handled by GUI toggle
 
             if (viewer?.activeCamera) {
@@ -673,6 +690,7 @@ export class Viewer {
         if(!this.loadedModel)
             return;
 
+        this.stopAllAudio(this.scene);
         this.scene.clear();
         this.initSceneBackground();
         this.initFog();
@@ -694,6 +712,60 @@ export class Viewer {
             }
             this.scene.add(this.loadedModel);
         }
+    }
+
+    private attachAudioListener(camera: THREE.Camera) {
+        if (!camera) {
+            return;
+        }
+        if (this.audioListener.parent !== camera) {
+            this.audioListener.removeFromParent();
+            camera.add(this.audioListener);
+        }
+    }
+
+    private stopAllAudio(root?: THREE.Object3D) {
+        if (!root) {
+            return;
+        }
+        root.traverse((node: any) => {
+            if (node?.isAudio) {
+                const audio = node as THREE.Audio;
+                if (audio.isPlaying) {
+                    audio.stop();
+                }
+                audio.disconnect();
+            }
+        });
+    }
+
+    private tryStartAutoplayAudio(root?: THREE.Object3D) {
+        if (!root || this.audioListener.context.state !== 'running') {
+            return;
+        }
+
+        root.traverse((node: any) => {
+            if (!node?.isAudio) {
+                return;
+            }
+            const audio = node as THREE.Audio;
+            const wantsAutoPlay = Boolean(audio.userData?.__khrAudioAutoPlay);
+            if (!wantsAutoPlay || audio.isPlaying || !audio.buffer) {
+                return;
+            }
+            try {
+                audio.play();
+                if (!audio.userData?.__khrAudioAutoplayLoggedStart) {
+                    audio.userData.__khrAudioAutoplayLoggedStart = true;
+                }
+            } catch (_err) {
+                // Keep trying in later frames while unlocked.
+                if (!audio.userData?.__khrAudioAutoplayLoggedBlocked) {
+                    console.warn(`[KHR_audio_emitter] autoplay retry failed; will keep trying`);
+                    audio.userData.__khrAudioAutoplayLoggedBlocked = true;
+                }
+            }
+        });
     }
 
     public toggleTreeView(root: HTMLElement) {
