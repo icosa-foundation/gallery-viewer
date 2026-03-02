@@ -4092,7 +4092,15 @@ class $677737c8a5cbea2f$var$EnvironmentPreset {
     }
 }
 class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
-    constructor(assetBaseUrl, frame){
+    constructor(assetBaseUrl, pre_render = (_)=>{
+        return {
+            speed: 0.05,
+            flight_speed: 0,
+            update_controls: true
+        };
+    }, frame){
+        this.pre_render = pre_render ///
+        ;
         this.loadingError = false;
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
@@ -4102,16 +4110,19 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.icosa_frame = document.createElement('div');
             this.icosa_frame.id = 'icosa-viewer';
         }
-        initCustomUi(this.icosa_frame);
+        /* initCustomUi(this.icosa_frame); ///
+
         const controlPanel = document.createElement('div');
         controlPanel.classList.add('control-panel');
+
         const fullscreenButton = document.createElement('button');
         fullscreenButton.classList.add('panel-button', 'fullscreen-button');
-        fullscreenButton.onclick = ()=>{
-            this.toggleFullscreen(fullscreenButton);
-        };
+        fullscreenButton.onclick = () => { this.toggleFullscreen(fullscreenButton); }
+
         controlPanel.appendChild(fullscreenButton);
+
         this.icosa_frame.appendChild(controlPanel);
+        */ ///
         //loadscreen
         const loadscreen = document.createElement('div');
         loadscreen.id = 'loadscreen';
@@ -4207,20 +4218,29 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let controllerGrip0;
         let controllerGrip1;
         let previousLeftThumbstickX = 0;
-        controller0 = this.renderer.xr.getController(0);
-        this.scene.add(controller0);
-        controller1 = this.renderer.xr.getController(1);
-        this.scene.add(controller1);
-        const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
-        controllerGrip0 = this.renderer.xr.getControllerGrip(0);
-        controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
-        this.scene.add(controllerGrip0);
-        controllerGrip1 = this.renderer.xr.getControllerGrip(1);
-        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-        this.scene.add(controllerGrip1);
-        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {}, true);
-        this.icosa_frame.appendChild(xrButton);
-        function initCustomUi(viewerContainer) {
+        try {
+            controller0 = this.renderer.xr.getController(0);
+            this.scene.add(controller0);
+            controller1 = this.renderer.xr.getController(1);
+            this.scene.add(controller1);
+            const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
+            controllerGrip0 = this.renderer.xr.getControllerGrip(0);
+            controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
+            this.scene.add(controllerGrip0);
+            controllerGrip1 = this.renderer.xr.getControllerGrip(1);
+            controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+            this.scene.add(controllerGrip1);
+        } catch (error) {} ///
+        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {
+            requiredFeatures: [
+                'hand-tracking'
+            ]
+        }, true); ///
+        this.xrButton_container = xrButton;
+        /* ///this.icosa_frame.appendChild(xrButton);
+
+        function initCustomUi(viewerContainer : HTMLElement) {
+
             const button = document.createElement('button');
             button.innerHTML = `<?xml version="1.0" encoding="utf-8"?>
 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -4238,38 +4258,52 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             button.title = 'Fit Scene to View';
             viewerContainer.appendChild(button);
             const svgPath = button.querySelector('path');
-            button.addEventListener('click', ()=>{
-                viewer1.frameScene();
+            button.addEventListener('click', () => {
+                viewer.frameScene();
             });
-            button.addEventListener('mouseover', ()=>{
+
+            button.addEventListener('mouseover', () => {
                 svgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.7)');
             });
-            button.addEventListener('mouseout', ()=>{
+            button.addEventListener('mouseout', () => {
                 svgPath.setAttribute('stroke', 'white');
             });
-        }
+
+
+        } */ ///
         const animate = ()=>{
             this.renderer.setAnimationLoop(render);
         // requestAnimationFrame( animate );
         // composer.render();
         };
         const render = ()=>{
+            const { speed: moveSpeed, flight_speed: flight_speed, update_controls: update_controls } = this.pre_render() ///
+            ;
             const delta = clock.getDelta();
             if (this.renderer.xr.isPresenting) {
                 let session = this.renderer.xr.getSession();
                 viewer1.activeCamera = viewer1?.xrCamera;
                 const inputSources = Array.from(session.inputSources);
-                const moveSpeed = 0.05;
-                const snapAngle = 15;
+                //const moveSpeed = 0.05; ///
+                const snapAngle = -45; /// 15;
                 inputSources.forEach((inputSource)=>{
                     const controllerData = handleController(inputSource);
                     if (controllerData) {
-                        const axes = controllerData.axes;
+                        //const axes = controllerData.axes; ///
+                        let axes = controllerData.axes ///
+                        ;
+                        if (axes.length < 4) axes = [
+                            0,
+                            0,
+                            0,
+                            0
+                        ] ///                       
+                        ;
                         if (inputSource.handedness === 'left') // Movement (left thumbstick)
                         {
-                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
+                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1 || flight_speed) {
                                 const moveX = axes[2] * moveSpeed;
-                                const moveZ = -axes[3] * moveSpeed;
+                                const moveZ = -axes[3] * moveSpeed + flight_speed; ///
                                 // Get the camera's forward and right vectors
                                 const forward = new $hBQxr$three.Vector3();
                                 viewer1.activeCamera.getWorldDirection(forward);
@@ -4288,8 +4322,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                         if (inputSource.handedness === 'right') {
                             // Rotation (right thumbstick x)
                             if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
-                                if (axes[2] > 0) viewer1.cameraRig.rotation.y -= $hBQxr$three.MathUtils.degToRad(snapAngle);
-                                else viewer1.cameraRig.rotation.y += $hBQxr$three.MathUtils.degToRad(snapAngle);
+                                if (axes[2] > 0) viewer1.cameraRig.rotateOnWorldAxis(viewer1.activeCamera.up, $hBQxr$three.MathUtils.degToRad(snapAngle)) ///
+                                ;
+                                else viewer1.cameraRig.rotateOnWorldAxis(viewer1.activeCamera.up, -$hBQxr$three.MathUtils.degToRad(snapAngle)) ///
+                                ;
                             }
                             previousLeftThumbstickX = axes[2];
                             // Up/down position right thumbstick y)
@@ -4305,8 +4341,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                     viewer1.flatCamera.aspect = viewer1.canvas.clientWidth / viewer1.canvas.clientHeight;
                     viewer1.flatCamera.updateProjectionMatrix();
                 }
-                if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
-                if (viewer1?.trackballControls) viewer1.trackballControls.update();
+                if (update_controls) {
+                    if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
+                    if (viewer1?.trackballControls) viewer1.trackballControls.update();
+                }
             }
             if (viewer1?.activeCamera) this.attachAudioListener(viewer1.activeCamera);
             this.tryStartAutoplayAudio(viewer1.scene);
