@@ -274,7 +274,7 @@
 
             viewer               = new Viewer( 'https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/', pre_render )
             window.viewer        = viewer
-    await viewer.loadGltf( ""{{GLB_PATH}}"", true )
+    await viewer.loadGltf('{{GLB_PATH}}', true)
 
 			viewer.renderer.xr.addEventListener( 'sessionstart', _=>{
 				in_vr = true
