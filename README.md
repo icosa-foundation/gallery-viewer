@@ -42,15 +42,15 @@ If you're working on three-icosa locally:
 ```bash
 npm run build:local
 ```
-- Copies your local `three-icosa.module.js` from `../three-icosa-main/dist/`
+- Copies your local `three-icosa.module.js` from `../three-icosa/dist/`
 - Overrides the npm version with your local changes
 - Requires the three-icosa project to be cloned and built locally
 
 ### Setting up Local three-icosa (Optional)
 Only needed if you want to modify three-icosa:
 ```bash
-git clone https://github.com/icosa-gallery/three-icosa.git ../three-icosa-main
-cd ../three-icosa-main && npm install && npm run build
+git clone https://github.com/icosa-gallery/three-icosa.git ../three-icosa
+cd ../three-icosa && npm install && npm run build
 cd ../gallery-viewer && npm run build:local
 ```
 
