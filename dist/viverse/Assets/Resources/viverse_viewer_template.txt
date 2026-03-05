@@ -3,7 +3,7 @@
 <html>
     <head>
     <title>viverse icosa viewer v260303</title>
-        <script type="importmap" class="es6_modules_map">
+    <script class="es6_modules_map" type="importmap">
             {
                 "imports": {
                     "three": "https://cdn.jsdelivr.net/npm/three@0.172.0/build/three.module.js",
@@ -15,8 +15,8 @@
                 }
             }
         </script>
-		<link rel="stylesheet" href="css/style.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="css/style.css" rel="stylesheet">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
 	</head>
 	<style>
 		html, body {
@@ -80,20 +80,16 @@
 
 <body>
 
-<img id = "touch_info_img" class = "info_img" src = "./assets/Mobile_controls.svg" background-color : transparent; hidden/>
-<img id = "pc_info_img"    class = "info_img" src = "./assets/Desktop_controls.svg" background-color : transparent; hidden/>
+<img : background-color class="info_img" hidden id="touch_info_img" src="./assets/Mobile_controls.svg" transparent;/> <img : background-color class="info_img" hidden id="pc_info_img" src="./assets/Desktop_controls.svg" transparent;/>
 
         <div             id = "icosa-viewer"           style = "width: 100%; height: 100%;"></div>
 		<div             id = 'tool_div'               style = 'pointer-events: none; position : absolute; left : 1%; bottom : 1%; width : 98%; background : transparent;'>
 			<div         id = 'msgs_div'               style = "color : white; max-width : 100%; overflow : hidden; white-space : pre-wrap; word-break : break-word; line-height : 1;"></div>
 			<div         id = 'ui_div'                 style = 'background : transparent; color : white; display : flex; align-items : center;'>
 				<canvas  id = 'nipple_canvas'          style = 'hidden'></canvas>
-				<input   id = "chat_input" type="text" style = 'pointer-events: auto; margin-left : 5px;' class = 'rounded' placeholder = "send message" autocomplete = "off" hidden>
-				<img     id = 'send_img'               style = 'pointer-events: auto; margin-left : 5px;' class = 'rounded' src = 'assets/send.png' hidden/>
-				<img     id = 'orientation_img'        style = 'position : absolute; right : 0; bottom : 0; background : transparent;' src = 'assets/orientation_controls.svg' hidden/>
-				<img     id = 'pc_img'                 style = 'position : absolute; bottom : 0; background : transparent; right : 0;' src = 'assets/PC_controls.svg' hidden/>
-				<button  id = 'virtual_reality_button' style = 'pointer-events: auto; position : absolute; bottom : 0; margin-left : 5px; background : transparent;' hidden>
-					<img id = 'VR_headset_icon'        class = 'rounded' src = 'assets/VR_headset_icon.svg'/>
+        <input autocomplete="off" class='rounded' hidden id="chat_input" placeholder="send message" style='pointer-events: auto; margin-left : 5px;' type="text"> <img class='rounded' hidden id='send_img' src='assets/send.png' style='pointer-events: auto; margin-left : 5px;'/> <img hidden id='orientation_img' src='assets/orientation_controls.svg' style='position : absolute; right : 0; bottom : 0; background : transparent;'/> <img hidden id='pc_img' src='assets/PC_controls.svg' style='position : absolute; bottom : 0; background : transparent; right : 0;'/>
+        <button hidden id='virtual_reality_button' style='pointer-events: auto; position : absolute; bottom : 0; margin-left : 5px; background : transparent;'>
+            <img class='rounded' id='VR_headset_icon' src='assets/VR_headset_icon.svg'/>
 				</button>
 			</div>
 		</div>
@@ -409,8 +405,10 @@
 
 					pointer_data.position ={ x : event.clientX, y : event.clientY }
 
-					const delta ={ x : pointer_data.position.x - pointer_data.down.x,
-								   y : pointer_data.position.y - pointer_data.down.y }
+            const delta = {
+                x: pointer_data.position.x - pointer_data.down.x,
+                y: pointer_data.position.y - pointer_data.down.y
+            }
 
 					if( pointer_data.down.x < innerWidth / 2 ){
 						keys.a = delta.x < -delta_threshold
@@ -606,8 +604,9 @@
 							actor.properties.mixer = new THREE.AnimationMixer( actor.properties.character )
 							const action           = actor.properties.mixer.clipAction( animation_clip )
 							action.play()
-						}, progress =>{}
-					)}
+                    }
+                )
+            }
 					for( const actor of removed ){
 						if( actor.properties.character )
 							viewer.scene.remove( actor.properties.character )
