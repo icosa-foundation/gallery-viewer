@@ -6301,7 +6301,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
         const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 75;
         const aspect = 2;
-        const near = cameraOverrides?.perspective?.znear || 0.1;
+        const near = cameraOverrides?.perspective?.znear || 0.01;
         const far = 6000;
         this.flatCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
         let cameraPos = [];
