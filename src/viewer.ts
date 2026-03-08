@@ -2580,8 +2580,8 @@ export class Viewer {
         const context = canvas.getContext('2d');
 
         const gradient = context.createLinearGradient(0, 0, 0, 256);
-        gradient.addColorStop(0, colorB.getStyle());
-        gradient.addColorStop(1, colorA.getStyle());
+        gradient.addColorStop(0, colorB.clone().convertSRGBToLinear().getStyle());
+        gradient.addColorStop(1, colorA.clone().convertSRGBToLinear().getStyle());
         context.fillStyle = gradient;
         context.fillRect(0, 0, 1, 256);
 
