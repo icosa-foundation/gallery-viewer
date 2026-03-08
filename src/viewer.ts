@@ -2580,8 +2580,8 @@ export class Viewer {
         const context = canvas.getContext('2d');
 
         const gradient = context.createLinearGradient(0, 0, 0, 256);
-        gradient.addColorStop(0, colorB.clone().convertSRGBToLinear().getStyle());
-        gradient.addColorStop(1, colorA.clone().convertSRGBToLinear().getStyle());
+        gradient.addColorStop(0, colorB.getStyle());
+        gradient.addColorStop(1, colorA.getStyle());
         context.fillStyle = gradient;
         context.fillRect(0, 0, 1, 256);
 
@@ -2826,8 +2826,8 @@ export class Viewer {
             return;
         }
 
-        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color.clone().convertSRGBToLinear(), 1.0);
-        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color.clone().convertSRGBToLinear(), 1.0);
+        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
+        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
 
         let light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
         let light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
@@ -2850,7 +2850,7 @@ export class Viewer {
         this.loadedModel?.add(l1);
 
         const ambientLight = new THREE.AmbientLight();
-        ambientLight.color = this.sketchMetadata.AmbientLightColor.clone().convertSRGBToLinear();
+        ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.scene.add(ambientLight);
     }
 
@@ -2859,7 +2859,7 @@ export class Viewer {
             return;
         }
         this.scene.fog = new THREE.FogExp2(
-            this.sketchMetadata.FogColor.clone().convertSRGBToLinear(),
+            this.sketchMetadata.FogColor,
             this.sketchMetadata.FogDensity
         );
     }
