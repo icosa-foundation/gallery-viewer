@@ -246,7 +246,12 @@ export class Viewer {
     public loadingError: boolean;
     private isV1: boolean;
 
-    constructor(assetBaseUrl: string, frame?: HTMLElement) {
+    private pre_render           : any; ///
+    public  xrButton_container   : any; ///
+
+    constructor(assetBaseUrl: string, pre_render =_=>{ return { speed : 0.05, flight_speed : 0,  update_controls : true }}, frame?: HTMLElement) { ///
+		this.pre_render  = pre_render ///
+
         this.loadingError = false;
         this.icosa_frame = frame;
 
@@ -260,7 +265,7 @@ export class Viewer {
             this.icosa_frame.id = 'icosa-viewer';
         }
 
-        initCustomUi(this.icosa_frame);
+        /* initCustomUi(this.icosa_frame); ///
 
         const controlPanel = document.createElement('div');
         controlPanel.classList.add('control-panel');
@@ -272,6 +277,7 @@ export class Viewer {
         controlPanel.appendChild(fullscreenButton);
 
         this.icosa_frame.appendChild(controlPanel);
+        */ ///
 
         //loadscreen
         const loadscreen = document.createElement('div');
@@ -396,6 +402,7 @@ export class Viewer {
         let controllerGrip1;
         let previousLeftThumbstickX = 0;
 
+        try { ///
         controller0 = this.renderer.xr.getController(0);
         this.scene.add(controller0);
 
@@ -412,9 +419,12 @@ export class Viewer {
         controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.scene.add(controllerGrip1);
+        } catch( error ){} ///
 
-        let xrButton = XRButton.createButton( this.renderer, {}, true );
-        this.icosa_frame.appendChild(xrButton);
+        let xrButton = XRButton.createButton( this.renderer, { requiredFeatures : [ 'hand-tracking' ]}, true ); ///
+        this.xrButton_container = xrButton
+
+        /* ///this.icosa_frame.appendChild(xrButton);
 
         function initCustomUi(viewerContainer : HTMLElement) {
 
@@ -447,7 +457,7 @@ export class Viewer {
             });
 
 
-        }
+        } */ ///
 
         const animate = () => {
             this.renderer.setAnimationLoop(render);
@@ -457,6 +467,8 @@ export class Viewer {
 
         const render = () => {
 
+			const { speed : moveSpeed, flight_speed, update_controls }= this.pre_render() ///
+
             const delta = clock.getDelta();
 
             if (this.renderer.xr.isPresenting) {
@@ -465,8 +477,8 @@ export class Viewer {
                 viewer.activeCamera = viewer?.xrCamera;
 
                 const inputSources = Array.from(session.inputSources);
-                const moveSpeed = 0.05;
-                const snapAngle = 15;
+                //const moveSpeed = 0.05; ///
+                const snapAngle = -45; /// 15;
 
                 inputSources.forEach((inputSource) => {
 
@@ -474,13 +486,15 @@ export class Viewer {
 
                     if (controllerData) {
 
-                        const axes = controllerData.axes;
+                        //const axes = controllerData.axes; ///
+                        let axes = controllerData.axes ///
+                        if( axes.length < 4 ) axes =[ 0, 0, 0, 0 ] ///                       
 
                         if (inputSource.handedness === 'left') {
                             // Movement (left thumbstick)
-                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1) {
+                            if (Math.abs(axes[2]) > 0.1 || Math.abs(axes[3]) > 0.1 || flight_speed ) { ///
                                 const moveX = axes[2] * moveSpeed;
-                                const moveZ = -axes[3] * moveSpeed;
+                                const moveZ = -axes[3] * moveSpeed + flight_speed; ///
 
                                 // Get the camera's forward and right vectors
                                 const forward = new THREE.Vector3();
@@ -508,9 +522,11 @@ export class Viewer {
                             // Rotation (right thumbstick x)
                             if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
                                 if (axes[2] > 0) {
-                                    viewer.cameraRig.rotation.y -= THREE.MathUtils.degToRad(snapAngle);
+                                    viewer.cameraRig.rotateOnWorldAxis( viewer.activeCamera.up,  THREE.MathUtils.degToRad(snapAngle)) ///
+                                    //viewer.cameraRig.rotation.y -= THREE.MathUtils.degToRad(snapAngle); ///
                                 } else {
-                                    viewer.cameraRig.rotation.y += THREE.MathUtils.degToRad(snapAngle);
+                                    viewer.cameraRig.rotateOnWorldAxis( viewer.activeCamera.up, -THREE.MathUtils.degToRad(snapAngle)) ///
+                                    //viewer.cameraRig.rotation.y += THREE.MathUtils.degToRad(snapAngle);
                                 }
                             }
                             previousLeftThumbstickX = axes[2];
@@ -532,8 +548,10 @@ export class Viewer {
                     viewer.flatCamera.aspect = viewer.canvas.clientWidth / viewer.canvas.clientHeight;
                     viewer.flatCamera.updateProjectionMatrix();
                 }
-                if (viewer?.cameraControls) viewer.cameraControls.update(delta);
-                if (viewer?.trackballControls) viewer.trackballControls.update();
+                if( update_controls ){
+                    if (viewer?.cameraControls) viewer.cameraControls.update(delta);
+                    if (viewer?.trackballControls) viewer.trackballControls.update();
+                }
             }
 
             if (viewer?.activeCamera) {
@@ -2625,7 +2643,7 @@ export class Viewer {
 
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
         const aspect = 2;
-        const near = cameraOverrides?.perspective?.znear || 0.1;
+        const near = cameraOverrides?.perspective?.znear || 0.01;
         const far = 6000;
 
         this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -2808,8 +2826,8 @@ export class Viewer {
             return;
         }
 
-        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color.clone().convertSRGBToLinear(), 1.0);
-        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color.clone().convertSRGBToLinear(), 1.0);
+        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
+        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
 
         let light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
         let light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
@@ -2832,7 +2850,7 @@ export class Viewer {
         this.loadedModel?.add(l1);
 
         const ambientLight = new THREE.AmbientLight();
-        ambientLight.color = this.sketchMetadata.AmbientLightColor.clone().convertSRGBToLinear();
+        ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.scene.add(ambientLight);
     }
 
@@ -2841,7 +2859,7 @@ export class Viewer {
             return;
         }
         this.scene.fog = new THREE.FogExp2(
-            this.sketchMetadata.FogColor.clone().convertSRGBToLinear(),
+            this.sketchMetadata.FogColor,
             this.sketchMetadata.FogDensity
         );
     }
