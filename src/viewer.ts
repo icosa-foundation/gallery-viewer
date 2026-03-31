@@ -53,8 +53,10 @@ class SketchMetadata {
     public FogDensity: number;
     public SceneLight0Color: THREE.Color;
     public SceneLight0Rotation: THREE.Vector3;
+    public SceneLight0RotationIsGLTFSpace: boolean;
     public SceneLight1Color: THREE.Color;
     public SceneLight1Rotation: THREE.Vector3;
+    public SceneLight1RotationIsGLTFSpace: boolean;
     public CameraTranslation: THREE.Vector3;
     public CameraRotation: THREE.Vector3;
     public CameraTargetDistance: number | null;
@@ -114,19 +116,25 @@ class SketchMetadata {
         // Light 0 Rotation
         if (userData['TB_SceneLight0Rotation']) {
             this.SceneLight0Rotation = Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']);
+            this.SceneLight0RotationIsGLTFSpace = false; // Metadata is in Unity format
         } else if (light0rot) {
             this.SceneLight0Rotation = new THREE.Vector3(light0rot.x, light0rot.y, light0rot.z);
+            this.SceneLight0RotationIsGLTFSpace = true; // GLTF node rotation is already in Three.js space
         } else {
             this.SceneLight0Rotation = this.EnvironmentPreset.SceneLight0Rotation;
+            this.SceneLight0RotationIsGLTFSpace = false; // Presets are in Unity format
         }
 
         // Light 1 Rotation
         if (userData['TB_SceneLight1Rotation']) {
             this.SceneLight1Rotation = Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']);
+            this.SceneLight1RotationIsGLTFSpace = false;
         } else if (light1rot) {
             this.SceneLight1Rotation = new THREE.Vector3(light1rot.x, light1rot.y, light1rot.z);
+            this.SceneLight1RotationIsGLTFSpace = true;
         } else {
             this.SceneLight1Rotation = this.EnvironmentPreset.SceneLight1Rotation;
+            this.SceneLight1RotationIsGLTFSpace = false;
         }
 
         // Light 0 Color
@@ -2793,11 +2801,23 @@ export class Viewer {
         // 4. Does the GLTF have an environment preset guid? If so use the light transform and colors from that
         // 5. If there's neither custom metadata, an environment guid or explicit GLTF lights - create some default lighting.
 
-        function convertTBEuler(rot: THREE.Vector3 | any) : THREE.Euler {
+        // Convert rotation in degrees to a Three.js Euler.
+        // GLTF node rotations are already in Three.js right-handed XYZ space.
+        // Unity/Tilt Brush rotations use YXZ intrinsic order in a left-handed
+        // coordinate system, requiring Y and Z negation for handedness conversion.
+        function convertEuler(rot: THREE.Vector3 | any, isGLTFSpace: boolean) : THREE.Euler {
+            if (isGLTFSpace) {
+                return new THREE.Euler(
+                    THREE.MathUtils.degToRad(rot.x),
+                    THREE.MathUtils.degToRad(rot.y),
+                    THREE.MathUtils.degToRad(rot.z)
+                );
+            }
             return new THREE.Euler(
                 THREE.MathUtils.degToRad(rot.x),
-                THREE.MathUtils.degToRad(rot.y),
-                THREE.MathUtils.degToRad(rot.z)
+                THREE.MathUtils.degToRad(-rot.y),
+                THREE.MathUtils.degToRad(-rot.z),
+                'YXZ'
             );
         }
 
@@ -2811,14 +2831,8 @@ export class Viewer {
         let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color.clone().convertSRGBToLinear(), 1.0);
         let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color.clone().convertSRGBToLinear(), 1.0);
 
-        let light0Euler = convertTBEuler(this.sketchMetadata.SceneLight0Rotation);
-        let light1Euler = convertTBEuler(this.sketchMetadata.SceneLight1Rotation);
-
-        // Same rotation adjustment we apply to scene and environment
-        if (this.isNewTiltExporter(this.sceneGltf) || this.isV1) {
-            light0Euler.y += Math.PI;
-            light1Euler.y += Math.PI;
-        }
+        let light0Euler = convertEuler(this.sketchMetadata.SceneLight0Rotation, this.sketchMetadata.SceneLight0RotationIsGLTFSpace);
+        let light1Euler = convertEuler(this.sketchMetadata.SceneLight1Rotation, this.sketchMetadata.SceneLight1RotationIsGLTFSpace);
 
         const light0Direction = new THREE.Vector3(0, 0, 1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
