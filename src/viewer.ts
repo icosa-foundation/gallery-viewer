@@ -102,20 +102,21 @@ class SketchMetadata {
 
         // Convert Unity Euler angles (YXZ, left-handed) to Three.js XYZ Euler degrees.
         // Goes through a quaternion to correctly change both Euler order and handedness.
-        function unityRotToThreeJSDegrees(rot: {x: number, y: number, z: number}) : THREE.Vector3 {
+        function unityRotToThreeJSDegrees(rot: {x: number, y: number, z: number}, label: string) : THREE.Vector3 {
             const unityEuler = new THREE.Euler(
-                THREE.MathUtils.degToRad(rot.x),
+                THREE.MathUtils.degToRad(-rot.x),
                 THREE.MathUtils.degToRad(-rot.y),
-                THREE.MathUtils.degToRad(-rot.z),
+                THREE.MathUtils.degToRad(rot.z),
                 'YXZ'
             );
             const q = new THREE.Quaternion().setFromEuler(unityEuler);
             const threeEuler = new THREE.Euler().setFromQuaternion(q, 'XYZ');
-            return new THREE.Vector3(
+            const result = new THREE.Vector3(
                 THREE.MathUtils.radToDeg(threeEuler.x),
                 THREE.MathUtils.radToDeg(threeEuler.y),
                 THREE.MathUtils.radToDeg(threeEuler.z)
             );
+            return result;
         }
 
         function radToDeg3(rot : THREE.Euler) {
@@ -134,20 +135,20 @@ class SketchMetadata {
         // Metadata and preset values are in Unity format and need conversion.
         // GLTF node rotations are already in Three.js space.
         if (userData['TB_SceneLight0Rotation']) {
-            this.SceneLight0Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']));
+            this.SceneLight0Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']), 'Light0 TB_metadata');
         } else if (light0rot) {
             this.SceneLight0Rotation = new THREE.Vector3(light0rot.x, light0rot.y, light0rot.z);
         } else {
-            this.SceneLight0Rotation = unityRotToThreeJSDegrees(this.EnvironmentPreset.SceneLight0Rotation);
+            this.SceneLight0Rotation = unityRotToThreeJSDegrees(this.EnvironmentPreset.SceneLight0Rotation, 'Light0 preset');
         }
 
         // Light 1 Rotation
         if (userData['TB_SceneLight1Rotation']) {
-            this.SceneLight1Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']));
+            this.SceneLight1Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']), 'Light1 TB_metadata');
         } else if (light1rot) {
             this.SceneLight1Rotation = new THREE.Vector3(light1rot.x, light1rot.y, light1rot.z);
         } else {
-            this.SceneLight1Rotation = unityRotToThreeJSDegrees(this.EnvironmentPreset.SceneLight1Rotation);
+            this.SceneLight1Rotation = unityRotToThreeJSDegrees(this.EnvironmentPreset.SceneLight1Rotation, 'Light1 preset');
         }
 
         // Light 0 Color
@@ -2837,10 +2838,10 @@ export class Viewer {
         let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation);
         let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation);
 
-        const light0Direction = new THREE.Vector3(0, 0, 1).applyEuler(light0Euler);
+        const light0Direction = new THREE.Vector3(0, 0, -1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
 
-        const light1Direction = new THREE.Vector3(0, 0, 1).applyEuler(light1Euler);
+        const light1Direction = new THREE.Vector3(0, 0, -1).applyEuler(light1Euler);
         l1.position.copy(light1Direction.multiplyScalar(10));
 
         l0.castShadow = true;

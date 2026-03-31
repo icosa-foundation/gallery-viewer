@@ -507,6 +507,18 @@ class $4fdc68aa1ebb2033$export$bcc22bf437a07d8f extends $fugmd$Loader {
             case "cc131ff8-0d17-4677-93e0-d7cd19fea9ac":
             case "PassthroughHull":
                 return "PassthroughHull";
+            case "b3e7f8c2-4d5a-1e9b-6c8f-3a7d2f1e9c4b":
+            case "QuillCube":
+                return "QuillCube";
+            case "f1c4e3e7-2a9f-4b5d-8c3e-7d9a1f8e6b4c":
+            case "QuillCylinder":
+                return "QuillCylinder";
+            case "a2d5f6b8-9c1e-4f3a-7b8d-2e6c9f4a1d5b":
+            case "QuillEllipse":
+                return "QuillEllipse";
+            case "c4f8b3e2-9d1a-5e7f-4c3b-8a6d2f9e1c7b":
+            case "QuillRibbon":
+                return "QuillRibbon";
         }
     }
 }
@@ -756,6 +768,18 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
     },
     "Bubbles": {
         uniforms: {
+            u_time: {
+                value: new $fugmd$Vector4()
+            },
+            u_ScrollRate: {
+                value: 0.5
+            },
+            u_ScrollJitterIntensity: {
+                value: 0.02
+            },
+            u_ScrollJitterFrequency: {
+                value: 0.2
+            },
             u_SceneLight_0_matrix: {
                 value: [
                     1,
@@ -1021,11 +1045,11 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
         vertexShader: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-vertex.glsl",
         fragmentShader: "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43/CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-fragment.glsl",
         side: 2,
-        transparent: false,
+        transparent: true,
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 0
+        blending: 1
     },
     "Comet": {
         uniforms: {
@@ -7027,6 +7051,15 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_fogDensity: {
                 value: 0
             },
+            u_MainTex: {
+                value: "WaveformParticles-6a1cf9f9-032c-45ec-9b6e-a6680bee30f7/WaveformParticles-6a1cf9f9-032c-45ec-9b6e-a6680bee30f7-v10.0-MainTex.png"
+            },
+            u_TintColor: {
+                value: new $fugmd$Vector4(0.5, 0.5, 0.5, 0.5)
+            },
+            u_Opacity: {
+                value: 1.0
+            },
             u_time: {
                 value: new $fugmd$Vector4()
             }
@@ -7226,9 +7259,17 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
         vertexShader: "DanceFloor-6a1cf9f9-032c-45ec-311e-a6680bee32e9/DanceFloor-6a1cf9f9-032c-45ec-311e-a6680bee32e9-v10.0-vertex.glsl",
         fragmentShader: "DanceFloor-6a1cf9f9-032c-45ec-311e-a6680bee32e9/DanceFloor-6a1cf9f9-032c-45ec-311e-a6680bee32e9-v10.0-fragment.glsl",
         side: 2,
-        transparent: false,
+        transparent: true,
+        depthFunc: 2,
         depthWrite: true,
-        depthTest: true
+        depthTest: true,
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 103,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201
     },
     "WaveformTube": {
         uniforms: {
@@ -9067,6 +9108,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_fogDensity: {
                 value: 0
             },
+            u_EmissionGain: {
+                value: 0.5
+            },
             u_time: {
                 value: new $fugmd$Vector4()
             }
@@ -9079,7 +9123,13 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 103,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201
     },
     "SmoothHull": {
         uniforms: {
@@ -9568,10 +9618,10 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
                 value: 0.414
             },
             u_MainTex: {
-                value: "Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c/Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c-v10.0-MainTex.png"
+                value: null
             },
             u_Cutoff: {
-                value: 0.2
+                value: 0.5
             },
             u_fogColor: {
                 value: new $fugmd$Vector3(0.0196, 0.0196, 0.0196)
@@ -9580,7 +9630,7 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
                 value: 0
             },
             u_BumpMap: {
-                value: "Charcoal-fde6e778-0f7a-e584-38d6-89d44cee59f6/Charcoal-fde6e778-0f7a-e584-38d6-89d44cee59f6-v10.0-BumpMap.png"
+                value: null
             },
             u_BumpMap_TexelSize: {
                 value: new $fugmd$Vector4(0.0010, 0.0078, 1024, 128)
@@ -9590,7 +9640,7 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
         glslVersion: $fugmd$GLSL3,
         vertexShader: "ConcaveHull-7ae1f880-a517-44a0-99f9-1cab654498c6/ConcaveHull-7ae1f880-a517-44a0-99f9-1cab654498c6-v10.0-vertex.glsl",
         fragmentShader: "ConcaveHull-7ae1f880-a517-44a0-99f9-1cab654498c6/ConcaveHull-7ae1f880-a517-44a0-99f9-1cab654498c6-v10.0-fragment.glsl",
-        side: 0,
+        side: 2,
         transparent: false,
         depthFunc: 2,
         depthWrite: true,
@@ -9807,6 +9857,314 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
         vertexShader: "PassthroughHull-cc131ff8-0d17-4677-93e0-d7cd19fea9ac/PassthroughHull-cc131ff8-0d17-4677-93e0-d7cd19fea9ac-v10.0-vertex.glsl",
         fragmentShader: "PassthroughHull-cc131ff8-0d17-4677-93e0-d7cd19fea9ac/PassthroughHull-cc131ff8-0d17-4677-93e0-d7cd19fea9ac-v10.0-fragment.glsl",
         side: 0,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0
+    },
+    "QuillCube": {
+        uniforms: {
+            u_SceneLight_0_matrix: {
+                value: [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            u_SceneLight_1_matrix: {
+                value: [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            u_Cutoff: {
+                value: 0.067
+            },
+            u_A2CEnabled: {
+                value: 1.0
+            },
+            u_DitherStrength: {
+                value: 0.5
+            },
+            u_OrderedDither: {
+                value: 0.0
+            },
+            u_AlphaBias: {
+                value: 0.0
+            },
+            u_AlphaPower: {
+                value: 1.0
+            },
+            u_fogColor: {
+                value: new $fugmd$Vector3(0.0196, 0.0196, 0.0196)
+            },
+            u_fogDensity: {
+                value: 0
+            }
+        },
+        glslVersion: $fugmd$GLSL3,
+        vertexShader: "QuillCube-b3e7f8c2-4d5a-1e9b-6c8f-3a7d2f1e9c4b/QuillCube-b3e7f8c2-4d5a-1e9b-6c8f-3a7d2f1e9c4b-v10.0-vertex.glsl",
+        fragmentShader: "QuillCube-b3e7f8c2-4d5a-1e9b-6c8f-3a7d2f1e9c4b/QuillCube-b3e7f8c2-4d5a-1e9b-6c8f-3a7d2f1e9c4b-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0
+    },
+    "QuillCylinder": {
+        uniforms: {
+            u_SceneLight_0_matrix: {
+                value: [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            u_SceneLight_1_matrix: {
+                value: [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            u_Cutoff: {
+                value: 0.067
+            },
+            u_A2CEnabled: {
+                value: 1.0
+            },
+            u_DitherStrength: {
+                value: 0.5
+            },
+            u_OrderedDither: {
+                value: 0.0
+            },
+            u_AlphaBias: {
+                value: 0.0
+            },
+            u_AlphaPower: {
+                value: 1.0
+            },
+            u_fogColor: {
+                value: new $fugmd$Vector3(0.0196, 0.0196, 0.0196)
+            },
+            u_fogDensity: {
+                value: 0
+            }
+        },
+        glslVersion: $fugmd$GLSL3,
+        vertexShader: "QuillCylinder-f1c4e3e7-2a9f-4b5d-8c3e-7d9a1f8e6b4c/QuillCylinder-f1c4e3e7-2a9f-4b5d-8c3e-7d9a1f8e6b4c-v10.0-vertex.glsl",
+        fragmentShader: "QuillCylinder-f1c4e3e7-2a9f-4b5d-8c3e-7d9a1f8e6b4c/QuillCylinder-f1c4e3e7-2a9f-4b5d-8c3e-7d9a1f8e6b4c-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0
+    },
+    "QuillEllipse": {
+        uniforms: {
+            u_SceneLight_0_matrix: {
+                value: [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            u_SceneLight_1_matrix: {
+                value: [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            u_Cutoff: {
+                value: 0.067
+            },
+            u_A2CEnabled: {
+                value: 1.0
+            },
+            u_DitherStrength: {
+                value: 0.5
+            },
+            u_OrderedDither: {
+                value: 0.0
+            },
+            u_AlphaBias: {
+                value: 0.0
+            },
+            u_AlphaPower: {
+                value: 1.0
+            },
+            u_fogColor: {
+                value: new $fugmd$Vector3(0.0196, 0.0196, 0.0196)
+            },
+            u_fogDensity: {
+                value: 0
+            }
+        },
+        glslVersion: $fugmd$GLSL3,
+        vertexShader: "QuillEllipse-a2d5f6b8-9c1e-4f3a-7b8d-2e6c9f4a1d5b/QuillEllipse-a2d5f6b8-9c1e-4f3a-7b8d-2e6c9f4a1d5b-v10.0-vertex.glsl",
+        fragmentShader: "QuillEllipse-a2d5f6b8-9c1e-4f3a-7b8d-2e6c9f4a1d5b/QuillEllipse-a2d5f6b8-9c1e-4f3a-7b8d-2e6c9f4a1d5b-v10.0-fragment.glsl",
+        side: 2,
+        transparent: false,
+        depthFunc: 2,
+        depthWrite: true,
+        depthTest: true,
+        blending: 0
+    },
+    "QuillRibbon": {
+        uniforms: {
+            u_SceneLight_0_matrix: {
+                value: [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            u_SceneLight_1_matrix: {
+                value: [
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1,
+                    0,
+                    0,
+                    0,
+                    0,
+                    1
+                ]
+            },
+            u_Cutoff: {
+                value: 0.067
+            },
+            u_A2CEnabled: {
+                value: 1.0
+            },
+            u_DitherStrength: {
+                value: 0.5
+            },
+            u_OrderedDither: {
+                value: 0.0
+            },
+            u_AlphaBias: {
+                value: 0.0
+            },
+            u_AlphaPower: {
+                value: 1.0
+            },
+            u_fogColor: {
+                value: new $fugmd$Vector3(0.0196, 0.0196, 0.0196)
+            },
+            u_fogDensity: {
+                value: 0
+            }
+        },
+        glslVersion: $fugmd$GLSL3,
+        vertexShader: "QuillRibbon-c4f8b3e2-9d1a-5e7f-4c3b-8a6d2f9e1c7b/QuillRibbon-c4f8b3e2-9d1a-5e7f-4c3b-8a6d2f9e1c7b-v10.0-vertex.glsl",
+        fragmentShader: "QuillRibbon-c4f8b3e2-9d1a-5e7f-4c3b-8a6d2f9e1c7b/QuillRibbon-c4f8b3e2-9d1a-5e7f-4c3b-8a6d2f9e1c7b-v10.0-fragment.glsl",
+        side: 2,
         transparent: false,
         depthFunc: 2,
         depthWrite: true,
@@ -10143,6 +10501,18 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
                 setAttributeIfExists(mesh, "uv", "a_texcoord0");
+                renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
+                renameAttribute(mesh, "texcoord_1", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv1", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv2", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv3", "a_texcoord1");
+                if (isNewTiltExporter) {
+                    const uv0 = mesh.geometry.getAttribute("a_texcoord0");
+                    const uv1 = mesh.geometry.getAttribute("a_texcoord1");
+                    const uv0HasRadius = uv0 && uv0.itemSize >= 3;
+                    const uv1HasBakedRadius = uv1 && uv1.itemSize >= 1;
+                    if (!uv0HasRadius && !uv1HasBakedRadius) console.warn("Disco brush is missing radius data (need texcoord0.z or baked texcoord1.x). New exporter GLB likely lacks UV bake output.", mesh.name);
+                }
                 shader = await this.tiltShaderLoader.loadAsync("Disco");
                 shader.lights = true;
                 shader.fog = true;
@@ -10379,6 +10749,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 mesh.geometry.name = "geometry_HyperGrid";
                 setAttributeIfExists(mesh, "position", "a_position");
                 setAttributeIfExists(mesh, "normal", "a_normal");
+                setAttributeIfExists(mesh, "tangent", "a_tangent");
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
@@ -11025,6 +11396,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
                 renameAttribute(mesh, "texcoord_1", "a_texcoord1");
                 shader = await this.tiltShaderLoader.loadAsync("Rain");
@@ -11252,12 +11624,16 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 mesh.geometry.name = "geometry_WaveformParticles";
                 setAttributeIfExists(mesh, "position", "a_position");
                 setAttributeIfExists(mesh, "normal", "a_normal");
+                setAttributeIfExists(mesh, "tangent", "a_tangent");
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
                 setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
                 renameAttribute(mesh, "texcoord_1", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv1", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv2", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv3", "a_texcoord1");
                 shader = await this.tiltShaderLoader.loadAsync("WaveformParticles");
                 mesh.material = shader;
                 mesh.material.name = "material_WaveformParticles";
@@ -11274,6 +11650,9 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
                 renameAttribute(mesh, "texcoord_1", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv1", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv2", "a_texcoord1");
+                setAttributeIfExists(mesh, "uv3", "a_texcoord1");
                 shader = await this.tiltShaderLoader.loadAsync("BubbleWand");
                 mesh.material = shader;
                 mesh.material.name = "material_BubbleWand";
@@ -11553,6 +11932,9 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 setAttributeIfExists(mesh, "position", "a_position");
                 setAttributeIfExists(mesh, "normal", "a_normal");
                 copyFixColorAttribute(mesh);
+                renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
+                renameAttribute(mesh, "texcoord_0", "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 shader = await this.tiltShaderLoader.loadAsync("Space");
                 mesh.material = shader;
                 mesh.material.name = "material_Space";
@@ -11612,6 +11994,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
                 renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
                 renameAttribute(mesh, "texcoord_1", "a_texcoord1");
                 shader = await this.tiltShaderLoader.loadAsync("ConcaveHull");
@@ -11644,6 +12027,70 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 shader = await this.tiltShaderLoader.loadAsync("PassthroughHull");
                 mesh.material = shader;
                 mesh.material.name = "material_PassthroughHull";
+                break;
+            case "b3e7f8c2-4d5a-1e9b-6c8f-3a7d2f1e9c4b":
+            case "QuillCube":
+                mesh.geometry.name = "geometry_QuillCube";
+                setAttributeIfExists(mesh, "position", "a_position");
+                setAttributeIfExists(mesh, "normal", "a_normal");
+                copyFixColorAttribute(mesh);
+                renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
+                renameAttribute(mesh, "texcoord_0", "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
+                renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
+                renameAttribute(mesh, "texcoord_1", "a_texcoord1");
+                shader = await this.tiltShaderLoader.loadAsync("QuillCylinder");
+                shader.alphaToCoverage = true;
+                mesh.material = shader;
+                mesh.material.name = "material_QuillCube";
+                break;
+            case "f1c4e3e7-2a9f-4b5d-8c3e-7d9a1f8e6b4c":
+            case "QuillCylinder":
+                mesh.geometry.name = "geometry_QuillCylinder";
+                setAttributeIfExists(mesh, "position", "a_position");
+                setAttributeIfExists(mesh, "normal", "a_normal");
+                copyFixColorAttribute(mesh);
+                renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
+                renameAttribute(mesh, "texcoord_0", "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
+                renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
+                renameAttribute(mesh, "texcoord_1", "a_texcoord1");
+                shader = await this.tiltShaderLoader.loadAsync("QuillCylinder");
+                shader.alphaToCoverage = true;
+                mesh.material = shader;
+                mesh.material.name = "material_QuillCylinder";
+                break;
+            case "a2d5f6b8-9c1e-4f3a-7b8d-2e6c9f4a1d5b":
+            case "QuillEllipse":
+                mesh.geometry.name = "geometry_QuillEllipse";
+                setAttributeIfExists(mesh, "position", "a_position");
+                setAttributeIfExists(mesh, "normal", "a_normal");
+                copyFixColorAttribute(mesh);
+                renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
+                renameAttribute(mesh, "texcoord_0", "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
+                renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
+                renameAttribute(mesh, "texcoord_1", "a_texcoord1");
+                shader = await this.tiltShaderLoader.loadAsync("QuillEllipse");
+                shader.alphaToCoverage = true;
+                mesh.material = shader;
+                mesh.material.name = "material_QuillEllipse";
+                break;
+            case "c4f8b3e2-9d1a-5e7f-4c3b-8a6d2f9e1c7b":
+            case "QuillRibbon":
+                mesh.geometry.name = "geometry_QuillRibbon";
+                setAttributeIfExists(mesh, "position", "a_position");
+                setAttributeIfExists(mesh, "normal", "a_normal");
+                copyFixColorAttribute(mesh);
+                renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
+                renameAttribute(mesh, "texcoord_0", "a_texcoord0");
+                setAttributeIfExists(mesh, "uv", "a_texcoord0");
+                renameAttribute(mesh, "_tb_unity_texcoord_1", "a_texcoord1");
+                renameAttribute(mesh, "texcoord_1", "a_texcoord1");
+                shader = await this.tiltShaderLoader.loadAsync("QuillRibbon");
+                shader.alphaToCoverage = true;
+                mesh.material = shader;
+                mesh.material.name = "material_QuillRibbon";
                 break;
             default:
                 console.warn(`Could not find brush with guid ${guidOrName}!`);
@@ -12472,6 +12919,46 @@ class $14e7a74c93f87da8$export$24723e25468f5bb7 {
                 "extensions": {
                     "GOOGLE_tilt_brush_material": {
                         "guid": "4465b5ef-3605-bec4-2b3e-6b04508ddb6b"
+                    }
+                }
+            },
+            "b3e7f8c2-4d5a-1e9b-6c8f-3a7d2f1e9c4b": {
+                "alphaMode": "OPAQUE",
+                "doubleSided": true,
+                "name": "brush_QuillCube",
+                "extensions": {
+                    "GOOGLE_tilt_brush_material": {
+                        "guid": "b3e7f8c2-4d5a-1e9b-6c8f-3a7d2f1e9c4b"
+                    }
+                }
+            },
+            "f1c4e3e7-2a9f-4b5d-8c3e-7d9a1f8e6b4c": {
+                "alphaMode": "OPAQUE",
+                "doubleSided": true,
+                "name": "brush_QuillCylinder",
+                "extensions": {
+                    "GOOGLE_tilt_brush_material": {
+                        "guid": "f1c4e3e7-2a9f-4b5d-8c3e-7d9a1f8e6b4c"
+                    }
+                }
+            },
+            "a2d5f6b8-9c1e-4f3a-7b8d-2e6c9f4a1d5b": {
+                "alphaMode": "OPAQUE",
+                "doubleSided": true,
+                "name": "brush_QuillEllipse",
+                "extensions": {
+                    "GOOGLE_tilt_brush_material": {
+                        "guid": "a2d5f6b8-9c1e-4f3a-7b8d-2e6c9f4a1d5b"
+                    }
+                }
+            },
+            "c4f8b3e2-9d1a-5e7f-4c3b-8a6d2f9e1c7b": {
+                "alphaMode": "OPAQUE",
+                "doubleSided": true,
+                "name": "brush_QuillRibbon",
+                "extensions": {
+                    "GOOGLE_tilt_brush_material": {
+                        "guid": "c4f8b3e2-9d1a-5e7f-4c3b-8a6d2f9e1c7b"
                     }
                 }
             }
