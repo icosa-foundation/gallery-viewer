@@ -78,6 +78,21 @@
 		}
 	</style>
 
+	#loadscreen {
+		/*border: 5px solid green;*/
+		/*background-color : rgba( 1, 0, 0, 0.5 )!important;*/
+		background: url("https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/logos/viverse_logo.png"), url("https://f005.backblazeb2.com/file/icosa-gallery/sketch-assets-v2025-11-12/logos/openbrush_logo.png");
+		background-size    : 100%;
+		background-repeat: no-repeat;
+		background-position: center calc(50% - 20%), center calc(50% + 25%);
+		background-size: 30%;
+	}
+
+	#loadscreen div {
+		transform: scale(0.5);
+	}
+
+
 <body>
 
 		<img id = "touch_info_img" class = "info_img" src = "./assets/Mobile_controls.svg"/>
