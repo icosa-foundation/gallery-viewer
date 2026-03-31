@@ -76,7 +76,6 @@
         	background-color : rgba( 0, 0, 0, 0 );
 			color            : white;
 		}
-	</style>
 
 	#loadscreen {
 		/*border: 5px solid green;*/
@@ -91,7 +90,8 @@
 	#loadscreen div {
 		transform: scale(0.5);
 	}
-
+	
+	</style>
 
 <body>
 
