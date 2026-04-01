@@ -329,11 +329,15 @@ export class Viewer {
         };
 
         manager.onLoad = function () {
+            const evt = new Event("icosa-viewer-load-gltf", { bubbles: true, cancelable: false });
+
             let loadscreen = document.getElementById('loadscreen');
             if (!loadscreen?.classList.contains('loaderror'))
             {
                 loadscreen?.classList.add('fade-out');
             }
+
+            document.dispatchEvent(evt);
         };
 
         this.brushPath = new URL('brushes/', assetBaseUrl);
@@ -2257,6 +2261,9 @@ export class Viewer {
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
         this.initializeScene();
+
+        const evt = new Event("icosa-viewer-init-scene-gltf", { bubbles: true, cancelable: false });
+        document.dispatchEvent(evt);
     }
 
     private isLegacyTiltExporter(sceneGltf: any) {
