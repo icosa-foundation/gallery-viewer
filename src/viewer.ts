@@ -135,7 +135,9 @@ class SketchMetadata {
         // Metadata and preset values are in Unity format and need conversion.
         // GLTF node rotations are already in Three.js space.
         if (userData['TB_SceneLight0Rotation']) {
-            this.SceneLight0Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']), 'Light0 TB_metadata');
+            this.SceneLight0Rotation = scene.userData?.isNewTiltExporter
+                ? Viewer.parseTBVector3(userData['TB_SceneLight0Rotation'])
+                : unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']), 'Light0 TB_metadata');
         } else if (light0rot) {
             this.SceneLight0Rotation = new THREE.Vector3(light0rot.x, light0rot.y, light0rot.z);
         } else {
@@ -144,7 +146,9 @@ class SketchMetadata {
 
         // Light 1 Rotation
         if (userData['TB_SceneLight1Rotation']) {
-            this.SceneLight1Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']), 'Light1 TB_metadata');
+            this.SceneLight1Rotation = scene.userData?.isNewTiltExporter
+                ? Viewer.parseTBVector3(userData['TB_SceneLight1Rotation'])
+                : unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']), 'Light1 TB_metadata');
         } else if (light1rot) {
             this.SceneLight1Rotation = new THREE.Vector3(light1rot.x, light1rot.y, light1rot.z);
         } else {
@@ -2584,8 +2588,8 @@ export class Viewer {
         const context = canvas.getContext('2d');
 
         const gradient = context.createLinearGradient(0, 0, 0, 256);
-        gradient.addColorStop(0, colorB.clone().convertSRGBToLinear().getStyle());
-        gradient.addColorStop(1, colorA.clone().convertSRGBToLinear().getStyle());
+        gradient.addColorStop(0, colorB.getStyle());
+        gradient.addColorStop(1, colorA.getStyle());
         context.fillStyle = gradient;
         context.fillRect(0, 0, 1, 256);
 
@@ -2647,7 +2651,7 @@ export class Viewer {
 
         const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
         const aspect = 2;
-        const near = cameraOverrides?.perspective?.znear || 0.1;
+        const near = cameraOverrides?.perspective?.znear || 0.01;
         const far = 6000;
 
         this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -2832,25 +2836,46 @@ export class Viewer {
             return;
         }
 
-        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color.clone().convertSRGBToLinear(), 1.0);
-        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color.clone().convertSRGBToLinear(), 1.0);
+        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
+        l0.name = "SceneLight0";
+        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
+        l1.name = "SceneLight1";
 
         let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation);
         let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation);
 
+        // New Tilt exports keep the sketch root unposed in viewer space, so
+        // metadata-driven light rotations need the same 180-degree yaw offset
+        // that older lighting code applied on this path.
+        if (this.isNewTiltExporter(this.sceneGltf)) {
+            light0Euler.y += Math.PI;
+            light1Euler.y += Math.PI;
+        }
         const light0Direction = new THREE.Vector3(0, 0, -1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
 
         const light1Direction = new THREE.Vector3(0, 0, -1).applyEuler(light1Euler);
         l1.position.copy(light1Direction.multiplyScalar(10));
 
+        // DirectionalLight points from its position toward its target, so attach
+        // local targets to the sketch root to keep lighting relative to the sketch.
+        const light0Target = new THREE.Object3D();
+        light0Target.name = "SceneLight0Target";
+        light0Target.position.set(0, 0, 0);
+        l0.target = light0Target;
+        const light1Target = new THREE.Object3D();
+        light1Target.name = "SceneLight1Target";
+        light1Target.position.set(0, 0, 0);
+        l1.target = light1Target;
         l0.castShadow = true;
         l1.castShadow = false;
+        this.loadedModel?.add(light0Target);
+        this.loadedModel?.add(light1Target);
         this.loadedModel?.add(l0);
         this.loadedModel?.add(l1);
 
         const ambientLight = new THREE.AmbientLight();
-        ambientLight.color = this.sketchMetadata.AmbientLightColor.clone().convertSRGBToLinear();
+        ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.scene.add(ambientLight);
     }
 
@@ -2859,7 +2884,7 @@ export class Viewer {
             return;
         }
         this.scene.fog = new THREE.FogExp2(
-            this.sketchMetadata.FogColor.clone().convertSRGBToLinear(),
+            this.sketchMetadata.FogColor,
             this.sketchMetadata.FogDensity
         );
     }
