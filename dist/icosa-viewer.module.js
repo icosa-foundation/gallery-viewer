@@ -4150,8 +4150,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             document.getElementById('loadscreen')?.classList.remove('loaded');
         };
         manager.onLoad = function() {
+            const evt = new Event("icosa-viewer-load-gltf", {
+                bubbles: true,
+                cancelable: false
+            });
             let loadscreen = document.getElementById('loadscreen');
             if (!loadscreen?.classList.contains('loaderror')) loadscreen?.classList.add('fade-out');
+            document.dispatchEvent(evt);
         };
         this.brushPath = new URL('brushes/', assetBaseUrl);
         this.environmentPath = new URL('environments/', assetBaseUrl);
@@ -5935,6 +5940,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
         this.initializeScene();
+        const evt = new Event("icosa-viewer-init-scene-gltf", {
+            bubbles: true,
+            cancelable: false
+        });
+        document.dispatchEvent(evt);
     }
     isLegacyTiltExporter(sceneGltf) {
         const generator = sceneGltf.asset?.generator;
