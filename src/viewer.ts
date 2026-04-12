@@ -395,6 +395,8 @@ export class Viewer {
             canvas : this.canvas,
             antialias: true
         });
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
         this.renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -728,6 +730,7 @@ export class Viewer {
         this.scene.clear();
         this.initSceneBackground();
         this.initFog();
+        this.configureModelShadowReceivers();
         this.initLights();
         this.initCameras();
 
@@ -746,6 +749,52 @@ export class Viewer {
             }
             this.scene.add(this.loadedModel);
         }
+    }
+
+    private configureModelShadowReceivers() {
+        if (!this.loadedModel) {
+            return;
+        }
+
+        this.loadedModel.traverse((object: THREE.Object3D) => {
+            const mesh = object as THREE.Mesh;
+            if (!mesh.isMesh) {
+                return;
+            }
+            mesh.receiveShadow = true;
+        });
+    }
+
+    private configurePrimaryShadowLight(light: THREE.DirectionalLight) {
+        const box = this.modelBoundingBox;
+        const defaultShadowDistance = 100;
+
+        light.castShadow = true;
+        light.shadow.mapSize.set(2048, 2048);
+        light.shadow.bias = -0.0002;
+        light.shadow.normalBias = 0.02;
+
+        if (!box || box.isEmpty()) {
+            light.shadow.camera.left = -20;
+            light.shadow.camera.right = 20;
+            light.shadow.camera.top = 20;
+            light.shadow.camera.bottom = -20;
+            light.shadow.camera.near = 0.5;
+            light.shadow.camera.far = defaultShadowDistance;
+            light.shadow.camera.updateProjectionMatrix();
+            return;
+        }
+
+        const size = box.getSize(new THREE.Vector3());
+        const radius = Math.max(size.x, size.y, size.z, 1) * 0.75;
+
+        light.shadow.camera.left = -radius;
+        light.shadow.camera.right = radius;
+        light.shadow.camera.top = radius;
+        light.shadow.camera.bottom = -radius;
+        light.shadow.camera.near = 0.5;
+        light.shadow.camera.far = Math.max(size.length() * 2, defaultShadowDistance);
+        light.shadow.camera.updateProjectionMatrix();
     }
 
     private attachAudioListener(camera: THREE.Camera) {
@@ -2843,6 +2892,7 @@ export class Viewer {
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 10).normalize();
+            this.configurePrimaryShadowLight(light);
             this.loadedModel.add(light);
             return;
         }
@@ -2879,7 +2929,7 @@ export class Viewer {
         light1Target.name = "SceneLight1Target";
         light1Target.position.set(0, 0, 0);
         l1.target = light1Target;
-        l0.castShadow = true;
+        this.configurePrimaryShadowLight(l0);
         l1.castShadow = false;
         this.loadedModel?.add(light0Target);
         this.loadedModel?.add(light1Target);
