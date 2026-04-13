@@ -135,11 +135,9 @@ class SketchMetadata {
         // Metadata and preset values are in Unity format and need conversion.
         // GLTF node rotations are already in Three.js space.
         if (userData['TB_SceneLight0Rotation']) {
-            if (scene.userData?.isNewTiltExporter) {
-                this.SceneLight0Rotation = Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']);
-            } else {
-                this.SceneLight0Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']), 'Light0 TB_metadata');
-            }
+            this.SceneLight0Rotation = scene.userData?.isNewTiltExporter
+                ? Viewer.parseTBVector3(userData['TB_SceneLight0Rotation'])
+                : unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']), 'Light0 TB_metadata');
         } else if (light0rot) {
             this.SceneLight0Rotation = new THREE.Vector3(light0rot.x, light0rot.y, light0rot.z);
         } else {
@@ -148,11 +146,9 @@ class SketchMetadata {
 
         // Light 1 Rotation
         if (userData['TB_SceneLight1Rotation']) {
-            if (scene.userData?.isNewTiltExporter) {
-                this.SceneLight1Rotation = Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']);
-            } else {
-                this.SceneLight1Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']), 'Light1 TB_metadata');
-            }
+            this.SceneLight1Rotation = scene.userData?.isNewTiltExporter
+                ? Viewer.parseTBVector3(userData['TB_SceneLight1Rotation'])
+                : unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']), 'Light1 TB_metadata');
         } else if (light1rot) {
             this.SceneLight1Rotation = new THREE.Vector3(light1rot.x, light1rot.y, light1rot.z);
         } else {
@@ -2855,19 +2851,18 @@ export class Viewer {
         let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation);
         let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation);
 
-        const isNewTiltExporter = this.isNewTiltExporter(this.sceneGltf);
-        if (this.isV1) {
+        // New Tilt exports keep the sketch root unposed in viewer space, so
+        // metadata-driven light rotations need the same 180-degree yaw offset
+        // that older lighting code applied on this path.
+        if (this.isNewTiltExporter(this.sceneGltf)) {
             light0Euler.y += Math.PI;
             light1Euler.y += Math.PI;
         }
-        const lightSourceAxis = isNewTiltExporter
-            ? new THREE.Vector3(0, 0, 1)
-            : new THREE.Vector3(0, 0, -1);
-        const light0Direction = lightSourceAxis.clone().applyEuler(light0Euler);
-        l0.position.copy(light0Direction.multiplyScalar(-10));
+        const light0Direction = new THREE.Vector3(0, 0, -1).applyEuler(light0Euler);
+        l0.position.copy(light0Direction.multiplyScalar(10));
 
-        const light1Direction = lightSourceAxis.clone().applyEuler(light1Euler);
-        l1.position.copy(light1Direction.multiplyScalar(-10));
+        const light1Direction = new THREE.Vector3(0, 0, -1).applyEuler(light1Euler);
+        l1.position.copy(light1Direction.multiplyScalar(10));
 
         // DirectionalLight points from its position toward its target, so attach
         // local targets to the sketch root to keep lighting relative to the sketch.
