@@ -118,7 +118,12 @@ class SketchMetadata {
             );
             return result;
         }
-
+        function parseNewExporterLightRotation(vectorString: string, label: string) : THREE.Vector3 {
+            const rot = Viewer.parseTBVector3(vectorString);
+            rot.y = 360 - rot.y; // Undo exporter compatibility rewrite.
+            rot.z = 0; // Exporter explicitly discards roll for directional lights.
+            return rot;
+        }
         function radToDeg3(rot : THREE.Euler) {
             return {
                 x: THREE.MathUtils.radToDeg(rot.x),
@@ -136,7 +141,7 @@ class SketchMetadata {
         // GLTF node rotations are already in Three.js space.
         if (userData['TB_SceneLight0Rotation']) {
             if (scene.userData?.isNewTiltExporter) {
-                this.SceneLight0Rotation = Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']);
+                this.SceneLight0Rotation = parseNewExporterLightRotation(userData['TB_SceneLight0Rotation'], 'Light0 TB_metadata new exporter');
             } else {
                 this.SceneLight0Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']), 'Light0 TB_metadata');
             }
@@ -149,7 +154,7 @@ class SketchMetadata {
         // Light 1 Rotation
         if (userData['TB_SceneLight1Rotation']) {
             if (scene.userData?.isNewTiltExporter) {
-                this.SceneLight1Rotation = Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']);
+                this.SceneLight1Rotation = parseNewExporterLightRotation(userData['TB_SceneLight1Rotation'], 'Light1 TB_metadata new exporter');
             } else {
                 this.SceneLight1Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']), 'Light1 TB_metadata');
             }
@@ -2830,8 +2835,9 @@ export class Viewer {
         // 4. Does the GLTF have an environment preset guid? If so use the light transform and colors from that
         // 5. If there's neither custom metadata, an environment guid or explicit GLTF lights - create some default lighting.
 
-        // All rotations are now stored in Three.js XYZ Euler degrees
-        // (Unity values are converted at parse time in the SketchMetadata constructor).
+        // Legacy rotations are stored in Three.js XYZ Euler degrees.
+        // New-exporter rotations are stored as Unity inspector Euler angles with the
+        // exporter Y compatibility rewrite already undone at parse time.
         function toEuler(rot: THREE.Vector3 | any) : THREE.Euler {
             return new THREE.Euler(
                 THREE.MathUtils.degToRad(rot.x),
@@ -2839,7 +2845,29 @@ export class Viewer {
                 THREE.MathUtils.degToRad(rot.z)
             );
         }
+        function directionFromNewExporterLightEuler(rot: THREE.Vector3 | any, parent: THREE.Object3D) : THREE.Vector3 {
+            const anchor = new THREE.Object3D();
+            anchor.rotation.set(
+                THREE.MathUtils.degToRad(rot.x),
+                THREE.MathUtils.degToRad(rot.y),
+                0,
+                'ZXY'
+            );
+            parent.add(anchor);
+            parent.updateMatrixWorld(true);
+            anchor.updateMatrixWorld(true);
+            const worldQuat = new THREE.Quaternion();
+            anchor.getWorldQuaternion(worldQuat);
+            anchor.removeFromParent();
+            const unityForward = new THREE.Vector3(0, 0, 1).applyQuaternion(worldQuat);
 
+            // Convert Unity forward direction into Three.js world direction by flipping handedness on Z.
+            return new THREE.Vector3(
+                unityForward.x,
+                unityForward.y,
+                -unityForward.z
+            ).normalize();
+        }
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 10).normalize();
@@ -2852,21 +2880,29 @@ export class Viewer {
         let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         l1.name = "SceneLight1";
 
+        const isNewTiltExporter = this.isNewTiltExporter(this.sceneGltf);
+        let light0Direction: THREE.Vector3;
+        let light1Direction: THREE.Vector3;
+
+        if (isNewTiltExporter) {
+            light0Direction = directionFromNewExporterLightEuler(this.sketchMetadata.SceneLight0Rotation, this.loadedModel);
+            light1Direction = directionFromNewExporterLightEuler(this.sketchMetadata.SceneLight1Rotation, this.loadedModel);
+        } else {
         let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation);
         let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation);
 
-        const isNewTiltExporter = this.isNewTiltExporter(this.sceneGltf);
         if (this.isV1) {
             light0Euler.y += Math.PI;
             light1Euler.y += Math.PI;
         }
-        const lightSourceAxis = isNewTiltExporter
-            ? new THREE.Vector3(0, 0, 1)
-            : new THREE.Vector3(0, 0, -1);
-        const light0Direction = lightSourceAxis.clone().applyEuler(light0Euler);
-        l0.position.copy(light0Direction.multiplyScalar(-10));
 
-        const light1Direction = lightSourceAxis.clone().applyEuler(light1Euler);
+        const lightSourceAxis = new THREE.Vector3(0, 0, -1);
+
+            light0Direction = lightSourceAxis.clone().applyEuler(light0Euler);
+            light1Direction = lightSourceAxis.clone().applyEuler(light1Euler);
+        }
+
+        l0.position.copy(light0Direction.multiplyScalar(-10));
         l1.position.copy(light1Direction.multiplyScalar(-10));
 
         // DirectionalLight points from its position toward its target, so attach
