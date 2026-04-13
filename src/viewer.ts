@@ -2865,6 +2865,7 @@ export class Viewer {
         light0Target.name = "SceneLight0Target";
         light0Target.position.set(0, 0, 0);
         l0.target = light0Target;
+
         const light1Target = new THREE.Object3D();
         light1Target.name = "SceneLight1Target";
         light1Target.position.set(0, 0, 0);
