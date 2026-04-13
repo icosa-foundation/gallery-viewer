@@ -118,6 +118,7 @@ class SketchMetadata {
             );
             return result;
         }
+
         function radToDeg3(rot : THREE.Euler) {
             return {
                 x: THREE.MathUtils.radToDeg(rot.x),
@@ -134,11 +135,9 @@ class SketchMetadata {
         // Metadata and preset values are in Unity format and need conversion.
         // GLTF node rotations are already in Three.js space.
         if (userData['TB_SceneLight0Rotation']) {
-            if (scene.userData?.isNewTiltExporter) {
-                this.SceneLight0Rotation = Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']);
-            } else {
-                this.SceneLight0Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']), 'Light0 TB_metadata');
-            }
+            this.SceneLight0Rotation = scene.userData?.isNewTiltExporter
+                ? Viewer.parseTBVector3(userData['TB_SceneLight0Rotation'])
+                : unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight0Rotation']), 'Light0 TB_metadata');
         } else if (light0rot) {
             this.SceneLight0Rotation = new THREE.Vector3(light0rot.x, light0rot.y, light0rot.z);
         } else {
@@ -147,11 +146,9 @@ class SketchMetadata {
 
         // Light 1 Rotation
         if (userData['TB_SceneLight1Rotation']) {
-            if (scene.userData?.isNewTiltExporter) {
-                this.SceneLight1Rotation = Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']);
-            } else {
-                this.SceneLight1Rotation = unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']), 'Light1 TB_metadata');
-            }
+            this.SceneLight1Rotation = scene.userData?.isNewTiltExporter
+                ? Viewer.parseTBVector3(userData['TB_SceneLight1Rotation'])
+                : unityRotToThreeJSDegrees(Viewer.parseTBVector3(userData['TB_SceneLight1Rotation']), 'Light1 TB_metadata');
         } else if (light1rot) {
             this.SceneLight1Rotation = new THREE.Vector3(light1rot.x, light1rot.y, light1rot.z);
         } else {
@@ -2616,8 +2613,8 @@ export class Viewer {
         const context = canvas.getContext('2d');
 
         const gradient = context.createLinearGradient(0, 0, 0, 256);
-        gradient.addColorStop(0, colorB.clone().convertSRGBToLinear().getStyle());
-        gradient.addColorStop(1, colorA.clone().convertSRGBToLinear().getStyle());
+        gradient.addColorStop(0, colorB.getStyle());
+        gradient.addColorStop(1, colorA.getStyle());
         context.fillStyle = gradient;
         context.fillRect(0, 0, 1, 256);
 
@@ -2849,11 +2846,12 @@ export class Viewer {
 
         // All rotations are now stored in Three.js XYZ Euler degrees
         // (Unity values are converted at parse time in the SketchMetadata constructor).
-        function toEuler(rot: THREE.Vector3 | any) : THREE.Euler {
+        function toEuler(rot: THREE.Vector3 | any, order: THREE.EulerOrder = 'XYZ') : THREE.Euler {
             return new THREE.Euler(
                 THREE.MathUtils.degToRad(rot.x),
                 THREE.MathUtils.degToRad(rot.y),
-                THREE.MathUtils.degToRad(rot.z)
+                THREE.MathUtils.degToRad(rot.z),
+                order
             );
         }
 
@@ -2864,29 +2862,20 @@ export class Viewer {
             return;
         }
 
-        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color.clone().convertSRGBToLinear(), 1.0);
+        let l0 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         l0.name = "SceneLight0";
-        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color.clone().convertSRGBToLinear(), 1.0);
+        let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         l1.name = "SceneLight1";
 
-        let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation);
-        let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation);
+        const lightEulerOrder: THREE.EulerOrder = this.isNewTiltExporter(this.sceneGltf) ? 'YXZ' : 'XYZ';
+        let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation, lightEulerOrder);
+        let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation, lightEulerOrder);
 
-        const isNewTiltExporter = this.isNewTiltExporter(this.sceneGltf);
-        if (this.isV1) {
-            light0Euler.y += Math.PI;
-            light1Euler.y += Math.PI;
-        }
+        const light0Direction = new THREE.Vector3(0, 0, -1).applyEuler(light0Euler);
+        l0.position.copy(light0Direction).multiplyScalar(10);
 
-        const lightSourceAxis = isNewTiltExporter
-            ? new THREE.Vector3(0, 0, 1)
-            : new THREE.Vector3(0, 0, -1);
-
-        const light0Direction = lightSourceAxis.clone().applyEuler(light0Euler);
-        l0.position.copy(light0Direction.multiplyScalar(-10));
-
-        const light1Direction = lightSourceAxis.clone().applyEuler(light1Euler);
-        l1.position.copy(light1Direction.multiplyScalar(-10));
+        const light1Direction = new THREE.Vector3(0, 0, -1).applyEuler(light1Euler);
+        l1.position.copy(light1Direction).multiplyScalar(10);
 
         // DirectionalLight points from its position toward its target, so attach
         // local targets to the sketch root to keep lighting relative to the sketch.
@@ -2899,7 +2888,6 @@ export class Viewer {
         light1Target.name = "SceneLight1Target";
         light1Target.position.set(0, 0, 0);
         l1.target = light1Target;
-
         l0.castShadow = true;
         l1.castShadow = false;
         this.loadedModel?.add(light0Target);
@@ -2908,7 +2896,7 @@ export class Viewer {
         this.loadedModel?.add(l1);
 
         const ambientLight = new THREE.AmbientLight();
-        ambientLight.color = this.sketchMetadata.AmbientLightColor.clone().convertSRGBToLinear();
+        ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.scene.add(ambientLight);
     }
 
@@ -2917,7 +2905,7 @@ export class Viewer {
             return;
         }
         this.scene.fog = new THREE.FogExp2(
-            this.sketchMetadata.FogColor.clone().convertSRGBToLinear(),
+            this.sketchMetadata.FogColor,
             this.sketchMetadata.FogDensity
         );
     }
