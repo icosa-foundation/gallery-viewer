@@ -2851,13 +2851,6 @@ export class Viewer {
         let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation);
         let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation);
 
-        // New Tilt exports keep the sketch root unposed in viewer space, so
-        // metadata-driven light rotations need the same 180-degree yaw offset
-        // that older lighting code applied on this path.
-        if (this.isNewTiltExporter(this.sceneGltf)) {
-            light0Euler.y += Math.PI;
-            light1Euler.y += Math.PI;
-        }
         const light0Direction = new THREE.Vector3(0, 0, -1).applyEuler(light0Euler);
         l0.position.copy(light0Direction.multiplyScalar(10));
 
