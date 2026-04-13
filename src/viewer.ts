@@ -2828,11 +2828,12 @@ export class Viewer {
 
         // All rotations are now stored in Three.js XYZ Euler degrees
         // (Unity values are converted at parse time in the SketchMetadata constructor).
-        function toEuler(rot: THREE.Vector3 | any) : THREE.Euler {
+        function toEuler(rot: THREE.Vector3 | any, order: THREE.EulerOrder = 'XYZ') : THREE.Euler {
             return new THREE.Euler(
                 THREE.MathUtils.degToRad(rot.x),
                 THREE.MathUtils.degToRad(rot.y),
-                THREE.MathUtils.degToRad(rot.z)
+                THREE.MathUtils.degToRad(rot.z),
+                order
             );
         }
 
@@ -2848,14 +2849,15 @@ export class Viewer {
         let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         l1.name = "SceneLight1";
 
-        let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation);
-        let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation);
+        const lightEulerOrder: THREE.EulerOrder = this.isNewTiltExporter(this.sceneGltf) ? 'YXZ' : 'XYZ';
+        let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation, lightEulerOrder);
+        let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation, lightEulerOrder);
 
         const light0Direction = new THREE.Vector3(0, 0, -1).applyEuler(light0Euler);
-        l0.position.copy(light0Direction.multiplyScalar(10));
+        l0.position.copy(light0Direction).multiplyScalar(10);
 
         const light1Direction = new THREE.Vector3(0, 0, -1).applyEuler(light1Euler);
-        l1.position.copy(light1Direction.multiplyScalar(10));
+        l1.position.copy(light1Direction).multiplyScalar(10);
 
         // DirectionalLight points from its position toward its target, so attach
         // local targets to the sketch root to keep lighting relative to the sketch.
