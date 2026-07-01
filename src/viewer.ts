@@ -2664,10 +2664,11 @@ export class Viewer {
         this.flatCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
         let cameraPos = [];
+        const hasCameraTransformOverride = !!(cameraOverrides?.translation || cameraOverrides?.rotation);
 
         // Use GLTF camera transform if available AND we are in fly mode
         // (which currently indicates a recent Open Brush export)
-        if (this.sketchMetadata.FlyMode && gltfCamera) {
+        if (!hasCameraTransformOverride && this.sketchMetadata.FlyMode && gltfCamera) {
             var worldPos = new THREE.Vector3();
             gltfCamera.getWorldPosition(worldPos);
             worldPos.multiplyScalar(0.1);
