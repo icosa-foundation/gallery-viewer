@@ -6289,9 +6289,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         const far = 6000;
         this.flatCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
         let cameraPos = [];
+        const hasCameraTransformOverride = !!(cameraOverrides?.translation || cameraOverrides?.rotation);
         // Use GLTF camera transform if available AND we are in fly mode
         // (which currently indicates a recent Open Brush export)
-        if (this.sketchMetadata.FlyMode && gltfCamera) {
+        if (!hasCameraTransformOverride && this.sketchMetadata.FlyMode && gltfCamera) {
             var worldPos = new $hBQxr$three.Vector3();
             gltfCamera.getWorldPosition(worldPos);
             worldPos.multiplyScalar(0.1);
