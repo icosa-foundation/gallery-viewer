@@ -6190,6 +6190,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             splatModel.rotation.x = Math.PI;
             this.loadedModel = splatModel;
             this.setupSketchMetaData(splatModel);
+            // TODO make fly mode explicit and overridable
+            this.sketchMetadata.FlyMode = true;
             this.modelBoundingBox = splatModel.getBoundingBox(false);
             this.scene.add(this.loadedModel);
             this.initializeScene();

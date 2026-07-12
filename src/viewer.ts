@@ -2545,6 +2545,8 @@ export class Viewer {
 
             this.loadedModel = splatModel;
             this.setupSketchMetaData(splatModel);
+            // TODO make fly mode explicit and overridable
+            this.sketchMetadata.FlyMode = true;
             this.modelBoundingBox = splatModel.getBoundingBox(false);
             this.scene.add(this.loadedModel);
             this.initializeScene();
