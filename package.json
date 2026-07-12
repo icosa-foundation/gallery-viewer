@@ -41,8 +41,8 @@
     "@parcel/transformer-typescript-types": "^2.12.0",
     "@types/three": "^0.168",
     "parcel": "^2.12.0",
-    "typescript": "^5.4.5",
-    "shx": "^0.3.4"
+    "shx": "^0.3.4",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "@depasquale/three-immersive-controls": "^0.0.15",
@@ -52,8 +52,8 @@
     "three-tiltloader": "^0.4.2-alpha.4"
   },
   "peerDependencies": {
-    "three": ">=0.165 <0.166.0",
-    "@sparkjsdev/spark": "^0.1.8"
+    "@sparkjsdev/spark": "^0.1.8",
+    "three": ">=0.165 <0.166.0"
   },
   "peerDependenciesMeta": {
     "@sparkjsdev/spark": {
