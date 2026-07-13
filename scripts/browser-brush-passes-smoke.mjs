@@ -75,7 +75,7 @@ try {
   if (existingErrors.length > 0) throw new Error(`Gallery existing-sketch errors: ${existingErrors.join("; ")}. Console: ${existingMessages.join("; ")}`);
   await existingPage.close();
   console.log(
-    `Gallery browser smoke passed: ${result.matches.length} Tube Toon Inverted fixture mesh(es); existing sketch ${existingResult.toonMatches.length} Toon mesh(es) and ${existingResult.shaderMeshCount}/${existingResult.meshCount} shader meshes.`,
+    `Gallery browser smoke passed: ${result.matches.length} Tube Toon Inverted fixture mesh(es); existing sketch ${existingResult.toonMatches.length} Toon and ${existingResult.electricityMatches.length} Electricity mesh(es), with ${existingResult.shaderMeshCount}/${existingResult.meshCount} shader meshes.`,
   );
 } finally {
   await browser?.close();
