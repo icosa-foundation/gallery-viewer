@@ -4175,7 +4175,9 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.gltfLoader = new (0, $hBQxr$GLTFLoader)(manager);
         this.audioListener = new $hBQxr$three.AudioListener();
         // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
-        this.gltfLoader.register((parser)=>new (0, $hBQxr$GLTFGoogleTiltBrushMaterialExtension)(parser, this.brushPath.toString()));
+        this.gltfLoader.register((parser)=>new (0, $hBQxr$GLTFGoogleTiltBrushMaterialExtension)(parser, this.brushPath.toString(), false, {
+                enableMultipass: true
+            }));
         this.gltfLoader.register((parser)=>new (0, $707bd002539ed0ea$export$1b293339dff011f9)(parser, this.audioListener, $hBQxr$three));
         const dracoLoader = new (0, $hBQxr$DRACOLoader)();
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
@@ -5897,7 +5899,9 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 manager: $hBQxr$three.DefaultLoadingManager
             }
         };
-        const extension = new (0, $hBQxr$GLTFGoogleTiltBrushMaterialExtension)(mockParser, brushPath, true);
+        const extension = new (0, $hBQxr$GLTFGoogleTiltBrushMaterialExtension)(mockParser, brushPath, true, {
+            enableMultipass: true
+        });
         // Collect all meshes first, then process them with async/await
         const meshes = [];
         model.traverse((object)=>{

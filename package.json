@@ -5,10 +5,12 @@
   "scripts": {
     "watch": "parcel watch",
     "build": "parcel build --no-cache",
+    "build:pinned": "parcel build --no-cache && shx cp \"node_modules/three-icosa/dist/three-icosa.module.js\" \"dist/three-icosa.module.js\"",
     "build:local": "parcel build --no-cache && shx cp \"../three-icosa/dist/three-icosa.module.js\" \"dist/three-icosa.module.js\"",
     "download-three-icosa": "curl -o dist/three-icosa.module.js https://cdn.jsdelivr.net/npm/three-icosa@0.4.2-alpha.18/dist/three-icosa.module.js",
     "setup-cdn": "node scripts/setup-cdn-importmap.js",
-    "test": "node npm-test.js"
+    "test": "node npm-test.js",
+    "test:browser:multipass": "node scripts/browser-multipass-smoke.mjs"
   },
   "repository": {
     "type": "git",
@@ -41,6 +43,7 @@
     "@parcel/transformer-typescript-types": "^2.12.0",
     "@types/three": "^0.168",
     "parcel": "^2.12.0",
+    "playwright": "^1.61.1",
     "shx": "^0.3.4",
     "typescript": "^5.4.5"
   },
@@ -48,7 +51,7 @@
     "@depasquale/three-immersive-controls": "^0.0.15",
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
-    "three-icosa": "^0.4.2-alpha.18",
+    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/192a1782259b80dc4402d431e7e4dac339448dc3.tar.gz",
     "three-tiltloader": "^0.4.2-alpha.4"
   },
   "peerDependencies": {

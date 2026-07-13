@@ -366,7 +366,12 @@ export class Viewer {
         this.gltfLoader = new GLTFLoader(manager);
         this.audioListener = new THREE.AudioListener();
         // this.gltfLoader.register(parser => new GLTFGoogleTiltBrushTechniquesExtension(parser, this.brushPath.toString()));
-        this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(parser, this.brushPath.toString()));
+        this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(
+            parser,
+            this.brushPath.toString(),
+            false,
+            { enableMultipass: true }
+        ));
         this.gltfLoader.register(parser => new GLTFAudioEmitterExtension(parser, this.audioListener, THREE));
 
         const dracoLoader = new DRACOLoader();
@@ -2208,7 +2213,12 @@ export class Viewer {
                 manager: THREE.DefaultLoadingManager
             }
         };
-        const extension = new GLTFGoogleTiltBrushMaterialExtension(mockParser, brushPath, true);
+        const extension = new GLTFGoogleTiltBrushMaterialExtension(
+            mockParser,
+            brushPath,
+            true,
+            { enableMultipass: true }
+        );
 
         // Collect all meshes first, then process them with async/await
         const meshes: THREE.Mesh[] = [];
