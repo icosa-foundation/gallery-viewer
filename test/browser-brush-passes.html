@@ -27,6 +27,7 @@
       {},
     );
     const matches = [];
+    const toonMatches = [];
     const meshes = [];
     viewer.loadedModel.traverse((object) => {
       if (!object.isMesh) return;
@@ -38,6 +39,12 @@
       });
       if (!Array.isArray(object.material)) return;
       const passes = object.material;
+      if (passes.some((material) => material.name === "material_Toon")) {
+        toonMatches.push({
+          passes: passes.map((material) => material.uniforms.u_ToonOutlinePass?.value),
+          groups: object.geometry.groups.map(({ start, count, materialIndex }) => ({ start, count, materialIndex })),
+        });
+      }
       if (passes.some((material) => material.name === "material_TubeToonInverted")) {
         matches.push({
           passes: passes.map((material) => material.uniforms.u_TubeToonPass?.value),
@@ -50,8 +57,14 @@
       const shaderMeshCount = meshes.filter((mesh) =>
         mesh.materialNames.some((name) => name?.startsWith("material_"))
       ).length;
-      const passed = meshes.length >= 40 && shaderMeshCount >= 40;
-      window.existingSketchResult = { passed, meshCount: meshes.length, shaderMeshCount };
+      const toonPassed = toonMatches.length > 0 && toonMatches.every((match) =>
+        match.passes.length === 2 &&
+        match.passes[0] === false && match.passes[1] === true &&
+        match.groups.length === 2 &&
+        match.groups.every((group, index) => group.materialIndex === index && group.count > 0)
+      );
+      const passed = meshes.length >= 40 && shaderMeshCount >= 40 && toonPassed;
+      window.existingSketchResult = { passed, meshCount: meshes.length, shaderMeshCount, toonMatches };
       document.documentElement.dataset.existingSketch = passed ? "pass" : "fail";
     } else {
       const passed = matches.length > 0 && matches.every((match) =>
@@ -61,8 +74,8 @@
         match.groups.length === 2 &&
         match.groups.every((group, index) => group.materialIndex === index && group.count > 0)
       );
-      window.multipassResult = { passed, matches, meshes };
-      document.documentElement.dataset.multipass = passed ? "pass" : "fail";
+      window.brushPassResult = { passed, matches, meshes };
+      document.documentElement.dataset.brushPasses = passed ? "pass" : "fail";
     }
   </script>
 </body>

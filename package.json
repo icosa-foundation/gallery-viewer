@@ -10,7 +10,7 @@
     "download-three-icosa": "curl -o dist/three-icosa.module.js https://cdn.jsdelivr.net/npm/three-icosa@0.4.2-alpha.18/dist/three-icosa.module.js",
     "setup-cdn": "node scripts/setup-cdn-importmap.js",
     "test": "node npm-test.js",
-    "test:browser:multipass": "node scripts/browser-multipass-smoke.mjs"
+    "test:browser:brush-passes": "node scripts/browser-brush-passes-smoke.mjs"
   },
   "repository": {
     "type": "git",
@@ -51,7 +51,7 @@
     "@depasquale/three-immersive-controls": "^0.0.15",
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
-    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/192a1782259b80dc4402d431e7e4dac339448dc3.tar.gz",
+    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/43cc2e7444ba9c4c07f38a44474ff3725ed167fb.tar.gz",
     "three-tiltloader": "^0.4.2-alpha.4"
   },
   "peerDependencies": {

@@ -46,17 +46,17 @@ try {
     if (response.status() >= 400) messages.push(`http ${response.status()}: ${response.url()}`);
   });
   page.on("requestfailed", (request) => messages.push(`request failed: ${request.url()} ${request.failure()?.errorText ?? ""}`));
-  await page.goto(`http://127.0.0.1:${address.port}/test/browser-multipass.html`, {
+  await page.goto(`http://127.0.0.1:${address.port}/test/browser-brush-passes.html`, {
     waitUntil: "domcontentloaded",
     timeout: 120_000,
   });
   try {
-    await page.waitForFunction(() => document.documentElement.dataset.multipass, undefined, { timeout: 30_000 });
+    await page.waitForFunction(() => document.documentElement.dataset.brushPasses, undefined, { timeout: 30_000 });
   } catch (error) {
-    throw new Error(`Gallery multipass page did not initialize. Errors: ${errors.join("; ")}. Console: ${messages.join("; ")}`, { cause: error });
+    throw new Error(`Gallery brush-pass page did not initialize. Errors: ${errors.join("; ")}. Console: ${messages.join("; ")}`, { cause: error });
   }
-  const result = await page.evaluate(() => window.multipassResult);
-  if (!result?.passed) throw new Error(`Gallery multipass binding failed: ${JSON.stringify(result)}`);
+  const result = await page.evaluate(() => window.brushPassResult);
+  if (!result?.passed) throw new Error(`Gallery brush-pass binding failed: ${JSON.stringify(result)}`);
   if (errors.length > 0) throw new Error(`Gallery page errors: ${errors.join("; ")}`);
   await page.close();
 
@@ -65,7 +65,7 @@ try {
   const existingMessages = [];
   existingPage.on("pageerror", (error) => existingErrors.push(error.message));
   existingPage.on("console", (message) => existingMessages.push(`${message.type()}: ${message.text()}`));
-  await existingPage.goto(`http://127.0.0.1:${address.port}/test/browser-multipass.html?existing-sketch=1`, {
+  await existingPage.goto(`http://127.0.0.1:${address.port}/test/browser-brush-passes.html?existing-sketch=1`, {
     waitUntil: "domcontentloaded",
     timeout: 120_000,
   });
@@ -75,7 +75,7 @@ try {
   if (existingErrors.length > 0) throw new Error(`Gallery existing-sketch errors: ${existingErrors.join("; ")}. Console: ${existingMessages.join("; ")}`);
   await existingPage.close();
   console.log(
-    `Gallery browser smoke passed: ${result.matches.length} Tube Toon Inverted mesh(es); existing sketch ${existingResult.shaderMeshCount}/${existingResult.meshCount} shader meshes.`,
+    `Gallery browser smoke passed: ${result.matches.length} Tube Toon Inverted fixture mesh(es); existing sketch ${existingResult.toonMatches.length} Toon mesh(es) and ${existingResult.shaderMeshCount}/${existingResult.meshCount} shader meshes.`,
   );
 } finally {
   await browser?.close();

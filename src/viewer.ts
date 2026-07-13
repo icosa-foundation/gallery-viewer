@@ -369,8 +369,7 @@ export class Viewer {
         this.gltfLoader.register(parser => new GLTFGoogleTiltBrushMaterialExtension(
             parser,
             this.brushPath.toString(),
-            false,
-            { enableMultipass: true }
+            false
         ));
         this.gltfLoader.register(parser => new GLTFAudioEmitterExtension(parser, this.audioListener, THREE));
 
@@ -2216,8 +2215,7 @@ export class Viewer {
         const extension = new GLTFGoogleTiltBrushMaterialExtension(
             mockParser,
             brushPath,
-            true,
-            { enableMultipass: true }
+            true
         );
 
         // Collect all meshes first, then process them with async/await
