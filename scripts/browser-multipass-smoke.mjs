@@ -58,7 +58,25 @@ try {
   const result = await page.evaluate(() => window.multipassResult);
   if (!result?.passed) throw new Error(`Gallery multipass binding failed: ${JSON.stringify(result)}`);
   if (errors.length > 0) throw new Error(`Gallery page errors: ${errors.join("; ")}`);
-  console.log(`Gallery multipass smoke passed for ${result.matches.length} Tube Toon Inverted mesh(es).`);
+  await page.close();
+
+  const existingPage = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const existingErrors = [];
+  const existingMessages = [];
+  existingPage.on("pageerror", (error) => existingErrors.push(error.message));
+  existingPage.on("console", (message) => existingMessages.push(`${message.type()}: ${message.text()}`));
+  await existingPage.goto(`http://127.0.0.1:${address.port}/test/browser-multipass.html?existing-sketch=1`, {
+    waitUntil: "domcontentloaded",
+    timeout: 120_000,
+  });
+  await existingPage.waitForFunction(() => document.documentElement.dataset.existingSketch, undefined, { timeout: 120_000 });
+  const existingResult = await existingPage.evaluate(() => window.existingSketchResult);
+  if (!existingResult?.passed) throw new Error(`Gallery existing-sketch gate failed: ${JSON.stringify(existingResult)}`);
+  if (existingErrors.length > 0) throw new Error(`Gallery existing-sketch errors: ${existingErrors.join("; ")}. Console: ${existingMessages.join("; ")}`);
+  await existingPage.close();
+  console.log(
+    `Gallery browser smoke passed: ${result.matches.length} Tube Toon Inverted mesh(es); existing sketch ${existingResult.shaderMeshCount}/${existingResult.meshCount} shader meshes.`,
+  );
 } finally {
   await browser?.close();
   await new Promise((resolveClosed) => server.close(resolveClosed));

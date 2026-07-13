@@ -20,7 +20,12 @@
     import { Viewer } from "/dist/icosa-viewer.module.js";
     const assets = "https://cdn.jsdelivr.net/gh/icosa-foundation/icosa-sketch-assets@ba885b119d435fa591d2fe1c90feb14e39c432d5/";
     const viewer = new Viewer(assets);
-    await viewer.loadGltf("/test/fixtures/tube-toon-inverted.gltf", false, {});
+    const existingSketch = new URLSearchParams(location.search).has("existing-sketch");
+    await viewer.loadGltf(
+      existingSketch ? "/dist/formats/gltf2/all_brushes.glb" : "/test/fixtures/tube-toon-inverted.gltf",
+      false,
+      {},
+    );
     const matches = [];
     const meshes = [];
     viewer.loadedModel.traverse((object) => {
@@ -41,15 +46,24 @@
         });
       }
     });
-    const passed = matches.length > 0 && matches.every((match) =>
-      match.passes.length === 2 &&
-      match.passes[0] === 1 && match.passes[1] === 2 &&
-      match.outlineSizes[0] === 0.05 && match.outlineSizes[1] === 0.05 &&
-      match.groups.length === 2 &&
-      match.groups.every((group, index) => group.materialIndex === index && group.count > 0)
-    );
-    window.multipassResult = { passed, matches, meshes };
-    document.documentElement.dataset.multipass = passed ? "pass" : "fail";
+    if (existingSketch) {
+      const shaderMeshCount = meshes.filter((mesh) =>
+        mesh.materialNames.some((name) => name?.startsWith("material_"))
+      ).length;
+      const passed = meshes.length >= 40 && shaderMeshCount >= 40;
+      window.existingSketchResult = { passed, meshCount: meshes.length, shaderMeshCount };
+      document.documentElement.dataset.existingSketch = passed ? "pass" : "fail";
+    } else {
+      const passed = matches.length > 0 && matches.every((match) =>
+        match.passes.length === 2 &&
+        match.passes[0] === 1 && match.passes[1] === 2 &&
+        match.outlineSizes[0] === 0.05 && match.outlineSizes[1] === 0.05 &&
+        match.groups.length === 2 &&
+        match.groups.every((group, index) => group.materialIndex === index && group.count > 0)
+      );
+      window.multipassResult = { passed, matches, meshes };
+      document.documentElement.dataset.multipass = passed ? "pass" : "fail";
+    }
   </script>
 </body>
 </html>
