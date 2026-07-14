@@ -50,7 +50,8 @@ const server = createServer(async (request, response) => {
   }
 });
 
-await new Promise((resolveListening) => server.listen(0, "127.0.0.1", resolveListening));
+const requestedPort = Number(process.env.GALLERY_IMM_PORT ?? 0);
+await new Promise((resolveListening) => server.listen(requestedPort, "127.0.0.1", resolveListening));
 const address = server.address();
 if (!address || typeof address === "string") throw new Error("IMM smoke server did not expose a port");
 let browser;
@@ -108,6 +109,11 @@ try {
   }
   if (errors.length > 0) throw new Error(`Gallery IMM page errors: ${errors.join("; ")}. Console: ${messages.join("; ")}`);
   console.log(`Gallery IMM smoke passed: ${before.paintMeshes} paint meshes, ${before.chapters} chapters, ${before.viewpoints.length} viewpoints, playback ${before.timeSeconds.toFixed(2)}s -> ${after.timeSeconds.toFixed(2)}s.`);
+  if (process.env.GALLERY_IMM_KEEP_OPEN === "1") {
+    console.log(`Gallery IMM demo remains open at http://127.0.0.1:${address.port}/test/browser-imm.html`);
+    await new Promise((resolveClosed) => browser.once("disconnected", resolveClosed));
+    browser = undefined;
+  }
 } finally {
   await browser?.close();
   await new Promise((resolveClosed) => server.close(resolveClosed));
