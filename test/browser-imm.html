@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Gallery Viewer IMM integration</title>
+  <style>
+    html, body, #icosa-viewer { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
+    #imm-controls { position: fixed; z-index: 50; top: 12px; left: 12px; display: flex; gap: 8px;
+      align-items: center; padding: 8px; color: white; background: #111c; font: 14px system-ui, sans-serif; }
+    #imm-status { min-width: 240px; }
+  </style>
+  <script type="importmap">
+    {"imports":{
+      "three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+      "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+      "three/examples/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/",
+      "three-icosa":"/dist/three-icosa.module.js",
+      "three-tiltloader":"https://cdn.jsdelivr.net/npm/three-tiltloader@0.4.2-alpha.4/dist/three-tiltloader.module.js",
+      "@sparkjsdev/spark":"https://sparkjs.dev/releases/spark/2.1.0/spark.module.js",
+      "@immersive-foundation/three-imm-loader":"/imm-library/imm-three-loader.js"
+    }}
+  </script>
+</head>
+<body>
+  <div id="icosa-viewer"></div>
+  <div id="imm-controls">
+    <span id="imm-status">Loading sample1.imm…</span>
+    <button id="imm-play" type="button">Pause</button>
+    <button id="imm-continue" type="button">Continue</button>
+    <label>Chapter <select id="imm-chapter"></select></label>
+    <label>Viewpoint <select id="imm-viewpoint"></select></label>
+  </div>
+  <script type="module">
+    import { Viewer } from "/dist/icosa-viewer.module.js";
+
+    const frame = document.querySelector("#icosa-viewer");
+    const status = document.querySelector("#imm-status");
+    const chapter = document.querySelector("#imm-chapter");
+    const viewpoint = document.querySelector("#imm-viewpoint");
+    const cameraEvents = [];
+    frame.addEventListener("icosa-viewer-imm-camera", (event) => cameraEvents.push(event.detail));
+    frame.addEventListener("icosa-viewer-imm-ready", (event) => {
+      chapter.replaceChildren(...Array.from({ length: event.detail.chapters }, (_, index) =>
+        new Option(String(index + 1), String(index))));
+      viewpoint.replaceChildren(...event.detail.viewpoints.map((item) =>
+        new Option(item.name || `Viewpoint ${item.id}`, String(item.id))));
+    });
+
+    const viewer = new Viewer("https://icosa-foundation.github.io/icosa-sketch-assets/", frame);
+    window.__galleryImm = { viewer, ready: false, cameraEvents };
+    await viewer.loadImm("/sample1.imm", {
+      decoderWorkerURL: "/imm-decoder/imm-web-decoder-worker.mjs",
+      audio: true,
+    });
+    window.__galleryImm.ready = true;
+    status.textContent = "Gallery Viewer: sample1.imm";
+
+    let playing = true;
+    document.querySelector("#imm-play").addEventListener("click", (event) => {
+      playing = !playing;
+      if (playing) viewer.playImm(); else viewer.pauseImm();
+      event.currentTarget.textContent = playing ? "Pause" : "Play";
+    });
+    document.querySelector("#imm-continue").addEventListener("click", () => viewer.continueImm());
+    chapter.addEventListener("change", () => viewer.selectImmChapter(Number(chapter.value)));
+    viewpoint.addEventListener("change", () => viewer.selectImmViewpoint(Number(viewpoint.value)));
+
+    window.__galleryImmDiagnostics = () => {
+      const asset = viewer.immAsset;
+      let paintMeshes = 0;
+      asset?.scene.traverse((object) => { if (object.userData.immLayerType === "paint") paintMeshes++; });
+      return {
+        ready: window.__galleryImm.ready,
+        timeSeconds: asset?.timeSeconds ?? 0,
+        playing: asset?.playing ?? false,
+        waiting: asset?.waiting ?? false,
+        chapters: asset?.chapters.length ?? 0,
+        viewpoints: asset?.viewpoints.map(({ id, name }) => ({ id, name })) ?? [],
+        paintMeshes,
+        sharedGalleryScene: asset?.scene.parent === viewer.contentRoot,
+        cameraPosition: viewer.flatCamera.position.toArray(),
+        cameraQuaternion: viewer.flatCamera.quaternion.toArray(),
+        cameraEvents: [...cameraEvents],
+        drawCalls: viewer.renderer.info.render.calls,
+        triangles: viewer.renderer.info.render.triangles,
+      };
+    };
+  </script>
+</body>
+</html>

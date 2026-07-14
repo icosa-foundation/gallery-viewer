@@ -10,7 +10,8 @@
     "download-three-icosa": "curl -o dist/three-icosa.module.js https://cdn.jsdelivr.net/npm/three-icosa@0.4.2-alpha.18/dist/three-icosa.module.js",
     "setup-cdn": "node scripts/setup-cdn-importmap.js",
     "test": "node npm-test.js",
-    "test:browser:brush-passes": "node scripts/browser-brush-passes-smoke.mjs"
+    "test:browser:brush-passes": "node scripts/browser-brush-passes-smoke.mjs",
+    "test:browser:imm": "node scripts/browser-imm-smoke.mjs"
   },
   "repository": {
     "type": "git",
