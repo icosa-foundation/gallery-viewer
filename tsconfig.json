@@ -5,6 +5,7 @@
     "emitDeclarationOnly": true,
     "outDir": "./dist",
     "target": "es6",
+    "module": "esnext",
     "strict": false,
     "removeComments": true,
     "noImplicitAny": false,

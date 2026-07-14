@@ -41,7 +41,8 @@
   "devDependencies": {
     "@parcel/packager-ts": "^2.12.0",
     "@parcel/transformer-typescript-types": "^2.12.0",
-    "@types/three": "^0.168",
+    "@sparkjsdev/spark": "^2.1.0",
+    "@types/three": "^0.180.0",
     "parcel": "^2.12.0",
     "playwright": "^1.61.1",
     "shx": "^0.3.4",
@@ -55,8 +56,8 @@
     "three-tiltloader": "^0.4.2-alpha.4"
   },
   "peerDependencies": {
-    "@sparkjsdev/spark": "^0.1.8",
-    "three": ">=0.165 <0.166.0"
+    "@sparkjsdev/spark": "^2.1.0",
+    "three": ">=0.180 <0.181.0"
   },
   "peerDependenciesMeta": {
     "@sparkjsdev/spark": {
