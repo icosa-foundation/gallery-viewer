@@ -34,12 +34,13 @@ import {CanvasTexture, Object3D, Object3DEventMap} from "three";
 // import { RenderPass } from 'three/addons';
 import { setupNavigation } from './helpers/Navigation';
 import { LegacyGLTFLoader } from './legacy/LegacyGLTFLoader.js';
-import {texture} from "three/examples/jsm/nodes/accessors/TextureNode";
 import { GLTFAudioEmitterExtension } from './extensions/GLTFAudioEmitterExtension';
 // import { GlitchPass } from 'three/addons';
 // import { OutputPass } from 'three/addons';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+
+type SparkModule = typeof import('@sparkjsdev/spark');
 
 class SketchMetadata {
     public EnvironmentGuid: string;
@@ -249,8 +250,15 @@ export class Viewer {
     private texturePath: URL;
     private environmentPath: URL;
     private scene : THREE.Scene;
+    private persistentRoot: THREE.Group;
+    private contentRoot: THREE.Group;
     private canvas : HTMLCanvasElement;
     private renderer : THREE.WebGLRenderer;
+    private loadingManager: THREE.LoadingManager;
+    private sparkRenderer?: import('@sparkjsdev/spark').SparkRenderer;
+    private contentDisposer?: () => void | Promise<void>;
+    private contentUpdater?: (delta: number, camera: THREE.Camera) => void;
+    private unlockAudio: () => void;
 
     private activeCamera: THREE.PerspectiveCamera;
     private flatCamera: THREE.PerspectiveCamera;
@@ -322,11 +330,17 @@ export class Viewer {
         const clock = new THREE.Clock();
 
         this.scene = new THREE.Scene();
+        this.persistentRoot = new THREE.Group();
+        this.persistentRoot.name = 'Viewer services';
+        this.contentRoot = new THREE.Group();
+        this.contentRoot.name = 'Viewer content';
+        this.scene.add(this.persistentRoot, this.contentRoot);
         this.three = THREE;
 
         const viewer = this;
 
         const manager = new THREE.LoadingManager();
+        this.loadingManager = manager;
         manager.onStart = function() {
             document.getElementById('loadscreen')?.classList.remove('fade-out');
             document.getElementById('loadscreen')?.classList.remove('loaded');
@@ -382,14 +396,14 @@ export class Viewer {
         this.icosa_frame.appendChild(this.canvas);
         this.canvas.onmousedown = () => { this.canvas.classList.add('grabbed'); }
         this.canvas.onmouseup = () => { this.canvas.classList.remove('grabbed'); }
-        const unlockAudio = () => {
+        this.unlockAudio = () => {
             if (this.audioListener.context.state !== 'running') {
                 this.audioListener.context.resume().catch(() => {});
             }
-            this.tryStartAutoplayAudio(this.scene);
+            this.tryStartAutoplayAudio(this.contentRoot);
         };
-        window.addEventListener('pointerdown', unlockAudio, { passive: true });
-        window.addEventListener('touchstart', unlockAudio, { passive: true });
+        window.addEventListener('pointerdown', this.unlockAudio, { passive: true });
+        window.addEventListener('touchstart', this.unlockAudio, { passive: true });
 
         this.renderer = new THREE.WebGLRenderer({
             canvas : this.canvas,
@@ -431,21 +445,21 @@ export class Viewer {
         let previousLeftThumbstickX = 0;
 
         controller0 = this.renderer.xr.getController(0);
-        this.scene.add(controller0);
+        this.persistentRoot.add(controller0);
 
 
         controller1 = this.renderer.xr.getController(1);
-        this.scene.add(controller1);
+        this.persistentRoot.add(controller1);
 
         const controllerModelFactory = new XRControllerModelFactory();
 
         controllerGrip0 = this.renderer.xr.getControllerGrip(0);
         controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
-        this.scene.add(controllerGrip0);
+        this.persistentRoot.add(controllerGrip0);
 
         controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-        this.scene.add(controllerGrip1);
+        this.persistentRoot.add(controllerGrip1);
 
         let xrButton = XRButton.createButton( this.renderer, {}, true );
         this.icosa_frame.appendChild(xrButton);
@@ -573,7 +587,11 @@ export class Viewer {
             if (viewer?.activeCamera) {
                 this.attachAudioListener(viewer.activeCamera);
             }
-            this.tryStartAutoplayAudio(viewer.scene);
+            this.tryStartAutoplayAudio(viewer.contentRoot);
+
+            if (viewer?.activeCamera && viewer.contentUpdater) {
+                viewer.contentUpdater(delta, viewer.activeCamera);
+            }
 
             // SparkRenderer stochastic setup is now handled by GUI toggle
 
@@ -715,7 +733,7 @@ export class Viewer {
         }
     }
 
-    private initializeScene() {
+    private initializeScene(disposeContent?: () => void | Promise<void>) {
 
         let defaultBackgroundColor : string = this.overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
@@ -724,8 +742,23 @@ export class Viewer {
         if(!this.loadedModel)
             return;
 
-        this.stopAllAudio(this.scene);
-        this.scene.clear();
+        this.stopAllAudio(this.contentRoot);
+        const previousDisposer = this.contentDisposer;
+        this.contentDisposer = undefined;
+        if (previousDisposer) {
+            void Promise.resolve(previousDisposer()).catch((error) => {
+                console.warn('Failed to dispose previous viewer content:', error);
+            });
+        }
+        this.contentUpdater = undefined;
+        this.contentRoot.clear();
+        this.contentRoot.position.set(0, 0, 0);
+        this.contentRoot.quaternion.identity();
+        this.contentRoot.scale.set(1, 1, 1);
+        this.scene.background = null;
+        this.scene.fog = null;
+        this.environmentObject = undefined;
+        this.skyObject = undefined;
         this.initSceneBackground();
         this.initFog();
         this.initLights();
@@ -736,16 +769,17 @@ export class Viewer {
         let radius = this.overrides?.geometryData?.stats?.radius;
         if (radius > LIMIT) {
             let excess = radius - LIMIT;
-            let sceneNode = this.scene.add(this.loadedModel);
+            let sceneNode = this.contentRoot.add(this.loadedModel);
             sceneNode.scale.divideScalar(excess);
             // Reframe the scaled scene
             this.frameNode(sceneNode);
         } else {
             if (this.isNewTiltExporter(this.sceneGltf)) {
-                this.scene.scale.set(0.1, 0.1, 0.1);
+                this.contentRoot.scale.set(0.1, 0.1, 0.1);
             }
-            this.scene.add(this.loadedModel);
+            this.contentRoot.add(this.loadedModel);
         }
+        this.contentDisposer = disposeContent;
     }
 
     private attachAudioListener(camera: THREE.Camera) {
@@ -2506,20 +2540,29 @@ export class Viewer {
         }
     }
 
-    private async loadSparkModule() {
+    private async loadSparkModule(): Promise<SparkModule> {
         try {
             // Construct module name at runtime to avoid bundler processing
             const moduleName = '@sparkjsdev' + '/' + 'spark';
             const sparkModule = await import(/* webpackIgnore: true */ moduleName);
 
-            if (!sparkModule.SplatMesh) {
-                throw new Error("SplatMesh not found in Spark module exports");
+            if (!sparkModule.SplatMesh || !sparkModule.SparkRenderer) {
+                throw new Error("SplatMesh or SparkRenderer not found in Spark module exports");
             }
 
-            return sparkModule;
+            return sparkModule as SparkModule;
         } catch (error) {
-            throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error.message}`);
+            throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error instanceof Error ? error.message : String(error)}`);
         }
+    }
+
+    private ensureSparkRenderer(sparkModule: SparkModule) {
+        if (!this.sparkRenderer) {
+            this.sparkRenderer = new sparkModule.SparkRenderer({ renderer: this.renderer });
+            this.sparkRenderer.name = 'Spark renderer';
+            this.persistentRoot.add(this.sparkRenderer);
+        }
+        return this.sparkRenderer;
     }
 
     public async loadSplat(url: string, overrides : any) {
@@ -2535,34 +2578,45 @@ export class Viewer {
                 };
             }
             // Dynamic import for optional Spark dependency
-            let SparkModule;
+            let SparkModule: SparkModule;
             try {
                 SparkModule = await this.loadSparkModule();
             } catch (importError) {
-                console.error(importError.message);
+                console.error(importError instanceof Error ? importError.message : String(importError));
                 this.showErrorIcon();
                 this.loadingError = true;
                 return;
             }
 
-            const splatModel = new SparkModule.SplatMesh({ url });
-            await splatModel.initialized;
+            this.ensureSparkRenderer(SparkModule);
+            const loadItem = `spark:${url}`;
+            this.loadingManager.itemStart(loadItem);
+            let splatModel: import('@sparkjsdev/spark').SplatMesh | undefined;
+            try {
+                splatModel = new SparkModule.SplatMesh({
+                    url,
+                    onProgress: (event) => {
+                        this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-load-progress', {
+                            detail: event
+                        }));
+                    }
+                });
+                await splatModel.initialized;
 
-            // Apply coordinate system correction - splat files are upside-down compared to other formats
-            splatModel.rotation.x = Math.PI;
+                // Apply coordinate system correction - splat files are upside-down compared to other formats
+                splatModel.rotation.x = Math.PI;
 
-            this.loadedModel = splatModel;
-            this.setupSketchMetaData(splatModel);
-            // TODO make fly mode explicit and overridable
-            this.sketchMetadata.FlyMode = true;
-            this.modelBoundingBox = splatModel.getBoundingBox(false);
-            this.scene.add(this.loadedModel);
-            this.initializeScene();
-
-            // Manually trigger loading screen fade-out since SplatMesh doesn't use LoadingManager
-            let loadscreen = document.getElementById('loadscreen');
-            if (loadscreen && !loadscreen.classList.contains('loaderror')) {
-                loadscreen.classList.add('fade-out');
+                this.loadedModel = splatModel;
+                this.setupSketchMetaData(splatModel);
+                // TODO make fly mode explicit and overridable
+                this.sketchMetadata.FlyMode = true;
+                this.modelBoundingBox = splatModel.getBoundingBox(false);
+                this.initializeScene(() => splatModel?.dispose());
+            } catch (error) {
+                this.loadingManager.itemError(loadItem);
+                throw error;
+            } finally {
+                this.loadingManager.itemEnd(loadItem);
             }
         } catch (error) {
             this.showErrorIcon();
@@ -2650,6 +2704,10 @@ export class Viewer {
 
     private initCameras() {
 
+        this.cameraControls?.dispose();
+        this.trackballControls?.dispose();
+        this.cameraRig?.removeFromParent();
+
         let cameraOverrides = this.overrides?.camera;
 
         // Check if there's a GLTF camera in the scene
@@ -2722,7 +2780,8 @@ export class Viewer {
 
         this.xrCamera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         this.cameraRig = new THREE.Group();
-        this.scene.add(this.cameraRig);
+        this.cameraRig.name = 'XR camera rig';
+        this.persistentRoot.add(this.cameraRig);
         this.cameraRig.add(this.xrCamera);
 
         this.activeCamera = this.flatCamera;
@@ -2735,7 +2794,7 @@ export class Viewer {
             this.flatCamera.getWorldDirection(forward);
             cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(0.05));
             CameraControls.install({THREE: THREE});
-            this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
+            this.cameraControls = new CameraControls(this.flatCamera, this.canvas);
             this.cameraControls.smoothTime = 0.1;
             this.cameraControls.draggingSmoothTime = 0.1;
             this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
@@ -2771,7 +2830,7 @@ export class Viewer {
                 }
             }
             CameraControls.install({THREE: THREE});
-            this.cameraControls = new CameraControls(this.flatCamera, viewer.canvas);
+            this.cameraControls = new CameraControls(this.flatCamera, this.canvas);
             this.cameraControls.smoothTime = 0.1;
             this.cameraControls.draggingSmoothTime = 0.1;
             this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
@@ -2781,12 +2840,10 @@ export class Viewer {
         }
         
         // Position and orient the cameraRig to match flatCamera AFTER camera controls are set up
-        // The flatCamera is independent of scene scale, but cameraRig is a child of the scene.
-        // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate.
-        // We scale BOTH the position and the rig scale to counteract the scene scale.
-        const sceneScaleFactor = this.isNewTiltExporter(this.sceneGltf) ? 10 : 1;
-        this.cameraRig.position.copy(this.flatCamera.position).multiplyScalar(sceneScaleFactor);
-        this.cameraRig.scale.set(sceneScaleFactor, sceneScaleFactor, sceneScaleFactor);
+        // Persistent XR services are outside contentRoot, so content scaling must not
+        // be applied to the camera rig.
+        this.cameraRig.position.copy(this.flatCamera.position);
+        this.cameraRig.scale.set(1, 1, 1);
         
         // Calculate world position after setup
         this.cameraRig.updateMatrixWorld(true);
@@ -2890,7 +2947,7 @@ export class Viewer {
 
         const ambientLight = new THREE.AmbientLight();
         ambientLight.color = this.sketchMetadata.AmbientLightColor;
-        this.scene.add(ambientLight);
+        this.contentRoot.add(ambientLight);
     }
 
     private initFog() {
@@ -2925,7 +2982,7 @@ export class Viewer {
         }
 
         if (sky !== null) {
-            this.scene?.add(sky as Object3D<THREE.Object3DEventMap>);
+            this.contentRoot.add(sky as Object3D<THREE.Object3DEventMap>);
             this.skyObject = sky;
         } else {
             // Use the default background color if there's no sky
@@ -3143,5 +3200,29 @@ export class Viewer {
 
         // Recreate the tree view to reflect the current state
         this.createTreeView(this.scene, this.treeViewRoot);
+    }
+
+    /** Release viewer-owned rendering services and the active content. */
+    public async dispose(): Promise<void> {
+        this.renderer.setAnimationLoop(null);
+        window.removeEventListener('pointerdown', this.unlockAudio);
+        window.removeEventListener('touchstart', this.unlockAudio);
+
+        this.stopAllAudio(this.contentRoot);
+        const disposeContent = this.contentDisposer;
+        this.contentDisposer = undefined;
+        this.contentUpdater = undefined;
+        if (disposeContent) {
+            await disposeContent();
+        }
+
+        this.cameraControls?.dispose();
+        this.trackballControls?.dispose();
+        this.sparkRenderer?.removeFromParent();
+        this.sparkRenderer?.dispose();
+        this.sparkRenderer = undefined;
+        this.audioListener.removeFromParent();
+        this.scene.clear();
+        this.renderer.dispose();
     }
 }
