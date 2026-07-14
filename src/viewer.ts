@@ -42,6 +42,50 @@ import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerM
 
 type SparkModule = typeof import('@sparkjsdev/spark');
 
+interface IMMViewpointPoseLike {
+    layerId: number;
+    name: string;
+    tracking: 'eye' | 'floor' | null;
+    transform: {
+        rotation: [number, number, number, number];
+        translation: [number, number, number];
+        scale: number;
+        flip: number;
+    };
+}
+
+interface IMMAssetLike {
+    scene: THREE.Group;
+    document: {
+        backgroundColor: [number, number, number];
+        chapters: readonly unknown[];
+    };
+    viewpoints: readonly Array<{ id: number; name: string }>;
+    initialAuthoredCamera(): IMMViewpointPoseLike | undefined;
+    update(animationTimeMs: number, camera: THREE.Camera): { authoredCamera?: IMMViewpointPoseLike };
+    selectChapter(index: number): IMMViewpointPoseLike | undefined;
+    selectViewpoint(layerId: number): IMMViewpointPoseLike;
+    play(): void;
+    pause(): void;
+    continue(): void;
+    dispose(): Promise<void>;
+}
+
+interface IMMModule {
+    IMMLoader: new (manager?: THREE.LoadingManager) => {
+        setRenderer(renderer: THREE.WebGLRenderer): unknown;
+        setDecoderWorkerURL(url: string | URL): unknown;
+        setAudio(enabled: boolean): unknown;
+        loadAsync(url: string, onProgress?: (event: ProgressEvent) => void): Promise<IMMAssetLike>;
+    };
+    desktopIMMViewpoint(pose: IMMViewpointPoseLike): IMMViewpointPoseLike;
+}
+
+export interface GalleryIMMLoadOptions {
+    decoderWorkerURL: string | URL;
+    audio?: boolean;
+}
+
 class SketchMetadata {
     public EnvironmentGuid: string;
     public Environment: string;
@@ -257,7 +301,9 @@ export class Viewer {
     private loadingManager: THREE.LoadingManager;
     private sparkRenderer?: import('@sparkjsdev/spark').SparkRenderer;
     private contentDisposer?: () => void | Promise<void>;
-    private contentUpdater?: (delta: number, camera: THREE.Camera) => void;
+    private contentUpdater?: (animationTimeMs: number, camera: THREE.Camera) => void;
+    private immAsset?: IMMAssetLike;
+    private immModule?: IMMModule;
     private unlockAudio: () => void;
 
     private activeCamera: THREE.PerspectiveCamera;
@@ -503,7 +549,7 @@ export class Viewer {
             // composer.render();
         }
 
-        const render = () => {
+        const render = (animationTime: number) => {
 
             const delta = clock.getDelta();
 
@@ -590,7 +636,7 @@ export class Viewer {
             this.tryStartAutoplayAudio(viewer.contentRoot);
 
             if (viewer?.activeCamera && viewer.contentUpdater) {
-                viewer.contentUpdater(delta, viewer.activeCamera);
+                viewer.contentUpdater(animationTime, viewer.activeCamera);
             }
 
             // SparkRenderer stochastic setup is now handled by GUI toggle
@@ -749,6 +795,10 @@ export class Viewer {
             void Promise.resolve(previousDisposer()).catch((error) => {
                 console.warn('Failed to dispose previous viewer content:', error);
             });
+        }
+        if (this.immAsset && this.loadedModel !== this.immAsset.scene) {
+            this.immAsset = undefined;
+            this.immModule = undefined;
         }
         this.contentUpdater = undefined;
         this.contentRoot.clear();
@@ -2540,6 +2590,111 @@ export class Viewer {
         }
     }
 
+    private async loadIMMModule(): Promise<IMMModule> {
+        const moduleName = '@immersive-foundation' + '/three-imm-loader';
+        const immModule = await import(/* webpackIgnore: true */ moduleName) as unknown as IMMModule;
+        if (!immModule.IMMLoader || !immModule.desktopIMMViewpoint) {
+            throw new Error('The IMM module does not export IMMLoader and desktopIMMViewpoint');
+        }
+        return immModule;
+    }
+
+    public async loadImm(url: string, options: GalleryIMMLoadOptions): Promise<void> {
+        this.loadingError = false;
+        try {
+            const immModule = await this.loadIMMModule();
+            const loader = new immModule.IMMLoader(this.loadingManager);
+            loader.setRenderer(this.renderer);
+            loader.setDecoderWorkerURL(options.decoderWorkerURL);
+            loader.setAudio(options.audio ?? true);
+            const asset = await loader.loadAsync(url, (event) => {
+                this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-load-progress', {
+                    detail: event
+                }));
+            });
+
+            this.overrides = {};
+            this.sceneGltf = undefined;
+            this.isV1 = false;
+            this.loadedModel = asset.scene;
+            this.immAsset = asset;
+            this.immModule = immModule;
+            this.setupSketchMetaData(asset.scene);
+            this.initializeScene(() => asset.dispose());
+            this.scene.background = new THREE.Color().fromArray(asset.document.backgroundColor);
+            this.applyIMMAuthoredCamera(asset.initialAuthoredCamera());
+            this.contentUpdater = (animationTime, camera) => {
+                const frame = asset.update(animationTime, camera);
+                this.applyIMMAuthoredCamera(frame.authoredCamera);
+            };
+            this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-imm-ready', {
+                detail: {
+                    chapters: asset.document.chapters.length,
+                    viewpoints: asset.viewpoints.map((viewpoint) => ({ id: viewpoint.id, name: viewpoint.name })),
+                }
+            }));
+        } catch (error) {
+            this.showErrorIcon();
+            console.error('Error loading IMM:', error);
+            this.loadingError = true;
+            throw error;
+        }
+    }
+
+    public selectImmChapter(index: number): void {
+        if (!this.immAsset) throw new Error('No IMM is loaded');
+        this.applyIMMAuthoredCamera(this.immAsset.selectChapter(index));
+    }
+
+    public selectImmViewpoint(layerId: number): void {
+        if (!this.immAsset) throw new Error('No IMM is loaded');
+        this.applyIMMAuthoredCamera(this.immAsset.selectViewpoint(layerId));
+    }
+
+    public playImm(): void { this.immAsset?.play(); }
+    public pauseImm(): void { this.immAsset?.pause(); }
+    public continueImm(): void { this.immAsset?.continue(); }
+
+    private applyIMMAuthoredCamera(pose?: IMMViewpointPoseLike): void {
+        if (!pose || !this.immModule) return;
+
+        const xrTransform = pose.transform;
+        this.applyIMMTransform(this.cameraRig, xrTransform);
+
+        const desktopPose = this.immModule.desktopIMMViewpoint(pose);
+        const transform = desktopPose.transform;
+        this.applyIMMTransform(this.flatCamera, transform);
+        this.flatCamera.near = 0.01;
+        this.flatCamera.far = 20000;
+        this.flatCamera.updateProjectionMatrix();
+
+        const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.flatCamera.quaternion);
+        const target = this.flatCamera.position.clone().add(forward.multiplyScalar(10));
+        this.cameraControls?.setPosition(
+            this.flatCamera.position.x,
+            this.flatCamera.position.y,
+            this.flatCamera.position.z,
+            false,
+        );
+        this.cameraControls?.setTarget(target.x, target.y, target.z, false);
+        this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-imm-camera', {
+            detail: { ...desktopPose, desktop: !this.renderer.xr.isPresenting }
+        }));
+    }
+
+    private applyIMMTransform(
+        object: THREE.Object3D,
+        transform: IMMViewpointPoseLike['transform'],
+    ): void {
+        object.position.fromArray(transform.translation);
+        object.quaternion.fromArray(transform.rotation).normalize();
+        object.scale.setScalar(transform.scale);
+        if (transform.flip === 1) object.scale.x *= -1;
+        if (transform.flip === 2) object.scale.y *= -1;
+        if (transform.flip === 3) object.scale.z *= -1;
+        object.updateMatrixWorld(true);
+    }
+
     private async loadSparkModule(): Promise<SparkModule> {
         try {
             // Construct module name at runtime to avoid bundler processing
@@ -3212,6 +3367,8 @@ export class Viewer {
         const disposeContent = this.contentDisposer;
         this.contentDisposer = undefined;
         this.contentUpdater = undefined;
+        this.immAsset = undefined;
+        this.immModule = undefined;
         if (disposeContent) {
             await disposeContent();
         }
