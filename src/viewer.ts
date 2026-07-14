@@ -2651,6 +2651,17 @@ export class Viewer {
         this.applyIMMAuthoredCamera(this.immAsset.selectViewpoint(layerId));
     }
 
+    public getImmNavigation(): {
+        chapters: readonly unknown[];
+        viewpoints: readonly Array<{ id: number; name: string }>;
+    } | null {
+        if (!this.immAsset) return null;
+        return {
+            chapters: this.immAsset.document.chapters,
+            viewpoints: this.immAsset.viewpoints.map(({ id, name }) => ({ id, name })),
+        };
+    }
+
     public playImm(): void { this.immAsset?.play(); }
     public pauseImm(): void { this.immAsset?.pause(); }
     public continueImm(): void { this.immAsset?.continue(); }
