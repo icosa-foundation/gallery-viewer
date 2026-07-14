@@ -36,9 +36,9 @@ const server = createServer(async (request, response) => {
     const info = await stat(path);
     if (!info.isFile()) throw new Error("not a file");
     const contentType = new Map([
-      [".html", "text/html"], [".js", "text/javascript"], [".mjs", "text/javascript"],
+      [".html", "text/html"], [".css", "text/css"], [".js", "text/javascript"], [".mjs", "text/javascript"],
       [".json", "application/json"], [".imm", "application/octet-stream"],
-      [".wasm", "application/wasm"], [".png", "image/png"],
+      [".wasm", "application/wasm"], [".png", "image/png"], [".svg", "image/svg+xml"],
     ]).get(extname(path)) ?? "application/octet-stream";
     response.writeHead(200, { "Content-Type": contentType });
     createReadStream(path).pipe(response);
@@ -74,6 +74,9 @@ try {
   await page.waitForTimeout(1_500);
   const after = await page.evaluate(() => window.__galleryImmDiagnostics());
   if (before.paintMeshes <= 0 || before.triangles <= 0) throw new Error(`IMM strokes did not render: ${JSON.stringify(before)}`);
+  if (before.canvasClientWidth < 1200 || before.canvasClientHeight < 750) {
+    throw new Error(`Gallery canvas does not fill the test viewport: ${before.canvasClientWidth}x${before.canvasClientHeight}`);
+  }
   if (!before.sharedGalleryScene) throw new Error("IMM scene is not attached to Gallery's content root");
   if (after.timeSeconds <= before.timeSeconds) throw new Error(`IMM playback did not advance: ${before.timeSeconds} -> ${after.timeSeconds}`);
   if (before.cameraEvents.length === 0) throw new Error("No authored IMM camera was applied");
