@@ -56,6 +56,7 @@ interface IMMViewpointPoseLike {
 
 interface IMMAssetLike {
     scene: THREE.Group;
+    backgroundComplete: Promise<void>;
     document: {
         backgroundColor: [number, number, number];
         chapters: readonly unknown[];
@@ -2612,6 +2613,15 @@ export class Viewer {
             const asset = await loader.loadAsync(url, (event) => {
                 this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-load-progress', {
                     detail: event
+                }));
+            });
+            void asset.backgroundComplete.catch((error) => {
+                if (this.immAsset !== asset) return;
+                this.showErrorIcon();
+                console.error('Error loading IMM in background:', error);
+                this.loadingError = true;
+                this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-imm-error', {
+                    detail: error
                 }));
             });
 
