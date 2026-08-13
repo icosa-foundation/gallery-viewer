@@ -68,6 +68,7 @@ interface IMMAssetLike {
     play(): void;
     pause(): void;
     continue(): void;
+    enableAudio(): Promise<void>;
     dispose(): Promise<void>;
 }
 
@@ -446,6 +447,7 @@ export class Viewer {
             if (this.audioListener.context.state !== 'running') {
                 this.audioListener.context.resume().catch(() => {});
             }
+            this.immAsset?.enableAudio().catch(() => {});
             this.tryStartAutoplayAudio(this.contentRoot);
         };
         window.addEventListener('pointerdown', this.unlockAudio, { passive: true });
