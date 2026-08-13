@@ -4142,9 +4142,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         };
         const clock = new $hBQxr$three.Clock();
         this.scene = new $hBQxr$three.Scene();
+        this.persistentRoot = new $hBQxr$three.Group();
+        this.persistentRoot.name = 'Viewer services';
+        this.contentRoot = new $hBQxr$three.Group();
+        this.contentRoot.name = 'Viewer content';
+        this.scene.add(this.persistentRoot, this.contentRoot);
         this.three = $hBQxr$three;
-        const viewer1 = this;
+        const viewer = this;
         const manager = new $hBQxr$three.LoadingManager();
+        this.loadingManager = manager;
         manager.onStart = function() {
             document.getElementById('loadscreen')?.classList.remove('fade-out');
             document.getElementById('loadscreen')?.classList.remove('loaded');
@@ -4189,14 +4195,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.canvas.onmouseup = ()=>{
             this.canvas.classList.remove('grabbed');
         };
-        const unlockAudio = ()=>{
+        this.unlockAudio = ()=>{
             if (this.audioListener.context.state !== 'running') this.audioListener.context.resume().catch(()=>{});
-            this.tryStartAutoplayAudio(this.scene);
+            this.immAsset?.enableAudio().catch(()=>{});
+            this.tryStartAutoplayAudio(this.contentRoot);
         };
-        window.addEventListener('pointerdown', unlockAudio, {
+        window.addEventListener('pointerdown', this.unlockAudio, {
             passive: true
         });
-        window.addEventListener('touchstart', unlockAudio, {
+        window.addEventListener('touchstart', this.unlockAudio, {
             passive: true
         });
         this.renderer = new $hBQxr$three.WebGLRenderer({
@@ -4225,16 +4232,16 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let controllerGrip1;
         let previousLeftThumbstickX = 0;
         controller0 = this.renderer.xr.getController(0);
-        this.scene.add(controller0);
+        this.persistentRoot.add(controller0);
         controller1 = this.renderer.xr.getController(1);
-        this.scene.add(controller1);
+        this.persistentRoot.add(controller1);
         const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
         controllerGrip0 = this.renderer.xr.getControllerGrip(0);
         controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
-        this.scene.add(controllerGrip0);
+        this.persistentRoot.add(controllerGrip0);
         controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-        this.scene.add(controllerGrip1);
+        this.persistentRoot.add(controllerGrip1);
         let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {}, true);
         this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
@@ -4256,7 +4263,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             viewerContainer.appendChild(button);
             const svgPath = button.querySelector('path');
             button.addEventListener('click', ()=>{
-                viewer1.frameScene();
+                viewer.frameScene();
             });
             button.addEventListener('mouseover', ()=>{
                 svgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.7)');
@@ -4270,11 +4277,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // requestAnimationFrame( animate );
         // composer.render();
         };
-        const render = ()=>{
+        const render = (animationTime)=>{
             const delta = clock.getDelta();
             if (this.renderer.xr.isPresenting) {
                 let session = this.renderer.xr.getSession();
-                viewer1.activeCamera = viewer1?.xrCamera;
+                viewer.activeCamera = viewer?.xrCamera;
                 const inputSources = Array.from(session.inputSources);
                 const moveSpeed = 0.05;
                 const snapAngle = 15;
@@ -4289,46 +4296,47 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                                 const moveZ = -axes[3] * moveSpeed;
                                 // Get the camera's forward and right vectors
                                 const forward = new $hBQxr$three.Vector3();
-                                viewer1.activeCamera.getWorldDirection(forward);
+                                viewer.activeCamera.getWorldDirection(forward);
                                 // TODO Make this an option
                                 //forward.y = 0; // Ignore vertical movement
                                 forward.normalize();
                                 const right = new $hBQxr$three.Vector3();
-                                right.crossVectors(forward, viewer1.activeCamera.up).normalize();
+                                right.crossVectors(forward, viewer.activeCamera.up).normalize();
                                 // Calculate the movement vector
                                 const movement = new $hBQxr$three.Vector3();
                                 movement.addScaledVector(forward, moveZ);
                                 movement.addScaledVector(right, moveX);
-                                viewer1.cameraRig.position.add(movement);
+                                viewer.cameraRig.position.add(movement);
                             }
                         }
                         if (inputSource.handedness === 'right') {
                             // Rotation (right thumbstick x)
                             if (Math.abs(axes[2]) > 0.8 && Math.abs(previousLeftThumbstickX) <= 0.8) {
-                                if (axes[2] > 0) viewer1.cameraRig.rotation.y -= $hBQxr$three.MathUtils.degToRad(snapAngle);
-                                else viewer1.cameraRig.rotation.y += $hBQxr$three.MathUtils.degToRad(snapAngle);
+                                if (axes[2] > 0) viewer.cameraRig.rotation.y -= $hBQxr$three.MathUtils.degToRad(snapAngle);
+                                else viewer.cameraRig.rotation.y += $hBQxr$three.MathUtils.degToRad(snapAngle);
                             }
                             previousLeftThumbstickX = axes[2];
                             // Up/down position right thumbstick y)
-                            if (Math.abs(axes[3]) > 0.5) viewer1.cameraRig.position.y += axes[3] * moveSpeed;
+                            if (Math.abs(axes[3]) > 0.5) viewer.cameraRig.position.y += axes[3] * moveSpeed;
                         }
                     }
                 });
             } else {
-                viewer1.activeCamera = viewer1?.flatCamera;
-                const needResize = viewer1.canvas.width !== viewer1.canvas.clientWidth || viewer1.canvas.height !== viewer1.canvas.clientHeight;
-                if (needResize && viewer1?.flatCamera) {
-                    this.renderer.setSize(viewer1.canvas.clientWidth, viewer1.canvas.clientHeight, false);
-                    viewer1.flatCamera.aspect = viewer1.canvas.clientWidth / viewer1.canvas.clientHeight;
-                    viewer1.flatCamera.updateProjectionMatrix();
+                viewer.activeCamera = viewer?.flatCamera;
+                const needResize = viewer.canvas.width !== viewer.canvas.clientWidth || viewer.canvas.height !== viewer.canvas.clientHeight;
+                if (needResize && viewer?.flatCamera) {
+                    this.renderer.setSize(viewer.canvas.clientWidth, viewer.canvas.clientHeight, false);
+                    viewer.flatCamera.aspect = viewer.canvas.clientWidth / viewer.canvas.clientHeight;
+                    viewer.flatCamera.updateProjectionMatrix();
                 }
-                if (viewer1?.cameraControls) viewer1.cameraControls.update(delta);
-                if (viewer1?.trackballControls) viewer1.trackballControls.update();
+                if (viewer?.cameraControls) viewer.cameraControls.update(delta);
+                if (viewer?.trackballControls) viewer.trackballControls.update();
             }
-            if (viewer1?.activeCamera) this.attachAudioListener(viewer1.activeCamera);
-            this.tryStartAutoplayAudio(viewer1.scene);
+            if (viewer?.activeCamera) this.attachAudioListener(viewer.activeCamera);
+            this.tryStartAutoplayAudio(viewer.contentRoot);
+            if (viewer?.activeCamera && viewer.contentUpdater) viewer.contentUpdater(animationTime, viewer.activeCamera);
             // SparkRenderer stochastic setup is now handled by GUI toggle
-            if (viewer1?.activeCamera) this.renderer.render(viewer1.scene, viewer1.activeCamera);
+            if (viewer?.activeCamera) this.renderer.render(viewer.scene, viewer.activeCamera);
         };
         this.dataURLtoBlob = (dataURL)=>{
             let arr = dataURL.split(',');
@@ -4434,13 +4442,30 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             }
         };
     }
-    initializeScene() {
+    initializeScene(disposeContent) {
         let defaultBackgroundColor = this.overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
         this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
         if (!this.loadedModel) return;
-        this.stopAllAudio(this.scene);
-        this.scene.clear();
+        this.stopAllAudio(this.contentRoot);
+        const previousDisposer = this.contentDisposer;
+        this.contentDisposer = undefined;
+        if (previousDisposer) Promise.resolve(previousDisposer()).catch((error)=>{
+            console.warn('Failed to dispose previous viewer content:', error);
+        });
+        if (this.immAsset && this.loadedModel !== this.immAsset.scene) {
+            this.immAsset = undefined;
+            this.immModule = undefined;
+        }
+        this.contentUpdater = undefined;
+        this.contentRoot.clear();
+        this.contentRoot.position.set(0, 0, 0);
+        this.contentRoot.quaternion.identity();
+        this.contentRoot.scale.set(1, 1, 1);
+        this.scene.background = null;
+        this.scene.fog = null;
+        this.environmentObject = undefined;
+        this.skyObject = undefined;
         this.initSceneBackground();
         this.initFog();
         this.initLights();
@@ -4450,14 +4475,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let radius = this.overrides?.geometryData?.stats?.radius;
         if (radius > LIMIT) {
             let excess = radius - LIMIT;
-            let sceneNode = this.scene.add(this.loadedModel);
+            let sceneNode = this.contentRoot.add(this.loadedModel);
             sceneNode.scale.divideScalar(excess);
             // Reframe the scaled scene
             this.frameNode(sceneNode);
         } else {
-            if (this.isNewTiltExporter(this.sceneGltf)) this.scene.scale.set(0.1, 0.1, 0.1);
-            this.scene.add(this.loadedModel);
+            if (this.isNewTiltExporter(this.sceneGltf)) this.contentRoot.scale.set(0.1, 0.1, 0.1);
+            this.contentRoot.add(this.loadedModel);
         }
+        this.contentDisposer = disposeContent;
     }
     attachAudioListener(camera) {
         if (!camera) return;
@@ -6141,16 +6167,141 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
+    async loadIMMModule() {
+        const moduleName = "@immersive-foundation/three-imm-loader";
+        const immModule = await import(/* webpackIgnore: true */ moduleName);
+        if (!immModule.IMMLoader || !immModule.desktopIMMViewpoint) throw new Error('The IMM module does not export IMMLoader and desktopIMMViewpoint');
+        return immModule;
+    }
+    async loadImm(url, options) {
+        this.loadingError = false;
+        try {
+            const immModule = await this.loadIMMModule();
+            const loader = new immModule.IMMLoader(this.loadingManager);
+            loader.setRenderer(this.renderer);
+            loader.setDecoderWorkerURL(options.decoderWorkerURL);
+            loader.setAudio(options.audio ?? true);
+            const asset = await loader.loadAsync(url, (event)=>{
+                this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-load-progress', {
+                    detail: event
+                }));
+            });
+            asset.backgroundComplete.catch((error)=>{
+                if (this.immAsset !== asset) return;
+                this.showErrorIcon();
+                console.error('Error loading IMM in background:', error);
+                this.loadingError = true;
+                this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-imm-error', {
+                    detail: error
+                }));
+            });
+            this.overrides = {};
+            this.sceneGltf = undefined;
+            this.isV1 = false;
+            this.loadedModel = asset.scene;
+            this.immAsset = asset;
+            this.immModule = immModule;
+            this.setupSketchMetaData(asset.scene);
+            this.initializeScene(()=>asset.dispose());
+            this.scene.background = new $hBQxr$three.Color().fromArray(asset.document.backgroundColor);
+            this.applyIMMAuthoredCamera(asset.initialAuthoredCamera());
+            this.contentUpdater = (animationTime, camera)=>{
+                const frame = asset.update(animationTime, camera);
+                this.applyIMMAuthoredCamera(frame.authoredCamera);
+            };
+            this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-imm-ready', {
+                detail: {
+                    chapters: asset.document.chapters.length,
+                    viewpoints: asset.viewpoints.map((viewpoint)=>({
+                            id: viewpoint.id,
+                            name: viewpoint.name
+                        }))
+                }
+            }));
+        } catch (error) {
+            this.showErrorIcon();
+            console.error('Error loading IMM:', error);
+            this.loadingError = true;
+            throw error;
+        }
+    }
+    selectImmChapter(index) {
+        if (!this.immAsset) throw new Error('No IMM is loaded');
+        this.applyIMMAuthoredCamera(this.immAsset.selectChapter(index));
+    }
+    selectImmViewpoint(layerId) {
+        if (!this.immAsset) throw new Error('No IMM is loaded');
+        this.applyIMMAuthoredCamera(this.immAsset.selectViewpoint(layerId));
+    }
+    getImmNavigation() {
+        if (!this.immAsset) return null;
+        return {
+            chapters: this.immAsset.document.chapters,
+            viewpoints: this.immAsset.viewpoints.map(({ id: id, name: name })=>({
+                    id: id,
+                    name: name
+                }))
+        };
+    }
+    playImm() {
+        this.immAsset?.play();
+    }
+    pauseImm() {
+        this.immAsset?.pause();
+    }
+    continueImm() {
+        this.immAsset?.continue();
+    }
+    applyIMMAuthoredCamera(pose) {
+        if (!pose || !this.immModule) return;
+        const xrTransform = pose.transform;
+        this.applyIMMTransform(this.cameraRig, xrTransform);
+        const desktopPose = this.immModule.desktopIMMViewpoint(pose);
+        const transform = desktopPose.transform;
+        this.applyIMMTransform(this.flatCamera, transform);
+        this.flatCamera.near = 0.01;
+        this.flatCamera.far = 20000;
+        this.flatCamera.updateProjectionMatrix();
+        const forward = new $hBQxr$three.Vector3(0, 0, -1).applyQuaternion(this.flatCamera.quaternion);
+        const target = this.flatCamera.position.clone().add(forward.multiplyScalar(10));
+        this.cameraControls?.setPosition(this.flatCamera.position.x, this.flatCamera.position.y, this.flatCamera.position.z, false);
+        this.cameraControls?.setTarget(target.x, target.y, target.z, false);
+        this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-imm-camera', {
+            detail: {
+                ...desktopPose,
+                desktop: !this.renderer.xr.isPresenting
+            }
+        }));
+    }
+    applyIMMTransform(object, transform) {
+        object.position.fromArray(transform.translation);
+        object.quaternion.fromArray(transform.rotation).normalize();
+        object.scale.setScalar(transform.scale);
+        if (transform.flip === 1) object.scale.x *= -1;
+        if (transform.flip === 2) object.scale.y *= -1;
+        if (transform.flip === 3) object.scale.z *= -1;
+        object.updateMatrixWorld(true);
+    }
     async loadSparkModule() {
         try {
             // Construct module name at runtime to avoid bundler processing
             const moduleName = "@sparkjsdev/spark";
             const sparkModule = await import(/* webpackIgnore: true */ moduleName);
-            if (!sparkModule.SplatMesh) throw new Error("SplatMesh not found in Spark module exports");
+            if (!sparkModule.SplatMesh || !sparkModule.SparkRenderer) throw new Error("SplatMesh or SparkRenderer not found in Spark module exports");
             return sparkModule;
         } catch (error) {
-            throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error.message}`);
+            throw new Error(`Spark (@sparkjsdev/spark) is not available: ${error instanceof Error ? error.message : String(error)}`);
         }
+    }
+    ensureSparkRenderer(sparkModule) {
+        if (!this.sparkRenderer) {
+            this.sparkRenderer = new sparkModule.SparkRenderer({
+                renderer: this.renderer
+            });
+            this.sparkRenderer.name = 'Spark renderer';
+            this.persistentRoot.add(this.sparkRenderer);
+        }
+        return this.sparkRenderer;
     }
     async loadSplat(url, overrides) {
         try {
@@ -6177,27 +6328,39 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             try {
                 SparkModule = await this.loadSparkModule();
             } catch (importError) {
-                console.error(importError.message);
+                console.error(importError instanceof Error ? importError.message : String(importError));
                 this.showErrorIcon();
                 this.loadingError = true;
                 return;
             }
-            const splatModel = new SparkModule.SplatMesh({
-                url: url
-            });
-            await splatModel.initialized;
-            // Apply coordinate system correction - splat files are upside-down compared to other formats
-            splatModel.rotation.x = Math.PI;
-            this.loadedModel = splatModel;
-            this.setupSketchMetaData(splatModel);
-            // TODO make fly mode explicit and overridable
-            this.sketchMetadata.FlyMode = true;
-            this.modelBoundingBox = splatModel.getBoundingBox(false);
-            this.scene.add(this.loadedModel);
-            this.initializeScene();
-            // Manually trigger loading screen fade-out since SplatMesh doesn't use LoadingManager
-            let loadscreen = document.getElementById('loadscreen');
-            if (loadscreen && !loadscreen.classList.contains('loaderror')) loadscreen.classList.add('fade-out');
+            this.ensureSparkRenderer(SparkModule);
+            const loadItem = `spark:${url}`;
+            this.loadingManager.itemStart(loadItem);
+            let splatModel;
+            try {
+                splatModel = new SparkModule.SplatMesh({
+                    url: url,
+                    onProgress: (event)=>{
+                        this.icosa_frame?.dispatchEvent(new CustomEvent('icosa-viewer-load-progress', {
+                            detail: event
+                        }));
+                    }
+                });
+                await splatModel.initialized;
+                // Apply coordinate system correction - splat files are upside-down compared to other formats
+                splatModel.rotation.x = Math.PI;
+                this.loadedModel = splatModel;
+                this.setupSketchMetaData(splatModel);
+                // TODO make fly mode explicit and overridable
+                this.sketchMetadata.FlyMode = true;
+                this.modelBoundingBox = splatModel.getBoundingBox(false);
+                this.initializeScene(()=>splatModel?.dispose());
+            } catch (error) {
+                this.loadingManager.itemError(loadItem);
+                throw error;
+            } finally{
+                this.loadingManager.itemEnd(loadItem);
+            }
         } catch (error) {
             this.showErrorIcon();
             console.error("Error loading Splat model:", error);
@@ -6270,6 +6433,9 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.sketchMetadata = sketchMetaData;
     }
     initCameras() {
+        this.cameraControls?.dispose();
+        this.trackballControls?.dispose();
+        this.cameraRig?.removeFromParent();
         let cameraOverrides = this.overrides?.camera;
         // Check if there's a GLTF camera in the scene
         let gltfCamera = null;
@@ -6337,7 +6503,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.flatCamera.updateMatrixWorld();
         this.xrCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
         this.cameraRig = new $hBQxr$three.Group();
-        this.scene.add(this.cameraRig);
+        this.cameraRig.name = 'XR camera rig';
+        this.persistentRoot.add(this.cameraRig);
         this.cameraRig.add(this.xrCamera);
         this.activeCamera = this.flatCamera;
         let cameraTarget;
@@ -6349,7 +6516,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
                 THREE: $hBQxr$three
             });
-            this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
+            this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, this.canvas);
             this.cameraControls.smoothTime = 0.1;
             this.cameraControls.draggingSmoothTime = 0.1;
             this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
@@ -6388,7 +6555,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
                 THREE: $hBQxr$three
             });
-            this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, viewer.canvas);
+            this.cameraControls = new (0, $e1f901905a002d12$export$2e2bcd8739ae039)(this.flatCamera, this.canvas);
             this.cameraControls.smoothTime = 0.1;
             this.cameraControls.draggingSmoothTime = 0.1;
             this.cameraControls.polarRotateSpeed = this.cameraControls.azimuthRotateSpeed = 1.0;
@@ -6397,12 +6564,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
         }
         // Position and orient the cameraRig to match flatCamera AFTER camera controls are set up
-        // The flatCamera is independent of scene scale, but cameraRig is a child of the scene.
-        // For new Tilt exporters, the scene will be scaled to 0.1, so we need to compensate.
-        // We scale BOTH the position and the rig scale to counteract the scene scale.
-        const sceneScaleFactor = this.isNewTiltExporter(this.sceneGltf) ? 10 : 1;
-        this.cameraRig.position.copy(this.flatCamera.position).multiplyScalar(sceneScaleFactor);
-        this.cameraRig.scale.set(sceneScaleFactor, sceneScaleFactor, sceneScaleFactor);
+        // Persistent XR services are outside contentRoot, so content scaling must not
+        // be applied to the camera rig.
+        this.cameraRig.position.copy(this.flatCamera.position);
+        this.cameraRig.scale.set(1, 1, 1);
         // Calculate world position after setup
         this.cameraRig.updateMatrixWorld(true);
         // VR cameras should never be tilted - only copy Y-axis rotation (yaw)
@@ -6481,7 +6646,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.loadedModel?.add(l1);
         const ambientLight = new $hBQxr$three.AmbientLight();
         ambientLight.color = this.sketchMetadata.AmbientLightColor;
-        this.scene.add(ambientLight);
+        this.contentRoot.add(ambientLight);
     }
     initFog() {
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) return;
@@ -6497,7 +6662,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (this.sketchMetadata.UseGradient) sky = this.generateGradientSky(this.sketchMetadata.SkyColorA, this.sketchMetadata.SkyColorB, this.sketchMetadata.SkyGradientDirection);
         else if (this.sketchMetadata.SkyTexture) sky = this.generateTextureSky(this.sketchMetadata.SkyTexture);
         if (sky !== null) {
-            this.scene?.add(sky);
+            this.contentRoot.add(sky);
             this.skyObject = sky;
         } else // Use the default background color if there's no sky
         this.scene.background = this.defaultBackgroundColor;
@@ -6652,6 +6817,26 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (!this.treeViewRoot || !this.scene) return;
         // Recreate the tree view to reflect the current state
         this.createTreeView(this.scene, this.treeViewRoot);
+    }
+    /** Release viewer-owned rendering services and the active content. */ async dispose() {
+        this.renderer.setAnimationLoop(null);
+        window.removeEventListener('pointerdown', this.unlockAudio);
+        window.removeEventListener('touchstart', this.unlockAudio);
+        this.stopAllAudio(this.contentRoot);
+        const disposeContent = this.contentDisposer;
+        this.contentDisposer = undefined;
+        this.contentUpdater = undefined;
+        this.immAsset = undefined;
+        this.immModule = undefined;
+        if (disposeContent) await disposeContent();
+        this.cameraControls?.dispose();
+        this.trackballControls?.dispose();
+        this.sparkRenderer?.removeFromParent();
+        this.sparkRenderer?.dispose();
+        this.sparkRenderer = undefined;
+        this.audioListener.removeFromParent();
+        this.scene.clear();
+        this.renderer.dispose();
     }
 }
 
