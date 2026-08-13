@@ -61,7 +61,7 @@ interface IMMAssetLike {
         backgroundColor: [number, number, number];
         chapters: readonly unknown[];
     };
-    viewpoints: readonly Array<{ id: number; name: string }>;
+    viewpoints: ReadonlyArray<{ id: number; name: string }>;
     initialAuthoredCamera(): IMMViewpointPoseLike | undefined;
     update(animationTimeMs: number, camera: THREE.Camera): { authoredCamera?: IMMViewpointPoseLike };
     selectChapter(index: number): IMMViewpointPoseLike | undefined;
@@ -2665,7 +2665,7 @@ export class Viewer {
 
     public getImmNavigation(): {
         chapters: readonly unknown[];
-        viewpoints: readonly Array<{ id: number; name: string }>;
+        viewpoints: ReadonlyArray<{ id: number; name: string }>;
     } | null {
         if (!this.immAsset) return null;
         return {
