@@ -57,10 +57,14 @@
     "three-tiltloader": "^0.4.2-alpha.4"
   },
   "peerDependencies": {
+    "@immersive-foundation/three-imm-loader": "*",
     "@sparkjsdev/spark": "^2.1.0",
     "three": ">=0.180 <0.181.0"
   },
   "peerDependenciesMeta": {
+    "@immersive-foundation/three-imm-loader": {
+      "optional": true
+    },
     "@sparkjsdev/spark": {
       "optional": true
     }
