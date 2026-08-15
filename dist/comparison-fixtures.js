@@ -187,7 +187,7 @@ export async function resolveFixture(fixtureId) {
         loader,
         mtlUrl: mtlResource?.url,
         overrides: {
-            defaultBackgroundColor: presentationParams.backgroundColor || "#000000",
+            defaultBackgroundColor: presentationParams.backgroundColor || (loader === "obj" ? "#ffffff" : "#000000"),
             camera: { ...(presentationParams.camera || {}), ...(asset.camera || {}) },
             geometryData: presentationParams.geometry_data || presentationParams.GOOGLE_geometry_data || {},
             colorSpace: presentationParams.colorSpace || "LINEAR"
