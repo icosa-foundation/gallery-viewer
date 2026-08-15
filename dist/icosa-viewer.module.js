@@ -5972,10 +5972,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         });
         document.dispatchEvent(evt);
     }
-    isLegacyTiltExporter(sceneGltf) {
-        const generator = sceneGltf.asset?.generator;
-        return generator && !generator.includes('Tilt Brush');
-    }
     isNewTiltExporter(sceneGltf) {
         return sceneGltf?.scene?.userData?.isNewTiltExporter ?? false;
     }

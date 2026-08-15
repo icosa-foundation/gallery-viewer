@@ -2365,11 +2365,6 @@ export class Viewer {
         document.dispatchEvent(evt);
     }
 
-    private isLegacyTiltExporter(sceneGltf: any) {
-        const generator = sceneGltf.asset?.generator;
-        return generator && !generator.includes('Tilt Brush');
-    }
-
     private isNewTiltExporter(sceneGltf: any) {
         return sceneGltf?.scene?.userData?.isNewTiltExporter ?? false;
     }
