@@ -502,7 +502,7 @@
                     viewer.environmentObject.position.set(guiParams.envTransX, guiParams.envTransY, guiParams.envTransZ);
                 }
             });
-            
+
             // Scene transform controls
             const sceneTransformFolder = gui.addFolder('Scene Transform');
             sceneTransformFolder.close();
@@ -515,14 +515,14 @@
                     }
                 });
             }
-            
+
             function applySceneTransform() {
                 sketchChildren.forEach((child) => {
                     child.scale.setScalar(guiParams.sceneScale);
                     child.position.set(guiParams.sceneTransX, guiParams.sceneTransY, guiParams.sceneTransZ);
                 });
             }
-            
+
             sceneTransformFolder.add(guiParams, 'sceneScale', 0.1, 10).name('Scale').onChange(applySceneTransform);
             sceneTransformFolder.add(guiParams, 'sceneTransX', -10, 10).name('Translation X').onChange(applySceneTransform);
             sceneTransformFolder.add(guiParams, 'sceneTransY', -10, 10).name('Translation Y').onChange(applySceneTransform);
@@ -883,7 +883,7 @@
             guiParams.backgroundColor = "#" + (viewer.scene.background?.color?.getHexString() || "000000");
             guiParams.fogColor = "#" + (viewer.scene.fog?.color?.getHexString() || "ffffff");
             guiParams.fogDensity = viewer.scene.fog?.density;
-            
+
             // Initialize environment transform parameters
             if (viewer.environmentObject) {
                 guiParams.envScale = viewer.environmentObject.scale.x;
@@ -891,7 +891,7 @@
                 guiParams.envTransY = viewer.environmentObject.position.y;
                 guiParams.envTransZ = viewer.environmentObject.position.z;
             }
-            
+
             // Initialize scene transform parameters
             if (viewer.loadedModel) {
                 guiParams.sceneScale = viewer.loadedModel.scale.x;
