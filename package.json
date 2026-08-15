@@ -11,7 +11,8 @@
     "setup-cdn": "node scripts/setup-cdn-importmap.js",
     "test": "node npm-test.js",
     "test:browser:brush-passes": "node scripts/browser-brush-passes-smoke.mjs",
-    "test:browser:imm": "node scripts/browser-imm-smoke.mjs"
+    "test:browser:imm": "node scripts/browser-imm-smoke.mjs",
+    "download:poly-legacy-assets": "node scripts/download-poly-legacy-assets.cjs"
   },
   "repository": {
     "type": "git",
