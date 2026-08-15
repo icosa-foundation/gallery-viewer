@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Icosa Viewer: Production vs Main vs Poly</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            color: #fff;
+            background: #111;
+            font: 13px/1.3 system-ui, sans-serif;
+        }
+
+        #toolbar {
+            height: 44px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: #202124;
+        }
+
+        #viewers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: calc(100% - 44px);
+        }
+
+        #viewers.with-reference {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .viewer-column {
+            position: relative;
+            min-width: 0;
+            border-right: 1px solid #555;
+        }
+
+        .viewer-column:last-child {
+            border-right: 0;
+        }
+
+        .viewer-label {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            z-index: 2;
+            transform: translateX(-50%);
+            padding: 5px 9px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.75);
+            pointer-events: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        #reference {
+            display: none;
+            position: relative;
+            box-sizing: border-box;
+            padding: 0;
+            overflow: hidden;
+            background: #202124;
+        }
+
+        #viewers.with-reference #reference {
+            display: block;
+        }
+
+        #poly-reference-viewer,
+        #reference-thumbnail {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        #reference-thumbnail {
+            object-fit: contain;
+            background: #000;
+        }
+
+        #reference[data-reference-mode="poly"] #reference-thumbnail,
+        #reference[data-reference-mode="thumbnail"] #poly-reference-viewer {
+            display: none;
+        }
+
+        #reference-details {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            left: 10px;
+            z-index: 2;
+            box-sizing: border-box;
+            padding: 7px 9px;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.75);
+        }
+
+        #reference-name {
+            margin: 0 0 4px;
+            font-weight: 600;
+        }
+
+        #reference a {
+            color: #8ab4f8;
+        }
+    </style>
+</head>
+<body>
+    <div id="toolbar">
+        <label for="fixture">Fixture</label>
+        <select id="fixture">
+            <option>Loading full fixture catalog…</option>
+        </select>
+        <label for="reference-mode">Ground truth</label>
+        <select id="reference-mode">
+            <option value="poly">Resurrected Google Poly</option>
+            <option value="thumbnail">Preserved thumbnail (fallback)</option>
+        </select>
+        <span>Production uses Three 0.172; main uses Three 0.185.1. Poly replay uses the archived UPDATED_GLTF_FORMAT when available.</span>
+    </div>
+    <div id="viewers">
+        <section class="viewer-column">
+            <div class="viewer-label">Production Gallery bundle</div>
+            <iframe id="production-viewer" title="Production Gallery viewer"></iframe>
+        </section>
+        <section class="viewer-column">
+            <div class="viewer-label">Current main bundle</div>
+            <iframe id="main-viewer" title="Current main viewer"></iframe>
+        </section>
+        <aside id="reference" class="viewer-column" data-reference-mode="poly">
+            <div id="reference-label" class="viewer-label">Resurrected Google Poly</div>
+            <iframe id="poly-reference-viewer" title="Resurrected Google Poly viewer"></iframe>
+            <img id="reference-thumbnail" alt="Authoritative source thumbnail">
+            <div id="reference-details">
+                <div id="reference-name"></div>
+                <a id="reference-metadata" target="_blank" rel="noreferrer">API metadata</a>
+            </div>
+        </aside>
+    </div>
+    <script type="module">
+        import {
+            assetIdForFixture,
+            polyModelForFixture,
+            populateFixtureSelect
+        } from "./comparison-fixtures.js";
+
+        const fixtureSelect = document.getElementById("fixture");
+        const referenceModeSelect = document.getElementById("reference-mode");
+        const productionViewer = document.getElementById("production-viewer");
+        const mainViewer = document.getElementById("main-viewer");
+        const polyReferenceViewer = document.getElementById("poly-reference-viewer");
+        const viewers = document.getElementById("viewers");
+        const reference = document.getElementById("reference");
+        const referenceLabel = document.getElementById("reference-label");
+        const referenceThumbnail = document.getElementById("reference-thumbnail");
+        const referenceName = document.getElementById("reference-name");
+        const referenceMetadata = document.getElementById("reference-metadata");
+        const initialFixture = new URLSearchParams(location.search).get("fixture") || "f4-0";
+        const requestedReferenceMode = new URLSearchParams(location.search).get("reference");
+        const initialReferenceMode = requestedReferenceMode === "thumbnail" ? "thumbnail" : "poly";
+        const polyReplayOrigin = `${location.protocol}//${location.hostname}:8766`;
+        referenceModeSelect.value = initialReferenceMode;
+
+        async function updateReference(fixture) {
+            const apiAssetId = assetIdForFixture(fixture);
+            const localModelPath = polyModelForFixture(fixture);
+            if (!apiAssetId && !localModelPath) {
+                viewers.classList.remove("with-reference");
+                polyReferenceViewer.removeAttribute("src");
+                referenceThumbnail.removeAttribute("src");
+                return;
+            }
+
+            viewers.classList.add("with-reference");
+            reference.dataset.referenceMode = referenceModeSelect.value;
+            referenceLabel.textContent = referenceModeSelect.value === "poly"
+                ? "Resurrected Google Poly"
+                : "Preserved thumbnail (fallback)";
+            if (apiAssetId) {
+                polyReferenceViewer.src = `${polyReplayOrigin}/view/${encodeURIComponent(apiAssetId)}/embed?asset=${encodeURIComponent(apiAssetId)}&controls=0`;
+            } else {
+                polyReferenceViewer.src = `${polyReplayOrigin}/view/fbDxapxkwY9/embed?model=${encodeURIComponent(localModelPath)}&controls=0`;
+            }
+
+            if (!apiAssetId) {
+                const selectedOption = fixtureSelect.options[fixtureSelect.selectedIndex];
+                referenceName.textContent = `${selectedOption.textContent} — local fixture in Poly renderer`;
+                referenceMetadata.hidden = true;
+                referenceThumbnail.removeAttribute("src");
+                return;
+            }
+
+            referenceMetadata.hidden = false;
+            referenceName.textContent = "Loading metadata";
+            referenceMetadata.href = `https://api.icosa.gallery/v1/assets/${apiAssetId}`;
+            const response = await fetch(referenceMetadata.href);
+            const asset = await response.json();
+            referenceName.textContent = `${asset.displayName} — ${asset.authorName || "Unknown author"}`;
+            referenceThumbnail.src = asset.thumbnail?.url || "";
+        }
+
+        function loadFixture() {
+            const fixture = fixtureSelect.value;
+            const url = new URL(location.href);
+            url.searchParams.set("fixture", fixture);
+            url.searchParams.delete("lighting");
+            url.searchParams.set("reference", referenceModeSelect.value);
+            history.replaceState(null, "", url);
+            productionViewer.src = `./comparison.html?bundle=production&fixture=${encodeURIComponent(fixture)}`;
+            mainViewer.src = `./comparison.html?bundle=main&fixture=${encodeURIComponent(fixture)}`;
+            updateReference(fixture).catch(error => {
+                referenceName.textContent = `Metadata error: ${error.message}`;
+            });
+        }
+
+        await populateFixtureSelect(fixtureSelect, initialFixture);
+        fixtureSelect.addEventListener("change", loadFixture);
+        referenceModeSelect.addEventListener("change", loadFixture);
+        loadFixture();
+    </script>
+</body>
+</html>

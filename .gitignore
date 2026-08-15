@@ -1,2 +1,4 @@
 ﻿node_modules
 /.parcel-cache
+/dist/formats
+/dist/sketch_assets

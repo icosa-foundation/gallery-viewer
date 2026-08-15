@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Icosa Viewer Bundle Comparison</title>
+    <script>
+        const requestedBundle = new URLSearchParams(location.search).get("bundle");
+        const isProductionBundle = requestedBundle === "production";
+        const requestedThreeVersion = new URLSearchParams(location.search).get("three");
+        const defaultThreeVersion = isProductionBundle ? "0.172.0" : "0.185.1";
+        const threeVersion = ["0.172.0", "0.185.1"].includes(requestedThreeVersion)
+            ? requestedThreeVersion
+            : defaultThreeVersion;
+        const importMap = document.createElement("script");
+        importMap.type = "importmap";
+        importMap.textContent = JSON.stringify({
+            imports: {
+                "three": `https://cdn.jsdelivr.net/npm/three@${threeVersion}/build/three.module.js`,
+                "three/addons/": `https://cdn.jsdelivr.net/npm/three@${threeVersion}/examples/jsm/`,
+                "three/examples/": `https://cdn.jsdelivr.net/npm/three@${threeVersion}/examples/`,
+                "three-icosa": isProductionBundle
+                    ? "./three-icosa.production.module.js?v=production"
+                    : "./three-icosa.module.js?v=spark-2.1-generic-lighting-2",
+                "three-tiltloader": "https://cdn.jsdelivr.net/npm/three-tiltloader@0.4.2-alpha.4/dist/three-tiltloader.module.js",
+                "@sparkjsdev/spark": isProductionBundle
+                    ? "https://cdn.jsdelivr.net/gh/sparkjsdev/spark@b60e9d9acbe621e67eda5d98417fcfdea5af6291/dist/spark.module.js"
+                    : "https://cdn.jsdelivr.net/npm/@sparkjsdev/spark@2.1.0/dist/spark.module.js"
+            }
+        });
+        document.head.appendChild(importMap);
+    </script>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        html, body, #icosa-viewer {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+
+        #status {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 1000;
+            padding: 6px 9px;
+            border-radius: 4px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.72);
+            font: 13px/1.3 monospace;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="icosa-viewer"></div>
+    <div id="status">Loading</div>
+    <pre id="comparison-result" hidden></pre>
+    <script type="module">
+        import { resolveFixture } from "./comparison-fixtures.js";
+
+        const params = new URLSearchParams(location.search);
+        const bundleName = params.get("bundle") === "production" ? "production" : "main";
+        const fixtureName = params.get("fixture") || "f4-0";
+        const status = document.getElementById("status");
+
+        window.comparisonReady = false;
+        const fixture = await resolveFixture(fixtureName);
+
+        if (!fixture?.url) {
+            status.textContent = `Unknown fixture: ${fixtureName}`;
+            throw new Error(`Unknown fixture: ${fixtureName}`);
+        }
+
+        const fixtureUrl = fixture.url;
+        window.comparisonResult = {
+            bundleName,
+            fixtureName,
+            fixtureUrl,
+            loader: fixture.loader,
+            threeVersion,
+            assetId: fixture.assetId,
+            displayName: fixture.displayName,
+            formatType: fixture.formatType
+        };
+
+        const moduleUrl = bundleName === "production"
+            ? "./icosa-viewer.production.module.js?v=production"
+            : "./icosa-viewer.module.js?v=current-main";
+        const { Viewer } = await import(moduleUrl);
+        const viewer = new Viewer(new URL("./sketch_assets/", location.href).toString());
+        window.viewer = viewer;
+
+        status.textContent = `${bundleName} | ${fixtureName}`;
+        const loadMethod = fixture.loader === "gltf1" ? "loadGltf1" : "loadGltf";
+        await viewer[loadMethod](fixtureUrl, true, fixture.overrides || {});
+
+        if (viewer.loadingError && fixture.assetId) {
+            const fallbackMethod = loadMethod === "loadGltf1" ? "loadGltf" : "loadGltf1";
+            window.comparisonResult.fallbackMethod = fallbackMethod;
+            await viewer[fallbackMethod](fixtureUrl, true, fixture.overrides);
+        }
+
+        if (viewer.loadingError) {
+            status.textContent += " | LOAD ERROR";
+            window.comparisonResult.loadingError = true;
+        } else {
+            window.comparisonResult.appliedLighting = "bundle-default";
+
+            await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            window.comparisonResult.loadingError = false;
+            window.comparisonResult.camera = {
+                position: viewer.activeCamera?.position.toArray(),
+                quaternion: viewer.activeCamera?.quaternion.toArray()
+            };
+            window.comparisonResult.fog = viewer.scene.fog ? {
+                color: viewer.scene.fog.color.getHexString(),
+                density: viewer.scene.fog.density
+            } : null;
+            window.comparisonResult.sceneScale = viewer.scene.scale.toArray();
+            window.comparisonResult.modelTransform = viewer.loadedModel ? {
+                position: viewer.loadedModel.position.toArray(),
+                quaternion: viewer.loadedModel.quaternion.toArray(),
+                scale: viewer.loadedModel.scale.toArray()
+            } : null;
+            window.comparisonResult.lights = [];
+            viewer.scene.traverse(object => {
+                if (object.isLight) {
+                    window.comparisonResult.lights.push({
+                        type: object.type,
+                        name: object.name,
+                        intensity: object.intensity,
+                        position: object.position.toArray(),
+                        parent: object.parent?.name || object.parent?.type,
+                        targetPosition: object.target?.position?.toArray(),
+                        targetParent: object.target?.parent?.name || object.target?.parent?.type || null
+                    });
+                }
+            });
+        }
+
+        document.getElementById("comparison-result").textContent = JSON.stringify(window.comparisonResult);
+        window.comparisonReady = true;
+        document.documentElement.dataset.comparisonReady = "true";
+        window.dispatchEvent(new Event("comparison-ready"));
+    </script>
+</body>
+</html>
