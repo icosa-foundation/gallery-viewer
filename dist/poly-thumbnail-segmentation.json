@@ -1,0 +1,1014 @@
+{
+  "model": "Zigeng/SlimSAM-uniform-77",
+  "device": "cpu",
+  "assets": [
+    {
+      "assetId": "7Q_Ab2HLll1",
+      "displayName": "Couch | Wde",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/7Q_Ab2HLll1/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 1,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9984091520309448,
+          "areaFraction": 0.9841461181640625,
+          "borderCoverage": 0.7138231981981982,
+          "selectionScore": 0.0691439493282422
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.991064190864563,
+          "areaFraction": 0.779083251953125,
+          "borderCoverage": 0.7117117117117117,
+          "selectionScore": 2.0586317584321305
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9822345972061157,
+          "areaFraction": 0.778411865234375,
+          "borderCoverage": 0.7150900900900901,
+          "selectionScore": 2.054869732341251
+        }
+      ],
+      "modelPixelFraction": 0.220916748046875,
+      "modelMeanLuminance": 85.04942321777344,
+      "backgroundMeanLuminance": 180.30760192871094,
+      "diagnostic": "7Q_Ab2HLll1.png",
+      "backgroundMask": "7Q_Ab2HLll1-background-mask.png"
+    },
+    {
+      "assetId": "9L2Lt-sxzdp",
+      "displayName": "Robot Kit v.1",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/9L2Lt-sxzdp/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9681929349899292,
+          "areaFraction": 0.9239857991536459,
+          "borderCoverage": 0.7134009009009009,
+          "selectionScore": 2.0382942863412805
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9862037301063538,
+          "areaFraction": 0.6502482096354166,
+          "borderCoverage": 0.7119932432432432,
+          "selectionScore": 2.0541935949712187
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9949018955230713,
+          "areaFraction": 0.6540323893229166,
+          "borderCoverage": 0.8284065315315315,
+          "selectionScore": 2.2375116928203687
+        }
+      ],
+      "modelPixelFraction": 0.3459676106770833,
+      "modelMeanLuminance": 168.72232055664062,
+      "backgroundMeanLuminance": 186.32801818847656,
+      "diagnostic": "9L2Lt-sxzdp.png",
+      "backgroundMask": "9L2Lt-sxzdp-background-mask.png"
+    },
+    {
+      "assetId": "2Rb9zxgkDEM",
+      "displayName": "Fish Tank \ud83c\udf8f",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/2Rb9zxgkDEM/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9682679176330566,
+          "areaFraction": 0.9544932047526041,
+          "borderCoverage": 0.7332488738738738,
+          "selectionScore": 0.06814122844386716
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9764967560768127,
+          "areaFraction": 0.635894775390625,
+          "borderCoverage": 0.7124155405405406,
+          "selectionScore": 2.0451200668876237
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9894407987594604,
+          "areaFraction": 0.6371358235677084,
+          "borderCoverage": 0.7868806306306306,
+          "selectionScore": 2.1697617447054065
+        }
+      ],
+      "modelPixelFraction": 0.3628641764322917,
+      "modelMeanLuminance": 189.52908325195312,
+      "backgroundMeanLuminance": 248.27735900878906,
+      "diagnostic": "2Rb9zxgkDEM.png",
+      "backgroundMask": "2Rb9zxgkDEM-background-mask.png"
+    },
+    {
+      "assetId": "7Rr7j8S0q6C",
+      "displayName": "BTTF DeLorean V1",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/7Rr7j8S0q6C/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9826782941818237,
+          "areaFraction": 0.9879913330078125,
+          "borderCoverage": 0.714527027027027,
+          "selectionScore": 0.05446883472236408
+        },
+        {
+          "index": 1,
+          "samIouScore": 1.0026662349700928,
+          "areaFraction": 0.7690480550130209,
+          "borderCoverage": 0.7138231981981982,
+          "selectionScore": 2.07340103226739
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9924554824829102,
+          "areaFraction": 0.7739461263020834,
+          "borderCoverage": 0.8499436936936937,
+          "selectionScore": 2.2673710230234505
+        }
+      ],
+      "modelPixelFraction": 0.22605387369791666,
+      "modelMeanLuminance": 129.62161254882812,
+      "backgroundMeanLuminance": 177.10198974609375,
+      "diagnostic": "7Rr7j8S0q6C.png",
+      "backgroundMask": "7Rr7j8S0q6C-background-mask.png"
+    },
+    {
+      "assetId": "2binsxeOBve",
+      "displayName": "Rio de Janeiro",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/2binsxeOBve/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 0,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.971164345741272,
+          "areaFraction": 0.5231781005859375,
+          "borderCoverage": 0.5817849099099099,
+          "selectionScore": 1.8438417106061369
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9762392640113831,
+          "areaFraction": 0.4998067220052083,
+          "borderCoverage": 0.5427927927927928,
+          "selectionScore": 1.7904284532005723
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9557918310165405,
+          "areaFraction": 0.4344991048177083,
+          "borderCoverage": 0.5005630630630631,
+          "selectionScore": 1.7066364256111353
+        }
+      ],
+      "modelPixelFraction": 0.4768218994140625,
+      "modelMeanLuminance": 149.4419403076172,
+      "backgroundMeanLuminance": 163.948486328125,
+      "diagnostic": "2binsxeOBve.png",
+      "backgroundMask": "2binsxeOBve-background-mask.png"
+    },
+    {
+      "assetId": "fbDxapxkwY9",
+      "displayName": "Truck",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/fbDxapxkwY9/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9951286315917969,
+          "areaFraction": 0.98980712890625,
+          "borderCoverage": 0.7425394144144144,
+          "selectionScore": 0.10893775321341836
+        },
+        {
+          "index": 1,
+          "samIouScore": 1.0011646747589111,
+          "areaFraction": 0.8157958984375,
+          "borderCoverage": 0.7238175675675675,
+          "selectionScore": 2.0868910261102624
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9803006649017334,
+          "areaFraction": 0.8191375732421875,
+          "borderCoverage": 0.8343186936936937,
+          "selectionScore": 2.2317787054422737
+        }
+      ],
+      "modelPixelFraction": 0.1808624267578125,
+      "modelMeanLuminance": 145.51864624023438,
+      "backgroundMeanLuminance": 38.75880813598633,
+      "diagnostic": "fbDxapxkwY9.png",
+      "backgroundMask": "fbDxapxkwY9-background-mask.png"
+    },
+    {
+      "assetId": "8gVr4pedhp9",
+      "displayName": "Monster Kit 1.0",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/8gVr4pedhp9/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9690089821815491,
+          "areaFraction": 0.9589487711588541,
+          "borderCoverage": 0.7126970720720721,
+          "selectionScore": 0.038054590289656964
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9833738207817078,
+          "areaFraction": 0.7078348795572916,
+          "borderCoverage": 0.7117117117117117,
+          "selectionScore": 2.0509413883492753
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9923299551010132,
+          "areaFraction": 0.7086588541666666,
+          "borderCoverage": 0.7806869369369369,
+          "selectionScore": 2.1633603605064184
+        }
+      ],
+      "modelPixelFraction": 0.2913411458333333,
+      "modelMeanLuminance": 158.62168884277344,
+      "backgroundMeanLuminance": 170.43017578125,
+      "diagnostic": "8gVr4pedhp9.png",
+      "backgroundMask": "8gVr4pedhp9-background-mask.png"
+    },
+    {
+      "assetId": "6ZPbRl78eRZ",
+      "displayName": "HTC Vive Headset",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/6ZPbRl78eRZ/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9929007291793823,
+          "areaFraction": 0.9868570963541666,
+          "borderCoverage": 0.7181869369369369,
+          "selectionScore": 0.07018113458478759
+        },
+        {
+          "index": 1,
+          "samIouScore": 1.0000100135803223,
+          "areaFraction": 0.6982879638671875,
+          "borderCoverage": 0.7124155405405406,
+          "selectionScore": 2.0686333243911332
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9850919246673584,
+          "areaFraction": 0.699249267578125,
+          "borderCoverage": 0.7449324324324325,
+          "selectionScore": 2.102490573316007
+        }
+      ],
+      "modelPixelFraction": 0.300750732421875,
+      "modelMeanLuminance": 66.46408081054688,
+      "backgroundMeanLuminance": 129.68228149414062,
+      "diagnostic": "6ZPbRl78eRZ.png",
+      "backgroundMask": "6ZPbRl78eRZ-background-mask.png"
+    },
+    {
+      "assetId": "dK08uQ8-Zm9",
+      "displayName": "Arctic Fox (Sitting)",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/dK08uQ8-Zm9/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.999458372592926,
+          "areaFraction": 0.9865824381510416,
+          "borderCoverage": 0.7208614864864865,
+          "selectionScore": 0.08075060232265585
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9931421875953674,
+          "areaFraction": 0.7630716959635416,
+          "borderCoverage": 0.7122747747747747,
+          "selectionScore": 2.0615543497575297
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9778573513031006,
+          "areaFraction": 0.7646738688151041,
+          "borderCoverage": 0.7591497747747747,
+          "selectionScore": 2.116582013465263
+        }
+      ],
+      "modelPixelFraction": 0.23532613118489584,
+      "modelMeanLuminance": 187.74014282226562,
+      "backgroundMeanLuminance": 223.76296997070312,
+      "diagnostic": "dK08uQ8-Zm9.png",
+      "backgroundMask": "dK08uQ8-Zm9-background-mask.png"
+    },
+    {
+      "assetId": "0nEWYSdUqRq",
+      "displayName": "Earth",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/0nEWYSdUqRq/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 1,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.0044530630111694,
+          "areaFraction": 0.9876912434895834,
+          "borderCoverage": 0.7405686936936937,
+          "selectionScore": 0.11530610355170978
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9885209202766418,
+          "areaFraction": 0.833770751953125,
+          "borderCoverage": 0.7207207207207207,
+          "selectionScore": 2.069602001357723
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9778426885604858,
+          "areaFraction": 0.8322703043619791,
+          "borderCoverage": 0.7243806306306306,
+          "selectionScore": 2.064413634506432
+        }
+      ],
+      "modelPixelFraction": 0.166229248046875,
+      "modelMeanLuminance": 81.6261978149414,
+      "backgroundMeanLuminance": 50.52716064453125,
+      "diagnostic": "0nEWYSdUqRq.png",
+      "backgroundMask": "0nEWYSdUqRq-background-mask.png"
+    },
+    {
+      "assetId": "7rUkCX-AIR2",
+      "displayName": "Gas Station",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/7rUkCX-AIR2/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9674539566040039,
+          "areaFraction": 0.9589436848958334,
+          "borderCoverage": 0.7370495495495496,
+          "selectionScore": 0.07302828092832847
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9885236620903015,
+          "areaFraction": 0.6191151936848959,
+          "borderCoverage": 0.7497184684684685,
+          "selectionScore": 2.113101364793004
+        },
+        {
+          "index": 2,
+          "samIouScore": 1.0031660795211792,
+          "areaFraction": 0.6229400634765625,
+          "borderCoverage": 0.8558558558558559,
+          "selectionScore": 2.286949863304963
+        }
+      ],
+      "modelPixelFraction": 0.3770599365234375,
+      "modelMeanLuminance": 149.3104705810547,
+      "backgroundMeanLuminance": 183.59884643554688,
+      "diagnostic": "7rUkCX-AIR2.png",
+      "backgroundMask": "7rUkCX-AIR2-background-mask.png"
+    },
+    {
+      "assetId": "1ir5OdM1M05",
+      "displayName": "Anatomy Figure WIP",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/1ir5OdM1M05/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9919338822364807,
+          "areaFraction": 0.9886830647786459,
+          "borderCoverage": 0.7447916666666666,
+          "selectionScore": 0.10912138223648071
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9889464974403381,
+          "areaFraction": 0.7430928548177084,
+          "borderCoverage": 0.7087556306306306,
+          "selectionScore": 2.052079943386284
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9680684804916382,
+          "areaFraction": 0.7452596028645834,
+          "borderCoverage": 0.7615427927927928,
+          "selectionScore": 2.1103826696808277
+        }
+      ],
+      "modelPixelFraction": 0.2547403971354167,
+      "modelMeanLuminance": 160.3201141357422,
+      "backgroundMeanLuminance": 21.91391372680664,
+      "diagnostic": "1ir5OdM1M05.png",
+      "backgroundMask": "1ir5OdM1M05-background-mask.png"
+    },
+    {
+      "assetId": "3QzBkeu0ljR",
+      "displayName": "\u8e66\u4ed4a\u6d77\u5e95\u4e16\u754c\ud83d\udc20\ud83d\udc33\ud83d\udc2c\ud83e\udd80",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/3QzBkeu0ljR/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9639310240745544,
+          "areaFraction": 0.934906005859375,
+          "borderCoverage": 0.7150900900900901,
+          "selectionScore": 2.0365661592096895
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9769818782806396,
+          "areaFraction": 0.5804595947265625,
+          "borderCoverage": 0.7124155405405406,
+          "selectionScore": 2.0456051890914506
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9843623638153076,
+          "areaFraction": 0.5788014729817709,
+          "borderCoverage": 0.7913851351351351,
+          "selectionScore": 2.1714400665180102
+        }
+      ],
+      "modelPixelFraction": 0.4211985270182292,
+      "modelMeanLuminance": 134.39393615722656,
+      "backgroundMeanLuminance": 222.1543426513672,
+      "diagnostic": "3QzBkeu0ljR.png",
+      "backgroundMask": "3QzBkeu0ljR-background-mask.png"
+    },
+    {
+      "assetId": "01lqee-dZAr",
+      "displayName": "Apartment building",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/01lqee-dZAr/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9845132827758789,
+          "areaFraction": 0.986907958984375,
+          "borderCoverage": 0.7291666666666666,
+          "selectionScore": 0.0782632827758789
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9948075413703918,
+          "areaFraction": 0.7435201009114584,
+          "borderCoverage": 0.734375,
+          "selectionScore": 2.096370041370392
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9924569129943848,
+          "areaFraction": 0.7479451497395834,
+          "borderCoverage": 0.8558558558558559,
+          "selectionScore": 2.2762406967781685
+        }
+      ],
+      "modelPixelFraction": 0.2520548502604167,
+      "modelMeanLuminance": 109.74687194824219,
+      "backgroundMeanLuminance": 80.81423950195312,
+      "diagnostic": "01lqee-dZAr.png",
+      "backgroundMask": "01lqee-dZAr-background-mask.png"
+    },
+    {
+      "assetId": "1HpVP5w2x1D",
+      "displayName": "Cup of coffee",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/1HpVP5w2x1D/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9581558108329773,
+          "areaFraction": 0.9218292236328125,
+          "borderCoverage": 0.7225506756756757,
+          "selectionScore": 2.041981824346491
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9635603427886963,
+          "areaFraction": 0.6337992350260416,
+          "borderCoverage": 0.7118524774774775,
+          "selectionScore": 2.0313390590049125
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.991051435470581,
+          "areaFraction": 0.6368662516276041,
+          "borderCoverage": 0.801097972972973,
+          "selectionScore": 2.1926983949300407
+        }
+      ],
+      "modelPixelFraction": 0.3631337483723958,
+      "modelMeanLuminance": 153.45433044433594,
+      "backgroundMeanLuminance": 131.55722045898438,
+      "diagnostic": "1HpVP5w2x1D.png",
+      "backgroundMask": "1HpVP5w2x1D-background-mask.png"
+    },
+    {
+      "assetId": "dLHpzNdygsg",
+      "displayName": "Astronaut",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/dLHpzNdygsg/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9944885969161987,
+          "areaFraction": 0.9867095947265625,
+          "borderCoverage": 0.7208614864864865,
+          "selectionScore": 0.07578082664592856
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.992634117603302,
+          "areaFraction": 0.8192240397135416,
+          "borderCoverage": 0.7166385135135135,
+          "selectionScore": 2.067591887873572
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9795182943344116,
+          "areaFraction": 0.8213857014973959,
+          "borderCoverage": 0.7906813063063063,
+          "selectionScore": 2.1655402537938713
+        }
+      ],
+      "modelPixelFraction": 0.17861429850260416,
+      "modelMeanLuminance": 149.63858032226562,
+      "backgroundMeanLuminance": 149.15863037109375,
+      "diagnostic": "dLHpzNdygsg.png",
+      "backgroundMask": "dLHpzNdygsg-background-mask.png"
+    },
+    {
+      "assetId": "eke7qcu_FR2",
+      "displayName": "Cheeseburger",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/eke7qcu_FR2/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 1,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9989719390869141,
+          "areaFraction": 0.9831186930338541,
+          "borderCoverage": 0.7136824324324325,
+          "selectionScore": 0.06949558773556275
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9921309947967529,
+          "areaFraction": 0.8295694986979166,
+          "borderCoverage": 0.7119932432432432,
+          "selectionScore": 2.060120859661618
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.976641058921814,
+          "areaFraction": 0.8295033772786459,
+          "borderCoverage": 0.7215653153153153,
+          "selectionScore": 2.0589890318947868
+        }
+      ],
+      "modelPixelFraction": 0.17043050130208334,
+      "modelMeanLuminance": 138.69650268554688,
+      "backgroundMeanLuminance": 115.01732635498047,
+      "diagnostic": "eke7qcu_FR2.png",
+      "backgroundMask": "eke7qcu_FR2-background-mask.png"
+    },
+    {
+      "assetId": "0X5xcxjszwI",
+      "displayName": "Knife",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/0X5xcxjszwI/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.0292510986328125,
+          "areaFraction": 0.9570871988932291,
+          "borderCoverage": 0.7868806306306306,
+          "selectionScore": 0.20957204457875855
+        },
+        {
+          "index": 1,
+          "samIouScore": 1.015055775642395,
+          "areaFraction": 0.9522349039713541,
+          "borderCoverage": 0.7605574324324325,
+          "selectionScore": 0.1558919242910437
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9936954975128174,
+          "areaFraction": 0.949066162109375,
+          "borderCoverage": 0.7132601351351351,
+          "selectionScore": 2.06358570021552
+        }
+      ],
+      "modelPixelFraction": 0.050933837890625,
+      "modelMeanLuminance": 137.70838928222656,
+      "backgroundMeanLuminance": 74.81575775146484,
+      "diagnostic": "0X5xcxjszwI.png",
+      "backgroundMask": "0X5xcxjszwI-background-mask.png"
+    },
+    {
+      "assetId": "6dM1J6f6pm9",
+      "displayName": "Cat",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/6dM1J6f6pm9/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.0055726766586304,
+          "areaFraction": 0.990081787109375,
+          "borderCoverage": 0.732545045045045,
+          "selectionScore": 0.10439024422619791
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.999499499797821,
+          "areaFraction": 0.8815816243489584,
+          "borderCoverage": 0.7359234234234234,
+          "selectionScore": 2.103384634932956
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9785481691360474,
+          "areaFraction": 0.8820902506510416,
+          "borderCoverage": 0.7857545045045045,
+          "selectionScore": 2.157179925892804
+        }
+      ],
+      "modelPixelFraction": 0.11790974934895833,
+      "modelMeanLuminance": 145.89601135253906,
+      "backgroundMeanLuminance": 166.4309844970703,
+      "diagnostic": "6dM1J6f6pm9.png",
+      "backgroundMask": "6dM1J6f6pm9-background-mask.png"
+    },
+    {
+      "assetId": "6pwiq7hSrHr",
+      "displayName": "Tree",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/6pwiq7hSrHr/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.0039881467819214,
+          "areaFraction": 0.9818267822265625,
+          "borderCoverage": 0.7138231981981982,
+          "selectionScore": 0.07472294407921876
+        },
+        {
+          "index": 1,
+          "samIouScore": 1.0009734630584717,
+          "areaFraction": 0.7526957194010416,
+          "borderCoverage": 0.7117117117117117,
+          "selectionScore": 2.0685410306260392
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9804518222808838,
+          "areaFraction": 0.7534383138020834,
+          "borderCoverage": 0.7308558558558559,
+          "selectionScore": 2.0767356060646676
+        }
+      ],
+      "modelPixelFraction": 0.24656168619791666,
+      "modelMeanLuminance": 137.7751007080078,
+      "backgroundMeanLuminance": 219.09072875976562,
+      "diagnostic": "6pwiq7hSrHr.png",
+      "backgroundMask": "6pwiq7hSrHr-background-mask.png"
+    },
+    {
+      "assetId": "2EHvZLax4Y3",
+      "displayName": "Computer",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/2EHvZLax4Y3/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9860050082206726,
+          "areaFraction": 0.9845428466796875,
+          "borderCoverage": 0.7224099099099099,
+          "selectionScore": 0.06961987308553752
+        },
+        {
+          "index": 1,
+          "samIouScore": 1.0035994052886963,
+          "areaFraction": 0.7139892578125,
+          "borderCoverage": 0.731418918918919,
+          "selectionScore": 2.100727783667075
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9954067468643188,
+          "areaFraction": 0.7179768880208334,
+          "borderCoverage": 0.8495213963963963,
+          "selectionScore": 2.2696888414589136
+        }
+      ],
+      "modelPixelFraction": 0.2820231119791667,
+      "modelMeanLuminance": 87.65726470947266,
+      "backgroundMeanLuminance": 113.8407211303711,
+      "diagnostic": "2EHvZLax4Y3.png",
+      "backgroundMask": "2EHvZLax4Y3-background-mask.png"
+    },
+    {
+      "assetId": "bHyQe5jzdiQ",
+      "displayName": "Farm house",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/bHyQe5jzdiQ/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9780818223953247,
+          "areaFraction": 0.9754638671875,
+          "borderCoverage": 0.7198761261261262,
+          "selectionScore": 0.057896011584514184
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9848179817199707,
+          "areaFraction": 0.8077850341796875,
+          "borderCoverage": 0.7181869369369369,
+          "selectionScore": 2.062098387125376
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9867973327636719,
+          "areaFraction": 0.809356689453125,
+          "borderCoverage": 0.7864583333333334,
+          "selectionScore": 2.166484832763672
+        }
+      ],
+      "modelPixelFraction": 0.190643310546875,
+      "modelMeanLuminance": 160.9430389404297,
+      "backgroundMeanLuminance": 225.56423950195312,
+      "diagnostic": "bHyQe5jzdiQ.png",
+      "backgroundMask": "bHyQe5jzdiQ-background-mask.png"
+    },
+    {
+      "assetId": "ap9I6sv347V",
+      "displayName": "Gun",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/ap9I6sv347V/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 1,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.002542495727539,
+          "areaFraction": 0.9886118570963541,
+          "borderCoverage": 0.7135416666666666,
+          "selectionScore": 0.07285499572753906
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9913014769554138,
+          "areaFraction": 0.8846893310546875,
+          "borderCoverage": 0.7117117117117117,
+          "selectionScore": 2.0588690445229814
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9757187366485596,
+          "areaFraction": 0.8836212158203125,
+          "borderCoverage": 0.7119932432432432,
+          "selectionScore": 2.0437086015134245
+        }
+      ],
+      "modelPixelFraction": 0.1153106689453125,
+      "modelMeanLuminance": 110.1102066040039,
+      "backgroundMeanLuminance": 191.8168487548828,
+      "diagnostic": "ap9I6sv347V.png",
+      "backgroundMask": "ap9I6sv347V-background-mask.png"
+    },
+    {
+      "assetId": "aLbeOSoOpXN",
+      "displayName": "Gun",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/aLbeOSoOpXN/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 1,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.0095523595809937,
+          "areaFraction": 0.9891916910807291,
+          "borderCoverage": 0.7149493243243243,
+          "selectionScore": 0.08197634606748005
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9958162903785706,
+          "areaFraction": 0.8538055419921875,
+          "borderCoverage": 0.7119932432432432,
+          "selectionScore": 2.0638061552434355
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9748169183731079,
+          "areaFraction": 0.8525288899739584,
+          "borderCoverage": 0.7132601351351351,
+          "selectionScore": 2.0447071210758105
+        }
+      ],
+      "modelPixelFraction": 0.1461944580078125,
+      "modelMeanLuminance": 117.36188507080078,
+      "backgroundMeanLuminance": 170.07806396484375,
+      "diagnostic": "aLbeOSoOpXN.png",
+      "backgroundMask": "aLbeOSoOpXN-background-mask.png"
+    },
+    {
+      "assetId": "75WQH5E29tF",
+      "displayName": "Paper airplane",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/75WQH5E29tF/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 1,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.0223281383514404,
+          "areaFraction": 0.9686024983723959,
+          "borderCoverage": 0.731418918918919,
+          "selectionScore": 0.11945651672981894
+        },
+        {
+          "index": 1,
+          "samIouScore": 1.0140854120254517,
+          "areaFraction": 0.9426981608072916,
+          "borderCoverage": 0.7155123873873874,
+          "selectionScore": 2.087353993106533
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9917157888412476,
+          "areaFraction": 0.9413350423177084,
+          "borderCoverage": 0.7119932432432432,
+          "selectionScore": 2.0597056537061125
+        }
+      ],
+      "modelPixelFraction": 0.057301839192708336,
+      "modelMeanLuminance": 205.02099609375,
+      "backgroundMeanLuminance": 72.00015258789062,
+      "diagnostic": "75WQH5E29tF.png",
+      "backgroundMask": "75WQH5E29tF-background-mask.png"
+    },
+    {
+      "assetId": "0t2ZYRBsqX-",
+      "displayName": "Lighthouse",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/0t2ZYRBsqX-/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 0.9986382722854614,
+          "areaFraction": 0.9706878662109375,
+          "borderCoverage": 0.7125563063063063,
+          "selectionScore": 0.06747273174492108
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9874029755592346,
+          "areaFraction": 0.8743845621744791,
+          "borderCoverage": 0.7119932432432432,
+          "selectionScore": 2.0553928404240995
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9802806377410889,
+          "areaFraction": 0.873748779296875,
+          "borderCoverage": 0.7200168918918919,
+          "selectionScore": 2.0603059755789266
+        }
+      ],
+      "modelPixelFraction": 0.126251220703125,
+      "modelMeanLuminance": 151.59716796875,
+      "backgroundMeanLuminance": 177.46908569335938,
+      "diagnostic": "0t2ZYRBsqX-.png",
+      "backgroundMask": "0t2ZYRBsqX--background-mask.png"
+    },
+    {
+      "assetId": "fojR5i3h_nh",
+      "displayName": "Flying saucer",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/fojR5i3h_nh/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 1,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.0080509185791016,
+          "areaFraction": 0.981658935546875,
+          "borderCoverage": 0.7134009009009009,
+          "selectionScore": 0.07815226993045288
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9950118660926819,
+          "areaFraction": 0.8778127034505209,
+          "borderCoverage": 0.7117117117117117,
+          "selectionScore": 2.0625794336602494
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9739106893539429,
+          "areaFraction": 0.8762461344401041,
+          "borderCoverage": 0.7119932432432432,
+          "selectionScore": 2.041900554218808
+        }
+      ],
+      "modelPixelFraction": 0.12218729654947917,
+      "modelMeanLuminance": 171.46893310546875,
+      "backgroundMeanLuminance": 225.81314086914062,
+      "diagnostic": "fojR5i3h_nh.png",
+      "backgroundMask": "fojR5i3h_nh-background-mask.png"
+    },
+    {
+      "assetId": "68OOL4zL6Co",
+      "displayName": "Elm tree",
+      "thumbnailUrl": "https://s3.us-east-005.backblazeb2.com/icosa-gallery/poly/68OOL4zL6Co/thumbnail.png",
+      "width": 512,
+      "height": 384,
+      "selectedCandidate": 2,
+      "candidates": [
+        {
+          "index": 0,
+          "samIouScore": 1.0007025003433228,
+          "areaFraction": 0.9813893636067709,
+          "borderCoverage": 0.7129786036036037,
+          "selectionScore": 0.07017040574872802
+        },
+        {
+          "index": 1,
+          "samIouScore": 0.9992044568061829,
+          "areaFraction": 0.78155517578125,
+          "borderCoverage": 0.7117117117117117,
+          "selectionScore": 2.0667720243737504
+        },
+        {
+          "index": 2,
+          "samIouScore": 0.9817502498626709,
+          "areaFraction": 0.7821756998697916,
+          "borderCoverage": 0.7297297297297297,
+          "selectionScore": 2.0763448444572656
+        }
+      ],
+      "modelPixelFraction": 0.21782430013020834,
+      "modelMeanLuminance": 102.95191955566406,
+      "backgroundMeanLuminance": 197.05108642578125,
+      "diagnostic": "68OOL4zL6Co.png",
+      "backgroundMask": "68OOL4zL6Co-background-mask.png"
+    }
+  ]
+}

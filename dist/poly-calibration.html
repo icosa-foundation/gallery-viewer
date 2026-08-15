@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Poly renderer calibration</title>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js",
+                "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/",
+                "three/examples/": "https://cdn.jsdelivr.net/npm/three@0.185.1/examples/",
+                "three-icosa": "./three-icosa.module.js?v=poly-calibration-1",
+                "three-tiltloader": "https://cdn.jsdelivr.net/npm/three-tiltloader@0.4.2-alpha.4/dist/three-tiltloader.module.js",
+                "@sparkjsdev/spark": "https://cdn.jsdelivr.net/npm/@sparkjsdev/spark@2.1.0/dist/spark.module.js"
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 18px; background: #151515; color: #eee; }
+        h1 { margin: 0 0 6px; font-size: 22px; }
+        #controls { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; }
+        #controls select { max-width: 420px; padding: 4px 7px; }
+        #controls a { color: #9ecbff; }
+        #status { margin-bottom: 16px; color: #bbb; font: 13px/1.4 monospace; }
+        #results { display: grid; grid-template-columns: repeat(auto-fit, 512px); gap: 20px; align-items: start; }
+        figure { width: 512px; margin: 0; }
+        figure img { display: block; width: 512px; height: 384px; background: #000; }
+        figcaption { min-height: 48px; padding-top: 7px; font-size: 13px; line-height: 1.35; }
+        .metric { color: #9ecbff; font-family: monospace; }
+        #icosa-viewer {
+            position: fixed;
+            left: -4096px;
+            top: 0;
+            width: 512px;
+            height: 384px;
+            overflow: hidden;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">Poly renderer calibration</h1>
+    <div id="controls">
+        <label for="asset-select">Asset</label>
+        <select id="asset-select">
+            <option>Loading full API fixture catalog…</option>
+        </select>
+        <a id="segmentation-link" target="_blank">Inspect thumbnail mask</a>
+        <a id="three-way-link">Open original three-way comparison</a>
+    </div>
+    <div id="status">Loading asset and authoritative thumbnail…</div>
+    <main id="results"></main>
+    <div id="icosa-viewer"></div>
+
+    <script type="module">
+        import * as THREE from "three";
+        import { Viewer } from "./icosa-viewer.module.js?v=poly-calibration-1";
+        import { populateApiAssetSelect } from "./comparison-fixtures.js";
+
+        const WIDTH = 512;
+        const HEIGHT = 384;
+        const pageParams = new URLSearchParams(location.search);
+        const ASSET_ID = pageParams.get("asset") || "1HpVP5w2x1D";
+        const assetSelect = document.getElementById("asset-select");
+        const segmentationLink = document.getElementById("segmentation-link");
+        const threeWayLink = document.getElementById("three-way-link");
+        await populateApiAssetSelect(assetSelect, ASSET_ID, "1HpVP5w2x1D");
+        assetSelect.addEventListener("change", () => {
+            const url = new URL(location.href);
+            url.searchParams.set("asset", assetSelect.value);
+            location.href = url;
+        });
+        threeWayLink.href = `./comparison-side-by-side.html?fixture=api-${encodeURIComponent(ASSET_ID)}`;
+        segmentationLink.href = `./poly-segmentation/${encodeURIComponent(ASSET_ID)}.png?v=2`;
+        const status = document.getElementById("status");
+        const results = document.getElementById("results");
+
+        const assetResponse = await fetch(`https://api.icosa.gallery/v1/assets/${ASSET_ID}`);
+        if (!assetResponse.ok) throw new Error(`Icosa API returned ${assetResponse.status}`);
+        const asset = await assetResponse.json();
+        document.getElementById("title").textContent = `Poly renderer calibration — ${asset.displayName}`;
+        const presentation = asset.presentationParams;
+        const cameraSettings = {
+            ...(presentation.camera || {}),
+            ...(asset.camera || {})
+        };
+        const format = asset.formats.find(candidate => candidate.isPreferredForGalleryViewer);
+        if (!format?.root?.url) throw new Error("No preferred Gallery Viewer format");
+
+        const viewer = new Viewer(new URL("./sketch_assets/", location.href).toString());
+        window.viewer = viewer;
+        await viewer.loadGltf(format.root.url, true, {
+            defaultBackgroundColor: presentation.backgroundColor,
+            camera: cameraSettings,
+            geometryData: presentation.GOOGLE_geometry_data,
+            colorSpace: presentation.colorSpace
+        });
+        if (viewer.loadingError) throw new Error(`Gallery Viewer failed to load ${asset.displayName}`);
+
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        viewer.renderer.setAnimationLoop(null);
+        viewer.renderer.setPixelRatio(1);
+        viewer.renderer.setSize(WIDTH, HEIGHT, false);
+        viewer.activeCamera.aspect = WIDTH / HEIGHT;
+        viewer.activeCamera.updateProjectionMatrix();
+        viewer.scene.updateMatrixWorld(true);
+
+        const originalOutputColorSpace = viewer.renderer.outputColorSpace;
+        const originalBackground = viewer.scene.background;
+        const originalFov = viewer.activeCamera.fov;
+
+        function canvasDataUrl() {
+            return viewer.renderer.domElement.toDataURL("image/png");
+        }
+
+        function renderSceneToScreen() {
+            viewer.renderer.setRenderTarget(null);
+            viewer.renderer.outputColorSpace = THREE.SRGBColorSpace;
+            viewer.renderer.render(viewer.scene, viewer.activeCamera);
+            return canvasDataUrl();
+        }
+
+        const maskMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+            toneMapped: false
+        });
+
+        function renderModelMask() {
+            const previousOverrideMaterial = viewer.scene.overrideMaterial;
+            const previousBackground = viewer.scene.background;
+            const previousOutputColorSpace = viewer.renderer.outputColorSpace;
+            viewer.scene.overrideMaterial = maskMaterial;
+            viewer.scene.background = new THREE.Color(0x000000);
+            viewer.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+            viewer.renderer.setRenderTarget(null);
+            viewer.renderer.clear();
+            viewer.renderer.render(viewer.scene, viewer.activeCamera);
+            const result = canvasDataUrl();
+            viewer.scene.overrideMaterial = previousOverrideMaterial;
+            viewer.scene.background = previousBackground;
+            viewer.renderer.outputColorSpace = previousOutputColorSpace;
+            return result;
+        }
+
+        function renderWithoutModel(renderFunction) {
+            const previousVisibility = viewer.contentRoot.visible;
+            viewer.contentRoot.visible = false;
+            const result = renderFunction();
+            viewer.contentRoot.visible = previousVisibility;
+            return result;
+        }
+
+        const variants = [];
+
+        const lightsToRemove = [];
+        viewer.scene.traverse(object => {
+            if (object.isLight) lightsToRemove.push(object);
+        });
+        lightsToRemove.forEach(light => light.removeFromParent());
+
+        // The preserved upload thumbnail uses a different framing from the
+        // presentation camera now returned by the API. Normalize the render's
+        // model bounds to the thumbnail before comparing photometry. These
+        // values are deliberately calibration-only, not proposed viewer logic.
+        if (ASSET_ID === "1HpVP5w2x1D") {
+            const framingScale = 333 / 345;
+            viewer.activeCamera.fov = THREE.MathUtils.radToDeg(
+                2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(originalFov) / 2) / framingScale)
+            );
+            viewer.activeCamera.setViewOffset(WIDTH, HEIGHT, 44, -100, WIDTH, HEIGHT);
+            viewer.activeCamera.updateProjectionMatrix();
+        }
+
+        // Poly stored this color as gamma-valued numeric components and did not
+        // linearize it when its renderer selected THREE.GammaEncoding.
+        viewer.scene.background = new THREE.Color().fromArray(
+            presentation.GOOGLE_backgrounds.color
+        );
+
+        const stats = presentation.GOOGLE_geometry_data.stats;
+        const centroid = new THREE.Vector3().fromArray(stats.centroid);
+        const radius = stats.radius;
+        const warmWhite = new THREE.Color().setRGB(1, 0xee / 0xff, 0xdd / 0xff);
+        const keyDirection = new THREE.Vector3(-1, 2, -1).normalize();
+
+        const key = new THREE.DirectionalLight(warmWhite, 0.325);
+        key.name = "PolyKey";
+        key.position.copy(centroid).addScaledVector(keyDirection, 1.01 * radius);
+        key.target.position.copy(centroid);
+        const shadowsEnabled = presentation.GOOGLE_lighting_rig?.disableShadows !== true;
+        key.castShadow = shadowsEnabled;
+        key.shadow.mapSize.set(2048, 2048);
+        const keyDistance = key.position.distanceTo(centroid);
+        key.shadow.bias = -0.004;
+        key.shadow.camera.near = keyDistance - radius;
+        key.shadow.camera.far = keyDistance + radius;
+        key.shadow.camera.top = radius;
+        key.shadow.camera.left = -radius;
+        key.shadow.camera.right = radius;
+        key.shadow.camera.bottom = -radius;
+        viewer.scene.add(key.target, key);
+
+        const head = new THREE.DirectionalLight(warmWhite, 0.25);
+        head.name = "PolyHead";
+        head.position.set(-radius, 0.5 * radius, 0.5 * radius);
+        head.target.position.copy(centroid);
+        head.castShadow = false;
+        // Gallery Viewer's flat camera is not normally in the scene graph, so
+        // mirror its pose with a scene-owned carrier for Poly's head light.
+        const headCarrier = new THREE.Group();
+        headCarrier.name = "PolyHeadCarrier";
+        headCarrier.position.copy(viewer.activeCamera.position);
+        headCarrier.quaternion.copy(viewer.activeCamera.quaternion);
+        headCarrier.scale.copy(viewer.activeCamera.scale);
+        headCarrier.add(head);
+        viewer.scene.add(headCarrier, head.target);
+
+        const syncHeadLight = () => {
+            headCarrier.position.copy(viewer.activeCamera.position);
+            headCarrier.quaternion.copy(viewer.activeCamera.quaternion);
+            headCarrier.scale.copy(viewer.activeCamera.scale);
+            requestAnimationFrame(syncHeadLight);
+        };
+        requestAnimationFrame(syncHeadLight);
+
+        const groundColor = new THREE.Color()
+            .fromArray(presentation.GOOGLE_hemi_light.groundColor)
+            .lerp(new THREE.Color(1, 1, 1), 0.7);
+        const hemisphere = new THREE.HemisphereLight(
+            new THREE.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1),
+            groundColor,
+            0.6 * 1.3
+        );
+        hemisphere.name = "PolyHemisphere";
+        viewer.scene.add(hemisphere);
+
+        viewer.renderer.shadowMap.enabled = shadowsEnabled;
+        viewer.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        viewer.loadedModel.traverse(object => {
+            if (!object.isMesh) return;
+            object.castShadow = true;
+            object.receiveShadow = true;
+            if (object.material) object.material.shadowSide = THREE.FrontSide;
+        });
+
+        const rimPower = ASSET_ID === "1HpVP5w2x1D" ? 2 : 5;
+        const rimmedMaterials = new Set();
+        viewer.loadedModel.traverse(object => {
+            const materials = Array.isArray(object.material)
+                ? object.material
+                : object.material ? [object.material] : [];
+            materials.forEach(material => {
+                if (!material.isMeshStandardMaterial || rimmedMaterials.has(material)) return;
+                rimmedMaterials.add(material);
+                const previousOnBeforeCompile = material.onBeforeCompile;
+                material.onBeforeCompile = shader => {
+                    previousOnBeforeCompile.call(material, shader);
+                    shader.uniforms.polyEncodeOutput = { value: false };
+                    shader.uniforms.polyRimStrength = { value: 2.0 };
+                    material.userData.polyEncodeOutput = shader.uniforms.polyEncodeOutput;
+                    material.userData.polyRimStrength = shader.uniforms.polyRimStrength;
+                    shader.fragmentShader = `uniform bool polyEncodeOutput;\nuniform float polyRimStrength;\n${shader.fragmentShader}`;
+                    shader.fragmentShader = shader.fragmentShader.replace(
+                        "#include <emissivemap_fragment>",
+                        `#include <emissivemap_fragment>
+                        vec3 polyRimColor = vec3(1.0, 0.98, 0.86) * diffuseColor.rgb;
+                        vec3 polyViewDirection = normalize(vViewPosition);
+                        float polyRimFresnel = pow(1.0 - dot(polyViewDirection, normal), ${rimPower.toFixed(1)});
+                        polyRimFresnel *= mix(1.0, 0.07, abs(normal.y));
+                        polyRimFresnel *= mix(1.0, 0.3, saturate(normal.x));
+                        totalEmissiveRadiance += polyRimStrength * polyRimColor * polyRimFresnel;`
+                    );
+                    shader.fragmentShader = shader.fragmentShader.replace(
+                        "#include <colorspace_fragment>",
+                        `if (polyEncodeOutput) {
+                            gl_FragColor.rgb = pow(max(gl_FragColor.rgb, vec3(0.0)), vec3(0.5));
+                        }
+                        #include <colorspace_fragment>`
+                    );
+                };
+                material.customProgramCacheKey = () => "poly-calibration-rim-v2";
+                material.needsUpdate = true;
+            });
+        });
+
+        const sceneTarget = new THREE.WebGLRenderTarget(WIDTH, HEIGHT, {
+            type: THREE.UnsignedByteType,
+            format: THREE.RGBAFormat,
+            minFilter: THREE.LinearFilter,
+            magFilter: THREE.LinearFilter,
+            depthBuffer: true,
+            stencilBuffer: false
+        });
+        sceneTarget.texture.colorSpace = THREE.NoColorSpace;
+
+        const postMaterial = new THREE.ShaderMaterial({
+            depthTest: false,
+            depthWrite: false,
+            toneMapped: false,
+            uniforms: {
+                tDiffuse: { value: sceneTarget.texture },
+                legacyGammaInput: { value: true },
+                enablePostEffects: { value: true }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position.xy, 0.0, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D tDiffuse;
+                uniform bool legacyGammaInput;
+                uniform bool enablePostEffects;
+                varying vec2 vUv;
+
+                vec3 filmGrain(vec3 color) {
+                    float xy = (vUv.x + 4.0) * (vUv.y + 4.0) * 10.0;
+                    float noise = mod((mod(xy, 13.0) + 1.0) * (mod(xy, 123.0) + 1.0), 0.01) - 0.005;
+                    return color * (1.0 - noise * 2.0);
+                }
+
+                float softLight(float a, float b) {
+                    return (1.0 - 2.0 * b) * a * a + 2.0 * b * a;
+                }
+
+                vec3 vignette(vec3 color) {
+                    float distanceFromCenter = length(vUv - 0.5);
+                    float b = 1.0 - distanceFromCenter * distanceFromCenter;
+                    return vec3(
+                        softLight(color.r, b - 0.5),
+                        softLight(color.g, b - 0.5),
+                        softLight(color.b, b - 0.5)
+                    );
+                }
+
+                void main() {
+                    vec4 fragment = texture2D(tDiffuse, vUv);
+                    vec3 color = fragment.rgb;
+                    if (legacyGammaInput) {
+                        color = pow(max(color, vec3(0.0)), vec3(0.5));
+                    }
+                    if (enablePostEffects) {
+                        color = filmGrain(color);
+                        color = vignette(color);
+                    }
+                    gl_FragColor = vec4(color, fragment.a);
+                }
+            `
+        });
+        const postScene = new THREE.Scene();
+        const postCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+        postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), postMaterial));
+
+        function setPolyIntensityScale(scale, headMultiplier = 1) {
+            key.intensity = 0.325 * scale;
+            head.intensity = 0.25 * scale * headMultiplier;
+            hemisphere.intensity = 0.6 * 1.3 * scale;
+        }
+
+        function renderPoly({
+            scale,
+            postEffects,
+            legacyGammaInput,
+            splitLegacyEncoding = false,
+            headMultiplier = 1,
+            rimStrength = 2
+        }) {
+            setPolyIntensityScale(scale, headMultiplier);
+            viewer.scene.updateMatrixWorld(true);
+
+            rimmedMaterials.forEach(material => {
+                if (material.userData.polyEncodeOutput) {
+                    material.userData.polyEncodeOutput.value = splitLegacyEncoding;
+                }
+                if (material.userData.polyRimStrength) {
+                    material.userData.polyRimStrength.value = rimStrength;
+                }
+            });
+
+            viewer.renderer.outputColorSpace = THREE.SRGBColorSpace;
+            viewer.renderer.setRenderTarget(sceneTarget);
+            viewer.renderer.clear();
+            viewer.renderer.render(viewer.scene, viewer.activeCamera);
+
+            postMaterial.uniforms.legacyGammaInput.value = legacyGammaInput;
+            postMaterial.uniforms.enablePostEffects.value = postEffects;
+            viewer.renderer.outputColorSpace = legacyGammaInput
+                ? THREE.LinearSRGBColorSpace
+                : THREE.SRGBColorSpace;
+            viewer.renderer.setRenderTarget(null);
+            viewer.renderer.clear();
+            viewer.renderer.render(postScene, postCamera);
+            const result = canvasDataUrl();
+            rimmedMaterials.forEach(material => {
+                if (material.userData.polyEncodeOutput) {
+                    material.userData.polyEncodeOutput.value = false;
+                }
+            });
+            return result;
+        }
+
+        function installPolyEsmSampling() {
+            if (THREE.ShaderChunk.shadowmap_pars_fragment.includes("polyEsmCompare")) return;
+
+            THREE.ShaderChunk.shadowmap_pars_fragment = THREE.ShaderChunk.shadowmap_pars_fragment
+                .replace(
+                    "#ifdef USE_SHADOWMAP",
+                    `#ifdef USE_SHADOWMAP
+                    vec4 polyEncodeEsmDepth(const in float value) {
+                        return packDepthToRGBA(value / exp(20.0));
+                    }
+                    float polyDecodeEsmDepth(const in vec4 value) {
+                        return unpackRGBAToDepth(value) * exp(20.0);
+                    }
+                    float polyEsmCompare(sampler2D encodedDepths, vec2 uv, float fragmentExpDepth) {
+                        float blockerExpDepth = polyDecodeEsmDepth(texture2D(encodedDepths, uv));
+                        return saturate(fragmentExpDepth * blockerExpDepth);
+                    }
+                    float polyBilinearEsmCompare(
+                        sampler2D encodedDepths,
+                        vec2 size,
+                        vec2 uv,
+                        float fragmentExpDepth
+                    ) {
+                        const vec2 offset = vec2(0.0, 1.0);
+                        vec2 texelSize = vec2(1.0) / size;
+                        vec2 centroidUv = floor(uv * size - 0.5) / size;
+                        float lowerLeft = polyEsmCompare(encodedDepths, centroidUv + texelSize * offset.xx, fragmentExpDepth);
+                        float upperLeft = polyEsmCompare(encodedDepths, centroidUv + texelSize * offset.xy, fragmentExpDepth);
+                        float lowerRight = polyEsmCompare(encodedDepths, centroidUv + texelSize * offset.yx, fragmentExpDepth);
+                        float upperRight = polyEsmCompare(encodedDepths, centroidUv + texelSize * offset.yy, fragmentExpDepth);
+                        vec2 fraction = fract(uv * size - 0.5);
+                        return mix(
+                            mix(lowerLeft, upperLeft, fraction.y),
+                            mix(lowerRight, upperRight, fraction.y),
+                            fraction.x
+                        );
+                    }`
+                )
+                .replace(
+                    "if ( frustumTest ) {",
+                    `if ( frustumTest ) {
+                        float polyFragmentExpDepth = exp(-20.0 * shadowCoord.z);
+                        float polyShadow = polyBilinearEsmCompare(
+                            shadowMap,
+                            shadowMapSize,
+                            shadowCoord.xy,
+                            polyFragmentExpDepth
+                        );
+                        return mix(1.0, polyShadow, shadowIntensity);`
+                );
+
+            rimmedMaterials.forEach(material => {
+                material.customProgramCacheKey = () => "poly-calibration-rim-esm-v1";
+                material.needsUpdate = true;
+            });
+        }
+
+        const shadowKernel = (() => {
+            const fullKernel = [];
+            let total = 0;
+            for (let row = -5; row <= 5; row++) {
+                for (let column = -5; column <= 5; column++) {
+                    const weight = Math.exp(-(row * row + column * column) / 50);
+                    fullKernel.push(weight);
+                    total += weight;
+                }
+            }
+            return Array.from({ length: 36 }, (_, index) => {
+                const row = Math.floor(index / 6);
+                const column = index % 6;
+                return fullKernel[row * 11 + column] / total;
+            });
+        })();
+
+        const shadowBlurMaterial = new THREE.ShaderMaterial({
+            depthTest: false,
+            depthWrite: false,
+            toneMapped: false,
+            uniforms: {
+                source: { value: null },
+                texelSize: { value: new THREE.Vector2() },
+                kernel: { value: shadowKernel }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                void main() {
+                    vUv = uv;
+                    gl_Position = vec4(position.xy, 0.0, 1.0);
+                }
+            `,
+            fragmentShader: `
+                varying vec2 vUv;
+                uniform sampler2D source;
+                uniform float kernel[36];
+                uniform vec2 texelSize;
+                int polyAbs(int value) { return value < 0 ? -value : value; }
+                #include <packing>
+                vec4 polyEncodeEsmDepth(const in float value) {
+                    return packDepthToRGBA(value / exp(20.0));
+                }
+                void main() {
+                    const float exponent = 20.0;
+                    float centerDepth = unpackRGBAToDepth(texture2D(source, vUv));
+                    float weightedDepth = 0.0;
+                    float totalWeight = 0.0;
+                    for (int row = -5; row <= 5; row++) {
+                        for (int column = -5; column <= 5; column++) {
+                            vec2 offset = 5.0 * vec2(float(row) / 5.0, float(column) / 5.0) * texelSize;
+                            float sampleDepth = unpackRGBAToDepth(texture2D(source, vUv + offset));
+                            float weight = kernel[(5 - polyAbs(row)) * 6 + (5 - polyAbs(column))];
+                            if (sampleDepth > centerDepth) {
+                                float difference = exp(exponent * sampleDepth) - exp(exponent * centerDepth);
+                                weight *= exp(-pow(difference, 2.0) / exp(1.8 * exponent));
+                            }
+                            weightedDepth += exp(exponent * sampleDepth) * weight;
+                            totalWeight += weight;
+                        }
+                    }
+                    gl_FragColor = polyEncodeEsmDepth(weightedDepth / totalWeight);
+                }
+            `
+        });
+        const shadowCopyMaterial = new THREE.MeshBasicMaterial({
+            depthTest: false,
+            depthWrite: false,
+            toneMapped: false
+        });
+        const shadowProcessScene = new THREE.Scene();
+        const shadowProcessQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), shadowBlurMaterial);
+        shadowProcessScene.add(shadowProcessQuad);
+
+        function blurPolyShadowMap() {
+            const shadowTarget = key.shadow.map;
+            const temporaryTarget = new THREE.WebGLRenderTarget(
+                shadowTarget.width,
+                shadowTarget.height,
+                {
+                    format: THREE.RGBAFormat,
+                    type: THREE.UnsignedByteType,
+                    minFilter: THREE.NearestFilter,
+                    magFilter: THREE.NearestFilter,
+                    depthBuffer: false,
+                    stencilBuffer: false
+                }
+            );
+            temporaryTarget.texture.colorSpace = THREE.NoColorSpace;
+
+            shadowBlurMaterial.uniforms.source.value = shadowTarget.texture;
+            shadowBlurMaterial.uniforms.texelSize.value.set(
+                1 / shadowTarget.width,
+                1 / shadowTarget.height
+            );
+            shadowProcessQuad.material = shadowBlurMaterial;
+            viewer.renderer.setRenderTarget(temporaryTarget);
+            viewer.renderer.render(shadowProcessScene, postCamera);
+
+            shadowCopyMaterial.map = temporaryTarget.texture;
+            shadowProcessQuad.material = shadowCopyMaterial;
+            viewer.renderer.setRenderTarget(shadowTarget);
+            viewer.renderer.render(shadowProcessScene, postCamera);
+            temporaryTarget.dispose();
+        }
+
+        function renderPolyWithEsm(splitLegacyEncoding = false) {
+            setPolyIntensityScale(Math.PI);
+            installPolyEsmSampling();
+            rimmedMaterials.forEach(material => {
+                if (material.userData.polyEncodeOutput) {
+                    material.userData.polyEncodeOutput.value = splitLegacyEncoding;
+                }
+            });
+            viewer.renderer.outputColorSpace = THREE.SRGBColorSpace;
+            if (shadowsEnabled) {
+                viewer.renderer.shadowMap.autoUpdate = true;
+                key.shadow.needsUpdate = true;
+                viewer.renderer.setRenderTarget(sceneTarget);
+                viewer.renderer.render(viewer.scene, viewer.activeCamera);
+                blurPolyShadowMap();
+                viewer.renderer.shadowMap.autoUpdate = false;
+            }
+
+            viewer.renderer.setRenderTarget(sceneTarget);
+            viewer.renderer.clear();
+            viewer.renderer.render(viewer.scene, viewer.activeCamera);
+
+            postMaterial.uniforms.legacyGammaInput.value = !splitLegacyEncoding;
+            viewer.renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+            viewer.renderer.setRenderTarget(null);
+            viewer.renderer.clear();
+            viewer.renderer.render(postScene, postCamera);
+            const result = canvasDataUrl();
+            rimmedMaterials.forEach(material => {
+                if (material.userData.polyEncodeOutput) {
+                    material.userData.polyEncodeOutput.value = false;
+                }
+            });
+            return result;
+        }
+
+        const framingDetail = ASSET_ID === "1HpVP5w2x1D"
+            ? "thumbnail-normalized framing"
+            : "API presentation camera";
+
+        const bestEffortOptions = {
+            scale: Math.PI,
+            legacyGammaInput: true,
+            headMultiplier: 3.5
+        };
+        const comparisonVariants = [
+            {
+                id: "best-effort-both",
+                title: "Core gamma + post + rim",
+                detail: "Core gamma with both optional effects",
+                options: { ...bestEffortOptions, postEffects: true, rimStrength: 2 }
+            },
+            {
+                id: "best-effort-post-only",
+                title: "Core gamma + post",
+                detail: "Core gamma with film grain and vignette, without rim lighting",
+                options: { ...bestEffortOptions, postEffects: true, rimStrength: 0 }
+            },
+            {
+                id: "best-effort-rim-only",
+                title: "Core gamma + rim",
+                detail: "Core gamma with rim lighting, without film grain or vignette",
+                options: { ...bestEffortOptions, postEffects: false, rimStrength: 2 }
+            },
+            {
+                id: "best-effort-neither",
+                title: "Core gamma only",
+                detail: "Core gamma without either optional effect",
+                options: { ...bestEffortOptions, postEffects: false, rimStrength: 0 }
+            }
+        ];
+        comparisonVariants.forEach(comparison => {
+            variants.push({
+                id: comparison.id,
+                title: comparison.title,
+                detail: `${comparison.detail}; ${framingDetail}`,
+                url: renderPoly(comparison.options),
+                modelMaskUrl: renderModelMask(),
+                backgroundUrl: renderWithoutModel(() => renderPoly(comparison.options))
+            });
+        });
+
+        viewer.renderer.outputColorSpace = originalOutputColorSpace;
+        viewer.scene.background = originalBackground;
+
+        function addFigure({ id, title, detail, url }, isReference = false) {
+            const figure = document.createElement("figure");
+            figure.dataset.variant = id;
+            const image = document.createElement("img");
+            image.crossOrigin = "anonymous";
+            image.alt = title;
+            image.src = url;
+            const caption = document.createElement("figcaption");
+            caption.innerHTML = `<strong>${title}</strong><br>${detail}${isReference ? "" : '<br><span class="metric">measuring…</span>'}`;
+            figure.append(image, caption);
+            results.append(figure);
+            return image;
+        }
+
+        const thumbnailUrl = new URL(asset.thumbnail.url);
+        thumbnailUrl.searchParams.set("cors", "anonymous");
+        const referenceImage = addFigure({
+            id: "thumbnail",
+            title: "Authoritative Poly thumbnail",
+            detail: "Icosa's preserved 512×384 thumbnail",
+            url: thumbnailUrl.href
+        }, true);
+        const renderedImages = variants.map(variant => ({
+            variant,
+            image: addFigure(variant),
+            modelMaskImage: Object.assign(new Image(), { src: variant.modelMaskUrl }),
+            backgroundImage: Object.assign(new Image(), { src: variant.backgroundUrl })
+        }));
+
+        const thumbnailMaskImage = new Image();
+        thumbnailMaskImage.src = `./poly-segmentation/${encodeURIComponent(ASSET_ID)}-background-mask.png?v=2`;
+
+        function waitForImage(image) {
+            if (image.complete && image.naturalWidth) return Promise.resolve();
+            return new Promise((resolve, reject) => {
+                image.addEventListener("load", resolve, { once: true });
+                image.addEventListener("error", reject, { once: true });
+            });
+        }
+
+        await Promise.all([
+            waitForImage(referenceImage),
+            waitForImage(thumbnailMaskImage),
+            ...renderedImages.flatMap(entry => [
+                waitForImage(entry.image),
+                waitForImage(entry.modelMaskImage),
+                waitForImage(entry.backgroundImage)
+            ])
+        ]);
+
+        const metricCanvas = document.createElement("canvas");
+        metricCanvas.width = WIDTH;
+        metricCanvas.height = HEIGHT;
+        const metricContext = metricCanvas.getContext("2d", { willReadFrequently: true });
+        const pixelsFor = image => {
+            metricContext.clearRect(0, 0, WIDTH, HEIGHT);
+            metricContext.drawImage(image, 0, 0, WIDTH, HEIGHT);
+            return metricContext.getImageData(0, 0, WIDTH, HEIGHT).data;
+        };
+        try {
+            const referencePixels = pixelsFor(referenceImage);
+            const thumbnailBackgroundMaskPixels = pixelsFor(thumbnailMaskImage);
+            const regionalLuminance = (pixels, maskPixels = null, selectWhite = true) => {
+                const values = [];
+                for (let index = 0; index < pixels.length; index += 4) {
+                    if (maskPixels) {
+                        const isWhite = maskPixels[index] >= 128;
+                        if (isWhite !== selectWhite) continue;
+                    }
+                    values.push(
+                        0.2126 * pixels[index]
+                        + 0.7152 * pixels[index + 1]
+                        + 0.0722 * pixels[index + 2]
+                    );
+                }
+                values.sort((left, right) => left - right);
+                const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
+                const middle = Math.floor(values.length / 2);
+                const median = values.length % 2
+                    ? values[middle]
+                    : (values[middle - 1] + values[middle]) / 2;
+                return { mean, median, pixelCount: values.length };
+            };
+            const referenceRegions = {
+                model: regionalLuminance(referencePixels, thumbnailBackgroundMaskPixels, false),
+                background: regionalLuminance(referencePixels, thumbnailBackgroundMaskPixels, true)
+            };
+            const meanLuminance = (pixels, bounds = { left: 0, top: 0, right: WIDTH, bottom: HEIGHT }) => {
+                let luminance = 0;
+                let sampleCount = 0;
+                for (let y = bounds.top; y < bounds.bottom; y++) {
+                    for (let x = bounds.left; x < bounds.right; x++) {
+                        const index = (y * WIDTH + x) * 4;
+                        luminance += 0.2126 * pixels[index]
+                            + 0.7152 * pixels[index + 1]
+                            + 0.0722 * pixels[index + 2];
+                        sampleCount++;
+                    }
+                }
+                return luminance / sampleCount;
+            };
+            const centerBounds = { left: 128, top: 48, right: 384, bottom: 360 };
+            const edgeMeanLuminance = pixels => {
+                let luminance = 0;
+                let sampleCount = 0;
+                for (let y = 0; y < HEIGHT; y++) {
+                    for (let x = 0; x < WIDTH; x++) {
+                        if (x >= 96 && x < WIDTH - 96) continue;
+                        const index = (y * WIDTH + x) * 4;
+                        luminance += 0.2126 * pixels[index]
+                            + 0.7152 * pixels[index + 1]
+                            + 0.0722 * pixels[index + 2];
+                        sampleCount++;
+                    }
+                }
+                return luminance / sampleCount;
+            };
+            const photometry = [{
+                id: "thumbnail",
+                fullMeanLuminance: meanLuminance(referencePixels),
+                centerMeanLuminance: meanLuminance(referencePixels, centerBounds),
+                edgeMeanLuminance: edgeMeanLuminance(referencePixels),
+                regions: referenceRegions
+            }];
+
+            for (const { variant, image, modelMaskImage, backgroundImage } of renderedImages) {
+                const pixels = pixelsFor(image);
+                const modelMaskPixels = pixelsFor(modelMaskImage);
+                const backgroundPixels = pixelsFor(backgroundImage);
+                const regions = {
+                    model: regionalLuminance(pixels, modelMaskPixels, true),
+                    background: regionalLuminance(backgroundPixels)
+                };
+                let squaredError = 0;
+                for (let index = 0; index < pixels.length; index += 4) {
+                    for (let channel = 0; channel < 3; channel++) {
+                        const difference = pixels[index + channel] - referencePixels[index + channel];
+                        squaredError += difference * difference;
+                    }
+                }
+                const rmse = Math.sqrt(squaredError / (WIDTH * HEIGHT * 3));
+                variant.rmse = rmse;
+                photometry.push({
+                    id: variant.id,
+                    fullMeanLuminance: meanLuminance(pixels),
+                    centerMeanLuminance: meanLuminance(pixels, centerBounds),
+                    edgeMeanLuminance: edgeMeanLuminance(pixels),
+                    regions
+                });
+                const modelDelta = regions.model.mean - referenceRegions.model.mean;
+                const backgroundDelta = regions.background.mean - referenceRegions.background.mean;
+                document.querySelector(`[data-variant="${variant.id}"] .metric`).textContent =
+                    `model ΔY ${modelDelta >= 0 ? "+" : ""}${modelDelta.toFixed(1)}; `
+                    + `background ΔY ${backgroundDelta >= 0 ? "+" : ""}${backgroundDelta.toFixed(1)}; `
+                    + `full-frame RMSE ${rmse.toFixed(2)}`;
+            }
+
+            variants.sort((left, right) => left.rmse - right.rmse);
+            status.textContent = `Ready. Lowest full-frame error: ${variants[0].title} (${variants[0].rmse.toFixed(2)}). The metric is only a guide; inspect shape, shading direction and highlights separately.`;
+            status.dataset.photometry = JSON.stringify(photometry);
+            window.polyCalibration = { asset, variants, photometry };
+        } catch (error) {
+            renderedImages.forEach(({ variant }) => {
+                document.querySelector(`[data-variant="${variant.id}"] .metric`).textContent = "pixel metric unavailable";
+            });
+            status.textContent = `Ready. Pixel metric unavailable: ${error.message}. Compare shape, shading direction and highlights visually.`;
+            window.polyCalibration = { asset, variants };
+        }
+        document.documentElement.dataset.ready = "true";
+    </script>
+</body>
+</html>
