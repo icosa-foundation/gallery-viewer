@@ -2976,7 +2976,9 @@ export class Viewer {
             setupNavigation(this.cameraControls);
         } else {
             let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot
-            if (pivot) {
+            const hasExplicitPivot = Array.isArray(pivot)
+                && pivot.some(component => Math.abs(component) > 1e-9);
+            if (hasExplicitPivot) {
                 // TODO this pivot should be recalculated to take into account
                 //  any camera rotation adjustment applied above
                 cameraTarget = new THREE.Vector3(pivot[0], pivot[1], pivot[2]);

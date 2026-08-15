@@ -6521,7 +6521,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
         } else {
             let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot;
-            if (pivot) // TODO this pivot should be recalculated to take into account
+            const hasExplicitPivot = Array.isArray(pivot) && pivot.some((component)=>Math.abs(component) > 1e-9);
+            if (hasExplicitPivot) // TODO this pivot should be recalculated to take into account
             //  any camera rotation adjustment applied above
             cameraTarget = new $hBQxr$three.Vector3(pivot[0], pivot[1], pivot[2]);
             else if (this.sketchMetadata.CameraTargetDistance) {
