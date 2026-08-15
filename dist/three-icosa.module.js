@@ -13581,8 +13581,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                     }
                     // Transforms
                     if (material.uniforms.u_SceneLight_0_matrix) {
-                        const direction = material.uniforms.directionalLights.value[0].direction.clone();
-                        if (isNewTiltExporter) direction.negate();
+                        const direction = material.uniforms.directionalLights.value[0].direction.clone().negate();
                         material.uniforms.u_SceneLight_0_matrix.value = new $fugmd$Matrix4().lookAt(new $fugmd$Vector3(0, 0, 0), direction, new $fugmd$Vector3(0, 1, 0));
                     }
                 }
@@ -13595,8 +13594,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                     }
                     // Transforms
                     if (material.uniforms.u_SceneLight_1_matrix) {
-                        const direction = material.uniforms.directionalLights.value[1].direction.clone();
-                        if (isNewTiltExporter) direction.negate();
+                        const direction = material.uniforms.directionalLights.value[1].direction.clone().negate();
                         material.uniforms.u_SceneLight_1_matrix.value = new $fugmd$Matrix4().lookAt(new $fugmd$Vector3(0, 0, 0), direction, new $fugmd$Vector3(0, 1, 0));
                     }
                 }
