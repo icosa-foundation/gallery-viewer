@@ -172,11 +172,20 @@ export async function resolveFixture(fixtureId) {
     }
     const presentationParams = asset.presentationParams || {};
     const formatType = preferredFormat.formatType.toLowerCase();
+    const loader = formatType === "gltf1" || formatType === "gltf"
+        ? "gltf1"
+        : formatType === "gltf2" || formatType === "glb"
+            ? "gltf"
+            : formatType;
+    const mtlResource = preferredFormat.resources?.find(resource =>
+        resource.relativePath?.toLowerCase().endsWith(".mtl")
+    );
     return {
         id: fixtureId,
         label: asset.displayName,
         url: preferredFormat.root.url,
-        loader: formatType === "gltf1" || formatType === "gltf" ? "gltf1" : "gltf",
+        loader,
+        mtlUrl: mtlResource?.url,
         overrides: {
             defaultBackgroundColor: presentationParams.backgroundColor || "#000000",
             camera: { ...(presentationParams.camera || {}), ...(asset.camera || {}) },

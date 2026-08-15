@@ -94,14 +94,25 @@
         window.viewer = viewer;
 
         status.textContent = `${bundleName} | ${fixtureName}`;
-        const loadMethod = fixture.loader === "gltf1" ? "loadGltf1" : "loadGltf";
-        await viewer[loadMethod](fixtureUrl, true, fixture.overrides || {});
+        let loadMethod;
+        if (fixture.loader === "obj") {
+            loadMethod = fixture.mtlUrl ? "loadObjWithMtl" : "loadObj";
+            if (fixture.mtlUrl) {
+                await viewer.loadObjWithMtl(fixtureUrl, fixture.mtlUrl, fixture.overrides || {});
+            } else {
+                await viewer.loadObj(fixtureUrl, fixture.overrides || {});
+            }
+        } else {
+            loadMethod = fixture.loader === "gltf1" ? "loadGltf1" : "loadGltf";
+            await viewer[loadMethod](fixtureUrl, true, fixture.overrides || {});
 
-        if (viewer.loadingError && fixture.assetId) {
-            const fallbackMethod = loadMethod === "loadGltf1" ? "loadGltf" : "loadGltf1";
-            window.comparisonResult.fallbackMethod = fallbackMethod;
-            await viewer[fallbackMethod](fixtureUrl, true, fixture.overrides);
+            if (viewer.loadingError && fixture.assetId) {
+                const fallbackMethod = loadMethod === "loadGltf1" ? "loadGltf" : "loadGltf1";
+                window.comparisonResult.fallbackMethod = fallbackMethod;
+                await viewer[fallbackMethod](fixtureUrl, true, fixture.overrides);
+            }
         }
+        window.comparisonResult.loadMethod = loadMethod;
 
         if (viewer.loadingError) {
             status.textContent += " | LOAD ERROR";
