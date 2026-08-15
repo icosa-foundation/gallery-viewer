@@ -3090,14 +3090,18 @@ export class Viewer {
         let l1 = new THREE.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         l1.name = "SceneLight1";
 
-        const lightEulerOrder: THREE.EulerOrder = this.isNewTiltExporter(this.sceneGltf) ? 'YXZ' : 'XYZ';
+        const isNewTiltExporter = this.isNewTiltExporter(this.sceneGltf);
+        const lightEulerOrder: THREE.EulerOrder = isNewTiltExporter ? 'YXZ' : 'XYZ';
         let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation, lightEulerOrder);
         let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation, lightEulerOrder);
 
-        const light0Direction = new THREE.Vector3(0, 0, -1).applyEuler(light0Euler);
+        // New Tilt/Open Brush exporters use Unity's forward axis. Other formats
+        // retain the original Gallery Viewer fallback-light convention.
+        const lightForwardZ = isNewTiltExporter ? -1 : 1;
+        const light0Direction = new THREE.Vector3(0, 0, lightForwardZ).applyEuler(light0Euler);
         l0.position.copy(light0Direction).multiplyScalar(10);
 
-        const light1Direction = new THREE.Vector3(0, 0, -1).applyEuler(light1Euler);
+        const light1Direction = new THREE.Vector3(0, 0, lightForwardZ).applyEuler(light1Euler);
         l1.position.copy(light1Direction).multiplyScalar(10);
 
         // DirectionalLight points from its position toward its target, so attach
