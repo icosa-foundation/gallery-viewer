@@ -3102,13 +3102,14 @@ export class Viewer {
             );
         }
 
-        let hasAuthoredSceneLights = false;
+        const authoredSceneLights: THREE.Light[] = [];
         this.loadedModel?.traverse((object: any) => {
             if (object.isLight) {
-                hasAuthoredSceneLights = true;
+                authoredSceneLights.push(object);
             }
         });
-        if (hasAuthoredSceneLights) {
+        if (authoredSceneLights.length > 0) {
+            this.initEmbeddedPolyLighting(authoredSceneLights);
             return;
         }
 
@@ -3166,6 +3167,43 @@ export class Viewer {
         const ambientLight = new THREE.AmbientLight();
         ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.contentRoot.add(ambientLight);
+    }
+
+    private initEmbeddedPolyLighting(authoredSceneLights: THREE.Light[]) {
+        const generator = this.sceneGltf?.asset?.generator ?? '';
+        const sceneUserData = this.sceneGltf?.scene?.userData ?? {};
+        const gltfUserData = this.sceneGltf?.userData ?? {};
+        const hemisphereMetadata = sceneUserData.GOOGLE_hemi_light
+            ?? gltfUserData.GOOGLE_hemi_light;
+        const lightingRigMetadata = gltfUserData.GOOGLE_lighting_rig
+            ?? sceneUserData.GOOGLE_lighting_rig;
+
+        // Poly's updated GLTFs contain the original key/head lights, while the
+        // hemisphere portion of the rig remains in GOOGLE_hemi_light metadata.
+        // Their intensities also predate Three.js's physically-correct units.
+        if (!generator.includes('glTF 1-to-2 Upgrader for Google')
+            || !hemisphereMetadata
+            || !lightingRigMetadata) {
+            return;
+        }
+
+        authoredSceneLights.forEach(light => {
+            light.intensity *= Math.PI;
+        });
+
+        const sourceGroundColor = Array.isArray(hemisphereMetadata.groundColor)
+            ? hemisphereMetadata.groundColor
+            : [1, 1, 1];
+        const groundColor = new THREE.Color()
+            .fromArray(sourceGroundColor)
+            .lerp(new THREE.Color(1, 1, 1), 0.7);
+        const hemisphere = new THREE.HemisphereLight(
+            new THREE.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1),
+            groundColor,
+            0.6 * 1.3
+        );
+        hemisphere.name = "PolyHemisphereLight";
+        this.contentRoot.add(hemisphere);
     }
 
     private initFallbackLights() {

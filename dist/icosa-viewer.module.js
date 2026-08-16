@@ -6628,11 +6628,14 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         function toEuler(rot, order = 'XYZ') {
             return new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(rot.x), $hBQxr$three.MathUtils.degToRad(rot.y), $hBQxr$three.MathUtils.degToRad(rot.z), order);
         }
-        let hasAuthoredSceneLights = false;
+        const authoredSceneLights = [];
         this.loadedModel?.traverse((object)=>{
-            if (object.isLight) hasAuthoredSceneLights = true;
+            if (object.isLight) authoredSceneLights.push(object);
         });
-        if (hasAuthoredSceneLights) return;
+        if (authoredSceneLights.length > 0) {
+            this.initEmbeddedPolyLighting(authoredSceneLights);
+            return;
+        }
         const usesExporterLighting = this.isAnyTiltExporter(this.sceneGltf) || this.sketchMetadata?.HasLightingMetadata;
         if (!usesExporterLighting) {
             this.initFallbackLights();
@@ -6678,6 +6681,29 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         const ambientLight = new $hBQxr$three.AmbientLight();
         ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.contentRoot.add(ambientLight);
+    }
+    initEmbeddedPolyLighting(authoredSceneLights) {
+        const generator = this.sceneGltf?.asset?.generator ?? '';
+        const sceneUserData = this.sceneGltf?.scene?.userData ?? {};
+        const gltfUserData = this.sceneGltf?.userData ?? {};
+        const hemisphereMetadata = sceneUserData.GOOGLE_hemi_light ?? gltfUserData.GOOGLE_hemi_light;
+        const lightingRigMetadata = gltfUserData.GOOGLE_lighting_rig ?? sceneUserData.GOOGLE_lighting_rig;
+        // Poly's updated GLTFs contain the original key/head lights, while the
+        // hemisphere portion of the rig remains in GOOGLE_hemi_light metadata.
+        // Their intensities also predate Three.js's physically-correct units.
+        if (!generator.includes('glTF 1-to-2 Upgrader for Google') || !hemisphereMetadata || !lightingRigMetadata) return;
+        authoredSceneLights.forEach((light)=>{
+            light.intensity *= Math.PI;
+        });
+        const sourceGroundColor = Array.isArray(hemisphereMetadata.groundColor) ? hemisphereMetadata.groundColor : [
+            1,
+            1,
+            1
+        ];
+        const groundColor = new $hBQxr$three.Color().fromArray(sourceGroundColor).lerp(new $hBQxr$three.Color(1, 1, 1), 0.7);
+        const hemisphere = new $hBQxr$three.HemisphereLight(new $hBQxr$three.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1), groundColor, 0.78);
+        hemisphere.name = "PolyHemisphereLight";
+        this.contentRoot.add(hemisphere);
     }
     initFallbackLights() {
         const fallbackScale = 1.5;
