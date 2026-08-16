@@ -2715,7 +2715,9 @@ class $81e80e8b2d2d5e9f$export$9559c3115faeb0b0 extends $81e80e8b2d2d5e9f$var$Th
                 "scene": scene,
                 "scenes": scenes,
                 "cameras": cameras,
-                "animations": animations
+                "animations": animations,
+                "asset": json.asset,
+                "userData": json.extras || {}
             };
             callback(glTF);
         });
@@ -4218,6 +4220,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             antialias: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
+        // PCFSoftShadowMap is an alias for PCFShadowMap in current Three.js.
+        this.renderer.shadowMap.type = $hBQxr$three.PCFShadowMap;
         this.renderer.outputColorSpace = $hBQxr$three.SRGBColorSpace;
         this.renderer.xr.enabled = true;
         // Use 'local' reference space for full 6DOF tracking without floor offset
@@ -4478,6 +4482,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.contentRoot.position.set(0, 0, 0);
         this.contentRoot.quaternion.identity();
         this.contentRoot.scale.set(1, 1, 1);
+        this.renderer.shadowMap.enabled = false;
         this.scene.background = null;
         this.scene.fog = null;
         this.environmentObject = undefined;
@@ -4499,6 +4504,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             if (this.isNewTiltExporter(this.sceneGltf)) this.contentRoot.scale.set(0.1, 0.1, 0.1);
             this.contentRoot.add(this.loadedModel);
         }
+        this.configureShadows();
         this.contentDisposer = disposeContent;
     }
     attachAudioListener(camera) {
@@ -6643,14 +6649,18 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
             const light = new $hBQxr$three.DirectionalLight(0xffffff, 1);
+            light.name = "FallbackKeyLight";
+            light.userData.isKeyLight = true;
             light.position.set(10, 10, 10).normalize();
             this.loadedModel.add(light);
             return;
         }
         let l0 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         l0.name = "SceneLight0";
+        l0.userData.isKeyLight = true;
         let l1 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         l1.name = "SceneLight1";
+        l1.userData.isHeadLight = true;
         const isNewTiltExporter = this.isNewTiltExporter(this.sceneGltf);
         const lightEulerOrder = isNewTiltExporter ? 'YXZ' : 'XYZ';
         let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation, lightEulerOrder);
@@ -6672,8 +6682,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         light1Target.name = "SceneLight1Target";
         light1Target.position.set(0, 0, 0);
         l1.target = light1Target;
-        l0.castShadow = true;
-        l1.castShadow = false;
         this.loadedModel?.add(light0Target);
         this.loadedModel?.add(light1Target);
         this.loadedModel?.add(l0);
@@ -6717,12 +6725,14 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         const keyDirection = new $hBQxr$three.Vector3(-1, 2, -1).normalize();
         const key = new $hBQxr$three.DirectionalLight(warmWhite, 0.325 * intensityScale);
         key.name = "FallbackKeyLight";
+        key.userData.isKeyLight = true;
         key.position.copy(centroid).addScaledVector(keyDirection, 1.01 * radius);
         key.target.position.copy(centroid);
         key.target.name = "FallbackKeyLightTarget";
         this.contentRoot.add(key.target, key);
         const head = new $hBQxr$three.DirectionalLight(warmWhite, 0.25 * intensityScale * headMultiplier);
         head.name = "FallbackHeadLight";
+        head.userData.isHeadLight = true;
         head.position.set(-radius, 0.5 * radius, 0.5 * radius);
         head.target.position.copy(centroid);
         head.target.name = "FallbackHeadLightTarget";
@@ -6742,6 +6752,64 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         const hemisphere = new $hBQxr$three.HemisphereLight(new $hBQxr$three.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1), groundColor, 0.78 * intensityScale * hemisphereMultiplier);
         hemisphere.name = "FallbackHemisphereLight";
         this.contentRoot.add(hemisphere);
+    }
+    configureShadows() {
+        if (!this.loadedModel || this.isAnyTiltExporter(this.sceneGltf)) {
+            this.renderer.shadowMap.enabled = false;
+            return;
+        }
+        const sceneUserData = this.sceneGltf?.scene?.userData ?? {};
+        const gltfUserData = this.sceneGltf?.userData ?? {};
+        const lightingRigMetadata = this.overrides?.GOOGLE_lighting_rig ?? this.overrides?.lightingRig ?? gltfUserData.GOOGLE_lighting_rig ?? sceneUserData.GOOGLE_lighting_rig;
+        if (lightingRigMetadata?.disableShadows === true) {
+            this.renderer.shadowMap.enabled = false;
+            return;
+        }
+        this.loadedModel.traverse((object)=>{
+            if (!object.isMesh) return;
+            const materials = Array.isArray(object.material) ? object.material : [
+                object.material
+            ];
+            object.castShadow = materials.some((material)=>this.polyMaterialCastsShadow(material));
+            object.receiveShadow = materials.some((material)=>material?.userData?.receiveShadow !== false);
+            materials.forEach((material)=>{
+                if (material) material.shadowSide = $hBQxr$three.FrontSide;
+            });
+        });
+        const sphere = this.modelBoundingBox?.getBoundingSphere(new $hBQxr$three.Sphere()) ?? new $hBQxr$three.Sphere(new $hBQxr$three.Vector3(), 1);
+        const radius = Math.max(sphere.radius, 0.001);
+        let keyLight;
+        this.contentRoot.traverse((object)=>{
+            if (!object.isDirectionalLight) return;
+            object.castShadow = false;
+            const normalizedName = object.name.toLowerCase();
+            if (!keyLight && (object.userData?.isKeyLight || normalizedName.includes('keylight'))) keyLight = object;
+        });
+        if (!keyLight) {
+            this.renderer.shadowMap.enabled = false;
+            return;
+        }
+        keyLight.castShadow = true;
+        keyLight.shadow.mapSize.set(2048, 2048);
+        keyLight.shadow.bias = -0.004;
+        keyLight.shadow.radius = 5;
+        keyLight.shadow.intensity = 0.8;
+        const keyDistance = keyLight.position.distanceTo(sphere.center);
+        const shadowCamera = keyLight.shadow.camera;
+        shadowCamera.near = Math.max(0.001, keyDistance - radius);
+        shadowCamera.far = Math.max(shadowCamera.near + 0.001, keyDistance + radius);
+        shadowCamera.top = radius;
+        shadowCamera.left = -radius;
+        shadowCamera.right = radius;
+        shadowCamera.bottom = -radius;
+        shadowCamera.updateProjectionMatrix();
+        this.renderer.shadowMap.enabled = true;
+    }
+    polyMaterialCastsShadow(material) {
+        if (!material) return false;
+        if (typeof material.userData?.castsShadows === 'boolean') return material.userData.castsShadows;
+        // Poly's glass and gem surface passes explicitly opt out of casting.
+        return !/^(Blocks|Poly)(Glass|Gem)/i.test(material.name ?? '');
     }
     initFog() {
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) return;
