@@ -4035,6 +4035,13 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
         this.ReflectionIntensity = userData['TB_ReflectionIntensity'] ?? this.EnvironmentPreset.ReflectionIntensity;
+        this.HasLightingMetadata = sceneLights.length > 0 || this.EnvironmentPreset.Guid !== null || [
+            'TB_AmbientLightColor',
+            'TB_SceneLight0Color',
+            'TB_SceneLight0Rotation',
+            'TB_SceneLight1Color',
+            'TB_SceneLight1Rotation'
+        ].some((key)=>userData[key] !== undefined && userData[key] !== null);
         // Convert Unity Euler angles (YXZ, left-handed) to Three.js XYZ Euler degrees.
         // Goes through a quaternion to correctly change both Euler order and handedness.
         function unityRotToThreeJSDegrees(rot, label) {
@@ -4332,7 +4339,14 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 if (viewer?.cameraControls) viewer.cameraControls.update(delta);
                 if (viewer?.trackballControls) viewer.trackballControls.update();
             }
-            if (viewer?.activeCamera) this.attachAudioListener(viewer.activeCamera);
+            if (viewer?.activeCamera) {
+                this.attachAudioListener(viewer.activeCamera);
+                if (viewer.fallbackHeadLightCarrier) {
+                    viewer.activeCamera.getWorldPosition(viewer.fallbackHeadLightCarrier.position);
+                    viewer.activeCamera.getWorldQuaternion(viewer.fallbackHeadLightCarrier.quaternion);
+                    viewer.fallbackHeadLightCarrier.updateMatrixWorld(true);
+                }
+            }
             this.tryStartAutoplayAudio(viewer.contentRoot);
             if (viewer?.activeCamera && viewer.contentUpdater) viewer.contentUpdater(animationTime, viewer.activeCamera);
             // SparkRenderer stochastic setup is now handled by GUI toggle
@@ -4458,6 +4472,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.immModule = undefined;
         }
         this.contentUpdater = undefined;
+        this.fallbackHeadLightCarrier?.removeFromParent();
+        this.fallbackHeadLightCarrier = undefined;
         this.contentRoot.clear();
         this.contentRoot.position.set(0, 0, 0);
         this.contentRoot.quaternion.identity();
@@ -4468,8 +4484,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.skyObject = undefined;
         this.initSceneBackground();
         this.initFog();
-        this.initLights();
         this.initCameras();
+        this.initLights();
         // Compensate for insanely large models
         const LIMIT = 100000;
         let radius = this.overrides?.geometryData?.stats?.radius;
@@ -6612,6 +6628,16 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         function toEuler(rot, order = 'XYZ') {
             return new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(rot.x), $hBQxr$three.MathUtils.degToRad(rot.y), $hBQxr$three.MathUtils.degToRad(rot.z), order);
         }
+        let hasAuthoredSceneLights = false;
+        this.loadedModel?.traverse((object)=>{
+            if (object.isLight) hasAuthoredSceneLights = true;
+        });
+        if (hasAuthoredSceneLights) return;
+        const usesExporterLighting = this.isAnyTiltExporter(this.sceneGltf) || this.sketchMetadata?.HasLightingMetadata;
+        if (!usesExporterLighting) {
+            this.initFallbackLights();
+            return;
+        }
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
             const light = new $hBQxr$three.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 10).normalize();
@@ -6652,6 +6678,44 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         const ambientLight = new $hBQxr$three.AmbientLight();
         ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.contentRoot.add(ambientLight);
+    }
+    initFallbackLights() {
+        const fallbackScale = 1.5;
+        const headMultiplier = 1.35;
+        const hemisphereMultiplier = 0.2;
+        const intensityScale = Math.PI * fallbackScale;
+        const sphere = this.modelBoundingBox?.getBoundingSphere(new $hBQxr$three.Sphere()) ?? new $hBQxr$three.Sphere(new $hBQxr$three.Vector3(), 1);
+        const centroid = sphere.center;
+        const radius = Math.max(sphere.radius, 0.001);
+        const warmWhite = new $hBQxr$three.Color().setRGB(1, 0xee / 0xff, 0xdd / 0xff);
+        const keyDirection = new $hBQxr$three.Vector3(-1, 2, -1).normalize();
+        const key = new $hBQxr$three.DirectionalLight(warmWhite, 0.325 * intensityScale);
+        key.name = "FallbackKeyLight";
+        key.position.copy(centroid).addScaledVector(keyDirection, 1.01 * radius);
+        key.target.position.copy(centroid);
+        key.target.name = "FallbackKeyLightTarget";
+        this.contentRoot.add(key.target, key);
+        const head = new $hBQxr$three.DirectionalLight(warmWhite, 0.25 * intensityScale * headMultiplier);
+        head.name = "FallbackHeadLight";
+        head.position.set(-radius, 0.5 * radius, 0.5 * radius);
+        head.target.position.copy(centroid);
+        head.target.name = "FallbackHeadLightTarget";
+        const headCarrier = new $hBQxr$three.Group();
+        headCarrier.name = "FallbackHeadLightCarrier";
+        headCarrier.add(head);
+        this.activeCamera.getWorldPosition(headCarrier.position);
+        this.activeCamera.getWorldQuaternion(headCarrier.quaternion);
+        this.persistentRoot.add(headCarrier);
+        this.contentRoot.add(head.target);
+        this.fallbackHeadLightCarrier = headCarrier;
+        const groundColor = new $hBQxr$three.Color().fromArray([
+            0.2705882352941176,
+            0.3529411764705883,
+            0.392156862745098
+        ]).lerp(new $hBQxr$three.Color(1, 1, 1), 0.7);
+        const hemisphere = new $hBQxr$three.HemisphereLight(new $hBQxr$three.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1), groundColor, 0.78 * intensityScale * hemisphereMultiplier);
+        hemisphere.name = "FallbackHemisphereLight";
+        this.contentRoot.add(hemisphere);
     }
     initFog() {
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) return;

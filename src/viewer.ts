@@ -110,6 +110,7 @@ class SketchMetadata {
     public SkyTexture: string;
     public ReflectionTexture: string;
     public ReflectionIntensity : number
+    public HasLightingMetadata: boolean;
 
     constructor(scene: Object3D, userData: any) {
 
@@ -146,6 +147,15 @@ class SketchMetadata {
         this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
         this.ReflectionIntensity = userData['TB_ReflectionIntensity'] ?? this.EnvironmentPreset.ReflectionIntensity;
+        this.HasLightingMetadata = sceneLights.length > 0
+            || this.EnvironmentPreset.Guid !== null
+            || [
+                'TB_AmbientLightColor',
+                'TB_SceneLight0Color',
+                'TB_SceneLight0Rotation',
+                'TB_SceneLight1Color',
+                'TB_SceneLight1Rotation'
+            ].some(key => userData[key] !== undefined && userData[key] !== null);
 
         // Convert Unity Euler angles (YXZ, left-handed) to Three.js XYZ Euler degrees.
         // Goes through a quaternion to correctly change both Euler order and handedness.
@@ -322,6 +332,7 @@ export class Viewer {
     private defaultBackgroundColor: THREE.Color; // Used if no environment sky is set
     private overrides: any;
     private cameraRig: THREE.Group;
+    private fallbackHeadLightCarrier?: THREE.Group;
     public selectedNode: THREE.Object3D | null;
     private treeViewRoot: HTMLElement | null;
     public showErrorIcon: () => void;
@@ -635,6 +646,11 @@ export class Viewer {
 
             if (viewer?.activeCamera) {
                 this.attachAudioListener(viewer.activeCamera);
+                if (viewer.fallbackHeadLightCarrier) {
+                    viewer.activeCamera.getWorldPosition(viewer.fallbackHeadLightCarrier.position);
+                    viewer.activeCamera.getWorldQuaternion(viewer.fallbackHeadLightCarrier.quaternion);
+                    viewer.fallbackHeadLightCarrier.updateMatrixWorld(true);
+                }
             }
             this.tryStartAutoplayAudio(viewer.contentRoot);
 
@@ -804,6 +820,8 @@ export class Viewer {
             this.immModule = undefined;
         }
         this.contentUpdater = undefined;
+        this.fallbackHeadLightCarrier?.removeFromParent();
+        this.fallbackHeadLightCarrier = undefined;
         this.contentRoot.clear();
         this.contentRoot.position.set(0, 0, 0);
         this.contentRoot.quaternion.identity();
@@ -814,8 +832,8 @@ export class Viewer {
         this.skyObject = undefined;
         this.initSceneBackground();
         this.initFog();
-        this.initLights();
         this.initCameras();
+        this.initLights();
 
         // Compensate for insanely large models
         const LIMIT = 100000;
@@ -3084,6 +3102,23 @@ export class Viewer {
             );
         }
 
+        let hasAuthoredSceneLights = false;
+        this.loadedModel?.traverse((object: any) => {
+            if (object.isLight) {
+                hasAuthoredSceneLights = true;
+            }
+        });
+        if (hasAuthoredSceneLights) {
+            return;
+        }
+
+        const usesExporterLighting = this.isAnyTiltExporter(this.sceneGltf)
+            || this.sketchMetadata?.HasLightingMetadata;
+        if (!usesExporterLighting) {
+            this.initFallbackLights();
+            return;
+        }
+
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
             const light = new THREE.DirectionalLight(0xffffff, 1);
             light.position.set(10, 10, 10).normalize();
@@ -3131,6 +3166,55 @@ export class Viewer {
         const ambientLight = new THREE.AmbientLight();
         ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.contentRoot.add(ambientLight);
+    }
+
+    private initFallbackLights() {
+        const fallbackScale = 1.5;
+        const headMultiplier = 1.35;
+        const hemisphereMultiplier = 0.2;
+        const intensityScale = Math.PI * fallbackScale;
+        const sphere = this.modelBoundingBox?.getBoundingSphere(new THREE.Sphere())
+            ?? new THREE.Sphere(new THREE.Vector3(), 1);
+        const centroid = sphere.center;
+        const radius = Math.max(sphere.radius, 0.001);
+        const warmWhite = new THREE.Color().setRGB(1, 0xee / 0xff, 0xdd / 0xff);
+
+        const keyDirection = new THREE.Vector3(-1, 2, -1).normalize();
+        const key = new THREE.DirectionalLight(warmWhite, 0.325 * intensityScale);
+        key.name = "FallbackKeyLight";
+        key.position.copy(centroid).addScaledVector(keyDirection, 1.01 * radius);
+        key.target.position.copy(centroid);
+        key.target.name = "FallbackKeyLightTarget";
+        this.contentRoot.add(key.target, key);
+
+        const head = new THREE.DirectionalLight(
+            warmWhite,
+            0.25 * intensityScale * headMultiplier
+        );
+        head.name = "FallbackHeadLight";
+        head.position.set(-radius, 0.5 * radius, 0.5 * radius);
+        head.target.position.copy(centroid);
+        head.target.name = "FallbackHeadLightTarget";
+
+        const headCarrier = new THREE.Group();
+        headCarrier.name = "FallbackHeadLightCarrier";
+        headCarrier.add(head);
+        this.activeCamera.getWorldPosition(headCarrier.position);
+        this.activeCamera.getWorldQuaternion(headCarrier.quaternion);
+        this.persistentRoot.add(headCarrier);
+        this.contentRoot.add(head.target);
+        this.fallbackHeadLightCarrier = headCarrier;
+
+        const groundColor = new THREE.Color()
+            .fromArray([0.2705882352941176, 0.3529411764705883, 0.392156862745098])
+            .lerp(new THREE.Color(1, 1, 1), 0.7);
+        const hemisphere = new THREE.HemisphereLight(
+            new THREE.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1),
+            groundColor,
+            0.6 * 1.3 * intensityScale * hemisphereMultiplier
+        );
+        hemisphere.name = "FallbackHemisphereLight";
+        this.contentRoot.add(hemisphere);
     }
 
     private initFog() {
