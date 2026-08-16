@@ -42,7 +42,8 @@ export const fixtureGroups = [
             ["68OOL4zL6Co", "Elm tree — Google"],
             ["3QzBkeu0ljR", "蹦仔a海底世界 — 黃蹦蹦 (generator unspecified)"],
             ["68unrtIOrFi", "Adobe Max Mega Kit — 3Donimus (Blocks glTF1)"],
-            ["fJ4uqrWr0Je", "Ronin — Joshua (Tilt Brush)"]
+            ["fJ4uqrWr0Je", "Ronin — Joshua (Tilt Brush)"],
+            ["c9SvL1kX67i", "2019 Tilt Brushes Pallets"]
         ].map(([assetId, label]) => ({ id: `api-${assetId}`, assetId, label }))
     },
     {
@@ -83,7 +84,8 @@ export const fixtureGroups = [
             { id: "recent-cafe", label: "Brush Cafe", url: "./formats/cafe/brush_cafe_experimental (0).glb", loader: "gltf" },
             { id: "recent-irina", label: "Irina Lighting Bug", url: "./formats/new_uploads/irina_lighting_bug.glb", loader: "gltf" },
             { id: "recent-all-brushes", label: "All Brushes", url: "./formats/newglb/all_brushes/all_brushes.glb", loader: "gltf" },
-            { id: "recent-blocks", label: "Blocks Test", url: "./formats/newglb/blockstest/blockstest.gltf", loader: "gltf" }
+            { id: "recent-blocks", label: "Blocks Test", url: "./formats/newglb/blockstest/blockstest.gltf", loader: "gltf" },
+            { id: "api-f2EIODdZTlA", assetId: "f2EIODdZTlA", label: "Normal brushes — incomplete Electricity export" }
         ]
     },
     {
@@ -96,6 +98,11 @@ export const fixtureGroups = [
             ["atB26Z6BPd0", "Blocks Lab Equipment — Don Carson"],
             ["2UniJaHLw7T", "Robot - Blocks for Oculus — JoSaCo FPV"],
             ["03BtsBP-Flj", "Katamari Damacy — Darwin Yamamoto"],
+            ["etcvQWEOtTc", "Three cubes — andybak"],
+            ["IAF3C9p4YK8", "Recent Blocks model — andybak"],
+            ["b08V4d24BMP", "AK47"],
+            ["dNWh762PN-6", "BigTree"],
+            ["dC70BOz1Ju-", "Kitchen v2"],
             ["04VaTEm6eOR", "Piano Rough Draft — Andrew Smart"],
             ["05VXLT8kN4k", "Microscope — Colonel Cthulu"],
             ["0AMOApNFJQ9", "Dainty ladybug — Angela Chang"],
@@ -198,6 +205,146 @@ export async function resolveFixture(fixtureId) {
         displayName: asset.displayName,
         formatType: preferredFormat.formatType
     };
+}
+
+function gltfJsonFromBuffer(buffer) {
+    const view = new DataView(buffer);
+    const glbMagic = 0x46546c67;
+    if (buffer.byteLength >= 20 && view.getUint32(0, true) === glbMagic) {
+        const jsonChunkLength = view.getUint32(12, true);
+        const jsonChunkType = view.getUint32(16, true);
+        if (jsonChunkType !== 0x4e4f534a || 20 + jsonChunkLength > buffer.byteLength) {
+            throw new Error("GLB does not contain a valid JSON chunk");
+        }
+        return JSON.parse(new TextDecoder().decode(
+            new Uint8Array(buffer, 20, jsonChunkLength)
+        ).replace(/\0+$/, ""));
+    }
+    return JSON.parse(new TextDecoder().decode(buffer));
+}
+
+function collectModelEvidence(gltf) {
+    const values = collection => Array.isArray(collection)
+        ? collection
+        : collection && typeof collection === "object" ? Object.values(collection) : [];
+    const nodes = values(gltf.nodes);
+    const materials = values(gltf.materials);
+    const extensionsUsed = new Set(gltf.extensionsUsed || []);
+    const punctualDefinitions = gltf.extensions?.KHR_lights_punctual?.lights || [];
+    const punctualNodes = nodes.filter(node => node.extensions?.KHR_lights_punctual);
+    const commonLights = gltf.extensions?.KHR_materials_common?.lights || {};
+    const dummyLightNodes = nodes.filter(node => node.name?.startsWith("node_SceneLight_"));
+    const metadataKeys = new Set();
+
+    const inspectMetadata = value => {
+        if (!value || typeof value !== "object") return;
+        for (const [key, child] of Object.entries(value)) {
+            if (key.startsWith("TB_") || key.startsWith("GOOGLE_")) metadataKeys.add(key);
+            if (key === "extras" || key === "userData") inspectMetadata(child);
+        }
+    };
+    inspectMetadata(gltf.extensions);
+    inspectMetadata(gltf.asset?.extras);
+    for (const scene of values(gltf.scenes)) inspectMetadata(scene.extras);
+    for (const node of nodes) inspectMetadata(node.extras);
+
+    const techniqueExtensions = [
+        "GOOGLE_tilt_brush_techniques",
+        "KHR_techniques_webgl"
+    ].filter(name => extensionsUsed.has(name) || gltf.extensions?.[name]);
+    if (values(gltf.techniques).length) techniqueExtensions.push("glTF 1 techniques");
+
+    const emissiveMaterials = materials.filter(material =>
+        material.emissiveTexture
+        || material.emissiveFactor?.some(value => value !== 0)
+        || material.values?.emission
+    ).length;
+    const unlitMaterials = materials.filter(material => material.extensions?.KHR_materials_unlit).length;
+    const pbrMaterials = materials.filter(material => material.pbrMetallicRoughness).length;
+    const lightTypes = punctualDefinitions.map(light => light.type || "unknown");
+    const lightingMetadataKeys = [...metadataKeys].filter(key =>
+        /^TB_(Environment|AmbientLight|SceneLight|Reflection)/.test(key)
+        || /^GOOGLE_(hemi_light|lighting_rig|lights_image_based|tilt_brush)/.test(key)
+    );
+
+    return {
+        generator: gltf.asset?.generator || "Not declared",
+        materials: {
+            count: materials.length,
+            pbr: pbrMaterials,
+            emissive: emissiveMaterials,
+            unlit: unlitMaterials,
+            techniques: [...new Set(techniqueExtensions)]
+        },
+        embeddedLights: {
+            punctualDefinitions: punctualDefinitions.length,
+            punctualNodes: punctualNodes.length,
+            punctualTypes: lightTypes,
+            punctualDetails: punctualDefinitions.map((light, index) => ({
+                name: light.name || `light ${index}`,
+                type: light.type || "unknown",
+                intensity: light.intensity ?? 1,
+                color: light.color || [1, 1, 1]
+            })),
+            legacyCommon: Object.keys(commonLights).length
+        },
+        exporterMetadata: {
+            keys: lightingMetadataKeys.sort(),
+            dummyLightNodes: dummyLightNodes.map(node => node.name)
+        },
+        extensionsUsed: [...extensionsUsed].sort()
+    };
+}
+
+function presentationLightingEvidence(params = {}) {
+    const candidates = [
+        "GOOGLE_hemi_light",
+        "GOOGLE_lighting_rig",
+        "GOOGLE_lights_image_based",
+        "hemiLight",
+        "lightingRig"
+    ];
+    return candidates
+        .filter(key => Object.prototype.hasOwnProperty.call(params, key))
+        .map(key => {
+            const value = params[key];
+            const populated = value !== null && value !== undefined
+                && (typeof value !== "object" || Object.keys(value).length > 0);
+            return { key, populated };
+        });
+}
+
+export async function inspectFixtureLighting(fixtureId) {
+    const fixture = await resolveFixture(fixtureId);
+    if (!fixture) throw new Error(`Unknown fixture ${fixtureId}`);
+
+    const report = {
+        fixtureId,
+        label: fixture.displayName || fixture.label || fixtureId,
+        assetId: fixture.assetId || null,
+        rendition: {
+            formatType: fixture.formatType || fixture.loader || "unknown",
+            url: fixture.url
+        },
+        presentation: presentationLightingEvidence(fixture.polyPresentationParams),
+        model: null,
+        inspectionError: null
+    };
+
+    if (fixture.loader === "obj" || fixture.loader === "fbx" || fixture.loader === "ply"
+        || fixture.loader === "stl" || fixture.loader === "vox") {
+        report.inspectionError = `${fixture.loader.toUpperCase()} has no glTF lighting document to inspect`;
+        return report;
+    }
+
+    try {
+        const response = await fetch(fixture.url);
+        if (!response.ok) throw new Error(`model request returned ${response.status}`);
+        report.model = collectModelEvidence(gltfJsonFromBuffer(await response.arrayBuffer()));
+    } catch (error) {
+        report.inspectionError = error.message;
+    }
+    return report;
 }
 
 function appendFixedOptions(select) {

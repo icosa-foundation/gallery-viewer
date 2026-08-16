@@ -59,10 +59,19 @@
     <div id="status">Loading</div>
     <pre id="comparison-result" hidden></pre>
     <script type="module">
-        import { resolveFixture } from "./comparison-fixtures.js";
+        import * as THREE from "three";
+        import { resolveFixture } from "./comparison-fixtures.js?v=electricity-1";
 
         const params = new URLSearchParams(location.search);
         const bundleName = params.get("bundle") === "production" ? "production" : "main";
+        const lightingExperiment = params.get("lighting");
+        const finiteParam = (name, fallback) => {
+            const value = Number(params.get(name));
+            return Number.isFinite(value) ? value : fallback;
+        };
+        let polyIntensityScale = finiteParam("polyScale", 0.35);
+        let polyHeadMultiplier = finiteParam("polyHead", 1);
+        let polyHemisphereMultiplier = finiteParam("polyHemi", 0.5);
         const fixtureName = params.get("fixture") || "f4-0";
         const status = document.getElementById("status");
 
@@ -88,12 +97,169 @@
 
         const moduleUrl = bundleName === "production"
             ? "./icosa-viewer.production.module.js?v=production"
-            : "./icosa-viewer.module.js?v=current-main";
+            : "./icosa-viewer.module.js?v=electricity-fallback-1";
         const { Viewer } = await import(moduleUrl);
         const viewer = new Viewer(new URL("./sketch_assets/", location.href).toString());
         window.viewer = viewer;
 
         status.textContent = `${bundleName} | ${fixtureName}`;
+        async function waitForViewerScene() {
+            const deadline = performance.now() + 30000;
+            while (performance.now() < deadline) {
+                const directionalLights = [];
+                viewer.scene.traverse(object => {
+                    if (object.isDirectionalLight) directionalLights.push(object);
+                });
+                if (viewer.loadedModel && viewer.activeCamera && viewer.cameraControls && directionalLights.length) {
+                    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+                    return directionalLights;
+                }
+                await new Promise(resolve => setTimeout(resolve, 25));
+            }
+            throw new Error("Timed out waiting for the viewer scene");
+        }
+
+        function hasPolyPresentationLighting() {
+            const presentation = fixture.polyPresentationParams || {};
+            return ["GOOGLE_hemi_light", "GOOGLE_lighting_rig", "GOOGLE_lights_image_based"]
+                .some(key => presentation[key] !== null && presentation[key] !== undefined);
+        }
+
+        function hasFullPresentationLightingRig() {
+            const presentation = fixture.polyPresentationParams || {};
+            if (presentation.GOOGLE_lights_image_based) return true;
+            const rig = presentation.GOOGLE_lighting_rig;
+            return rig && Object.keys(rig).some(key => key !== "disableShadows");
+        }
+
+        function hasAuthoredSceneLights() {
+            let hasAuthoredLights = false;
+            viewer.loadedModel?.traverse(object => {
+                if (!object.isLight) return;
+                if (object.name === "SceneLight0" || object.name === "SceneLight1") return;
+                if (object.name.startsWith("Fallback")) return;
+                hasAuthoredLights = true;
+            });
+            return hasAuthoredLights;
+        }
+
+        function usesTiltLightingPipeline() {
+            const formatTypes = fixture.asset?.formats?.map(format => format.formatType) || [];
+            if (formatTypes.includes("TILT")) return true;
+
+            const generator = viewer.sceneGltf?.parser?.json?.asset?.generator
+                || viewer.sceneGltf?.asset?.generator
+                || "";
+            if (/Tilt Brush|Open Brush/i.test(generator)) return true;
+
+            let usesTiltShaders = false;
+            viewer.loadedModel?.traverse(object => {
+                if (object.userData?.isNewTiltExporter) usesTiltShaders = true;
+                const materials = Array.isArray(object.material)
+                    ? object.material
+                    : object.material ? [object.material] : [];
+                for (const material of materials) {
+                    const uniforms = material.uniforms || {};
+                    if (uniforms.u_SceneLight_0_color || uniforms.u_SceneLight_0_matrix
+                        || uniforms.u_isNewTiltExporter) {
+                        usesTiltShaders = true;
+                    }
+                }
+            });
+            return usesTiltShaders;
+        }
+
+        function applyPolyFallback() {
+            const existingLights = [];
+            viewer.scene.traverse(object => {
+                if (object.isLight) existingLights.push(object);
+            });
+            existingLights.forEach(light => light.removeFromParent());
+
+            const bounds = new THREE.Box3().setFromObject(viewer.loadedModel);
+            const sphere = bounds.getBoundingSphere(new THREE.Sphere());
+            const centroid = sphere.center;
+            const radius = Math.max(sphere.radius, 0.001);
+            const warmWhite = new THREE.Color().setRGB(1, 0xee / 0xff, 0xdd / 0xff);
+            const intensityScale = Math.PI * polyIntensityScale;
+
+            const keyDirection = new THREE.Vector3(-1, 2, -1).normalize();
+            const key = new THREE.DirectionalLight(warmWhite, 0.325 * intensityScale);
+            key.name = "PolyFallbackKey";
+            key.position.copy(centroid).addScaledVector(keyDirection, 1.01 * radius);
+            key.target.position.copy(centroid);
+            viewer.scene.add(key.target, key);
+
+            const head = new THREE.DirectionalLight(
+                warmWhite,
+                0.25 * intensityScale * polyHeadMultiplier
+            );
+            head.name = "PolyFallbackHead";
+            head.position.set(-radius, 0.5 * radius, 0.5 * radius);
+            head.target.position.copy(centroid);
+            const headCarrier = new THREE.Group();
+            headCarrier.name = "PolyFallbackHeadCarrier";
+            headCarrier.add(head);
+            viewer.scene.add(headCarrier, head.target);
+
+            const syncHeadLight = () => {
+                headCarrier.position.copy(viewer.activeCamera.position);
+                headCarrier.quaternion.copy(viewer.activeCamera.quaternion);
+                headCarrier.scale.copy(viewer.activeCamera.scale);
+                requestAnimationFrame(syncHeadLight);
+            };
+            syncHeadLight();
+
+            const groundColor = new THREE.Color()
+                .fromArray([0.2705882352941176, 0.3529411764705883, 0.392156862745098])
+                .lerp(new THREE.Color(1, 1, 1), 0.7);
+            const hemisphere = new THREE.HemisphereLight(
+                new THREE.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1),
+                groundColor,
+                0.6 * 1.3 * intensityScale * polyHemisphereMultiplier
+            );
+            hemisphere.name = "PolyFallbackHemisphere";
+            viewer.scene.add(hemisphere);
+
+            const updateIntensities = () => {
+                key.intensity = 0.325 * Math.PI * polyIntensityScale;
+                head.intensity = 0.25 * Math.PI * polyIntensityScale * polyHeadMultiplier;
+                hemisphere.intensity = 0.6 * 1.3 * Math.PI
+                    * polyIntensityScale * polyHemisphereMultiplier;
+                return {
+                    scale: polyIntensityScale,
+                    headMultiplier: polyHeadMultiplier,
+                    hemisphereMultiplier: polyHemisphereMultiplier,
+                    keyIntensity: key.intensity,
+                    headIntensity: head.intensity,
+                    hemisphereIntensity: hemisphere.intensity
+                };
+            };
+            window.addEventListener("message", event => {
+                if (event.origin !== location.origin || event.data?.type !== "poly-fallback-controls") return;
+                polyIntensityScale = Number.isFinite(event.data.scale)
+                    ? event.data.scale
+                    : polyIntensityScale;
+                polyHeadMultiplier = Number.isFinite(event.data.headMultiplier)
+                    ? event.data.headMultiplier
+                    : polyHeadMultiplier;
+                polyHemisphereMultiplier = Number.isFinite(event.data.hemisphereMultiplier)
+                    ? event.data.hemisphereMultiplier
+                    : polyHemisphereMultiplier;
+                window.comparisonResult.polyFallback = {
+                    ...window.comparisonResult.polyFallback,
+                    ...updateIntensities()
+                };
+            });
+
+            return {
+                centroid: centroid.toArray(),
+                radius,
+                keyDirection: keyDirection.toArray(),
+                ...updateIntensities()
+            };
+        }
+
         let loadMethod;
         if (fixture.loader === "obj") {
             loadMethod = fixture.mtlUrl ? "loadObjWithMtl" : "loadObj";
@@ -112,13 +278,40 @@
                 await viewer[fallbackMethod](fixtureUrl, true, fixture.overrides);
             }
         }
+        const directionalLights = await waitForViewerScene();
         window.comparisonResult.loadMethod = loadMethod;
+
+        const authoredSceneLights = hasAuthoredSceneLights();
+        const tiltLightingPipeline = usesTiltLightingPipeline();
+        const fullPresentationLightingRig = hasFullPresentationLightingRig();
+        let viewerUsesFallbackLighting = false;
+        viewer.scene.traverse(object => {
+            if (object.isLight && object.name.startsWith("Fallback")) {
+                viewerUsesFallbackLighting = true;
+            }
+        });
+        const shouldApplyPolyFallback = lightingExperiment === "poly-fallback"
+            && !authoredSceneLights
+            && !tiltLightingPipeline
+            && !fullPresentationLightingRig;
+        window.comparisonResult.lightingExperiment = lightingExperiment || "current";
+        window.comparisonResult.hasPolyPresentationLighting = hasPolyPresentationLighting();
+        window.comparisonResult.hasFullPresentationLightingRig = fullPresentationLightingRig;
+        window.comparisonResult.hasAuthoredSceneLights = authoredSceneLights;
+        window.comparisonResult.usesTiltLightingPipeline = tiltLightingPipeline;
+        window.comparisonResult.usesViewerFallbackLighting = viewerUsesFallbackLighting;
+        window.comparisonResult.polyFallbackApplied = shouldApplyPolyFallback;
+        if (shouldApplyPolyFallback) {
+            window.comparisonResult.polyFallback = applyPolyFallback();
+        }
 
         if (viewer.loadingError) {
             status.textContent += " | LOAD ERROR";
             window.comparisonResult.loadingError = true;
         } else {
-            window.comparisonResult.appliedLighting = "bundle-default";
+            window.comparisonResult.appliedLighting = shouldApplyPolyFallback
+                ? "poly-fallback"
+                : "bundle-default";
 
             await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
             window.comparisonResult.loadingError = false;
@@ -136,20 +329,55 @@
                 quaternion: viewer.loadedModel.quaternion.toArray(),
                 scale: viewer.loadedModel.scale.toArray()
             } : null;
+            window.comparisonResult.contentRootTransform = viewer.contentRoot ? {
+                position: viewer.contentRoot.position.toArray(),
+                quaternion: viewer.contentRoot.quaternion.toArray(),
+                scale: viewer.contentRoot.scale.toArray()
+            } : null;
             window.comparisonResult.lights = [];
             viewer.scene.traverse(object => {
                 if (object.isLight) {
+                    const worldPosition = new THREE.Vector3();
+                    object.getWorldPosition(worldPosition);
                     window.comparisonResult.lights.push({
                         type: object.type,
                         name: object.name,
+                        color: object.color.toArray(),
                         intensity: object.intensity,
                         position: object.position.toArray(),
+                        worldPosition: worldPosition.toArray(),
                         parent: object.parent?.name || object.parent?.type,
                         targetPosition: object.target?.position?.toArray(),
                         targetParent: object.target?.parent?.name || object.target?.parent?.type || null
                     });
                 }
             });
+            const materials = new Map();
+            viewer.loadedModel?.traverse(object => {
+                const objectMaterials = Array.isArray(object.material)
+                    ? object.material
+                    : [object.material];
+                for (const material of objectMaterials) {
+                    if (!material || materials.has(material.uuid)) continue;
+                    materials.set(material.uuid, {
+                        type: material.type,
+                        name: material.name,
+                        lights: material.lights,
+                        vertexColors: material.vertexColors,
+                        transparent: material.transparent,
+                        isNewTiltExporter: material.uniforms?.u_isNewTiltExporter?.value,
+                        uniformNames: material.uniforms ? Object.keys(material.uniforms) : []
+                    });
+                }
+            });
+            window.comparisonResult.materials = [...materials.values()];
+            window.parent.postMessage({
+                type: "viewer-fallback-lighting-status",
+                usesFallbackLighting: window.comparisonResult.usesViewerFallbackLighting,
+                fixtureName,
+                bundleName,
+                lightingExperiment: lightingExperiment || "current"
+            }, location.origin);
         }
 
         document.getElementById("comparison-result").textContent = JSON.stringify(window.comparisonResult);

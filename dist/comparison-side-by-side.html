@@ -113,6 +113,109 @@
         #reference a {
             color: #8ab4f8;
         }
+
+        #lighting-summary {
+            overflow: hidden;
+            color: #bdc1c6;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        #poly-controls {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        body.fallback-tuning-available.middle-lighting #poly-controls {
+            display: flex;
+        }
+
+        #poly-controls input[type="range"] {
+            width: 80px;
+        }
+
+        #poly-controls output {
+            width: 3ch;
+            color: #bdc1c6;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #left-mode,
+        #middle-mode,
+        #reference-mode,
+        #lighting-toggle,
+        #lighting-close {
+            border: 1px solid #5f6368;
+            border-radius: 4px;
+            padding: 4px 8px;
+            color: #fff;
+            background: #303134;
+            cursor: pointer;
+        }
+
+        #lighting-panel {
+            position: fixed;
+            top: 52px;
+            right: 12px;
+            z-index: 10;
+            width: min(480px, calc(100vw - 24px));
+            max-height: calc(100vh - 64px);
+            box-sizing: border-box;
+            overflow: auto;
+            border: 1px solid #5f6368;
+            border-radius: 6px;
+            padding: 12px;
+            color: #e8eaed;
+            background: rgba(32, 33, 36, 0.97);
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.45);
+        }
+
+        #lighting-panel[hidden] {
+            display: none;
+        }
+
+        #lighting-panel header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        #lighting-panel h2,
+        #lighting-panel h3 {
+            margin: 0;
+        }
+
+        #lighting-panel h2 {
+            font-size: 16px;
+        }
+
+        #lighting-panel h3 {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #8ab4f8;
+        }
+
+        #lighting-panel p {
+            margin: 4px 0;
+        }
+
+        #lighting-panel ul {
+            margin: 4px 0 0;
+            padding-left: 20px;
+        }
+
+        #lighting-panel .muted {
+            color: #bdc1c6;
+        }
+
+        #lighting-panel a {
+            color: #8ab4f8;
+            overflow-wrap: anywhere;
+        }
     </style>
 </head>
 <body>
@@ -121,21 +224,38 @@
         <select id="fixture">
             <option>Loading full fixture catalog…</option>
         </select>
-        <label for="reference-mode">Ground truth</label>
-        <select id="reference-mode">
-            <option value="poly">Resurrected Google Poly</option>
-            <option value="thumbnail">Preserved thumbnail (fallback)</option>
-        </select>
-        <span>Production uses Three 0.172; main uses Three 0.185.1. Poly replay uses the archived UPDATED_GLTF_FORMAT when available.</span>
+        <button id="left-mode" type="button" value="production">Left: Production</button>
+        <button id="middle-mode" type="button" value="main">Middle: Main</button>
+        <span id="poly-controls">
+            <label for="poly-scale">Scale</label>
+            <input id="poly-scale" type="range" min="0" max="1.5" step="0.05" value="0.35">
+            <output id="poly-scale-value" for="poly-scale">0.35</output>
+            <label for="poly-hemi">Hemi</label>
+            <input id="poly-hemi" type="range" min="0" max="2" step="0.05" value="0.5">
+            <output id="poly-hemi-value" for="poly-hemi">0.50</output>
+            <label for="poly-head">Head</label>
+            <input id="poly-head" type="range" min="0" max="2" step="0.05" value="1">
+            <output id="poly-head-value" for="poly-head">1.00</output>
+        </span>
+        <button id="reference-mode" type="button" value="poly">Right: Poly</button>
+        <button id="lighting-toggle" type="button">Lighting evidence</button>
+        <span id="lighting-summary">Lighting evidence loading…</span>
     </div>
+    <aside id="lighting-panel" aria-live="polite" hidden>
+        <header>
+            <h2>Lighting-source evidence</h2>
+            <button id="lighting-close" type="button">Close</button>
+        </header>
+        <div id="lighting-report">Loading selected rendition…</div>
+    </aside>
     <div id="viewers">
         <section class="viewer-column">
-            <div class="viewer-label">Production Gallery bundle</div>
-            <iframe id="production-viewer" title="Production Gallery viewer"></iframe>
+            <div id="left-label" class="viewer-label">Production Gallery bundle</div>
+            <iframe id="left-viewer" title="Left comparison viewer"></iframe>
         </section>
         <section class="viewer-column">
-            <div class="viewer-label">Current main bundle</div>
-            <iframe id="main-viewer" title="Current main viewer"></iframe>
+            <div id="middle-label" class="viewer-label">Current main bundle</div>
+            <iframe id="middle-viewer" title="Middle comparison viewer"></iframe>
         </section>
         <aside id="reference" class="viewer-column" data-reference-mode="poly">
             <div id="reference-label" class="viewer-label">Resurrected Google Poly</div>
@@ -150,14 +270,19 @@
     <script type="module">
         import {
             assetIdForFixture,
+            inspectFixtureLighting,
             polyModelForFixture,
             populateFixtureSelect
-        } from "./comparison-fixtures.js";
+        } from "./comparison-fixtures.js?v=electricity-1";
 
         const fixtureSelect = document.getElementById("fixture");
-        const referenceModeSelect = document.getElementById("reference-mode");
-        const productionViewer = document.getElementById("production-viewer");
-        const mainViewer = document.getElementById("main-viewer");
+        const leftModeButton = document.getElementById("left-mode");
+        const middleModeButton = document.getElementById("middle-mode");
+        const referenceModeButton = document.getElementById("reference-mode");
+        const leftViewer = document.getElementById("left-viewer");
+        const middleViewer = document.getElementById("middle-viewer");
+        const leftLabel = document.getElementById("left-label");
+        const middleLabel = document.getElementById("middle-label");
         const polyReferenceViewer = document.getElementById("poly-reference-viewer");
         const viewers = document.getElementById("viewers");
         const reference = document.getElementById("reference");
@@ -165,11 +290,212 @@
         const referenceThumbnail = document.getElementById("reference-thumbnail");
         const referenceName = document.getElementById("reference-name");
         const referenceMetadata = document.getElementById("reference-metadata");
+        const lightingToggle = document.getElementById("lighting-toggle");
+        const lightingClose = document.getElementById("lighting-close");
+        const lightingPanel = document.getElementById("lighting-panel");
+        const lightingReport = document.getElementById("lighting-report");
+        const lightingSummary = document.getElementById("lighting-summary");
+        const polyScale = document.getElementById("poly-scale");
+        const polyHemisphere = document.getElementById("poly-hemi");
+        const polyHead = document.getElementById("poly-head");
+        const polyScaleValue = document.getElementById("poly-scale-value");
+        const polyHemisphereValue = document.getElementById("poly-hemi-value");
+        const polyHeadValue = document.getElementById("poly-head-value");
+        const pageParams = new URLSearchParams(location.search);
         const initialFixture = new URLSearchParams(location.search).get("fixture") || "f4-0";
+        const requestedComparisonMode = pageParams.get("mode");
         const requestedReferenceMode = new URLSearchParams(location.search).get("reference");
+        const initialLeftMode = pageParams.get("left") === "main" || requestedComparisonMode === "hypothesis"
+            ? "main"
+            : "production";
+        const initialMiddleMode = pageParams.get("middle") === "lighting" || requestedComparisonMode === "hypothesis"
+            ? "lighting"
+            : "main";
         const initialReferenceMode = requestedReferenceMode === "thumbnail" ? "thumbnail" : "poly";
         const polyReplayOrigin = `${location.protocol}//${location.hostname}:8766`;
-        referenceModeSelect.value = initialReferenceMode;
+        let lightingRequest = 0;
+        polyScale.value = pageParams.get("polyScale") || "0.35";
+        polyHemisphere.value = pageParams.get("polyHemi") || "0.5";
+        polyHead.value = pageParams.get("polyHead") || "1";
+        leftModeButton.value = initialLeftMode;
+        middleModeButton.value = initialMiddleMode;
+        referenceModeButton.value = initialReferenceMode;
+
+        function updatePaneButtons() {
+            leftModeButton.textContent = leftModeButton.value === "main" ? "Left: Main" : "Left: Production";
+            middleModeButton.textContent = middleModeButton.value === "lighting"
+                ? "Middle: Lighting"
+                : "Middle: Main";
+        }
+
+        leftModeButton.addEventListener("click", () => {
+            leftModeButton.value = leftModeButton.value === "production" ? "main" : "production";
+            loadFixture();
+        });
+
+        middleModeButton.addEventListener("click", () => {
+            middleModeButton.value = middleModeButton.value === "main" ? "lighting" : "main";
+            loadFixture();
+        });
+        updatePaneButtons();
+
+        function updateReferenceModeButton() {
+            const thumbnailMode = referenceModeButton.value === "thumbnail";
+            referenceModeButton.textContent = thumbnailMode ? "Right: Thumbnail" : "Right: Poly";
+            referenceModeButton.title = thumbnailMode
+                ? "Switch ground truth to resurrected Google Poly"
+                : "Switch ground truth to the preserved thumbnail";
+        }
+
+        referenceModeButton.addEventListener("click", () => {
+            referenceModeButton.value = referenceModeButton.value === "poly" ? "thumbnail" : "poly";
+            updateReferenceModeButton();
+            loadFixture();
+        });
+        updateReferenceModeButton();
+
+        function updatePolyControls() {
+            const values = {
+                type: "poly-fallback-controls",
+                scale: Number(polyScale.value),
+                hemisphereMultiplier: Number(polyHemisphere.value),
+                headMultiplier: Number(polyHead.value)
+            };
+            polyScaleValue.value = values.scale.toFixed(2);
+            polyHemisphereValue.value = values.hemisphereMultiplier.toFixed(2);
+            polyHeadValue.value = values.headMultiplier.toFixed(2);
+            const url = new URL(location.href);
+            url.searchParams.set("polyScale", String(values.scale));
+            url.searchParams.set("polyHemi", String(values.hemisphereMultiplier));
+            url.searchParams.set("polyHead", String(values.headMultiplier));
+            history.replaceState(null, "", url);
+            middleViewer.contentWindow?.postMessage(values, location.origin);
+        }
+
+        [polyScale, polyHemisphere, polyHead].forEach(control => {
+            control.addEventListener("input", updatePolyControls);
+        });
+        updatePolyControls();
+
+        window.addEventListener("message", event => {
+            if (event.origin !== location.origin || event.source !== middleViewer.contentWindow
+                || event.data?.type !== "viewer-fallback-lighting-status") return;
+            document.body.classList.toggle(
+                "fallback-tuning-available",
+                event.data.usesFallbackLighting === true
+            );
+        });
+
+        lightingToggle.addEventListener("click", () => {
+            lightingPanel.hidden = !lightingPanel.hidden;
+        });
+        lightingClose.addEventListener("click", () => {
+            lightingPanel.hidden = true;
+        });
+
+        function appendEvidenceSection(title, lines) {
+            const heading = document.createElement("h3");
+            heading.textContent = title;
+            lightingReport.appendChild(heading);
+            const list = document.createElement("ul");
+            for (const line of lines) {
+                const item = document.createElement("li");
+                item.textContent = line;
+                list.appendChild(item);
+            }
+            lightingReport.appendChild(list);
+        }
+
+        function renderLightingEvidence(report) {
+            lightingReport.replaceChildren();
+            const rendition = document.createElement("p");
+            rendition.textContent = `${report.label} · selected ${report.rendition.formatType}`;
+            lightingReport.appendChild(rendition);
+
+            const link = document.createElement("a");
+            link.href = report.rendition.url;
+            link.target = "_blank";
+            link.rel = "noreferrer";
+            link.textContent = "Open inspected model root";
+            lightingReport.appendChild(link);
+
+            if (report.model) {
+                const model = report.model;
+                appendEvidenceSection("Material path", [
+                    `Generator: ${model.generator}`,
+                    `${model.materials.count} materials: ${model.materials.pbr} PBR, ${model.materials.emissive} emissive, ${model.materials.unlit} unlit`,
+                    model.materials.techniques.length
+                        ? `Technique systems: ${model.materials.techniques.join(", ")}`
+                        : "No technique-based material system declared"
+                ]);
+                appendEvidenceSection("Embedded scene lights", [
+                    `KHR_lights_punctual: ${model.embeddedLights.punctualDefinitions} definitions on ${model.embeddedLights.punctualNodes} nodes`,
+                    model.embeddedLights.punctualTypes.length
+                        ? `Types: ${model.embeddedLights.punctualTypes.join(", ")}`
+                        : "No punctual light types declared",
+                    ...model.embeddedLights.punctualDetails.map(light =>
+                        `${light.name}: ${light.type}, intensity ${light.intensity}, color [${light.color.join(", ")}]`
+                    ),
+                    `Legacy KHR_materials_common lights: ${model.embeddedLights.legacyCommon}`
+                ]);
+                appendEvidenceSection("Exporter metadata", [
+                    model.exporterMetadata.keys.length
+                        ? `Fields: ${model.exporterMetadata.keys.join(", ")}`
+                        : "No TB_* or GOOGLE_* fields found in inspected extras",
+                    model.exporterMetadata.dummyLightNodes.length
+                        ? `Dummy light transforms: ${model.exporterMetadata.dummyLightNodes.join(", ")}`
+                        : "No node_SceneLight_* transforms found"
+                ]);
+            } else {
+                appendEvidenceSection("Model document", [report.inspectionError || "Model document was not inspected"]);
+            }
+
+            appendEvidenceSection("Presentation lighting", report.presentation.length
+                ? report.presentation.map(field => `${field.key}: ${field.populated ? "populated" : "present but empty/null"}`)
+                : ["No recognised presentation lighting fields"]);
+
+            const currentViewerLines = [
+                "SketchMetadata creates two directional lights plus one ambient light from metadata, preset values, or white defaults.",
+                "Recognised presentation hemisphere and lighting-rig fields are not currently interpreted."
+            ];
+            if (report.model?.embeddedLights.punctualDefinitions) {
+                currentViewerLines.unshift(
+                    `${report.model.embeddedLights.punctualDefinitions} embedded punctual lights can remain alongside the generated Gallery rig.`
+                );
+            }
+            if (report.model?.exporterMetadata.dummyLightNodes.length) {
+                currentViewerLines.unshift(
+                    "node_SceneLight_* transforms are consumed and removed before Gallery creates replacement directional lights."
+                );
+            }
+            appendEvidenceSection("Current Gallery Viewer path", currentViewerLines);
+
+            const warning = document.createElement("p");
+            warning.className = "muted";
+            warning.textContent = "This reports evidence only. Presence does not yet establish whether a source replaces or augments another source.";
+            lightingReport.appendChild(warning);
+
+            const embeddedCount = report.model
+                ? report.model.embeddedLights.punctualDefinitions + report.model.embeddedLights.legacyCommon
+                : "?";
+            const exporterCount = report.model ? report.model.exporterMetadata.keys.length : "?";
+            lightingSummary.textContent = `Lights: ${embeddedCount} embedded · ${exporterCount} exporter fields · ${report.presentation.length} presentation fields`;
+        }
+
+        async function updateLightingEvidence(fixture) {
+            const request = ++lightingRequest;
+            lightingSummary.textContent = "Lighting evidence loading…";
+            lightingReport.textContent = "Inspecting selected rendition and presentation data…";
+            try {
+                const report = await inspectFixtureLighting(fixture);
+                if (request !== lightingRequest) return;
+                renderLightingEvidence(report);
+            } catch (error) {
+                if (request !== lightingRequest) return;
+                lightingSummary.textContent = "Lighting inspection failed";
+                lightingReport.textContent = `Lighting inspection error: ${error.message}`;
+            }
+        }
 
         async function updateReference(fixture) {
             const apiAssetId = assetIdForFixture(fixture);
@@ -182,8 +508,8 @@
             }
 
             viewers.classList.add("with-reference");
-            reference.dataset.referenceMode = referenceModeSelect.value;
-            referenceLabel.textContent = referenceModeSelect.value === "poly"
+            reference.dataset.referenceMode = referenceModeButton.value;
+            referenceLabel.textContent = referenceModeButton.value === "poly"
                 ? "Resurrected Google Poly"
                 : "Preserved thumbnail (fallback)";
             if (apiAssetId) {
@@ -211,13 +537,36 @@
 
         function loadFixture() {
             const fixture = fixtureSelect.value;
+            updatePaneButtons();
+            document.body.classList.remove("fallback-tuning-available");
+            document.body.classList.toggle("middle-lighting", middleModeButton.value === "lighting");
             const url = new URL(location.href);
             url.searchParams.set("fixture", fixture);
             url.searchParams.delete("lighting");
-            url.searchParams.set("reference", referenceModeSelect.value);
+            url.searchParams.delete("mode");
+            url.searchParams.set("left", leftModeButton.value);
+            url.searchParams.set("middle", middleModeButton.value);
+            url.searchParams.set("reference", referenceModeButton.value);
             history.replaceState(null, "", url);
-            productionViewer.src = `./comparison.html?bundle=production&fixture=${encodeURIComponent(fixture)}`;
-            mainViewer.src = `./comparison.html?bundle=main&fixture=${encodeURIComponent(fixture)}`;
+            const leftBundle = leftModeButton.value === "main" ? "main" : "production";
+            leftLabel.textContent = leftBundle === "main" ? "Current main bundle" : "Production Gallery bundle";
+            leftViewer.src = `./comparison.html?bundle=${leftBundle}&fixture=${encodeURIComponent(fixture)}&v=electricity-1`;
+
+            const middleUrl = new URL("./comparison.html", location.href);
+            middleUrl.searchParams.set("bundle", "main");
+            middleUrl.searchParams.set("fixture", fixture);
+            middleUrl.searchParams.set("v", "electricity-1");
+            if (middleModeButton.value === "lighting") {
+                middleLabel.textContent = "Poly-style fallback experiment";
+                middleUrl.searchParams.set("lighting", "poly-fallback");
+                middleUrl.searchParams.set("polyScale", polyScale.value);
+                middleUrl.searchParams.set("polyHemi", polyHemisphere.value);
+                middleUrl.searchParams.set("polyHead", polyHead.value);
+            } else {
+                middleLabel.textContent = "Current main bundle";
+            }
+            middleViewer.src = middleUrl;
+            updateLightingEvidence(fixture);
             updateReference(fixture).catch(error => {
                 referenceName.textContent = `Metadata error: ${error.message}`;
             });
@@ -225,7 +574,6 @@
 
         await populateFixtureSelect(fixtureSelect, initialFixture);
         fixtureSelect.addEventListener("change", loadFixture);
-        referenceModeSelect.addEventListener("change", loadFixture);
         loadFixture();
     </script>
 </body>
