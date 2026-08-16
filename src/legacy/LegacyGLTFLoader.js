@@ -90,7 +90,9 @@ export class LegacyGLTFLoader extends ThreeLoader {
                 "scene": scene,
                 "scenes": scenes,
                 "cameras": cameras,
-                "animations": animations
+                "animations": animations,
+                "asset": json.asset,
+                "userData": json.extras || {}
             };
 
             callback( glTF );
