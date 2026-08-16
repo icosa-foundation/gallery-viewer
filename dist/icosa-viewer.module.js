@@ -6447,7 +6447,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 sketchCam[2] * poseScale
             ];
         }
-        const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 75;
+        const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 45;
         const aspect = 2;
         const near = cameraOverrides?.perspective?.znear || 0.01;
         const far = 6000;

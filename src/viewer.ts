@@ -2897,7 +2897,7 @@ export class Viewer {
             sketchCam = [sketchCam[0] * poseScale, sketchCam[1] * poseScale, sketchCam[2] * poseScale];
         }
 
-        const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 75;
+        const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 45;
         const aspect = 2;
         const near = cameraOverrides?.perspective?.znear || 0.01;
         const far = 6000;

@@ -111,7 +111,7 @@ Two cameras are created (`src/viewer.ts:2441-2456`):
 - `xrCamera` - Secondary camera for WebXR/VR mode
 
 **Camera parameters:**
-- FOV: From overrides or default 75 degrees
+- FOV: From overrides or Poly's default 45 degrees
 - Aspect ratio: Default 2 (updated during resize)
 - Near plane: From overrides or default 0.1
 - Far plane: Fixed at 6000 units
