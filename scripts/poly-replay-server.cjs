@@ -334,14 +334,49 @@ async function getReplaySelection(localUrl, localOrigin) {
     };
 }
 
+async function fetchIcosaAsset(assetId) {
+    const url = `https://api.icosa.gallery/v1/assets/${assetId}`;
+    const maximumAttempts = 5;
+
+    for (let attempt = 1; attempt <= maximumAttempts; attempt += 1) {
+        let response;
+        try {
+            response = await fetch(url, {
+                headers: {
+                    'User-Agent': 'Icosa-Poly-Replay/1.0',
+                },
+            });
+        } catch (error) {
+            if (attempt === maximumAttempts) throw error;
+            console.warn(`[POLY-REPLAY] Icosa API network retry ${attempt}/${maximumAttempts - 1} for ${assetId}`);
+            await new Promise(resolve => setTimeout(resolve, attempt * 500));
+            continue;
+        }
+
+        if (response.ok) return response.json();
+
+        const transient = response.status === 429 || response.status >= 500;
+        if (!transient || attempt === maximumAttempts) {
+            throw new Error(`Icosa API returned ${response.status} for ${assetId}`);
+        }
+
+        const retryAfterSeconds = Number(response.headers.get('retry-after'));
+        const delay = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+            ? retryAfterSeconds * 1000
+            : attempt * 500;
+        console.warn(`[POLY-REPLAY] Icosa API ${response.status} retry ${attempt}/${maximumAttempts - 1} for ${assetId}`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+    }
+
+    throw new Error(`Icosa API retries exhausted for ${assetId}`);
+}
+
 async function getPreferredViewerAsset(assetId) {
     if (!/^[A-Za-z0-9_-]+$/.test(assetId)) {
         throw new Error(`Invalid Icosa asset ID: ${assetId}`);
     }
     if (assetCache.has(assetId)) return assetCache.get(assetId);
-    const response = await fetch(`https://api.icosa.gallery/v1/assets/${assetId}`);
-    if (!response.ok) throw new Error(`Icosa API returned ${response.status} for ${assetId}`);
-    const asset = await response.json();
+    const asset = await fetchIcosaAsset(assetId);
     const preferredFormat = asset.formats?.find(format => format.isPreferredForGalleryViewer);
     if (!preferredFormat?.root?.url) {
         throw new Error(`Icosa asset ${assetId} has no preferred Gallery viewer format`);
