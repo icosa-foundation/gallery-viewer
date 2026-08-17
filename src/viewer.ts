@@ -311,6 +311,7 @@ export class Viewer {
     private activeCamera: THREE.PerspectiveCamera;
     private flatCamera: THREE.PerspectiveCamera;
     private xrCamera: THREE.PerspectiveCamera;
+    private thumbnailCameraHorizontalFov?: number;
     private audioListener: THREE.AudioListener;
     private cameraControls: CameraControls;
     private trackballControls: TrackballControls;
@@ -626,7 +627,11 @@ export class Viewer {
                 const needResize = viewer.canvas.width !== viewer.canvas.clientWidth || viewer.canvas.height !== viewer.canvas.clientHeight;
                 if (needResize && viewer?.flatCamera) {
                     this.renderer.setSize(viewer.canvas.clientWidth, viewer.canvas.clientHeight, false);
-                    viewer.flatCamera.aspect = viewer.canvas.clientWidth / viewer.canvas.clientHeight;
+                    const aspect = viewer.canvas.clientWidth / viewer.canvas.clientHeight;
+                    viewer.flatCamera.aspect = aspect;
+                    if (viewer.thumbnailCameraHorizontalFov !== undefined) {
+                        viewer.flatCamera.fov = Viewer.verticalFovForAspect(viewer.thumbnailCameraHorizontalFov, aspect);
+                    }
                     viewer.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer?.cameraControls) viewer.cameraControls.update(delta);
@@ -671,6 +676,7 @@ export class Viewer {
 
             // Store original camera aspect ratio
             const originalAspect = this.activeCamera.aspect;
+            const originalFov = this.activeCamera.fov;
 
             // Create render target for offscreen rendering
             const renderTarget = new THREE.WebGLRenderTarget(width, height, {
@@ -688,6 +694,9 @@ export class Viewer {
 
             // Update camera aspect ratio to match thumbnail dimensions
             this.activeCamera.aspect = width / height;
+            if (this.thumbnailCameraHorizontalFov !== undefined) {
+                this.activeCamera.fov = Viewer.verticalFovForAspect(this.thumbnailCameraHorizontalFov, this.activeCamera.aspect);
+            }
             this.activeCamera.updateProjectionMatrix();
 
             // Render the scene
@@ -726,6 +735,7 @@ export class Viewer {
 
             // Restore original camera aspect ratio
             this.activeCamera.aspect = originalAspect;
+            this.activeCamera.fov = originalFov;
             this.activeCamera.updateProjectionMatrix();
 
             // Clean up
@@ -2875,6 +2885,10 @@ export class Viewer {
         this.sketchMetadata = sketchMetaData;
     }
 
+    private static verticalFovForAspect(horizontalFov: number, aspect: number): number {
+        return THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(horizontalFov / 2) / aspect));
+    }
+
     private initCameras() {
 
         this.cameraControls?.dispose();
@@ -2897,8 +2911,23 @@ export class Viewer {
             sketchCam = [sketchCam[0] * poseScale, sketchCam[1] * poseScale, sketchCam[2] * poseScale];
         }
 
-        const fov = (cameraOverrides?.perspective?.yfov / (Math.PI / 180)) || 45;
         const aspect = 2;
+        const overrideFov = cameraOverrides?.perspective?.yfov / (Math.PI / 180);
+        const thumbnailCamera = this.sketchMetadata.FlyMode && gltfCamera instanceof THREE.PerspectiveCamera
+            ? gltfCamera
+            : undefined;
+
+        // Recent Tilt/Open Brush exports embed the thumbnail camera with both a
+        // vertical FOV and an aspect ratio. Preserve its horizontal frustum when
+        // displaying it in a differently shaped viewer canvas.
+        this.thumbnailCameraHorizontalFov = thumbnailCamera
+            ? 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(thumbnailCamera.fov) / 2) * thumbnailCamera.aspect)
+            : undefined;
+        const fov = overrideFov
+            || (this.thumbnailCameraHorizontalFov !== undefined
+                ? Viewer.verticalFovForAspect(this.thumbnailCameraHorizontalFov, aspect)
+                : undefined)
+            || 45;
         const near = cameraOverrides?.perspective?.znear || 0.01;
         const far = 6000;
 
@@ -2990,7 +3019,7 @@ export class Viewer {
                     this.flatCamera.getWorldDirection(forward);
                     let cameraTargetDistance = this.sketchMetadata.CameraTargetDistance;
                     cameraTarget = this.flatCamera.position.clone().add(forward.multiplyScalar(cameraTargetDistance));
-                } else { // No pivot or distance - try and figure out a good target point
+                } else { // No pivot or distance - match Google Poly's visual-centre fallback
                     let vp = this.overrides?.geometryData?.visualCenterPoint;
                     if (!vp) {
                         const box = this.modelBoundingBox;
@@ -2999,9 +3028,21 @@ export class Viewer {
                             vp = [boxCenter.x, boxCenter.y, boxCenter.z];
                         }
                     }
-                    let visualCenterPoint = new THREE.Vector3(vp[0], vp[1], vp[2]);
-                    cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
-                    cameraTarget = cameraTarget || visualCenterPoint;
+                    const forward = new THREE.Vector3();
+                    this.flatCamera.getWorldDirection(forward);
+                    cameraTarget = this.flatCamera.position.clone().add(forward);
+
+                    if (vp) {
+                        const visualCenterPoint = new THREE.Vector3(vp[0], vp[1], vp[2]);
+                        const ray = new THREE.Ray(this.flatCamera.position, forward);
+                        cameraTarget = ray.closestPointToPoint(visualCenterPoint, cameraTarget);
+
+                        // Poly uses a one-unit forward target when the visual centre is at
+                        // or behind the camera, preserving the authored camera orientation.
+                        if (cameraTarget.clone().sub(this.flatCamera.position).dot(forward) <= 1e-4) {
+                            cameraTarget.copy(this.flatCamera.position).add(forward);
+                        }
+                    }
                 }
             }
             CameraControls.install({THREE: THREE});
@@ -3037,28 +3078,6 @@ export class Viewer {
         this.cameraRig.rotation.y = yaw + Math.PI;
         
         this.xrCamera.updateProjectionMatrix();
-    }
-
-    private calculatePivot(camera : THREE.Camera, centroid : THREE.Vector3) {
-        // 1. Get the camera's forward vector
-        const forward = new THREE.Vector3();
-        camera.getWorldDirection(forward); // This gives the forward vector in world space.
-
-        // 2. Define a plane based on the centroid and facing the camera
-        const planeNormal = forward.clone().negate(); // Plane facing the camera
-        const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(planeNormal, centroid);
-
-        // 3. Calculate the intersection point of the forward vector with the plane
-        const cameraPosition = camera.position.clone();
-        const ray = new THREE.Ray(cameraPosition, forward);
-        const intersectionPoint = new THREE.Vector3();
-
-        if (ray.intersectPlane(plane, intersectionPoint)) {
-            return intersectionPoint; // This is your calculated pivot point.
-        } else {
-            console.error("No intersection between camera forward vector and plane.");
-            return null; // Handle the error case gracefully.
-        }
     }
 
     private initLights() {
