@@ -84,6 +84,36 @@
         }
 
         const fixtureUrl = fixture.url;
+        const viewerOverrides = { ...(fixture.overrides || {}) };
+        if (params.get("postfx") === "bloom") {
+            const optionalFiniteParam = name => {
+                if (!params.has(name)) return undefined;
+                const value = Number(params.get(name));
+                return Number.isFinite(value) ? value : undefined;
+            };
+            viewerOverrides.postProcessing = {
+                mode: "on",
+                vignette: "off",
+                bloom: {
+                    strength: optionalFiniteParam("bloomStrength"),
+                    threshold: optionalFiniteParam("bloomThreshold"),
+                    radius: optionalFiniteParam("bloomRadius")
+                }
+            };
+        } else if (params.get("postfx") === "vignette") {
+            const configuredStrength = params.has("vignetteStrength")
+                ? Number(params.get("vignetteStrength"))
+                : undefined;
+            viewerOverrides.postProcessing = {
+                mode: "on",
+                bloom: "off",
+                vignette: {
+                    strength: Number.isFinite(configuredStrength) ? configuredStrength : undefined
+                }
+            };
+        } else if (params.get("postfx") === "off") {
+            viewerOverrides.postProcessing = { mode: "off" };
+        }
         window.comparisonResult = {
             bundleName,
             fixtureName,
@@ -101,6 +131,32 @@
         const { Viewer } = await import(moduleUrl);
         const viewer = new Viewer(new URL("./sketch_assets/", location.href).toString());
         window.viewer = viewer;
+
+        window.addEventListener("message", event => {
+            if (
+                event.origin !== location.origin
+                || event.source !== window.parent
+                || event.data?.type !== "viewer-post-processing-controls"
+                || typeof viewer.setPostProcessing !== "function"
+            ) return;
+            viewer.setPostProcessing(event.data.effect === "vignette"
+                ? {
+                    mode: "on",
+                    bloom: "off",
+                    vignette: { strength: event.data.strength }
+                }
+                : {
+                    mode: "on",
+                    vignette: "off",
+                    bloom: {
+                        strength: event.data.strength,
+                        threshold: event.data.threshold,
+                        radius: event.data.radius
+                    }
+                });
+            window.comparisonResult.postProcessing = viewer.getPostProcessing();
+            document.getElementById("comparison-result").textContent = JSON.stringify(window.comparisonResult);
+        });
 
         status.textContent = `${bundleName} | ${fixtureName}`;
         async function waitForViewerScene() {
@@ -264,18 +320,18 @@
         if (fixture.loader === "obj") {
             loadMethod = fixture.mtlUrl ? "loadObjWithMtl" : "loadObj";
             if (fixture.mtlUrl) {
-                await viewer.loadObjWithMtl(fixtureUrl, fixture.mtlUrl, fixture.overrides || {});
+                await viewer.loadObjWithMtl(fixtureUrl, fixture.mtlUrl, viewerOverrides);
             } else {
-                await viewer.loadObj(fixtureUrl, fixture.overrides || {});
+                await viewer.loadObj(fixtureUrl, viewerOverrides);
             }
         } else {
             loadMethod = fixture.loader === "gltf1" ? "loadGltf1" : "loadGltf";
-            await viewer[loadMethod](fixtureUrl, true, fixture.overrides || {});
+            await viewer[loadMethod](fixtureUrl, true, viewerOverrides);
 
             if (viewer.loadingError && fixture.assetId) {
                 const fallbackMethod = loadMethod === "loadGltf1" ? "loadGltf" : "loadGltf1";
                 window.comparisonResult.fallbackMethod = fallbackMethod;
-                await viewer[fallbackMethod](fixtureUrl, true, fixture.overrides);
+                await viewer[fallbackMethod](fixtureUrl, true, viewerOverrides);
             }
         }
         const directionalLights = await waitForViewerScene();
@@ -315,6 +371,7 @@
 
             await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
             window.comparisonResult.loadingError = false;
+            window.comparisonResult.postProcessing = viewer.getPostProcessing?.() || null;
             window.comparisonResult.camera = {
                 position: viewer.activeCamera?.position.toArray(),
                 quaternion: viewer.activeCamera?.quaternion.toArray()
@@ -377,6 +434,12 @@
                 fixtureName,
                 bundleName,
                 lightingExperiment: lightingExperiment || "current"
+            }, location.origin);
+            window.parent.postMessage({
+                type: "viewer-post-processing-status",
+                postProcessing: window.comparisonResult.postProcessing,
+                fixtureName,
+                bundleName
             }, location.origin);
         }
 

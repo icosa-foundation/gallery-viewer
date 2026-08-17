@@ -142,9 +142,53 @@
             font-variant-numeric: tabular-nums;
         }
 
+        #bloom-controls {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        body.middle-bloom #bloom-controls {
+            display: flex;
+        }
+
+        #vignette-controls {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        body.middle-vignette #vignette-controls {
+            display: flex;
+        }
+
+        #vignette-controls input[type="range"] {
+            width: 90px;
+        }
+
+        #vignette-controls output {
+            width: 3.5ch;
+            color: #bdc1c6;
+            font-variant-numeric: tabular-nums;
+        }
+
+        #bloom-controls input[type="range"] {
+            width: 68px;
+        }
+
+        #bloom-controls output {
+            width: 3.5ch;
+            color: #bdc1c6;
+            font-variant-numeric: tabular-nums;
+        }
+
         #left-mode,
         #middle-mode,
         #reference-mode,
+        #bloom-auto,
+        #vignette-auto,
         #lighting-toggle,
         #lighting-close {
             border: 1px solid #5f6368;
@@ -226,6 +270,24 @@
         </select>
         <button id="left-mode" type="button" value="production">Left: Production</button>
         <button id="middle-mode" type="button" value="main">Middle: Main</button>
+        <span id="bloom-controls">
+            <label for="bloom-strength">Str</label>
+            <input id="bloom-strength" type="range" min="0" max="1" step="0.01" value="0.05">
+            <output id="bloom-strength-value" for="bloom-strength">0.05</output>
+            <label for="bloom-threshold">Cut</label>
+            <input id="bloom-threshold" type="range" min="0" max="3" step="0.05" value="0">
+            <output id="bloom-threshold-value" for="bloom-threshold">0.00</output>
+            <label for="bloom-radius">Rad</label>
+            <input id="bloom-radius" type="range" min="0" max="1" step="0.05" value="0">
+            <output id="bloom-radius-value" for="bloom-radius">0.00</output>
+            <button id="bloom-auto" type="button">Auto</button>
+        </span>
+        <span id="vignette-controls">
+            <label for="vignette-strength">Vig</label>
+            <input id="vignette-strength" type="range" min="0" max="2" step="0.05" value="0.5">
+            <output id="vignette-strength-value" for="vignette-strength">0.50</output>
+            <button id="vignette-auto" type="button">Auto</button>
+        </span>
         <span id="poly-controls">
             <label for="poly-scale">Scale</label>
             <input id="poly-scale" type="range" min="0" max="1.5" step="0.05" value="0.35">
@@ -301,6 +363,16 @@
         const polyScaleValue = document.getElementById("poly-scale-value");
         const polyHemisphereValue = document.getElementById("poly-hemi-value");
         const polyHeadValue = document.getElementById("poly-head-value");
+        const bloomStrength = document.getElementById("bloom-strength");
+        const bloomThreshold = document.getElementById("bloom-threshold");
+        const bloomRadius = document.getElementById("bloom-radius");
+        const bloomStrengthValue = document.getElementById("bloom-strength-value");
+        const bloomThresholdValue = document.getElementById("bloom-threshold-value");
+        const bloomRadiusValue = document.getElementById("bloom-radius-value");
+        const bloomAuto = document.getElementById("bloom-auto");
+        const vignetteStrength = document.getElementById("vignette-strength");
+        const vignetteStrengthValue = document.getElementById("vignette-strength-value");
+        const vignetteAuto = document.getElementById("vignette-auto");
         const pageParams = new URLSearchParams(location.search);
         const initialFixture = new URLSearchParams(location.search).get("fixture") || "f4-0";
         const requestedComparisonMode = pageParams.get("mode");
@@ -308,15 +380,25 @@
         const initialLeftMode = pageParams.get("left") === "main" || requestedComparisonMode === "hypothesis"
             ? "main"
             : "production";
-        const initialMiddleMode = pageParams.get("middle") === "lighting" || requestedComparisonMode === "hypothesis"
+        const requestedMiddleMode = pageParams.get("middle");
+        const initialMiddleMode = requestedMiddleMode === "lighting" || requestedComparisonMode === "hypothesis"
             ? "lighting"
-            : "main";
+            : requestedMiddleMode === "bloom" || requestedMiddleMode === "vignette"
+                ? requestedMiddleMode
+                : "main";
         const initialReferenceMode = requestedReferenceMode === "thumbnail" ? "thumbnail" : "poly";
         const polyReplayOrigin = `${location.protocol}//${location.hostname}:8766`;
         let lightingRequest = 0;
         polyScale.value = pageParams.get("polyScale") || "0.35";
         polyHemisphere.value = pageParams.get("polyHemi") || "0.5";
         polyHead.value = pageParams.get("polyHead") || "1";
+        let bloomValuesExplicit = ["bloomStrength", "bloomThreshold", "bloomRadius"]
+            .some(name => pageParams.has(name));
+        bloomStrength.value = pageParams.get("bloomStrength") || "0.05";
+        bloomThreshold.value = pageParams.get("bloomThreshold") || "0";
+        bloomRadius.value = pageParams.get("bloomRadius") || "0";
+        let vignetteValueExplicit = pageParams.has("vignetteStrength");
+        vignetteStrength.value = pageParams.get("vignetteStrength") || "0.5";
         leftModeButton.value = initialLeftMode;
         middleModeButton.value = initialMiddleMode;
         referenceModeButton.value = initialReferenceMode;
@@ -325,7 +407,9 @@
             leftModeButton.textContent = leftModeButton.value === "main" ? "Left: Main" : "Left: Production";
             middleModeButton.textContent = middleModeButton.value === "lighting"
                 ? "Middle: Lighting"
-                : "Middle: Main";
+                : middleModeButton.value === "vignette"
+                    ? "Middle: Vignette"
+                    : middleModeButton.value === "bloom" ? "Middle: Bloom" : "Middle: Main";
         }
 
         leftModeButton.addEventListener("click", () => {
@@ -334,7 +418,11 @@
         });
 
         middleModeButton.addEventListener("click", () => {
-            middleModeButton.value = middleModeButton.value === "main" ? "lighting" : "main";
+            middleModeButton.value = middleModeButton.value === "main"
+                ? "lighting"
+                : middleModeButton.value === "lighting"
+                    ? "vignette"
+                    : middleModeButton.value === "vignette" ? "bloom" : "main";
             loadFixture();
         });
         updatePaneButtons();
@@ -377,13 +465,97 @@
         });
         updatePolyControls();
 
+        function updateBloomValueLabels() {
+            bloomStrengthValue.value = Number(bloomStrength.value).toFixed(2);
+            bloomThresholdValue.value = Number(bloomThreshold.value).toFixed(2);
+            bloomRadiusValue.value = Number(bloomRadius.value).toFixed(2);
+        }
+
+        function updateBloomControls() {
+            bloomValuesExplicit = true;
+            updateBloomValueLabels();
+            const values = {
+                type: "viewer-post-processing-controls",
+                strength: Number(bloomStrength.value),
+                threshold: Number(bloomThreshold.value),
+                radius: Number(bloomRadius.value)
+            };
+            const url = new URL(location.href);
+            url.searchParams.set("bloomStrength", String(values.strength));
+            url.searchParams.set("bloomThreshold", String(values.threshold));
+            url.searchParams.set("bloomRadius", String(values.radius));
+            history.replaceState(null, "", url);
+            middleViewer.contentWindow?.postMessage(values, location.origin);
+        }
+
+        [bloomStrength, bloomThreshold, bloomRadius].forEach(control => {
+            control.addEventListener("input", updateBloomControls);
+        });
+        bloomAuto.addEventListener("click", () => {
+            bloomValuesExplicit = false;
+            const url = new URL(location.href);
+            url.searchParams.delete("bloomStrength");
+            url.searchParams.delete("bloomThreshold");
+            url.searchParams.delete("bloomRadius");
+            history.replaceState(null, "", url);
+            loadFixture();
+        });
+        updateBloomValueLabels();
+
+        function updateVignetteValueLabel() {
+            vignetteStrengthValue.value = Number(vignetteStrength.value).toFixed(2);
+        }
+
+        vignetteStrength.addEventListener("input", () => {
+            vignetteValueExplicit = true;
+            updateVignetteValueLabel();
+            const strength = Number(vignetteStrength.value);
+            const url = new URL(location.href);
+            url.searchParams.set("vignetteStrength", String(strength));
+            history.replaceState(null, "", url);
+            middleViewer.contentWindow?.postMessage({
+                type: "viewer-post-processing-controls",
+                effect: "vignette",
+                strength
+            }, location.origin);
+        });
+        vignetteAuto.addEventListener("click", () => {
+            vignetteValueExplicit = false;
+            const url = new URL(location.href);
+            url.searchParams.delete("vignetteStrength");
+            history.replaceState(null, "", url);
+            loadFixture();
+        });
+        updateVignetteValueLabel();
+
         window.addEventListener("message", event => {
-            if (event.origin !== location.origin || event.source !== middleViewer.contentWindow
-                || event.data?.type !== "viewer-fallback-lighting-status") return;
-            document.body.classList.toggle(
-                "fallback-tuning-available",
-                event.data.usesFallbackLighting === true
-            );
+            if (event.origin !== location.origin || event.source !== middleViewer.contentWindow) return;
+            if (event.data?.type === "viewer-fallback-lighting-status") {
+                document.body.classList.toggle(
+                    "fallback-tuning-available",
+                    event.data.usesFallbackLighting === true
+                );
+            }
+            if (
+                event.data?.type === "viewer-post-processing-status"
+                && middleModeButton.value === "bloom"
+                && !bloomValuesExplicit
+                && event.data.postProcessing?.bloom?.enabled
+            ) {
+                bloomStrength.value = String(event.data.postProcessing.bloom.strength);
+                bloomThreshold.value = String(event.data.postProcessing.bloom.threshold);
+                bloomRadius.value = String(event.data.postProcessing.bloom.radius);
+                updateBloomValueLabels();
+            }
+            if (
+                event.data?.type === "viewer-post-processing-status"
+                && middleModeButton.value === "vignette"
+                && !vignetteValueExplicit
+                && event.data.postProcessing?.vignette?.enabled
+            ) {
+                vignetteStrength.value = String(event.data.postProcessing.vignette.strength);
+                updateVignetteValueLabel();
+            }
         });
 
         lightingToggle.addEventListener("click", () => {
@@ -540,6 +712,8 @@
             updatePaneButtons();
             document.body.classList.remove("fallback-tuning-available");
             document.body.classList.toggle("middle-lighting", middleModeButton.value === "lighting");
+            document.body.classList.toggle("middle-bloom", middleModeButton.value === "bloom");
+            document.body.classList.toggle("middle-vignette", middleModeButton.value === "vignette");
             const url = new URL(location.href);
             url.searchParams.set("fixture", fixture);
             url.searchParams.delete("lighting");
@@ -562,6 +736,20 @@
                 middleUrl.searchParams.set("polyScale", polyScale.value);
                 middleUrl.searchParams.set("polyHemi", polyHemisphere.value);
                 middleUrl.searchParams.set("polyHead", polyHead.value);
+            } else if (middleModeButton.value === "bloom") {
+                middleLabel.textContent = "Current main with bloom";
+                middleUrl.searchParams.set("postfx", "bloom");
+                if (bloomValuesExplicit) {
+                    middleUrl.searchParams.set("bloomStrength", bloomStrength.value);
+                    middleUrl.searchParams.set("bloomThreshold", bloomThreshold.value);
+                    middleUrl.searchParams.set("bloomRadius", bloomRadius.value);
+                }
+            } else if (middleModeButton.value === "vignette") {
+                middleLabel.textContent = "Current main with Poly vignette";
+                middleUrl.searchParams.set("postfx", "vignette");
+                if (vignetteValueExplicit) {
+                    middleUrl.searchParams.set("vignetteStrength", vignetteStrength.value);
+                }
             } else {
                 middleLabel.textContent = "Current main bundle";
             }

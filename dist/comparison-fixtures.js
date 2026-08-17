@@ -197,7 +197,8 @@ export async function resolveFixture(fixtureId) {
             defaultBackgroundColor: presentationParams.backgroundColor || (loader === "obj" ? "#ffffff" : "#000000"),
             camera: { ...(presentationParams.camera || {}), ...(asset.camera || {}) },
             geometryData: presentationParams.geometry_data || presentationParams.GOOGLE_geometry_data || {},
-            colorSpace: presentationParams.colorSpace || "LINEAR"
+            colorSpace: presentationParams.colorSpace || "LINEAR",
+            presentationParams
         },
         polyPresentationParams: presentationParams,
         assetId,
