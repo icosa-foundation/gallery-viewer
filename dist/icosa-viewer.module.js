@@ -11,6 +11,11 @@ import {VOXLoader as $hBQxr$VOXLoader, VOXMesh as $hBQxr$VOXMesh} from "three/ex
 import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension} from "three-icosa";
 import {TiltLoader as $hBQxr$TiltLoader} from "three-tiltloader";
 import {XRControllerModelFactory as $hBQxr$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
+import {EffectComposer as $hBQxr$EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer.js";
+import {OutputPass as $hBQxr$OutputPass} from "three/examples/jsm/postprocessing/OutputPass.js";
+import {RenderPass as $hBQxr$RenderPass} from "three/examples/jsm/postprocessing/RenderPass.js";
+import {ShaderPass as $hBQxr$ShaderPass} from "three/examples/jsm/postprocessing/ShaderPass.js";
+import {UnrealBloomPass as $hBQxr$UnrealBloomPass} from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 // Copyright 2021-2022 Icosa Gallery
 //
@@ -4008,6 +4013,11 @@ class $707bd002539ed0ea$export$1b293339dff011f9 {
 
 
 
+
+
+
+
+
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
@@ -4114,6 +4124,18 @@ class $677737c8a5cbea2f$var$EnvironmentPreset {
 }
 class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     constructor(assetBaseUrl, frame){
+        this.resolvedBloom = {
+            enabled: false,
+            strength: 0,
+            threshold: 0,
+            radius: 0
+        };
+        this.resolvedVignette = {
+            enabled: false,
+            strength: 0,
+            soft: false
+        };
+        this.loadedContentIsTilt = false;
         this.loadingError = false;
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
@@ -4337,6 +4359,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 const needResize = viewer.canvas.width !== viewer.canvas.clientWidth || viewer.canvas.height !== viewer.canvas.clientHeight;
                 if (needResize && viewer?.flatCamera) {
                     this.renderer.setSize(viewer.canvas.clientWidth, viewer.canvas.clientHeight, false);
+                    viewer.effectComposer?.setSize(viewer.canvas.clientWidth, viewer.canvas.clientHeight);
                     viewer.flatCamera.aspect = viewer.canvas.clientWidth / viewer.canvas.clientHeight;
                     viewer.flatCamera.updateProjectionMatrix();
                 }
@@ -4354,7 +4377,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.tryStartAutoplayAudio(viewer.contentRoot);
             if (viewer?.activeCamera && viewer.contentUpdater) viewer.contentUpdater(animationTime, viewer.activeCamera);
             // SparkRenderer stochastic setup is now handled by GUI toggle
-            if (viewer?.activeCamera) this.renderer.render(viewer.scene, viewer.activeCamera);
+            if (viewer?.activeCamera) {
+                if (viewer.effectComposer && viewer.postProcessingRenderPass && !this.renderer.xr.isPresenting) {
+                    viewer.postProcessingRenderPass.camera = viewer.activeCamera;
+                    viewer.effectComposer.render(delta);
+                } else {
+                    this.renderer.render(viewer.scene, viewer.activeCamera);
+                    viewer.renderVignetteOverlay();
+                }
+            }
         };
         this.dataURLtoBlob = (dataURL)=>{
             let arr = dataURL.split(',');
@@ -4377,26 +4408,45 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             const originalPixelRatio = this.renderer.getPixelRatio();
             // Store original camera aspect ratio
             const originalAspect = this.activeCamera.aspect;
-            // Create render target for offscreen rendering
-            const renderTarget = new $hBQxr$three.WebGLRenderTarget(width, height, {
-                format: $hBQxr$three.RGBAFormat,
-                type: $hBQxr$three.UnsignedByteType,
-                generateMipmaps: false,
-                minFilter: $hBQxr$three.LinearFilter,
-                magFilter: $hBQxr$three.LinearFilter
-            });
-            // Set render target and size
-            this.renderer.setRenderTarget(renderTarget);
-            this.renderer.setSize(width, height, false);
-            this.renderer.setPixelRatio(1); // Use 1:1 pixel ratio for consistent output
             // Update camera aspect ratio to match thumbnail dimensions
             this.activeCamera.aspect = width / height;
             this.activeCamera.updateProjectionMatrix();
-            // Render the scene
-            this.renderer.render(this.scene, this.activeCamera);
-            // Read pixels from render target
-            const pixels = new Uint8Array(width * height * 4);
-            this.renderer.readRenderTargetPixels(renderTarget, 0, 0, width, height, pixels);
+            let pixels;
+            let temporaryRenderTarget;
+            if (this.effectComposer && this.postProcessingRenderPass) {
+                const originalRenderToScreen = this.effectComposer.renderToScreen;
+                this.effectComposer.renderToScreen = false;
+                this.effectComposer.setPixelRatio(1);
+                this.effectComposer.setSize(width, height);
+                this.postProcessingRenderPass.camera = this.activeCamera;
+                this.effectComposer.render(0);
+                const halfFloatPixels = new Uint16Array(width * height * 4);
+                this.renderer.readRenderTargetPixels(this.effectComposer.readBuffer, 0, 0, width, height, halfFloatPixels);
+                pixels = new Uint8Array(halfFloatPixels.length);
+                for(let i = 0; i < halfFloatPixels.length; i++){
+                    let value = $hBQxr$three.DataUtils.fromHalfFloat(halfFloatPixels[i]);
+                    if (i % 4 !== 3 && this.renderer.outputColorSpace === $hBQxr$three.SRGBColorSpace) value = value <= 0.0031308 ? value * 12.92 : 1.055 * Math.pow(value, 1 / 2.4) - 0.055;
+                    pixels[i] = Math.round($hBQxr$three.MathUtils.clamp(value, 0, 1) * 255);
+                }
+                this.effectComposer.renderToScreen = originalRenderToScreen;
+                this.effectComposer.setPixelRatio(originalPixelRatio);
+                this.effectComposer.setSize(originalSize.x, originalSize.y);
+            } else {
+                temporaryRenderTarget = new $hBQxr$three.WebGLRenderTarget(width, height, {
+                    format: $hBQxr$three.RGBAFormat,
+                    type: $hBQxr$three.UnsignedByteType,
+                    generateMipmaps: false,
+                    minFilter: $hBQxr$three.LinearFilter,
+                    magFilter: $hBQxr$three.LinearFilter
+                });
+                this.renderer.setRenderTarget(temporaryRenderTarget);
+                this.renderer.setSize(width, height, false);
+                this.renderer.setPixelRatio(1);
+                this.renderer.render(this.scene, this.activeCamera);
+                this.renderVignetteOverlay();
+                pixels = new Uint8Array(width * height * 4);
+                this.renderer.readRenderTargetPixels(temporaryRenderTarget, 0, 0, width, height, pixels);
+            }
             // Create canvas and draw pixels to it
             const canvas = document.createElement('canvas');
             canvas.width = width;
@@ -4422,7 +4472,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.activeCamera.aspect = originalAspect;
             this.activeCamera.updateProjectionMatrix();
             // Clean up
-            renderTarget.dispose();
+            temporaryRenderTarget?.dispose();
             return dataUrl;
         };
         animate();
@@ -4505,7 +4555,287 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.contentRoot.add(this.loadedModel);
         }
         this.configureShadows();
+        this.configurePostProcessing();
         this.contentDisposer = disposeContent;
+    }
+    mergePostProcessingOptions(base, override) {
+        if (!base && !override) return undefined;
+        const merged = {
+            ...base || {},
+            ...override || {}
+        };
+        const baseBloom = base?.bloom;
+        const overrideBloom = override?.bloom;
+        if (baseBloom && typeof baseBloom === 'object' && overrideBloom && typeof overrideBloom === 'object') merged.bloom = {
+            ...baseBloom,
+            ...overrideBloom
+        };
+        const baseVignette = base?.vignette;
+        const overrideVignette = override?.vignette;
+        if (baseVignette && typeof baseVignette === 'object' && overrideVignette && typeof overrideVignette === 'object') merged.vignette = {
+            ...baseVignette,
+            ...overrideVignette
+        };
+        return merged;
+    }
+    resolvedPostProcessingConfiguration() {
+        const authored = this.overrides?.presentationParams?.postProcessing ?? this.overrides?.presentationPostProcessing;
+        const loadOverrides = this.overrides?.postProcessing;
+        return this.mergePostProcessingOptions(this.mergePostProcessingOptions(authored, loadOverrides), this.runtimePostProcessingOverrides);
+    }
+    polyBloomDefaults() {
+        if (this.loadedContentIsTilt) return {
+            strength: 0.05,
+            threshold: 0,
+            radius: 0
+        };
+        return {
+            strength: 0.3,
+            threshold: 1.2,
+            radius: 0
+        };
+    }
+    resolveBloomOptions() {
+        const configured = this.resolvedPostProcessingConfiguration();
+        const defaults = this.polyBloomDefaults();
+        const bloom = configured?.bloom;
+        if (!configured || configured.mode === 'off' || bloom === false || bloom === 'off') return {
+            enabled: false,
+            ...defaults
+        };
+        const bloomOptions = bloom && typeof bloom === 'object' ? bloom : undefined;
+        const requested = configured.mode === 'on' || configured.mode === 'auto' || bloom === true || bloom === 'on' || bloom === 'auto' || bloomOptions !== undefined;
+        if (!requested || bloomOptions?.mode === 'off') return {
+            enabled: false,
+            ...defaults
+        };
+        const finiteOrDefault = (value, fallback)=>Number.isFinite(value) ? value : fallback;
+        return {
+            enabled: true,
+            strength: Math.max(0, finiteOrDefault(bloomOptions?.strength, defaults.strength)),
+            threshold: Math.max(0, finiteOrDefault(bloomOptions?.threshold, defaults.threshold)),
+            radius: $hBQxr$three.MathUtils.clamp(finiteOrDefault(bloomOptions?.radius, defaults.radius), 0, 1)
+        };
+    }
+    resolveVignetteOptions() {
+        const configured = this.resolvedPostProcessingConfiguration();
+        const defaults = this.loadedContentIsTilt ? {
+            strength: 0.5,
+            soft: false
+        } : {
+            strength: 1,
+            soft: true
+        };
+        const vignette = configured?.vignette;
+        if (!configured || configured.mode === 'off' || vignette === false || vignette === 'off') return {
+            enabled: false,
+            ...defaults
+        };
+        const vignetteOptions = vignette && typeof vignette === 'object' ? vignette : undefined;
+        const requested = vignette === true || vignette === 'on' || vignette === 'auto' || vignetteOptions !== undefined || this.loadedContentIsTilt && (configured.mode === 'on' || configured.mode === 'auto');
+        if (!requested || vignetteOptions?.mode === 'off') return {
+            enabled: false,
+            ...defaults
+        };
+        const configuredStrength = vignetteOptions?.strength;
+        return {
+            enabled: true,
+            strength: Math.max(0, Number.isFinite(configuredStrength) ? configuredStrength : defaults.strength),
+            soft: vignetteOptions?.soft ?? defaults.soft
+        };
+    }
+    createVignettePass() {
+        return new (0, $hBQxr$ShaderPass)({
+            name: 'IcosaViewer.PolyVignette',
+            uniforms: {
+                tDiffuse: {
+                    value: null
+                },
+                vignetteStrength: {
+                    value: this.resolvedVignette.strength
+                },
+                softVignetteSelect: {
+                    value: this.resolvedVignette.soft ? 1 : 0
+                }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D tDiffuse;
+                uniform float vignetteStrength;
+                uniform float softVignetteSelect;
+                varying vec2 vUv;
+
+                float softLight(float a, float b) {
+                    return (1.0 - 2.0 * b) * a * a + 2.0 * b * a;
+                }
+
+                vec3 vignette(vec3 color) {
+                    float distanceFromCenter = length(vUv - 0.5);
+                    float b = 1.0 - distanceFromCenter * distanceFromCenter * vignetteStrength;
+                    vec3 softColor = vec3(
+                        softLight(color.r, b - 0.5),
+                        softLight(color.g, b - 0.5),
+                        softLight(color.b, b - 0.5)
+                    );
+                    vec3 multColor = color * b;
+                    return mix(multColor, softColor, softVignetteSelect);
+                }
+
+                void main() {
+                    vec4 fragment = texture2D(tDiffuse, vUv);
+                    gl_FragColor = vec4(vignette(fragment.rgb), fragment.a);
+                }
+            `
+        });
+    }
+    usesDirectVignetteOverlay() {
+        return this.loadedContentIsTilt && this.resolvedVignette.enabled && !this.resolvedVignette.soft && !this.resolvedBloom.enabled;
+    }
+    configureVignetteOverlay() {
+        if (!this.usesDirectVignetteOverlay()) {
+            this.disposeVignetteOverlay();
+            return;
+        }
+        if (!this.vignetteOverlayScene) {
+            this.vignetteOverlayScene = new $hBQxr$three.Scene();
+            this.vignetteOverlayCamera = new $hBQxr$three.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+            this.vignetteOverlayMaterial = new $hBQxr$three.ShaderMaterial({
+                uniforms: {
+                    vignetteStrength: {
+                        value: this.resolvedVignette.strength
+                    }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+
+                    void main() {
+                        vUv = uv;
+                        gl_Position = vec4(position.xy, 0.0, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float vignetteStrength;
+                    varying vec2 vUv;
+
+                    void main() {
+                        float distanceFromCenter = length(vUv - 0.5);
+                        float opacity = clamp(
+                            distanceFromCenter * distanceFromCenter * vignetteStrength,
+                            0.0,
+                            1.0
+                        );
+                        gl_FragColor = vec4(0.0, 0.0, 0.0, opacity);
+                    }
+                `,
+                transparent: true,
+                depthTest: false,
+                depthWrite: false
+            });
+            this.vignetteOverlayScene.add(new $hBQxr$three.Mesh(new $hBQxr$three.PlaneGeometry(2, 2), this.vignetteOverlayMaterial));
+        }
+        this.vignetteOverlayMaterial.uniforms.vignetteStrength.value = this.resolvedVignette.strength;
+    }
+    renderVignetteOverlay() {
+        if (!this.vignetteOverlayScene || !this.vignetteOverlayCamera || this.renderer.xr.isPresenting) return;
+        const originalAutoClear = this.renderer.autoClear;
+        this.renderer.autoClear = false;
+        this.renderer.render(this.vignetteOverlayScene, this.vignetteOverlayCamera);
+        this.renderer.autoClear = originalAutoClear;
+    }
+    disposeVignetteOverlay() {
+        this.vignetteOverlayScene?.traverse((object)=>{
+            if (object instanceof $hBQxr$three.Mesh) object.geometry.dispose();
+        });
+        this.vignetteOverlayMaterial?.dispose();
+        this.vignetteOverlayScene = undefined;
+        this.vignetteOverlayCamera = undefined;
+        this.vignetteOverlayMaterial = undefined;
+    }
+    configurePostProcessing() {
+        this.resolvedBloom = this.resolveBloomOptions();
+        this.resolvedVignette = this.resolveVignetteOptions();
+        this.configureVignetteOverlay();
+        if (this.usesDirectVignetteOverlay()) {
+            this.disposePostProcessing();
+            return;
+        }
+        if (!this.resolvedBloom.enabled && !this.resolvedVignette.enabled) {
+            this.disposePostProcessing();
+            return;
+        }
+        if (!this.loadedModel || !this.flatCamera) {
+            this.disposePostProcessing();
+            return;
+        }
+        const passSelectionChanged = this.effectComposer && (Boolean(this.bloomPass) !== this.resolvedBloom.enabled || Boolean(this.vignettePass) !== this.resolvedVignette.enabled || !this.outputPass);
+        if (passSelectionChanged) this.disposePostProcessing();
+        const width = Math.max(1, this.canvas.clientWidth);
+        const height = Math.max(1, this.canvas.clientHeight);
+        if (!this.effectComposer) {
+            const maxSamples = Number.isFinite(this.renderer.capabilities.maxSamples) ? this.renderer.capabilities.maxSamples : 0;
+            const renderTarget = new $hBQxr$three.WebGLRenderTarget(width, height, {
+                type: $hBQxr$three.HalfFloatType,
+                samples: Math.min(4, maxSamples)
+            });
+            renderTarget.texture.name = 'IcosaViewer.PostProcessing';
+            this.effectComposer = new (0, $hBQxr$EffectComposer)(this.renderer, renderTarget);
+            this.effectComposer.setPixelRatio(this.renderer.getPixelRatio());
+            this.postProcessingRenderPass = new (0, $hBQxr$RenderPass)(this.scene, this.flatCamera);
+            this.effectComposer.addPass(this.postProcessingRenderPass);
+            if (this.resolvedBloom.enabled) {
+                this.bloomPass = new (0, $hBQxr$UnrealBloomPass)(new $hBQxr$three.Vector2(width, height), this.resolvedBloom.strength, this.resolvedBloom.radius, this.resolvedBloom.threshold);
+                this.effectComposer.addPass(this.bloomPass);
+            }
+            if (this.resolvedVignette.enabled) {
+                this.vignettePass = this.createVignettePass();
+                this.effectComposer.addPass(this.vignettePass);
+            }
+            this.outputPass = new (0, $hBQxr$OutputPass)();
+            this.effectComposer.addPass(this.outputPass);
+        }
+        this.effectComposer.setSize(width, height);
+        if (this.bloomPass) {
+            this.bloomPass.strength = this.resolvedBloom.strength;
+            this.bloomPass.threshold = this.resolvedBloom.threshold;
+            this.bloomPass.radius = this.resolvedBloom.radius;
+        }
+        if (this.vignettePass) {
+            this.vignettePass.uniforms.vignetteStrength.value = this.resolvedVignette.strength;
+            this.vignettePass.uniforms.softVignetteSelect.value = this.resolvedVignette.soft ? 1 : 0;
+        }
+    }
+    disposePostProcessing() {
+        this.bloomPass?.dispose();
+        this.vignettePass?.dispose();
+        this.outputPass?.dispose();
+        this.effectComposer?.dispose();
+        this.effectComposer = undefined;
+        this.postProcessingRenderPass = undefined;
+        this.bloomPass = undefined;
+        this.vignettePass = undefined;
+        this.outputPass = undefined;
+    }
+    setPostProcessing(options) {
+        this.runtimePostProcessingOverrides = options;
+        this.configurePostProcessing();
+    }
+    getPostProcessing() {
+        return {
+            enabled: this.resolvedBloom.enabled || this.resolvedVignette.enabled,
+            bloom: {
+                ...this.resolvedBloom
+            },
+            vignette: {
+                ...this.resolvedVignette
+            }
+        };
     }
     attachAudioListener(camera) {
         if (!camera) return;
@@ -5987,6 +6317,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (overrides?.tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
+        this.loadedContentIsTilt = this.isAnyTiltExporter(sceneGltf);
         this.initializeScene();
         const evt = new Event("icosa-viewer-init-scene-gltf", {
             bubbles: true,
@@ -6033,6 +6364,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.overrides = overrides;
             const tiltData = await this.tiltLoader.loadAsync(url);
             this.loadedModel = tiltData;
+            this.loadedContentIsTilt = true;
             this.setupSketchMetaData(tiltData);
             this.initializeScene();
         } catch (error) {
@@ -6059,6 +6391,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.overrides = objOverrides;
             this.objLoader.loadAsync(url).then((objData)=>{
                 this.loadedModel = objData;
+                this.loadedContentIsTilt = false;
                 this.defaultBackgroundColor = new $hBQxr$three.Color(objOverrides.defaultBackgroundColor);
                 let withVertexColors = objOverrides.withVertexColors;
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
@@ -6083,6 +6416,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 this.objLoader.setMaterials(materials);
                 this.objLoader.loadAsync(objUrl).then((objData)=>{
                     this.loadedModel = objData;
+                    this.loadedContentIsTilt = false;
                     this.defaultBackgroundColor = new $hBQxr$three.Color(objOverrides.defaultBackgroundColor);
                     let withVertexColors = objOverrides.withVertexColors;
                     if (withVertexColors) this.setAllVertexColors(this.loadedModel);
@@ -6102,6 +6436,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.overrides = overrides;
             const fbxData = await this.fbxLoader.loadAsync(url);
             this.loadedModel = fbxData;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(fbxData);
             this.initializeScene();
             this.frameScene();
@@ -6122,6 +6457,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             });
             const plyModel = new $hBQxr$three.Mesh(plyData, material);
             this.loadedModel = plyModel;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(plyModel);
             this.initializeScene();
             this.frameScene();
@@ -6145,6 +6481,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             });
             const stlModel = new $hBQxr$three.Mesh(stlData, material);
             this.loadedModel = stlModel;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(stlModel);
             this.initializeScene();
             this.frameScene();
@@ -6159,6 +6496,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.overrides = overrides;
             const usdzData = await this.usdzLoader.loadAsync(url);
             this.loadedModel = usdzData;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(usdzData);
             this.initializeScene();
             this.frameScene();
@@ -6180,6 +6518,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 voxModel.add(mesh);
             }
             this.loadedModel = voxModel;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(voxModel);
             this.initializeScene();
             this.frameScene();
@@ -6221,6 +6560,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.sceneGltf = undefined;
             this.isV1 = false;
             this.loadedModel = asset.scene;
+            this.loadedContentIsTilt = false;
             this.immAsset = asset;
             this.immModule = immModule;
             this.setupSketchMetaData(asset.scene);
@@ -6372,6 +6712,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 // Apply coordinate system correction - splat files are upside-down compared to other formats
                 splatModel.rotation.x = Math.PI;
                 this.loadedModel = splatModel;
+                this.loadedContentIsTilt = false;
                 this.setupSketchMetaData(splatModel);
                 // TODO make fly mode explicit and overridable
                 this.sketchMetadata.FlyMode = true;
@@ -6997,6 +7338,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.sparkRenderer?.removeFromParent();
         this.sparkRenderer?.dispose();
         this.sparkRenderer = undefined;
+        this.disposePostProcessing();
+        this.disposeVignetteOverlay();
         this.audioListener.removeFromParent();
         this.scene.clear();
         this.renderer.dispose();
