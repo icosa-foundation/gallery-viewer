@@ -27,12 +27,13 @@ Current evidence summary:
 | Existence of distinct non-Tilt lighting payloads | Payload verified |
 | Exact modern-Three.js translation of non-Tilt light intensities | Reconstructed |
 | Gamma versus linear asset modes | Runtime and payload verified; modern translation incomplete |
-| Film-grain and vignette shaders | Runtime verified; per-asset enablement audit incomplete |
+| Model-renderer post-processing pass inventory | Runtime verified |
+| Default post-processing split for Tilt and non-Tilt | Runtime verified; individual payload overrides need broader fixture coverage |
 | Initial camera transform and pivot serialization | Payload verified |
 | Initial camera-motion enum and missing-value fallback | Runtime verified |
 | Fire Cat's missing camera-motion property | File verified across all three archived glTF renditions |
 | Shadow implementation details | Partly reconstructed and unresolved |
-| Suspected non-Tilt rim lighting | Reconstructed and unresolved |
+| Non-Tilt rim-light path | Runtime verified for one Poly content-type branch; public content-type name and modern translation unresolved |
 
 ## High-level pipeline
 
@@ -214,15 +215,66 @@ For alignment, Gallery Viewer needs one explicit colour pipeline per Poly colour
 
 Gallery Viewer currently always selects `THREE.SRGBColorSpace`; its existing `TODO linear/gamma selection` marks a known mismatch with Poly's per-asset behaviour.
 
-### Optional screen-space effects
+### Poly model-renderer effect inventory
 
-The archived Poly path includes low-strength film grain and vignette-like finishing. The calibration implementation uses an intermediate render target because these operations depend on screen coordinates and the already-rendered colour of each pixel. They cannot be reproduced by changing a scene background colour.
+This inventory is limited to effects registered in the recovered Poly model renderer. It does not include unrelated shaders bundled for the surrounding website. Finding shader source in the bundle is not by itself evidence that an effect was active: the table below records the runtime conditions which add each pass to the model-rendering pipeline.
 
-Human comparison found these effects to be secondary. They should be implemented after core colour, materials, lights and camera are correct.
+Poly's default effect configuration is deliberately different for Tilt and non-Tilt content. In the recovered runtime, asset content types `1` and `4` are identified as Tilt. They select the Tilt renderer branch. Content type `2` selects one non-Tilt branch and content type `3` selects another non-Tilt branch with an additional rim-material path. The public names corresponding to non-Tilt type numbers `2` and `3` have not yet been recovered, so they must not be renamed "Blocks" or "generic glTF" without further evidence.
 
-### Rim or view-dependent material lighting
+| Effect or stage | Tilt default | Non-Tilt default | Important gates and exceptions | Gallery Viewer decision | Reason |
+| --- | --- | --- | --- | --- | --- |
+| Asset colour mode and final display transfer | Uses the asset's `GAMMA`/`LINEAR` pipeline. The Tilt composite has a dedicated `TB_MODE` path and does not run the non-Tilt Uncharted 2 curve. | Uses the asset's `GAMMA`/`LINEAR` pipeline; the standard final shader applies tone mapping and a linear-to-gamma transfer. | Renderer construction tries compatible linear/gamma pass chains. A second display conversion would be wrong. | **Implement first.** | This changes every material, background and fog colour. It is core colour processing, not optional decoration. |
+| Bloom | Enabled with a default intensity of `0.05`, threshold `0`, and the Tilt-specific composite. The Tilt renderer also explicitly selects four blur steps. | Enabled with a default intensity of `0.3` and threshold `1.2`; presentation payload values can replace these defaults. | The Tilt composite mixes bloom with the source differently and reduces the bloom term by `1.2`. The non-Tilt composite adds bloom before tone mapping. | **Implement after the colour pipeline, preserving the two formulas.** | Bloom can materially affect luminous Tilt brushes and bright non-Tilt highlights. A single shared modern bloom preset would not reproduce Poly. |
+| Uncharted 2 tone mapping | Bypassed by the `TB_MODE` final-composite shader. | Enabled in the normal non-Tilt final-composite shader. | Exposure defaults to `1` in the configured pass even though the shader object's construction value is `2.5`; runtime configuration is authoritative. | **Implement with the non-Tilt colour pipeline; do not enable by default for Tilt.** | This is a large photometric difference and is required before lighting comparisons are meaningful. |
+| Saturation, brightness, contrast and vibrance | Pass is present, with neutral defaults. | Pass is present, with neutral defaults. | The recovered public parameter mapping exposes saturation, contrast and vibrance. Brightness exists in the shader but was not found in the same mapped parameter set. | **Implement as optional user controls once the core pipeline exists.** | Neutral defaults do not improve fidelity by themselves, but the shared pass is the correct place for explicit user overrides, including on Tilt scenes. |
+| Film grain | Enabled by default with strength `4`. | Disabled by default; configured strength is `2` if enabled. | Presentation data can override both enablement and strength. | **Defer.** | Human comparison found it visually minor, while it requires a full-screen pass and exact ordering to reproduce correctly. |
+| Vignette | Enabled by default with strength `0.5` and the Tilt branch's hard/multiplicative selection value. | Disabled by default; configured strength is `1` if enabled. | Presentation data can override enablement and strength. The shader supports soft-light and multiplicative variants. | **Implement as an opt-in checkpoint.** | Bright-background comparisons show that the default Tilt vignette is a visible whole-frame change, not merely a minor finishing detail. |
+| Chromatic aberration | Disabled by default. | Disabled by default. | The colour-finishing shader contains a compile-time chromatic-aberration variant, but the recovered normal configuration leaves its capability flag off. No ordinary asset enablement has yet been found. | **Defer unless an enabling payload or UI path is recovered.** | Implementing dormant code would add cost and visual change without evidence that Poly normally used it. |
+| Screen-space ambient occlusion | Disabled in the Tilt renderer branch. | Enabled for eligible static non-Tilt content, with intensity `0.4`, radius `0.6` and related shader defaults. | One non-Tilt branch disables it when model animation clips are present. A renderer feature flag can also suppress it. | **Implement after tone mapping and bloom, behind Poly's content and animation gates.** | It materially affects grounding and perceived lighting, but enabling it indiscriminately risks regressions, especially for Tilt shaders and animated content. |
+| Depth of field | Available, but not enabled merely because content is Tilt. | Available, but not enabled merely because content is non-Tilt. | The pass is only inserted when a focal point/centroid and a non-zero focus-range parameter are available from presentation or geometry data. | **Defer, while preserving its metadata.** | It is asset-specific, relatively expensive, and can make an otherwise correct render look incorrectly soft if its old camera-space calculation is translated inaccurately. |
+| SMAA | Used by the Tilt temporal mode on the recovered desktop renderer configuration. | Not the normal non-Tilt antialiasing path. | It requires the Tilt temporal mode and renderer mode `2`; the alternate platform mode does not insert it. | **Defer exact reproduction.** | Gallery Viewer already has modern antialiasing. SMAA is lower priority than photometric parity and needs edge-quality/performance testing rather than being stacked blindly on existing AA. |
+| Short temporal accumulation | Tilt selects this mode with a two-frame sample count. | Not the normal static non-Tilt path. | It jitters the camera and blends frames. Interaction resets or reduces accumulation. | **Defer exact reproduction.** | It mainly changes edge stability and can introduce blur or ghosting. Current antialiasing is an acceptable temporary substitute while colour and lighting remain larger errors. |
+| Motion-reprojected temporal accumulation | Not the normal Tilt path. | The normal static non-Tilt path uses a 16-sample history with depth-based reprojection and neighbourhood clipping. | A non-Tilt branch explicitly disables temporal effects when model animation clips are present. Camera interaction also changes the active sample behaviour. | **Defer exact reproduction.** | This is the most complex pass, has significant motion and performance risks, and is not required to establish colour or lighting parity. |
 
-The current calibration includes a provisional view-dependent rim contribution on standard materials. This is a material-shader operation, not a full-screen post effect. Its exact relationship to Poly's original material code is unresolved and it should not yet be ported as a general Gallery Viewer rule.
+The intended implementation order for these effects is therefore:
+
+1. Implement asset-specific colour input/output handling exactly once.
+2. Implement non-Tilt Uncharted 2 tone mapping and the separate Tilt final-composite behaviour.
+3. Implement the two branch-specific bloom formulas and defaults.
+4. Add optional user controls for the neutral colour-adjustment parameters, without prohibiting overrides on Tilt scenes.
+5. Implement screen-space ambient occlusion using Poly's branch, animation and feature gates.
+6. Reassess depth of field from assets carrying explicit focus metadata.
+7. Reassess SMAA and the two temporal accumulation paths against current antialiasing quality and performance.
+8. Add grain only if the remaining visual difference justifies the extra full-screen finishing pass.
+9. Leave chromatic aberration disabled until evidence identifies a real Poly enablement path.
+
+### Gallery Viewer post-processing checkpoint
+
+The first Gallery Viewer implementation is deliberately opt-in. With no post-processing configuration, rendering continues to call `WebGLRenderer.render` directly and therefore does not change existing assets.
+
+The initial API supports bloom configuration from, in increasing precedence order:
+
+1. `overrides.presentationParams.postProcessing` (or the transitional `presentationPostProcessing` field).
+2. `overrides.postProcessing` on an individual load call.
+3. `viewer.setPostProcessing()` runtime overrides.
+
+`auto`, `on` and `off` modes are available to both Tilt and non-Tilt content. Explicit `auto` bloom currently selects the recovered starting values (`0.05` strength and `0` threshold for Tilt; `0.3` strength and `1.2` threshold for non-Tilt). Absence of configuration is distinct from `auto` and leaves post-processing disabled.
+
+This checkpoint uses Three.js `UnrealBloomPass` to make the configuration and render-target path testable. It does **not** yet claim exact Poly bloom fidelity: the recovered Tilt composite, four-step Tilt blur, non-Tilt Uncharted 2 tone mapping, and branch-specific final-composite formulas remain to be implemented. Post-processing is bypassed during XR presentation until the XR path is assessed separately.
+
+The second checkpoint implements Poly's recovered vignette equation and exposes it through the same configuration precedence. Tilt defaults to the multiplicative branch at strength `0.5`; non-Tilt defaults to the soft-light branch at strength `1`, but remains disabled unless explicitly requested. A multiplicative Tilt vignette without bloom is rendered as a radial black overlay after the normal scene render. This is algebraically equivalent to Poly's `color * b` operation and avoids forcing the mix of Three.js materials and Tilt `RawShaderMaterial`s through an offscreen colour-space conversion merely to darken the frame edges. With vignette strength `0`, the comparison is pixel-visually identical to the normal direct-render path.
+
+User overrides must be orthogonal to Poly defaults. Each optional effect should ultimately support an `auto` state that follows the recovered Poly rules and explicit `on`/`off` states that work for both Tilt and non-Tilt content. Content classification chooses the faithful default; it must not prevent an explicit override.
+
+### Visually related operations that are not post-processing
+
+The following operations are easy to conflate with post-FX but belong to different parts of the renderer:
+
+1. **Rim or view-dependent lighting** is injected into a material shader. The recovered runtime enables its rim-material path for Poly content type `3` and increases a related lighting value by `1.3`. The calibration page's current rim formula is still a reconstruction, not a verified translation of Poly's material implementation. It should be deferred until content type `3` is named and the original material code is mapped precisely.
+2. **Shadows and their blur/filtering** are part of the light and shadow-map pipeline. They should follow Poly's Tilt exclusion, receiver/caster and rig rules; they are not controlled by the post-FX switch.
+3. **Fog** is evaluated by scene or material shaders and is driven by exported Tilt metadata. It remains part of core scene fidelity.
+4. **Gradient, texture and solid backgrounds** are scene rendering, not colour grading or vignette.
+5. **Brush animation and glTF animation** update geometry or material uniforms before rendering. Temporal antialiasing may react to animation, but animation itself is not a post effect.
 
 ## Scene transforms and scale
 
@@ -253,6 +305,8 @@ Important distinctions are:
 
 The initial-pose path must be tested independently from camera animation. A correct orbit mode can still orbit around the wrong pivot, and a correct pivot does not guarantee the initial camera transform is correct.
 
+When neither presentation metadata nor the selected glTF rendition supplies a usable perspective field of view, the archived Poly loader constructs a `THREE.PerspectiveCamera(45)`. Gallery Viewer now uses the same 45-degree fallback; explicit non-zero `camera.perspective.yfov` values still take precedence.
+
 Wonder Woman (`6SvG7gtQ9xr`) remains the named camera-placement regression and should not be used as proof of lighting correctness until its precedence path is understood.
 
 ## Initial camera motion and interaction
@@ -278,6 +332,55 @@ Fire Cat verifies the missing-value case:
 
 The initial camera motion is distinct from glTF model animation. Poly's handling of animation clips, autoplay, looping and interaction-triggered stopping still needs to be documented.
 
+## Lighting model: terminology and required precedence
+
+File age and provenance are not lighting rules. A legacy file and a newly exported file with equivalent materials, embedded lights and presentation data should be lit equivalently. Terms such as "legacy", "migrated Poly" and "Blocks" are useful for selecting test coverage, but they must not substitute for inspecting the lighting information and material capabilities that are actually present.
+
+There are five distinct sources of visible illumination:
+
+1. **Material-defined lighting.** Tilt/Open Brush technique shaders can contain ambient and scene-light values as uniforms. Unlit, emissive and additive materials may ignore Three.js scene lights altogether.
+2. **Embedded scene lights.** A glTF can contain actual lights, normally through `KHR_lights_punctual`, with authored type, transform, colour, intensity and range.
+3. **Exporter environment metadata.** `TB_*` fields and named light transforms can describe the source application's ambient light, two scene lights and environment preset.
+4. **Presentation lighting.** Presentation parameters can provide a hemisphere light, lighting rig, background and related settings independently of the model file. Presentation parameters are not limited to legacy content.
+5. **Viewer fallback lighting.** This is lighting invented by the viewer only when the preceding sources do not provide an applicable lighting solution.
+
+"Authored lighting" is therefore not a single Boolean. A file may combine material-defined lighting, embedded lights and presentation overrides. Precedence must be decided per source and per material family.
+
+The intended decision order is:
+
+1. Determine which materials respond to ordinary scene lights and which implement their own lighting.
+2. Preserve embedded scene lights unless a more authoritative metadata path explicitly represents replacements for those same lights.
+3. Apply exporter environment metadata where its semantics are known, especially for Tilt/Open Brush content.
+4. Apply explicit presentation lighting according to its defined override or replacement semantics, regardless of file age.
+5. Add fallback lighting only for light-responsive content left without applicable authored or presentation lighting.
+
+This order is a design target, not a description of current Gallery Viewer behaviour. It remains unresolved whether every presentation lighting field replaces embedded lighting or augments it; that must be established from the originating runtime or exporter rather than guessed.
+
+### What Gallery Viewer currently does
+
+The current `SketchMetadata`/`initLights()` path does not implement the precedence described in its comments:
+
+1. The viewer constructs `SketchMetadata` for glTF and for most other loaded model types, even when no Tilt/Open Brush lighting metadata exists.
+2. `SketchMetadata` looks for nodes named `node_SceneLight_*`, reads their rotations and then removes those nodes. These are exporter dummy transforms, not a general test for actual glTF lights.
+3. Missing metadata falls through to an `EnvironmentPreset` whose no-preset defaults are white ambient and white scene-light colours.
+4. `initLights()` then adds two directional lights and one ambient light whenever `SketchMetadata` exists.
+5. It does not first detect and suppress this generated rig when the loaded scene contains actual `THREE.Light` objects created from `KHR_lights_punctual`.
+6. It does not currently interpret the presentation hemisphere-light or lighting-rig structures.
+
+Consequently, the current viewer can invent a bright default rig for a model with no exporter metadata, add that rig on top of embedded glTF lights, or fail to apply an explicit presentation rig. Fixing fallback lighting alone is not sufficient: source detection and precedence must be corrected first.
+
+### What should not be used as a classifier
+
+The following properties do not independently justify a different lighting pipeline:
+
+1. File age.
+2. Being migrated from Poly.
+3. Merely having presentation parameters.
+4. Being authored in Blocks.
+5. glTF 1 versus glTF 2, except where the material or light representation actually differs.
+
+Blocks remains an important test population because its material and exported-rig combinations exposed failures in the experiments. It is not itself a sufficient switch for a head-light multiplier or fallback rig.
+
 ## Current Gallery Viewer alignment gaps
 
 | Area | Current Gallery Viewer state | Required alignment work |
@@ -286,14 +389,14 @@ The initial camera motion is distinct from glTF model animation. Poly's handling
 | Tilt materials | Loads custom brush materials for glTF 1 and glTF 2 paths | Compare blend, depth, uniforms and animation against original technique definitions |
 | Non-Tilt materials | Primarily relies on Three.js loaders/materials | Preserve legacy technique behaviour and identify any Poly-specific material contribution |
 | Content classification | Uses generator names, `isNewTiltExporter`, and `TB_*` keys | Align classification with Poly content semantics; do not infer solely from glTF version |
-| Non-Tilt lighting | Contains a reconstructed Poly-like fallback rig | Replace broad heuristics with verified rig/default branches |
-| Blocks lighting | Detects converted Blocks and changes the head-light multiplier | Establish which Blocks subgroup needs which Poly rule before retaining this branch |
+| Non-Tilt lighting | Unconditionally builds two directional lights and ambient light through `SketchMetadata` in most load paths | Detect embedded, exporter and presentation lighting before deciding whether fallback lighting is needed |
+| Blocks lighting | No production Blocks-specific head-light experiment remains | Treat Blocks as test coverage; establish material/rig semantics rather than adding a class-wide multiplier |
 | Tilt lighting | Builds scene lights from exported Open Brush metadata | Confirm which brushes use those lights and which already contain equivalent uniforms |
 | Background and fog | Supports Tilt gradients, texture skies and fog | Validate colour-space handling against the matching Poly mode |
 | Colour output | Always uses sRGB output | Implement Poly's asset-specific gamma/linear modes without double conversion |
 | Camera pose | Merges API overrides, embedded metadata, geometry centre and defaults | Match Poly's precedence, coordinate conversion and pivot behaviour |
 | Initial camera motion | No equivalent Poly motion-state mapping is documented in the viewer | Add explicit `FULL_ROTATION`, `SIDE_TO_SIDE`, `NONE`, `HOVER`, and missing-value behaviour if parity is desired |
-| Post-processing | No production Poly finishing pass | Defer grain/vignette until core parity; keep it separable and optional |
+| Post-processing | Opt-in bloom and vignette checkpoints; no production Poly pass chain | Validate the recovered Tilt vignette; implement branch-specific output transfer and tone mapping; revisit bloom; then gated SSAO; defer AA reconstruction, depth of field, grain and chromatic aberration as documented above |
 | Shadows | Partial scene-light shadow handling | Reproduce rig enablement, bounds, bias and material participation after core light parity |
 
 ## Alignment order
@@ -301,15 +404,16 @@ The initial camera motion is distinct from glTF model animation. Poly's handling
 Work should proceed in this order so later tuning does not conceal earlier errors:
 
 1. Preserve and expose the exact input rendition and presentation metadata.
-2. Classify Tilt Brush and non-Tilt content correctly, including non-Tilt subgroups.
-3. Reproduce the original material path for each class.
+2. Inventory material-defined lighting, embedded lights, exporter environment metadata and presentation lighting independently.
+3. Reproduce the original material path for each material family.
 4. Implement the correct gamma/linear colour pipeline.
 5. Reproduce background, sky and fog in that colour pipeline.
-6. Reproduce non-Tilt lighting branches without asset-specific exceptions.
+6. Implement lighting-source precedence and add fallback lighting only where no applicable source remains.
 7. Reproduce initial camera transform and pivot precedence.
 8. Reproduce initial camera motion and interaction behaviour.
 9. Reproduce shadows.
-10. Add optional vignette, grain and any verified view-dependent material finishing.
+10. Implement the branch-specific final composite, bloom and eligible non-Tilt screen-space ambient occlusion.
+11. Reassess depth of field and antialiasing passes, then add optional grain only if its remaining fidelity benefit justifies it.
 
 ## Core verification fixtures
 
@@ -339,8 +443,11 @@ For migrated Poly assets, compare Gallery Viewer directly with the resurrected P
 8. What does the `HOVER` camera-motion mapping do at runtime?
 9. When does user interaction cancel or pause initial camera motion?
 10. How does Poly start, loop and stop glTF model animations?
-11. Are grain and vignette enabled for every content class and colour mode?
+11. Which individual presentation payloads override the recovered Tilt and non-Tilt grain/vignette defaults?
 12. How do image-based lights and `GOOGLE_lights_image_based` alter the non-Tilt pipeline?
+13. For each presentation lighting field, does it replace embedded/exporter lighting or augment it?
+14. Which exporter dummy-light nodes represent authoritative replacements, and which are only transforms or compatibility data?
+15. How should a mixed scene containing shader-lit brushes and ordinary PBR meshes combine material-defined and scene lighting?
 
 ## Evidence and tooling
 
