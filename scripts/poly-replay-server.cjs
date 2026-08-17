@@ -371,6 +371,41 @@ async function fetchIcosaAsset(assetId) {
     throw new Error(`Icosa API retries exhausted for ${assetId}`);
 }
 
+async function derivedBackblazeUpdatedFormat(preferredFormat, updatedViewerFormat) {
+    if (!preferredFormat?.root?.url || !updatedViewerFormat?.root?.url) return undefined;
+
+    const preferredUrl = new URL(preferredFormat.root.url);
+    if (preferredUrl.hostname !== 's3.us-east-005.backblazeb2.com'
+        || !preferredUrl.pathname.endsWith('.gltf')) {
+        return undefined;
+    }
+
+    const candidateUrl = new URL(preferredUrl);
+    candidateUrl.pathname = candidateUrl.pathname.replace(/\.gltf$/, '_(GLTFupdated).gltf');
+    const response = await fetch(candidateUrl, {
+        method: 'HEAD',
+        headers: {
+            'User-Agent': 'Icosa-Poly-Replay/1.0',
+        },
+    });
+    if (!response.ok) return undefined;
+
+    const siblingUrl = relativePath => new URL(relativePath, candidateUrl).toString();
+    return {
+        ...updatedViewerFormat,
+        role: `${updatedViewerFormat.role || 'UPDATED_GLTF_FORMAT'} (derived Backblaze updated mirror)`,
+        root: {
+            ...updatedViewerFormat.root,
+            relativePath: candidateUrl.pathname.split('/').at(-1),
+            url: candidateUrl.toString(),
+        },
+        resources: updatedViewerFormat.resources?.map(resource => ({
+            ...resource,
+            url: resource.relativePath ? siblingUrl(resource.relativePath) : resource.url,
+        })),
+    };
+}
+
 async function getPreferredViewerAsset(assetId) {
     if (!/^[A-Za-z0-9_-]+$/.test(assetId)) {
         throw new Error(`Invalid Icosa asset ID: ${assetId}`);
@@ -403,7 +438,11 @@ async function getPreferredViewerAsset(assetId) {
             role: `${mirroredUpdatedFormats[0].role || 'unknown role'} (Backblaze updated mirror)`,
         }
         : undefined;
+    const derivedUpdatedFormat = mirroredUpdatedFormat
+        ? undefined
+        : await derivedBackblazeUpdatedFormat(preferredFormat, updatedViewerFormat);
     const viewerFormat = mirroredUpdatedFormat
+        || derivedUpdatedFormat
         || updatedViewerFormat
         || (preferredFormat.formatType === 'GLTF2' ? preferredFormat : undefined);
     if (!viewerFormat) {
