@@ -301,13 +301,13 @@ Implemented in the initial Phase 2 slice:
 6. A rigid, unit-scale AR camera rig; IMM authored viewpoints move presentation content in AR rather than the tracked camera hierarchy.
 7. Bounds-aware XR far clipping configured through Three.js camera depth limits without replacing device projection matrices.
 8. Exact restoration helpers and regression tests for blend policy, virtual-environment restoration, and entry-transform math.
+9. Chrome regression coverage for desktop and VR opacity, alpha/additive/opaque policies, first-frame placement, exact state restoration, and asset reload during AR.
 
 Still required before Phase 2 is considered complete:
 
-1. Browser regression coverage for desktop and VR rendering with the alpha-capable context.
-2. Physical-device checks across alpha-blend, additive, and opaque hardware.
-3. Additive-display contrast policy beyond removal of opaque backgrounds, without destructively rewriting authored materials.
-4. Pixel-comparison coverage for session exit and asset reload during a session.
+1. Physical-device checks across alpha-blend, additive, and opaque hardware.
+2. Additive-display contrast policy beyond removal of opaque backgrounds, without destructively rewriting authored materials.
+3. Full screenshot comparison coverage for session exit and asset reload on real WebXR sessions.
 
 ### Work
 
