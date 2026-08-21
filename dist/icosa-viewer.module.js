@@ -4211,6 +4211,17 @@ function $721a3cf0b2bb84b2$export$dbd78d86c4ae556f(scene, snapshot) {
     scene.fog = snapshot.fog;
     if (snapshot.skyObject && snapshot.skyVisible !== undefined) snapshot.skyObject.visible = snapshot.skyVisible;
 }
+function $721a3cf0b2bb84b2$export$2095d3a99c997ff9(authoredNear, authoredFar, distanceToBoundsCenter, boundsRadius) {
+    const validNear = Number.isFinite(authoredNear) && authoredNear > 0 ? authoredNear : 0.01;
+    const validFar = Number.isFinite(authoredFar) && authoredFar > 0 ? authoredFar : 6000;
+    const near = Math.max(0.001, Math.min(validNear, 0.01));
+    let far = Math.max(6000, validFar);
+    if (Number.isFinite(distanceToBoundsCenter) && Number.isFinite(boundsRadius) && distanceToBoundsCenter >= 0 && boundsRadius >= 0) far = Math.max(far, distanceToBoundsCenter + boundsRadius * 1.1);
+    return {
+        near: near,
+        far: far
+    };
+}
 function $721a3cf0b2bb84b2$export$6d2af1765a379b43(authoredCameraWorld, viewerPoseWorld, target = new (0, $hBQxr$Matrix4)()) {
     const inverseAuthoredCamera = authoredCameraWorld.clone().invert();
     return target.multiplyMatrices(viewerPoseWorld, inverseAuthoredCamera);
@@ -4871,9 +4882,29 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.contentRoot.add(this.loadedModel);
         }
         this.configureShadows();
+        this.updateXRClippingRange();
         this.refreshARPresentationForCurrentScene();
         this.configurePostProcessing();
         this.contentDisposer = disposeContent;
+    }
+    updateXRClippingRange() {
+        // Set depth limits through the base XR camera. Three.js propagates these
+        // to XRSession.renderState; device projection matrices remain WebXR-owned.
+        let distanceToBoundsCenter;
+        let boundsRadius;
+        this.contentRoot.updateMatrixWorld(true);
+        if (this.loadedModel) {
+            const bounds = new $hBQxr$three.Box3().setFromObject(this.loadedModel, true);
+            if (!bounds.isEmpty()) {
+                const sphere = bounds.getBoundingSphere(new $hBQxr$three.Sphere());
+                distanceToBoundsCenter = this.flatCamera.position.distanceTo(sphere.center);
+                boundsRadius = sphere.radius;
+            }
+        }
+        const clippingRange = (0, $721a3cf0b2bb84b2$export$2095d3a99c997ff9)(this.flatCamera.near, this.flatCamera.far, distanceToBoundsCenter, boundsRadius);
+        this.xrCamera.near = clippingRange.near;
+        this.xrCamera.far = clippingRange.far;
+        this.xrCamera.updateProjectionMatrix();
     }
     mergePostProcessingOptions(base, override) {
         if (!base && !override) return undefined;
@@ -6941,6 +6972,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.flatCamera.near = 0.01;
         this.flatCamera.far = 20000;
         this.flatCamera.updateProjectionMatrix();
+        this.updateXRClippingRange();
         if (this.xrSessionMode === 'ar') this.queueAREntryFromCurrentCamera();
         const forward = new $hBQxr$three.Vector3(0, 0, -1).applyQuaternion(this.flatCamera.quaternion);
         const target = this.flatCamera.position.clone().add(forward.multiplyScalar(10));

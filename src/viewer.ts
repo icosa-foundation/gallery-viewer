@@ -51,6 +51,7 @@ import {
     ARVirtualEnvironmentSnapshot,
     captureARVirtualEnvironment,
     computeARContentEntryMatrix,
+    computeXRClippingRange,
     GalleryEnvironmentBlendMode,
     GalleryXRSessionMode,
     normalizeEnvironmentBlendMode,
@@ -1174,9 +1175,37 @@ export class Viewer {
             this.contentRoot.add(this.loadedModel);
         }
         this.configureShadows();
+        this.updateXRClippingRange();
         this.refreshARPresentationForCurrentScene();
         this.configurePostProcessing();
         this.contentDisposer = disposeContent;
+    }
+
+    private updateXRClippingRange(): void {
+        // Set depth limits through the base XR camera. Three.js propagates these
+        // to XRSession.renderState; device projection matrices remain WebXR-owned.
+        let distanceToBoundsCenter: number | undefined;
+        let boundsRadius: number | undefined;
+
+        this.contentRoot.updateMatrixWorld(true);
+        if (this.loadedModel) {
+            const bounds = new THREE.Box3().setFromObject(this.loadedModel, true);
+            if (!bounds.isEmpty()) {
+                const sphere = bounds.getBoundingSphere(new THREE.Sphere());
+                distanceToBoundsCenter = this.flatCamera.position.distanceTo(sphere.center);
+                boundsRadius = sphere.radius;
+            }
+        }
+
+        const clippingRange = computeXRClippingRange(
+            this.flatCamera.near,
+            this.flatCamera.far,
+            distanceToBoundsCenter,
+            boundsRadius
+        );
+        this.xrCamera.near = clippingRange.near;
+        this.xrCamera.far = clippingRange.far;
+        this.xrCamera.updateProjectionMatrix();
     }
 
     private mergePostProcessingOptions(
@@ -3411,6 +3440,7 @@ export class Viewer {
         this.flatCamera.near = 0.01;
         this.flatCamera.far = 20000;
         this.flatCamera.updateProjectionMatrix();
+        this.updateXRClippingRange();
         if (this.xrSessionMode === 'ar') this.queueAREntryFromCurrentCamera();
 
         const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.flatCamera.quaternion);

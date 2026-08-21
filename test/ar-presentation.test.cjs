@@ -44,6 +44,7 @@ function runARPresentationTests() {
         applyARVirtualEnvironmentPolicy,
         captureARVirtualEnvironment,
         computeARContentEntryMatrix,
+        computeXRClippingRange,
         normalizeEnvironmentBlendMode,
         restoreARVirtualEnvironment,
         shouldSuppressVirtualEnvironment
@@ -91,6 +92,19 @@ function runARPresentationTests() {
     assert.strictEqual(additiveScene.background, null);
     assert.strictEqual(additiveScene.fog, null);
     assert.strictEqual(additiveSky.visible, false);
+
+    assert.deepStrictEqual(
+        computeXRClippingRange(0.1, 1000),
+        { near: 0.01, far: 6000 }
+    );
+    assert.deepStrictEqual(
+        computeXRClippingRange(0.0001, 20000, 7000, 1000),
+        { near: 0.001, far: 20000 }
+    );
+    assert.deepStrictEqual(
+        computeXRClippingRange(0.01, 6000, 7000, 1000),
+        { near: 0.01, far: 8100 }
+    );
 
     const authoredCamera = new THREE.Matrix4().compose(
         new THREE.Vector3(2, 1.5, -4),

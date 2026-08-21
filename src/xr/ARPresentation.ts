@@ -15,6 +15,11 @@ export interface ARVirtualEnvironmentSnapshot {
     skyVisible?: boolean;
 }
 
+export interface GalleryXRClippingRange {
+    near: number;
+    far: number;
+}
+
 export function normalizeEnvironmentBlendMode(value: unknown): GalleryEnvironmentBlendMode {
     if (value === 'opaque' || value === 'additive' || value === 'alpha-blend') {
         return value;
@@ -65,6 +70,33 @@ export function restoreARVirtualEnvironment(
     if (snapshot.skyObject && snapshot.skyVisible !== undefined) {
         snapshot.skyObject.visible = snapshot.skyVisible;
     }
+}
+
+export function computeXRClippingRange(
+    authoredNear: number,
+    authoredFar: number,
+    distanceToBoundsCenter?: number,
+    boundsRadius?: number
+): GalleryXRClippingRange {
+    const validNear = Number.isFinite(authoredNear) && authoredNear > 0
+        ? authoredNear
+        : 0.01;
+    const validFar = Number.isFinite(authoredFar) && authoredFar > 0
+        ? authoredFar
+        : 6000;
+    const near = Math.max(0.001, Math.min(validNear, 0.01));
+    let far = Math.max(6000, validFar);
+
+    if (
+        Number.isFinite(distanceToBoundsCenter)
+        && Number.isFinite(boundsRadius)
+        && distanceToBoundsCenter! >= 0
+        && boundsRadius! >= 0
+    ) {
+        far = Math.max(far, distanceToBoundsCenter! + boundsRadius! * 1.1);
+    }
+
+    return { near, far };
 }
 
 /**
