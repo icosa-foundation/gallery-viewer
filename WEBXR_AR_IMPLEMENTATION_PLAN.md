@@ -354,6 +354,14 @@ Do not add automatic `fit-volume` presentation until explicit presentation inten
 
 Support environments, dioramas, props, and unknown assets through explicit strategies rather than a single AR placement flow.
 
+### Implementation status (started 21 August 2026)
+
+1. The scene hierarchy now separates the AR authored-entry transform, session-local user placement, importer normalization, and asset-authored transforms.
+2. AR session restoration snapshots the entry and user-placement layers independently.
+3. Loading another asset resets session-local user placement without changing importer normalization or introducing an asset classification.
+4. Browser regression coverage verifies hierarchy, transform isolation, placement reset, asset reload, and exact session restoration.
+5. No placement UI, hit testing, public placement configuration, or metadata schema was introduced by this foundation.
+
 ### Schema decision: deferred
 
 Phase 3 will not add XR presentation fields to the asset metadata schema. Presentation intent has substantial UX and cross-repository consequences, so field names and allowed values must not become public API before the interaction model has been evaluated manually.
