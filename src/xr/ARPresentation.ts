@@ -117,3 +117,20 @@ export function computeARContentEntryMatrix(
         inverseAuthoredCamera
     );
 }
+
+/**
+ * Converts a desired world-space placement into the local transform required
+ * beneath the AR-entry root. Placement sources can therefore share one
+ * world-space contract without modifying the entry or importer transforms.
+ */
+export function computeLocalPlacementMatrix(
+    parentWorld: Matrix4,
+    desiredWorld: Matrix4,
+    target?: Matrix4
+): Matrix4 {
+    const inverseParent = parentWorld.clone().invert();
+    return (target ?? desiredWorld.clone()).multiplyMatrices(
+        inverseParent,
+        desiredWorld
+    );
+}

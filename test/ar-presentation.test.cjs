@@ -44,6 +44,7 @@ function runARPresentationTests() {
         applyARVirtualEnvironmentPolicy,
         captureARVirtualEnvironment,
         computeARContentEntryMatrix,
+        computeLocalPlacementMatrix,
         computeXRClippingRange,
         normalizeEnvironmentBlendMode,
         restoreARVirtualEnvironment,
@@ -130,6 +131,37 @@ function runARPresentationTests() {
         computeARContentEntryMatrix(authoredCamera, trackedViewer, outputTarget),
         outputTarget,
         'The optional output matrix should be reused'
+    );
+
+    const placementParent = new THREE.Matrix4().compose(
+        new THREE.Vector3(4, 1, -2),
+        new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0.8, 0)),
+        new THREE.Vector3(1, 1, 1)
+    );
+    const desiredPlacementWorld = new THREE.Matrix4().compose(
+        new THREE.Vector3(-3, 0.75, 6),
+        new THREE.Quaternion().setFromEuler(new THREE.Euler(0.1, -0.3, 0.05)),
+        new THREE.Vector3(1.5, 1.5, 1.5)
+    );
+    const localPlacement = computeLocalPlacementMatrix(
+        placementParent,
+        desiredPlacementWorld
+    );
+    const reconstructedPlacementWorld = placementParent.clone().multiply(localPlacement);
+    assertMatrixApproximatelyEqual(
+        reconstructedPlacementWorld,
+        desiredPlacementWorld,
+        'Parent and local placement should reconstruct the requested world transform'
+    );
+    const placementOutputTarget = new THREE.Matrix4();
+    assert.strictEqual(
+        computeLocalPlacementMatrix(
+            placementParent,
+            desiredPlacementWorld,
+            placementOutputTarget
+        ),
+        placementOutputTarget,
+        'The optional placement output matrix should be reused'
     );
 
     console.log('AR presentation tests passed');

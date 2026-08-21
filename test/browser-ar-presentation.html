@@ -121,19 +121,44 @@
       );
 
       const appliedEntryMatrix = viewer.arEntryRoot.matrix.clone();
+      const initialPlacementSnapshot = viewer.captureUserPlacement();
       viewer.contentRoot.scale.setScalar(0.25);
-      viewer.userPlacementRoot.position.set(2, 0.5, -1);
-      viewer.userPlacementRoot.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0.4);
-      viewer.userPlacementRoot.scale.setScalar(1.75);
-      viewer.userPlacementRoot.updateMatrixWorld(true);
+      const desiredPlacementWorld = new THREE.Matrix4().compose(
+        new THREE.Vector3(2, 0.5, -1),
+        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0.4),
+        new THREE.Vector3(1.75, 1.75, 1.75)
+      );
+      viewer.applyUserPlacementWorldMatrix(desiredPlacementWorld);
       check(
         matrixClose(viewer.arEntryRoot.matrix, appliedEntryMatrix),
         "user placement leaves the AR entry transform unchanged"
       );
       check(
+        matrixClose(viewer.userPlacementRoot.matrixWorld, desiredPlacementWorld),
+        "world-space placement resolves beneath the AR entry root"
+      );
+      check(
         vectorClose(viewer.contentRoot.scale.toArray(), [0.25, 0.25, 0.25]),
         "user placement leaves importer normalization unchanged"
       );
+
+      const appliedPlacementSnapshot = viewer.captureUserPlacement();
+      const alternatePlacementWorld = new THREE.Matrix4().compose(
+        new THREE.Vector3(-4, 2, 3),
+        new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -0.2),
+        new THREE.Vector3(0.6, 0.6, 0.6)
+      );
+      viewer.applyUserPlacementWorldMatrix(alternatePlacementWorld);
+      viewer.restoreUserPlacement(appliedPlacementSnapshot);
+      check(
+        matrixClose(viewer.userPlacementRoot.matrixWorld, desiredPlacementWorld),
+        "placement snapshot restores the previous world transform"
+      );
+      check(
+        vectorClose(viewer.contentRoot.scale.toArray(), [0.25, 0.25, 0.25]),
+        "placement snapshot restoration preserves importer normalization"
+      );
+
       viewer.resetUserPlacement();
       viewer.userPlacementRoot.updateMatrix();
       check(
@@ -150,9 +175,11 @@
       );
       viewer.contentRoot.scale.fromArray(importerScale);
       viewer.contentRoot.updateMatrixWorld(true);
-      viewer.userPlacementRoot.position.set(3, 1, 2);
-      viewer.userPlacementRoot.scale.setScalar(2);
-      viewer.userPlacementRoot.updateMatrixWorld(true);
+      viewer.applyUserPlacementWorldMatrix(new THREE.Matrix4().compose(
+        new THREE.Vector3(3, 1, 2),
+        new THREE.Quaternion(),
+        new THREE.Vector3(2, 2, 2)
+      ));
       renderer.xr.getReferenceSpace = originalGetReferenceSpace;
 
       viewer.handleXRSessionEnded("immersive-ar", alphaSession);
@@ -163,6 +190,10 @@
       check(renderer.getClearAlpha() === 1, "AR end restores opaque clearing");
       check(matrixClose(viewer.arEntryRoot.matrix, arEntryMatrix), "AR end restores the AR-entry transform");
       check(matrixClose(viewer.userPlacementRoot.matrix, userPlacementMatrix), "AR end restores user placement");
+      check(
+        matrixClose(viewer.userPlacementRoot.matrix, initialPlacementSnapshot.matrix),
+        "AR end restores the captured placement snapshot"
+      );
       check(vectorClose(viewer.contentRoot.scale.toArray(), importerScale), "AR end preserves importer normalization");
       check(vectorClose(viewer.cameraRig.position.toArray(), rigPosition), "AR end restores camera-rig position");
       check(vectorClose(viewer.cameraRig.quaternion.toArray(), rigQuaternion), "AR end restores camera-rig rotation");
@@ -193,9 +224,11 @@
 
       const reloadSession = { environmentBlendMode: "alpha-blend" };
       viewer.handleXRSessionStarted("immersive-ar", reloadSession);
-      viewer.userPlacementRoot.position.set(4, 2, -3);
-      viewer.userPlacementRoot.scale.setScalar(0.5);
-      viewer.userPlacementRoot.updateMatrixWorld(true);
+      viewer.applyUserPlacementWorldMatrix(new THREE.Matrix4().compose(
+        new THREE.Vector3(4, 2, -3),
+        new THREE.Quaternion(),
+        new THREE.Vector3(0.5, 0.5, 0.5)
+      ));
       await viewer.loadGltf("/test/fixtures/ar-presentation.gltf", false, {
         defaultBackgroundColor: "#6a341d"
       });

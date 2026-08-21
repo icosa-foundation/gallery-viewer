@@ -51,6 +51,7 @@ import {
     ARVirtualEnvironmentSnapshot,
     captureARVirtualEnvironment,
     computeARContentEntryMatrix,
+    computeLocalPlacementMatrix,
     computeXRClippingRange,
     GalleryEnvironmentBlendMode,
     GalleryXRSessionMode,
@@ -1026,7 +1027,7 @@ export class Viewer {
             virtualEnvironment: captureARVirtualEnvironment(this.scene, this.skyObject),
             clearAlpha: this.renderer.getClearAlpha(),
             arEntryTransform: this.captureObjectTransform(this.arEntryRoot),
-            userPlacementTransform: this.captureObjectTransform(this.userPlacementRoot),
+            userPlacementTransform: this.captureUserPlacement(),
             cameraRigPosition: this.cameraRig.position.clone(),
             cameraRigQuaternion: this.cameraRig.quaternion.clone(),
             cameraRigScale: this.cameraRig.scale.clone()
@@ -1098,7 +1099,7 @@ export class Viewer {
         // Loading a new asset replaces its virtual environment. Preserve that new
         // state for session exit, then apply the current AR blend policy to it.
         state.virtualEnvironment = captureARVirtualEnvironment(this.scene, this.skyObject);
-        state.userPlacementTransform = this.captureObjectTransform(this.userPlacementRoot);
+        state.userPlacementTransform = this.captureUserPlacement();
         this.applyAREnvironmentPolicy();
         this.cameraRig.position.set(0, 0, 0);
         this.cameraRig.quaternion.identity();
@@ -1114,7 +1115,7 @@ export class Viewer {
         restoreARVirtualEnvironment(this.scene, state.virtualEnvironment);
         this.renderer.setClearAlpha(state.clearAlpha);
         this.restoreObjectTransform(this.arEntryRoot, state.arEntryTransform);
-        this.restoreObjectTransform(this.userPlacementRoot, state.userPlacementTransform);
+        this.restoreUserPlacement(state.userPlacementTransform);
         this.cameraRig.position.copy(state.cameraRigPosition);
         this.cameraRig.quaternion.copy(state.cameraRigQuaternion);
         this.cameraRig.scale.copy(state.cameraRigScale);
@@ -1150,6 +1151,29 @@ export class Viewer {
         this.userPlacementRoot.position.set(0, 0, 0);
         this.userPlacementRoot.quaternion.identity();
         this.userPlacementRoot.scale.set(1, 1, 1);
+        this.userPlacementRoot.matrixAutoUpdate = true;
+        this.userPlacementRoot.updateMatrixWorld(true);
+    }
+
+    private captureUserPlacement(): ObjectTransformState {
+        return this.captureObjectTransform(this.userPlacementRoot);
+    }
+
+    private restoreUserPlacement(state: ObjectTransformState): void {
+        this.restoreObjectTransform(this.userPlacementRoot, state);
+    }
+
+    private applyUserPlacementWorldMatrix(worldMatrix: THREE.Matrix4): void {
+        this.arEntryRoot.updateWorldMatrix(true, false);
+        const localMatrix = computeLocalPlacementMatrix(
+            this.arEntryRoot.matrixWorld,
+            worldMatrix
+        );
+        localMatrix.decompose(
+            this.userPlacementRoot.position,
+            this.userPlacementRoot.quaternion,
+            this.userPlacementRoot.scale
+        );
         this.userPlacementRoot.matrixAutoUpdate = true;
         this.userPlacementRoot.updateMatrixWorld(true);
     }

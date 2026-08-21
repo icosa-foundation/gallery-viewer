@@ -4225,6 +4225,10 @@ function $721a3cf0b2bb84b2$export$6d2af1765a379b43(authoredCameraWorld, viewerPo
     const inverseAuthoredCamera = authoredCameraWorld.clone().invert();
     return (target ?? viewerPoseWorld.clone()).multiplyMatrices(viewerPoseWorld, inverseAuthoredCamera);
 }
+function $721a3cf0b2bb84b2$export$7e745b0efb1d2a5(parentWorld, desiredWorld, target) {
+    const inverseParent = parentWorld.clone().invert();
+    return (target ?? desiredWorld.clone()).multiplyMatrices(inverseParent, desiredWorld);
+}
 
 
 class $677737c8a5cbea2f$var$SketchMetadata {
@@ -4766,7 +4770,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             virtualEnvironment: (0, $721a3cf0b2bb84b2$export$9d79c1fffb915072)(this.scene, this.skyObject),
             clearAlpha: this.renderer.getClearAlpha(),
             arEntryTransform: this.captureObjectTransform(this.arEntryRoot),
-            userPlacementTransform: this.captureObjectTransform(this.userPlacementRoot),
+            userPlacementTransform: this.captureUserPlacement(),
             cameraRigPosition: this.cameraRig.position.clone(),
             cameraRigQuaternion: this.cameraRig.quaternion.clone(),
             cameraRigScale: this.cameraRig.scale.clone()
@@ -4810,7 +4814,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // Loading a new asset replaces its virtual environment. Preserve that new
         // state for session exit, then apply the current AR blend policy to it.
         state.virtualEnvironment = (0, $721a3cf0b2bb84b2$export$9d79c1fffb915072)(this.scene, this.skyObject);
-        state.userPlacementTransform = this.captureObjectTransform(this.userPlacementRoot);
+        state.userPlacementTransform = this.captureUserPlacement();
         this.applyAREnvironmentPolicy();
         this.cameraRig.position.set(0, 0, 0);
         this.cameraRig.quaternion.identity();
@@ -4824,7 +4828,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         (0, $721a3cf0b2bb84b2$export$dbd78d86c4ae556f)(this.scene, state.virtualEnvironment);
         this.renderer.setClearAlpha(state.clearAlpha);
         this.restoreObjectTransform(this.arEntryRoot, state.arEntryTransform);
-        this.restoreObjectTransform(this.userPlacementRoot, state.userPlacementTransform);
+        this.restoreUserPlacement(state.userPlacementTransform);
         this.cameraRig.position.copy(state.cameraRigPosition);
         this.cameraRig.quaternion.copy(state.cameraRigQuaternion);
         this.cameraRig.scale.copy(state.cameraRigScale);
@@ -4854,6 +4858,19 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.userPlacementRoot.position.set(0, 0, 0);
         this.userPlacementRoot.quaternion.identity();
         this.userPlacementRoot.scale.set(1, 1, 1);
+        this.userPlacementRoot.matrixAutoUpdate = true;
+        this.userPlacementRoot.updateMatrixWorld(true);
+    }
+    captureUserPlacement() {
+        return this.captureObjectTransform(this.userPlacementRoot);
+    }
+    restoreUserPlacement(state) {
+        this.restoreObjectTransform(this.userPlacementRoot, state);
+    }
+    applyUserPlacementWorldMatrix(worldMatrix) {
+        this.arEntryRoot.updateWorldMatrix(true, false);
+        const localMatrix = (0, $721a3cf0b2bb84b2$export$7e745b0efb1d2a5)(this.arEntryRoot.matrixWorld, worldMatrix);
+        localMatrix.decompose(this.userPlacementRoot.position, this.userPlacementRoot.quaternion, this.userPlacementRoot.scale);
         this.userPlacementRoot.matrixAutoUpdate = true;
         this.userPlacementRoot.updateMatrixWorld(true);
     }
