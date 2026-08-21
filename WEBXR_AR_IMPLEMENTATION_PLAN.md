@@ -289,6 +289,26 @@ Do not add device-specific interaction based on user-agent strings. All later in
 
 Make loaded content render correctly in different AR display environments while preserving physical tracking and existing authored transforms.
 
+### Implementation status (started 21 August 2026)
+
+Implemented in the initial Phase 2 slice:
+
+1. Alpha-capable renderer creation with opaque desktop and VR clear-alpha preservation.
+2. Explicit desktop, VR, and AR render-path identity sufficient to prevent VR locomotion from running in AR.
+3. `environmentBlendMode` normalization and separate policies for opaque versus passthrough/additive displays.
+4. Reversible suppression of scene background, authored sky geometry, and fog while retaining environment lighting.
+5. A presentation root above importer-normalized content, with first-frame content placement computed as tracked viewer pose multiplied by the inverse authored camera pose.
+6. A rigid, unit-scale AR camera rig; IMM authored viewpoints move presentation content in AR rather than the tracked camera hierarchy.
+7. Bounds-aware XR far clipping configured through Three.js camera depth limits without replacing device projection matrices.
+8. Exact restoration helpers and regression tests for blend policy, virtual-environment restoration, and entry-transform math.
+
+Still required before Phase 2 is considered complete:
+
+1. Browser regression coverage for desktop and VR rendering with the alpha-capable context.
+2. Physical-device checks across alpha-blend, additive, and opaque hardware.
+3. Additive-display contrast policy beyond removal of opaque backgrounds, without destructively rewriting authored materials.
+4. Pixel-comparison coverage for session exit and asset reload during a session.
+
 ### Work
 
 1. Create the renderer with an alpha-capable context, with desktop and VR regression tests.
