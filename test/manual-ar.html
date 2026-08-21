@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Icosa Viewer manual AR test</title>
+  <style>
+    html, body, #icosa-viewer { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #111; }
+    #manual-controls {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 1000;
+      width: min(420px, calc(100% - 48px));
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 6px;
+      background: rgba(0,0,0,0.78);
+      color: white;
+      font: 13px/1.4 sans-serif;
+    }
+    #manual-controls label { display: block; margin-bottom: 8px; }
+    #manual-controls input[type="text"], #manual-controls select {
+      box-sizing: border-box;
+      width: 100%;
+      margin-top: 3px;
+      padding: 6px;
+    }
+    #manual-controls button { padding: 7px 14px; cursor: pointer; }
+    #manual-status { margin-top: 8px; white-space: pre-wrap; }
+    #manual-session { color: #9fd3ff; }
+  </style>
+  <script type="importmap">
+    {"imports":{
+      "three":"https://cdn.jsdelivr.net/npm/three@0.185.1/build/three.module.js",
+      "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/jsm/",
+      "three/examples/":"https://cdn.jsdelivr.net/npm/three@0.185.1/examples/",
+      "three-icosa":"/dist/three-icosa.module.js",
+      "three-tiltloader":"https://cdn.jsdelivr.net/npm/three-tiltloader@0.4.2-alpha.4/dist/three-tiltloader.module.js",
+      "@sparkjsdev/spark":"https://sparkjs.dev/releases/spark/2.1.0/spark.module.js"
+    }}
+  </script>
+</head>
+<body>
+  <div id="icosa-viewer"></div>
+  <form id="manual-controls">
+    <label>
+      Icosa asset ID
+      <input id="asset-id" type="text" autocomplete="off" placeholder="Use this or a direct URL">
+    </label>
+    <label>
+      Direct asset URL
+      <input id="asset-url" type="text" autocomplete="off" placeholder="https://…/asset.glb">
+    </label>
+    <label>
+      Direct URL format
+      <select id="asset-format">
+        <option value="auto">Detect from URL</option>
+        <option value="gltf2">glTF 2 / GLB</option>
+        <option value="gltf1">glTF 1</option>
+        <option value="tilt">Tilt</option>
+      </select>
+    </label>
+    <label><input id="load-environment" type="checkbox" checked> Load authored environment</label>
+    <button type="submit">Load asset</button>
+    <div id="manual-session">Mode: desktop · Blend: unknown</div>
+    <div id="manual-status">Enter an Icosa asset ID or direct URL.</div>
+  </form>
+
+  <script type="module">
+    import { Viewer } from "/dist/icosa-viewer.module.js";
+
+    const params = new URLSearchParams(location.search);
+    const assetIdInput = document.getElementById("asset-id");
+    const assetUrlInput = document.getElementById("asset-url");
+    const formatInput = document.getElementById("asset-format");
+    const environmentInput = document.getElementById("load-environment");
+    const status = document.getElementById("manual-status");
+    const sessionStatus = document.getElementById("manual-session");
+    const form = document.getElementById("manual-controls");
+
+    assetIdInput.value = params.get("asset") ?? "";
+    assetUrlInput.value = params.get("url") ?? "";
+    formatInput.value = params.get("format") ?? "auto";
+    environmentInput.checked = params.get("environment") !== "0";
+
+    const viewer = new Viewer(new URL("/", location.href).href, document.getElementById("icosa-viewer"));
+    window.viewer = viewer;
+
+    const presentationOverrides = (presentationParams = {}) => ({
+      presentationParams,
+      defaultBackgroundColor: presentationParams.backgroundColor || "#000000",
+      camera: presentationParams.camera,
+      geometryData: presentationParams.GOOGLE_geometry_data,
+      colorSpace: presentationParams.colorSpace
+    });
+
+    const usableFormats = (formats) => formats.filter((format) =>
+      format?.root?.url && !format.root.url.startsWith("https://web.archive.org/")
+    );
+
+    async function loadIcosaAsset(assetId) {
+      const response = await fetch(`https://api.icosa.gallery/v1/assets/${encodeURIComponent(assetId)}`);
+      if (!response.ok) throw new Error(`Icosa metadata request failed with HTTP ${response.status}`);
+      const metadata = await response.json();
+      const formats = usableFormats(metadata.formats || []);
+      const overrides = presentationOverrides(metadata.presentationParams || {});
+      const gltf2 = formats.find((format) => format.formatType === "GLTF2");
+      const tilt = formats.find((format) => format.formatType?.includes("TILT"));
+      const gltf1 = formats.find((format) => format.formatType === "GLTF");
+
+      if (gltf2) {
+        await viewer.loadGltf(gltf2.root.url, environmentInput.checked, overrides);
+      } else if (tilt) {
+        await viewer.loadTilt(tilt.root.url, overrides);
+      } else if (gltf1) {
+        await viewer.loadGltf1(gltf1.root.url, environmentInput.checked, overrides);
+      } else {
+        throw new Error("The asset has no usable GLTF2, TILT, or GLTF format");
+      }
+    }
+
+    function detectFormat(url) {
+      if (formatInput.value !== "auto") return formatInput.value;
+      const extension = new URL(url, location.href).pathname.split(".").pop()?.toLowerCase();
+      if (extension === "tilt") return "tilt";
+      return "gltf2";
+    }
+
+    async function loadDirectUrl(url) {
+      const format = detectFormat(url);
+      if (format === "tilt") {
+        await viewer.loadTilt(url);
+      } else if (format === "gltf1") {
+        await viewer.loadGltf1(url, environmentInput.checked);
+      } else {
+        await viewer.loadGltf(url, environmentInput.checked);
+      }
+    }
+
+    async function loadSelectedAsset() {
+      const assetId = assetIdInput.value.trim();
+      const assetUrl = assetUrlInput.value.trim();
+      if (!assetId && !assetUrl) throw new Error("Enter an Icosa asset ID or direct URL");
+
+      viewer.loadingError = false;
+      status.textContent = "Loading…";
+      const nextParams = new URLSearchParams();
+      if (assetId) nextParams.set("asset", assetId);
+      else nextParams.set("url", assetUrl);
+      if (!assetId && formatInput.value !== "auto") nextParams.set("format", formatInput.value);
+      if (!environmentInput.checked) nextParams.set("environment", "0");
+      history.replaceState(null, "", `${location.pathname}?${nextParams}`);
+
+      if (assetId) await loadIcosaAsset(assetId);
+      else await loadDirectUrl(assetUrl);
+      if (viewer.loadingError) throw new Error("The viewer reported an asset-loading error; inspect the browser console");
+      status.textContent = assetId ? `Loaded Icosa asset ${assetId}` : `Loaded ${assetUrl}`;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        await loadSelectedAsset();
+      } catch (error) {
+        status.textContent = error instanceof Error ? error.message : String(error);
+      }
+    });
+
+    const updateSessionStatus = () => {
+      sessionStatus.textContent = `Mode: ${viewer.xrSessionMode} · Blend: ${viewer.xrEnvironmentBlendMode}`;
+      requestAnimationFrame(updateSessionStatus);
+    };
+    updateSessionStatus();
+
+    if (assetIdInput.value || assetUrlInput.value) {
+      loadSelectedAsset().catch((error) => {
+        status.textContent = error instanceof Error ? error.message : String(error);
+      });
+    }
+  </script>
+</body>
+</html>
