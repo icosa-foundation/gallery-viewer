@@ -305,9 +305,9 @@ Implemented in the initial Phase 2 slice:
 
 Still required before Phase 2 is considered complete:
 
-1. Physical-device checks across alpha-blend, additive, and opaque hardware.
+1. Manual physical-device checks across alpha-blend, additive, and opaque hardware. An automated device-validation harness is explicitly deferred at this stage to avoid disproportionate test infrastructure work.
 2. Additive-display contrast policy beyond removal of opaque backgrounds, without destructively rewriting authored materials.
-3. Full screenshot comparison coverage for session exit and asset reload on real WebXR sessions.
+3. Full screenshot comparison coverage for session exit and asset reload on real WebXR sessions is deferred until the manual test findings justify the automation cost.
 
 ### Work
 
