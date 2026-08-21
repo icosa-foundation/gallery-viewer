@@ -354,30 +354,27 @@ Do not add automatic `fit-volume` presentation until explicit presentation inten
 
 Support environments, dioramas, props, and unknown assets through explicit strategies rather than a single AR placement flow.
 
-### Metadata extension
+### Schema decision: deferred
 
-If existing metadata cannot fully express presentation intent, add an optional namespace under the existing `presentationParams` dictionary rather than a new competing top-level schema:
+Phase 3 will not add XR presentation fields to the asset metadata schema. Presentation intent has substantial UX and cross-repository consequences, so field names and allowed values must not become public API before the interaction model has been evaluated manually.
 
-```json
-{
-  "xr": {
-    "presentationIntent": "environment",
-    "scalePolicy": "authored",
-    "placementPolicy": "enter-at-viewpoint"
-  }
-}
-```
+The viewer may use an internal resolved-presentation policy, but that object is an implementation boundary rather than an exported metadata contract. Placement and scale code must consume the resolved policy without depending on where its values came from. A future metadata adapter can populate that policy after Icosa Gallery, editor, exporter, viewer, and client-library semantics have been coordinated.
 
-The final names and allowed values must be coordinated with Icosa Gallery and client-library schemas before implementation.
+Consequences of this deferral:
+
+1. Asset authors cannot yet persist an XR presentation preference that travels between applications.
+2. User placement and scale choices remain local to the active asset and session unless a host stores them separately.
+3. Bounds and navigation metadata remain descriptive or advisory and must not silently classify an asset as an environment, diorama, or prop.
+4. Ambiguous assets preserve authored scale and expose a user choice or conservative fallback.
+5. Temporary host inputs, if required for integration work, remain explicitly experimental and must not be presented as stable schema.
 
 ### Resolution precedence
 
 1. Explicit user choice for the active viewing session.
-2. Explicit host application override.
-3. Optional `presentationParams.xr` suggestion.
-4. Recognized existing camera-mode metadata.
-5. Embedded `TB_FlyMode` and authored-camera metadata.
-6. A conservative fallback that preserves scale and exposes the ambiguity to the user.
+2. Explicit experimental host runtime configuration, where an integration requires it.
+3. Existing metadata used only within its established meaning, such as reliable units or an authored entry camera.
+4. Recognized camera-mode metadata as a navigation suggestion, never as an automatic scale or asset-intent classification.
+5. A conservative fallback that preserves scale and exposes the ambiguity to the user.
 
 ### Placement strategies
 
@@ -391,16 +388,20 @@ The final names and allowed values must be coordinated with Icosa Gallery and cl
 
 ### Work
 
-1. Adapt the official Three.js hit-test example into a reusable placement service.
-2. Add a reticle whose appearance indicates tracking, valid placement, invalid placement, and locked placement.
-3. Support floor, table, wall, or unrestricted hit-test policies where device support permits.
-4. Apply placement to the content-side placement root.
-5. Add authored, real-world, fit-volume, and user-defined scale modes.
-6. Add actual-size, view-as-diorama, and enter-scene actions.
-7. Show calculated physical dimensions before or during placement when practical.
-8. Preserve the user's scale and placement override for the active asset and session.
-9. Add a reset operation that returns to the resolved asset default rather than a universal tabletop state.
-10. Ensure placement-source loss does not delete or unexpectedly move already placed content.
+1. Define an internal resolved-presentation policy and placement state that do not expose or imply a stable metadata schema.
+2. Keep importer normalization, authored transforms, AR placement, user manipulation, and navigation state separate.
+3. Adapt the official Three.js hit-test example into a reusable placement service.
+4. Add a reticle whose appearance indicates tracking, valid placement, invalid placement, and locked placement.
+5. Support floor, table, wall, or unrestricted hit-test policies where device support permits.
+6. Apply placement to the content-side placement root.
+7. Add authored, reliable-real-world, fit-volume, and user-defined scale operations. `fit-volume` requires an explicit user action.
+8. Add actual-size, view-as-diorama, and enter-scene actions without permanently classifying the asset.
+9. Show calculated physical dimensions before or during placement when reliable unit information is available.
+10. Preserve the user's scale and placement override for the active asset and session.
+11. Add a reset operation that returns to the resolved session default rather than a universal tabletop state.
+12. Ensure placement-source loss does not delete or unexpectedly move already placed content.
+13. Evaluate the placement and scale UX manually before proposing fields to other repositories.
+14. Treat metadata schema design and cross-repository adoption as a later, separately approved integration step.
 
 ### Acceptance criteria
 
@@ -410,6 +411,8 @@ The final names and allowed values must be coordinated with Icosa Gallery and cl
 4. An unknown asset presents a clear choice rather than silently applying a destructive scale guess.
 5. Placement works through at least hit-test selection and controller-ray selection where supported.
 6. User overrides can switch navigation and presentation independently.
+7. Phase 3 introduces no new persistent asset metadata fields or implicit schema commitments.
+8. Placement strategies can later receive metadata-derived policy through one adapter without changing their transform logic.
 
 ## Phase 4: Device-independent input actions and user interface
 
@@ -600,7 +603,7 @@ The matrix records actual capabilities and blend mode for each tested session. D
 ### Documentation deliverables
 
 1. Public viewer XR configuration and event API.
-2. Existing and extended presentation metadata precedence.
+2. Existing presentation metadata precedence and the internal resolved-policy boundary; any extended schema is documented only after separate approval.
 3. Asset-author guidance for environments, dioramas, and props.
 4. Scale and unit guidance for Tilt Brush, Open Brush, glTF, and other supported formats.
 5. Device capability and fallback behaviour.
@@ -611,8 +614,8 @@ The matrix records actual capabilities and blend mode for each tested session. D
 
 Some work belongs outside this repository and must be coordinated rather than silently encoded here:
 
-1. Icosa Gallery must continue building the existing flattened overrides and optionally pass the full `presentationParams` object.
-2. If `presentationParams.xr` is adopted, Gallery validation, editing, API exposure, and client-library documentation must agree on its field names and semantics.
+1. Icosa Gallery must continue building the existing flattened overrides and optionally pass the existing full `presentationParams` object.
+2. New XR presentation metadata is deferred. If resumed later, Gallery validation, editing, API exposure, exporters, and client-library documentation must agree on field names and semantics before adoption.
 3. Gallery deployment import maps must supply the Three.js version required by the built viewer and any reused addons.
 4. Asset pipelines or Open Brush exporters may eventually author presentation intent or reliable unit metadata, but the viewer must still handle legacy assets without it.
 5. Persistent anchors may require host-side storage and privacy controls rather than viewer-local persistence.
@@ -624,9 +627,9 @@ Some work belongs outside this repository and must be coordinated rather than si
 | Large scenes are shrunk into tabletop objects | Preserve authored scale by default; require explicit intent or user choice for fit-volume scaling |
 | Small props are enlarged to environment scale | Never infer intended size from navigation mode or bounds alone; preserve reliable authored units |
 | Phone assumptions break headsets or glasses | Route through blend mode, input sources, feature availability, and host policy |
-| Existing metadata changes meaning | Add a normalization layer and optional namespace; do not repurpose existing fields |
+| Existing metadata changes meaning | Keep current fields within their established meaning and route future schema through a separately approved adapter |
 | Desktop camera transforms corrupt XR tracking | Transform content relative to the tracked user instead of scaling or replacing the XR camera pose |
-| Gallery and viewer schemas diverge | Test both the current flattened contract and the extended full-presentation contract |
+| Gallery and viewer schemas diverge | Defer new XR schema until coordinated; keep Phase 3 placement logic dependent only on an internal resolved policy |
 | Three.js addon version differs from deployed runtime | Establish and test an explicit Three.js deployment baseline in Phase 0 |
 | Optional WebXR features prevent session startup | Request nonessential features as optional and degrade them independently |
 | Authored and estimated lighting are applied twice | Establish per-source and per-material precedence before enabling estimation by default |
