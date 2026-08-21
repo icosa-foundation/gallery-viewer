@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Icosa Viewer AR presentation regression</title>
+  <style>
+    html, body, #icosa-viewer { width: 100%; height: 100%; margin: 0; background: #345; }
+  </style>
+  <script type="importmap">
+    {"imports":{
+      "three":"/node_modules/three/build/three.module.js",
+      "three/addons/":"/node_modules/three/examples/jsm/",
+      "three/examples/":"/node_modules/three/examples/",
+      "three-icosa":"/dist/three-icosa.module.js",
+      "three-tiltloader":"/node_modules/three-tiltloader/dist/three-tiltloader.module.js"
+    }}
+  </script>
+</head>
+<body>
+  <div id="icosa-viewer"></div>
+  <pre id="ar-presentation-result" hidden></pre>
+  <script type="module">
+    import * as THREE from "three";
+    import { Viewer } from "/dist/icosa-viewer.module.js";
+
+    const checks = [];
+    const check = (condition, name, detail) => {
+      checks.push({ name, passed: Boolean(condition), detail });
+      if (!condition) throw new Error(`${name}${detail ? `: ${detail}` : ""}`);
+    };
+    const matrixClose = (actual, expected, epsilon = 1e-5) =>
+      actual.elements.every((value, index) => Math.abs(value - expected.elements[index]) <= epsilon);
+    const vectorClose = (actual, expected, epsilon = 1e-5) =>
+      actual.every((value, index) => Math.abs(value - expected[index]) <= epsilon);
+    const publishResult = (result) => {
+      window.arPresentationResult = result;
+      const output = document.getElementById("ar-presentation-result");
+      output.textContent = JSON.stringify(result);
+      document.documentElement.dataset.arPresentation = result.passed ? "pass" : "fail";
+    };
+
+    try {
+      const viewer = new Viewer(new URL("/", location.href).href, document.getElementById("icosa-viewer"));
+      await viewer.loadGltf("/test/fixtures/ar-presentation.gltf", false, {
+        defaultBackgroundColor: "#17283a"
+      });
+      check(!viewer.loadingError, "fixture loads");
+
+      const scene = viewer.scene;
+      const renderer = viewer.renderer;
+      const originalBackground = new THREE.Color(0x17283a);
+      const originalFog = new THREE.FogExp2(0x334455, 0.015);
+      const originalSky = new THREE.Group();
+      originalSky.name = "AR regression sky";
+      scene.background = originalBackground;
+      scene.fog = originalFog;
+      viewer.contentRoot.add(originalSky);
+      viewer.skyObject = originalSky;
+
+      const readCornerAlpha = () => {
+        renderer.setRenderTarget(null);
+        renderer.render(scene, viewer.flatCamera);
+        const gl = renderer.getContext();
+        const pixel = new Uint8Array(4);
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+        return pixel[3];
+      };
+
+      check(renderer.getClearAlpha() === 1, "desktop clear alpha remains opaque");
+      check(readCornerAlpha() === 255, "desktop framebuffer remains opaque");
+
+      const rigPosition = viewer.cameraRig.position.toArray();
+      const rigQuaternion = viewer.cameraRig.quaternion.toArray();
+      const rigScale = viewer.cameraRig.scale.toArray();
+      const presentationMatrix = viewer.presentationRoot.matrix.clone();
+      const alphaSession = { environmentBlendMode: "alpha-blend" };
+      viewer.handleXRSessionStarted("immersive-ar", alphaSession);
+
+      check(viewer.xrSessionMode === "ar", "alpha session selects AR mode");
+      check(viewer.xrEnvironmentBlendMode === "alpha-blend", "alpha blend mode is retained");
+      check(scene.background === null, "alpha session clears the scene background");
+      check(scene.fog === null, "alpha session suppresses fog");
+      check(originalSky.visible === false, "alpha session hides authored sky geometry");
+      check(renderer.getClearAlpha() === 0, "alpha session uses transparent clearing");
+      check(readCornerAlpha() === 0, "alpha framebuffer exposes transparent pixels");
+      check(vectorClose(viewer.cameraRig.position.toArray(), [0, 0, 0]), "AR camera rig position is identity");
+      check(vectorClose(viewer.cameraRig.quaternion.toArray(), [0, 0, 0, 1]), "AR camera rig rotation is identity");
+      check(vectorClose(viewer.cameraRig.scale.toArray(), [1, 1, 1]), "AR camera rig has unit scale");
+
+      const referenceSpace = {};
+      const originalGetReferenceSpace = renderer.xr.getReferenceSpace.bind(renderer.xr);
+      renderer.xr.getReferenceSpace = () => referenceSpace;
+      const trackedViewer = new THREE.Matrix4().compose(
+        new THREE.Vector3(1.25, 1.7, -0.5),
+        new THREE.Quaternion().setFromEuler(new THREE.Euler(0, 0.35, 0)),
+        new THREE.Vector3(1, 1, 1)
+      );
+      const authoredCamera = viewer.arAuthoredCameraWorld.clone();
+      viewer.applyPendingAREntry({
+        getViewerPose: (space) => space === referenceSpace
+          ? { transform: { matrix: trackedViewer.elements } }
+          : null
+      });
+      viewer.presentationRoot.updateMatrix();
+      const expectedPlacement = trackedViewer.clone().multiply(authoredCamera.clone().invert());
+      check(
+        matrixClose(viewer.presentationRoot.matrix, expectedPlacement),
+        "first XR frame applies content-side authored entry placement"
+      );
+      renderer.xr.getReferenceSpace = originalGetReferenceSpace;
+
+      viewer.handleXRSessionEnded("immersive-ar", alphaSession);
+      check(viewer.xrSessionMode === "desktop", "AR end restores desktop mode");
+      check(scene.background === originalBackground, "AR end restores background identity");
+      check(scene.fog === originalFog, "AR end restores fog identity");
+      check(originalSky.visible === true, "AR end restores sky visibility");
+      check(renderer.getClearAlpha() === 1, "AR end restores opaque clearing");
+      check(matrixClose(viewer.presentationRoot.matrix, presentationMatrix), "AR end restores presentation transform");
+      check(vectorClose(viewer.cameraRig.position.toArray(), rigPosition), "AR end restores camera-rig position");
+      check(vectorClose(viewer.cameraRig.quaternion.toArray(), rigQuaternion), "AR end restores camera-rig rotation");
+      check(vectorClose(viewer.cameraRig.scale.toArray(), rigScale), "AR end restores camera-rig scale");
+
+      const opaqueSession = { environmentBlendMode: "opaque" };
+      viewer.handleXRSessionStarted("immersive-ar", opaqueSession);
+      check(scene.background === originalBackground, "opaque AR retains the authored background");
+      check(scene.fog === originalFog, "opaque AR retains fog");
+      check(originalSky.visible === true, "opaque AR retains sky geometry");
+      check(renderer.getClearAlpha() === 1, "opaque AR retains opaque clearing");
+      viewer.handleXRSessionEnded("immersive-ar", opaqueSession);
+
+      const additiveSession = { environmentBlendMode: "additive" };
+      viewer.handleXRSessionStarted("immersive-ar", additiveSession);
+      check(scene.background === null, "additive AR clears the opaque background");
+      check(scene.fog === null, "additive AR suppresses fog");
+      check(originalSky.visible === false, "additive AR hides authored sky geometry");
+      check(renderer.getClearAlpha() === 0, "additive AR uses transparent clearing");
+      viewer.handleXRSessionEnded("immersive-ar", additiveSession);
+
+      const vrSession = { environmentBlendMode: "opaque" };
+      viewer.handleXRSessionStarted("immersive-vr", vrSession);
+      check(viewer.xrSessionMode === "vr", "VR session remains distinct from AR");
+      check(scene.background === originalBackground, "VR retains the authored background");
+      check(renderer.getClearAlpha() === 1, "VR rendering remains opaque");
+      viewer.handleXRSessionEnded("immersive-vr", vrSession);
+
+      const reloadSession = { environmentBlendMode: "alpha-blend" };
+      viewer.handleXRSessionStarted("immersive-ar", reloadSession);
+      await viewer.loadGltf("/test/fixtures/ar-presentation.gltf", false, {
+        defaultBackgroundColor: "#6a341d"
+      });
+      const reloadedEnvironment = viewer.arPresentationState.virtualEnvironment;
+      check(scene.background === null, "asset reload reapplies AR background suppression");
+      check(scene.fog === null, "asset reload reapplies AR fog suppression");
+      check(viewer.arEntryPending === true, "asset reload queues a new authored entry placement");
+      viewer.handleXRSessionEnded("immersive-ar", reloadSession);
+      check(scene.background === reloadedEnvironment.background, "AR exit restores the reloaded background");
+      check(scene.fog === reloadedEnvironment.fog, "AR exit restores the reloaded fog");
+
+      await viewer.dispose();
+      publishResult({ passed: true, checks });
+    } catch (error) {
+      publishResult({
+        passed: false,
+        checks,
+        error: error instanceof Error ? `${error.message}\n${error.stack ?? ""}` : String(error)
+      });
+    }
+  </script>
+</body>
+</html>

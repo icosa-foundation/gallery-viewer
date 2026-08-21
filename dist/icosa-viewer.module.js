@@ -4184,7 +4184,6 @@ function $88ac7da5ae34d333$export$39df5abf996a54bc(overrides = {}, embedded = {}
 }
 
 
-
 function $721a3cf0b2bb84b2$export$39629b2688d4b9d3(value) {
     if (value === 'opaque' || value === 'additive' || value === 'alpha-blend') return value;
     return 'unknown';
@@ -4222,9 +4221,9 @@ function $721a3cf0b2bb84b2$export$2095d3a99c997ff9(authoredNear, authoredFar, di
         far: far
     };
 }
-function $721a3cf0b2bb84b2$export$6d2af1765a379b43(authoredCameraWorld, viewerPoseWorld, target = new (0, $hBQxr$Matrix4)()) {
+function $721a3cf0b2bb84b2$export$6d2af1765a379b43(authoredCameraWorld, viewerPoseWorld, target) {
     const inverseAuthoredCamera = authoredCameraWorld.clone().invert();
-    return target.multiplyMatrices(viewerPoseWorld, inverseAuthoredCamera);
+    return (target ?? viewerPoseWorld.clone()).multiplyMatrices(viewerPoseWorld, inverseAuthoredCamera);
 }
 
 

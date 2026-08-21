@@ -1,4 +1,4 @@
-import { Matrix4, Object3D, Scene } from 'three';
+import type { Matrix4, Object3D, Scene } from 'three';
 
 export type GalleryXRSessionMode = 'desktop' | 'vr' | 'ar';
 
@@ -109,8 +109,11 @@ export function computeXRClippingRange(
 export function computeARContentEntryMatrix(
     authoredCameraWorld: Matrix4,
     viewerPoseWorld: Matrix4,
-    target = new Matrix4()
+    target?: Matrix4
 ): Matrix4 {
     const inverseAuthoredCamera = authoredCameraWorld.clone().invert();
-    return target.multiplyMatrices(viewerPoseWorld, inverseAuthoredCamera);
+    return (target ?? viewerPoseWorld.clone()).multiplyMatrices(
+        viewerPoseWorld,
+        inverseAuthoredCamera
+    );
 }
