@@ -185,13 +185,13 @@ function resolvedGeometryData<TPostProcessing>(
     overrides: GalleryViewerOverrides<TPostProcessing>,
     presentationParams: GalleryPresentationParams<TPostProcessing>
 ): GalleryResolvedValue<GalleryGeometryMetadata> {
-    if (overrides.geometryData !== undefined) {
+    if (overrides.geometryData != null) {
         return { value: overrides.geometryData, source: 'overrides.geometryData' };
     }
-    if (presentationParams.geometry_data !== undefined) {
+    if (presentationParams.geometry_data != null) {
         return { value: presentationParams.geometry_data, source: 'presentationParams.geometry_data' };
     }
-    if (presentationParams.GOOGLE_geometry_data !== undefined) {
+    if (presentationParams.GOOGLE_geometry_data != null) {
         return {
             value: presentationParams.GOOGLE_geometry_data,
             source: 'presentationParams.GOOGLE_geometry_data'

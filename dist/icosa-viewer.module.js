@@ -4069,15 +4069,15 @@ function $88ac7da5ae34d333$var$resolvedCamera(overrides, presentationParams) {
     };
 }
 function $88ac7da5ae34d333$var$resolvedGeometryData(overrides, presentationParams) {
-    if (overrides.geometryData !== undefined) return {
+    if (overrides.geometryData != null) return {
         value: overrides.geometryData,
         source: 'overrides.geometryData'
     };
-    if (presentationParams.geometry_data !== undefined) return {
+    if (presentationParams.geometry_data != null) return {
         value: presentationParams.geometry_data,
         source: 'presentationParams.geometry_data'
     };
-    if (presentationParams.GOOGLE_geometry_data !== undefined) return {
+    if (presentationParams.GOOGLE_geometry_data != null) return {
         value: presentationParams.GOOGLE_geometry_data,
         source: 'presentationParams.GOOGLE_geometry_data'
     };
@@ -6641,7 +6641,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             await this._loadGltf(url, loadEnvironment, overrides, true);
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading glTFv1 model");
+            console.error("Error loading glTFv1 model", error);
             this.loadingError = true;
         }
     }
@@ -6650,7 +6650,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             await this._loadGltf(url, loadEnvironment, overrides, false);
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading glTFv2 model");
+            console.error("Error loading glTFv2 model", error);
             this.loadingError = true;
         }
     }
