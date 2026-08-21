@@ -2282,7 +2282,7 @@ class $e1f901905a002d12$export$2e2bcd8739ae039 extends $e1f901905a002d12$export$
 
 
 class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
-    static createButton(renderer, sessionInit = {}, allowAR = true) {
+    static createButton(renderer, sessionInit = {}, allowAR = true, callbacks = {}) {
         const container = document.createElement('div');
         container.style.position = 'absolute';
         container.style.bottom = '20px';
@@ -2299,11 +2299,14 @@ class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
                 await renderer.xr.setSession(session);
                 button.textContent = `STOP ${label}`;
                 currentSession = session;
+                callbacks.onSessionStarted?.(mode, session);
             }
             function onSessionEnded() {
-                currentSession.removeEventListener('end', onSessionEnded);
+                const endedSession = currentSession;
+                endedSession?.removeEventListener('end', onSessionEnded);
                 button.textContent = `START ${label}`;
                 currentSession = null;
+                if (endedSession) callbacks.onSessionEnded?.(mode, endedSession);
             }
             button.style.cursor = 'pointer';
             button.style.width = '100px';
@@ -2318,16 +2321,18 @@ class $a681b8b24de9c7d6$export$d1c1e163c7960c6 {
                 button.style.opacity = '0.5';
             };
             button.onclick = function() {
-                if (currentSession === null) navigator.xr.requestSession(mode, sessionOptions).then(onSessionStarted);
+                if (currentSession === null) navigator.xr.requestSession(mode, sessionOptions).then(onSessionStarted).catch((error)=>callbacks.onSessionError?.(mode, error));
                 else {
                     currentSession.end();
                     if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
                         console.warn(err);
+                        callbacks.onSessionError?.(mode, err);
                     });
                 }
             };
             if (navigator.xr.offerSession !== undefined) navigator.xr.offerSession(mode, sessionOptions).then(onSessionStarted).catch((err)=>{
                 console.warn(err);
+                callbacks.onSessionError?.(mode, err);
             });
             stylizeElement(button);
             return button;
@@ -4179,6 +4184,39 @@ function $88ac7da5ae34d333$export$39df5abf996a54bc(overrides = {}, embedded = {}
 }
 
 
+
+function $721a3cf0b2bb84b2$export$39629b2688d4b9d3(value) {
+    if (value === 'opaque' || value === 'additive' || value === 'alpha-blend') return value;
+    return 'unknown';
+}
+function $721a3cf0b2bb84b2$export$bca2e7718075c967(blendMode) {
+    return blendMode === 'alpha-blend' || blendMode === 'additive';
+}
+function $721a3cf0b2bb84b2$export$9d79c1fffb915072(scene, skyObject) {
+    return {
+        background: scene.background,
+        fog: scene.fog,
+        skyObject: skyObject,
+        skyVisible: skyObject?.visible
+    };
+}
+function $721a3cf0b2bb84b2$export$380f64477488d7cb(scene, blendMode, skyObject) {
+    if (!$721a3cf0b2bb84b2$export$bca2e7718075c967(blendMode)) return;
+    scene.background = null;
+    scene.fog = null;
+    if (skyObject) skyObject.visible = false;
+}
+function $721a3cf0b2bb84b2$export$dbd78d86c4ae556f(scene, snapshot) {
+    scene.background = snapshot.background;
+    scene.fog = snapshot.fog;
+    if (snapshot.skyObject && snapshot.skyVisible !== undefined) snapshot.skyObject.visible = snapshot.skyVisible;
+}
+function $721a3cf0b2bb84b2$export$6d2af1765a379b43(authoredCameraWorld, viewerPoseWorld, target = new (0, $hBQxr$Matrix4)()) {
+    const inverseAuthoredCamera = authoredCameraWorld.clone().invert();
+    return target.multiplyMatrices(viewerPoseWorld, inverseAuthoredCamera);
+}
+
+
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
@@ -4298,6 +4336,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         };
         this.loadedContentIsTilt = false;
         this.overrides = {};
+        this.xrSessionMode = 'desktop';
+        this.xrEnvironmentBlendMode = 'unknown';
+        this.arEntryPending = false;
+        this.arAuthoredCameraWorld = new $hBQxr$three.Matrix4();
         this.loadingError = false;
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
@@ -4337,9 +4379,12 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.scene = new $hBQxr$three.Scene();
         this.persistentRoot = new $hBQxr$three.Group();
         this.persistentRoot.name = 'Viewer services';
+        this.presentationRoot = new $hBQxr$three.Group();
+        this.presentationRoot.name = 'Viewer presentation';
         this.contentRoot = new $hBQxr$three.Group();
         this.contentRoot.name = 'Viewer content';
-        this.scene.add(this.persistentRoot, this.contentRoot);
+        this.presentationRoot.add(this.contentRoot);
+        this.scene.add(this.persistentRoot, this.presentationRoot);
         this.three = $hBQxr$three;
         const viewer = this;
         const manager = new $hBQxr$three.LoadingManager();
@@ -4401,8 +4446,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         });
         this.renderer = new $hBQxr$three.WebGLRenderer({
             canvas: this.canvas,
-            antialias: true
+            antialias: true,
+            alpha: true
         });
+        this.renderer.setClearAlpha(1);
         this.renderer.setPixelRatio(window.devicePixelRatio);
         // PCFSoftShadowMap is an alias for PCFShadowMap in current Three.js.
         this.renderer.shadowMap.type = $hBQxr$three.PCFShadowMap;
@@ -4437,7 +4484,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.persistentRoot.add(controllerGrip1);
-        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {}, true);
+        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {}, true, {
+            onSessionStarted: (mode, session)=>this.handleXRSessionStarted(mode, session),
+            onSessionEnded: (mode, session)=>this.handleXRSessionEnded(mode, session)
+        });
         this.icosa_frame.appendChild(xrButton);
         function initCustomUi(viewerContainer) {
             const button = document.createElement('button');
@@ -4472,12 +4522,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // requestAnimationFrame( animate );
         // composer.render();
         };
-        const render = (animationTime)=>{
+        const render = (animationTime, xrFrame)=>{
             const delta = clock.getDelta();
             if (this.renderer.xr.isPresenting) {
-                let session = this.renderer.xr.getSession();
                 viewer.activeCamera = viewer?.xrCamera;
-                const inputSources = Array.from(session.inputSources);
+                if (viewer.xrSessionMode === 'ar') viewer.applyPendingAREntry(xrFrame);
+                const session = this.renderer.xr.getSession();
+                const inputSources = viewer.xrSessionMode === 'vr' && session ? Array.from(session.inputSources) : [];
                 const moveSpeed = 0.05;
                 const snapAngle = 15;
                 inputSources.forEach((inputSource)=>{
@@ -4677,6 +4728,104 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             }
         };
     }
+    handleXRSessionStarted(mode, session) {
+        this.activeXRSession = session;
+        if (mode === 'immersive-ar') {
+            this.xrSessionMode = 'ar';
+            this.beginARPresentation(session);
+        } else {
+            this.xrSessionMode = 'vr';
+            this.xrEnvironmentBlendMode = 'opaque';
+            this.renderer.setClearAlpha(1);
+        }
+    }
+    handleXRSessionEnded(mode, session) {
+        if (mode === 'immersive-ar') this.endARPresentation();
+        if (this.activeXRSession === session) {
+            this.activeXRSession = undefined;
+            this.xrSessionMode = 'desktop';
+            this.xrEnvironmentBlendMode = 'unknown';
+        }
+    }
+    beginARPresentation(session) {
+        if (this.arPresentationState) this.endARPresentation();
+        this.presentationRoot.updateMatrix();
+        this.arPresentationState = {
+            virtualEnvironment: (0, $721a3cf0b2bb84b2$export$9d79c1fffb915072)(this.scene, this.skyObject),
+            clearAlpha: this.renderer.getClearAlpha(),
+            presentationMatrixAutoUpdate: this.presentationRoot.matrixAutoUpdate,
+            presentationMatrix: this.presentationRoot.matrix.clone(),
+            presentationPosition: this.presentationRoot.position.clone(),
+            presentationQuaternion: this.presentationRoot.quaternion.clone(),
+            presentationScale: this.presentationRoot.scale.clone(),
+            cameraRigPosition: this.cameraRig.position.clone(),
+            cameraRigQuaternion: this.cameraRig.quaternion.clone(),
+            cameraRigScale: this.cameraRig.scale.clone()
+        };
+        const sessionWithBlendMode = session;
+        this.xrEnvironmentBlendMode = (0, $721a3cf0b2bb84b2$export$39629b2688d4b9d3)(sessionWithBlendMode.environmentBlendMode);
+        this.applyAREnvironmentPolicy();
+        // WebXR owns the tracked camera pose. Keep its ancestor rigid and move the
+        // presentation content instead of applying authored scale/pose to the rig.
+        this.cameraRig.position.set(0, 0, 0);
+        this.cameraRig.quaternion.identity();
+        this.cameraRig.scale.set(1, 1, 1);
+        this.cameraRig.updateMatrixWorld(true);
+        this.queueAREntryFromCurrentCamera();
+    }
+    applyAREnvironmentPolicy() {
+        this.renderer.setClearAlpha(this.xrEnvironmentBlendMode === 'alpha-blend' || this.xrEnvironmentBlendMode === 'additive' ? 0 : 1);
+        (0, $721a3cf0b2bb84b2$export$380f64477488d7cb)(this.scene, this.xrEnvironmentBlendMode, this.skyObject);
+    }
+    queueAREntryFromCurrentCamera() {
+        this.flatCamera.updateMatrixWorld(true);
+        this.arAuthoredCameraWorld.copy(this.flatCamera.matrixWorld);
+        this.arEntryPending = true;
+    }
+    applyPendingAREntry(frame) {
+        if (!this.arEntryPending || !frame) return;
+        const referenceSpace = this.renderer.xr.getReferenceSpace();
+        if (!referenceSpace) return;
+        const viewerPose = frame.getViewerPose(referenceSpace);
+        if (!viewerPose) return;
+        const viewerPoseWorld = new $hBQxr$three.Matrix4().fromArray(Array.from(viewerPose.transform.matrix));
+        const entryMatrix = (0, $721a3cf0b2bb84b2$export$6d2af1765a379b43)(this.arAuthoredCameraWorld, viewerPoseWorld);
+        entryMatrix.decompose(this.presentationRoot.position, this.presentationRoot.quaternion, this.presentationRoot.scale);
+        this.presentationRoot.matrixAutoUpdate = true;
+        this.presentationRoot.updateMatrixWorld(true);
+        this.arEntryPending = false;
+    }
+    refreshARPresentationForCurrentScene() {
+        const state = this.arPresentationState;
+        if (this.xrSessionMode !== 'ar' || !state) return;
+        // Loading a new asset replaces its virtual environment. Preserve that new
+        // state for session exit, then apply the current AR blend policy to it.
+        state.virtualEnvironment = (0, $721a3cf0b2bb84b2$export$9d79c1fffb915072)(this.scene, this.skyObject);
+        this.applyAREnvironmentPolicy();
+        this.cameraRig.position.set(0, 0, 0);
+        this.cameraRig.quaternion.identity();
+        this.cameraRig.scale.set(1, 1, 1);
+        this.cameraRig.updateMatrixWorld(true);
+        this.queueAREntryFromCurrentCamera();
+    }
+    endARPresentation() {
+        const state = this.arPresentationState;
+        if (!state) return;
+        (0, $721a3cf0b2bb84b2$export$dbd78d86c4ae556f)(this.scene, state.virtualEnvironment);
+        this.renderer.setClearAlpha(state.clearAlpha);
+        this.presentationRoot.position.copy(state.presentationPosition);
+        this.presentationRoot.quaternion.copy(state.presentationQuaternion);
+        this.presentationRoot.scale.copy(state.presentationScale);
+        this.presentationRoot.matrix.copy(state.presentationMatrix);
+        this.presentationRoot.matrixAutoUpdate = state.presentationMatrixAutoUpdate;
+        this.presentationRoot.updateMatrixWorld(true);
+        this.cameraRig.position.copy(state.cameraRigPosition);
+        this.cameraRig.quaternion.copy(state.cameraRigQuaternion);
+        this.cameraRig.scale.copy(state.cameraRigScale);
+        this.cameraRig.updateMatrixWorld(true);
+        this.arEntryPending = false;
+        this.arPresentationState = undefined;
+    }
     initializeScene(disposeContent) {
         let defaultBackgroundColor = this.overrides?.["defaultBackgroundColor"];
         if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
@@ -4722,6 +4871,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.contentRoot.add(this.loadedModel);
         }
         this.configureShadows();
+        this.refreshARPresentationForCurrentScene();
         this.configurePostProcessing();
         this.contentDisposer = disposeContent;
     }
@@ -6784,13 +6934,14 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     applyIMMAuthoredCamera(pose) {
         if (!pose || !this.immModule) return;
         const xrTransform = pose.transform;
-        this.applyIMMTransform(this.cameraRig, xrTransform);
+        if (this.xrSessionMode !== 'ar') this.applyIMMTransform(this.cameraRig, xrTransform);
         const desktopPose = this.immModule.desktopIMMViewpoint(pose);
         const transform = desktopPose.transform;
         this.applyIMMTransform(this.flatCamera, transform);
         this.flatCamera.near = 0.01;
         this.flatCamera.far = 20000;
         this.flatCamera.updateProjectionMatrix();
+        if (this.xrSessionMode === 'ar') this.queueAREntryFromCurrentCamera();
         const forward = new $hBQxr$three.Vector3(0, 0, -1).applyQuaternion(this.flatCamera.quaternion);
         const target = this.flatCamera.position.clone().add(forward.multiplyScalar(10));
         this.cameraControls?.setPosition(this.flatCamera.position.x, this.flatCamera.position.y, this.flatCamera.position.z, false);
@@ -7497,6 +7648,12 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     /** Release viewer-owned rendering services and the active content. */ async dispose() {
         this.renderer.setAnimationLoop(null);
+        const xrSession = this.activeXRSession;
+        this.endARPresentation();
+        this.activeXRSession = undefined;
+        this.xrSessionMode = 'desktop';
+        this.xrEnvironmentBlendMode = 'unknown';
+        if (xrSession) await xrSession.end().catch(()=>{});
         window.removeEventListener('pointerdown', this.unlockAudio);
         window.removeEventListener('touchstart', this.unlockAudio);
         this.stopAllAudio(this.contentRoot);

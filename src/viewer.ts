@@ -46,6 +46,16 @@ import {
     GalleryViewerOverrides,
     resolveGalleryPresentationMetadata
 } from './metadata/PresentationMetadata';
+import {
+    applyARVirtualEnvironmentPolicy,
+    ARVirtualEnvironmentSnapshot,
+    captureARVirtualEnvironment,
+    computeARContentEntryMatrix,
+    GalleryEnvironmentBlendMode,
+    GalleryXRSessionMode,
+    normalizeEnvironmentBlendMode,
+    restoreARVirtualEnvironment
+} from './xr/ARPresentation';
 
 export type {
     GalleryCameraMetadata,
@@ -59,6 +69,10 @@ export type {
     GalleryResolvedPresentationMetadata,
     GalleryViewerOverrides
 } from './metadata/PresentationMetadata';
+export type {
+    GalleryEnvironmentBlendMode,
+    GalleryXRSessionMode
+} from './xr/ARPresentation';
 
 type SparkModule = typeof import('@sparkjsdev/spark');
 
@@ -101,6 +115,19 @@ interface IMMModule {
         loadAsync(url: string, onProgress?: (event: ProgressEvent) => void): Promise<IMMAssetLike>;
     };
     desktopIMMViewpoint(pose: IMMViewpointPoseLike): IMMViewpointPoseLike;
+}
+
+interface ARPresentationState {
+    virtualEnvironment: ARVirtualEnvironmentSnapshot;
+    clearAlpha: number;
+    presentationMatrixAutoUpdate: boolean;
+    presentationMatrix: THREE.Matrix4;
+    presentationPosition: THREE.Vector3;
+    presentationQuaternion: THREE.Quaternion;
+    presentationScale: THREE.Vector3;
+    cameraRigPosition: THREE.Vector3;
+    cameraRigQuaternion: THREE.Quaternion;
+    cameraRigScale: THREE.Vector3;
 }
 
 export interface GalleryIMMLoadOptions {
@@ -367,6 +394,7 @@ export class Viewer {
     private environmentPath: URL;
     private scene : THREE.Scene;
     private persistentRoot: THREE.Group;
+    private presentationRoot: THREE.Group;
     private contentRoot: THREE.Group;
     private canvas : HTMLCanvasElement;
     private renderer : THREE.WebGLRenderer;
@@ -416,6 +444,12 @@ export class Viewer {
     private defaultBackgroundColor: THREE.Color; // Used if no environment sky is set
     private overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {};
     private cameraRig: THREE.Group;
+    public xrSessionMode: GalleryXRSessionMode = 'desktop';
+    public xrEnvironmentBlendMode: GalleryEnvironmentBlendMode = 'unknown';
+    private activeXRSession?: XRSession;
+    private arPresentationState?: ARPresentationState;
+    private arEntryPending = false;
+    private arAuthoredCameraWorld = new THREE.Matrix4();
     private fallbackHeadLightCarrier?: THREE.Group;
     public selectedNode: THREE.Object3D | null;
     private treeViewRoot: HTMLElement | null;
@@ -475,9 +509,12 @@ export class Viewer {
         this.scene = new THREE.Scene();
         this.persistentRoot = new THREE.Group();
         this.persistentRoot.name = 'Viewer services';
+        this.presentationRoot = new THREE.Group();
+        this.presentationRoot.name = 'Viewer presentation';
         this.contentRoot = new THREE.Group();
         this.contentRoot.name = 'Viewer content';
-        this.scene.add(this.persistentRoot, this.contentRoot);
+        this.presentationRoot.add(this.contentRoot);
+        this.scene.add(this.persistentRoot, this.presentationRoot);
         this.three = THREE;
 
         const viewer = this;
@@ -551,8 +588,10 @@ export class Viewer {
 
         this.renderer = new THREE.WebGLRenderer({
             canvas : this.canvas,
-            antialias: true
+            antialias: true,
+            alpha: true
         });
+        this.renderer.setClearAlpha(1);
 
         this.renderer.setPixelRatio(window.devicePixelRatio);
         // PCFSoftShadowMap is an alias for PCFShadowMap in current Three.js.
@@ -607,7 +646,10 @@ export class Viewer {
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.persistentRoot.add(controllerGrip1);
 
-        let xrButton = XRButton.createButton( this.renderer, {}, true );
+        let xrButton = XRButton.createButton(this.renderer, {}, true, {
+            onSessionStarted: (mode, session) => this.handleXRSessionStarted(mode, session),
+            onSessionEnded: (mode, session) => this.handleXRSessionEnded(mode, session)
+        });
         this.icosa_frame.appendChild(xrButton);
 
         function initCustomUi(viewerContainer : HTMLElement) {
@@ -649,16 +691,22 @@ export class Viewer {
             // composer.render();
         }
 
-        const render = (animationTime: number) => {
+        const render = (animationTime: number, xrFrame?: XRFrame) => {
 
             const delta = clock.getDelta();
 
             if (this.renderer.xr.isPresenting) {
 
-                let session : XRSession = <XRSession>this.renderer.xr.getSession();
                 viewer.activeCamera = viewer?.xrCamera;
 
-                const inputSources = Array.from(session.inputSources);
+                if (viewer.xrSessionMode === 'ar') {
+                    viewer.applyPendingAREntry(xrFrame);
+                }
+
+                const session = this.renderer.xr.getSession();
+                const inputSources = viewer.xrSessionMode === 'vr' && session
+                    ? Array.from(session.inputSources)
+                    : [];
                 const moveSpeed = 0.05;
                 const snapAngle = 15;
 
@@ -934,6 +982,144 @@ export class Viewer {
         }
     }
 
+    private handleXRSessionStarted(
+        mode: 'immersive-ar' | 'immersive-vr',
+        session: XRSession
+    ): void {
+        this.activeXRSession = session;
+        if (mode === 'immersive-ar') {
+            this.xrSessionMode = 'ar';
+            this.beginARPresentation(session);
+        } else {
+            this.xrSessionMode = 'vr';
+            this.xrEnvironmentBlendMode = 'opaque';
+            this.renderer.setClearAlpha(1);
+        }
+    }
+
+    private handleXRSessionEnded(
+        mode: 'immersive-ar' | 'immersive-vr',
+        session: XRSession
+    ): void {
+        if (mode === 'immersive-ar') this.endARPresentation();
+        if (this.activeXRSession === session) {
+            this.activeXRSession = undefined;
+            this.xrSessionMode = 'desktop';
+            this.xrEnvironmentBlendMode = 'unknown';
+        }
+    }
+
+    private beginARPresentation(session: XRSession): void {
+        if (this.arPresentationState) this.endARPresentation();
+
+        this.presentationRoot.updateMatrix();
+        this.arPresentationState = {
+            virtualEnvironment: captureARVirtualEnvironment(this.scene, this.skyObject),
+            clearAlpha: this.renderer.getClearAlpha(),
+            presentationMatrixAutoUpdate: this.presentationRoot.matrixAutoUpdate,
+            presentationMatrix: this.presentationRoot.matrix.clone(),
+            presentationPosition: this.presentationRoot.position.clone(),
+            presentationQuaternion: this.presentationRoot.quaternion.clone(),
+            presentationScale: this.presentationRoot.scale.clone(),
+            cameraRigPosition: this.cameraRig.position.clone(),
+            cameraRigQuaternion: this.cameraRig.quaternion.clone(),
+            cameraRigScale: this.cameraRig.scale.clone()
+        };
+
+        const sessionWithBlendMode = session as XRSession & { environmentBlendMode?: unknown };
+        this.xrEnvironmentBlendMode = normalizeEnvironmentBlendMode(
+            sessionWithBlendMode.environmentBlendMode
+        );
+        this.applyAREnvironmentPolicy();
+
+        // WebXR owns the tracked camera pose. Keep its ancestor rigid and move the
+        // presentation content instead of applying authored scale/pose to the rig.
+        this.cameraRig.position.set(0, 0, 0);
+        this.cameraRig.quaternion.identity();
+        this.cameraRig.scale.set(1, 1, 1);
+        this.cameraRig.updateMatrixWorld(true);
+        this.queueAREntryFromCurrentCamera();
+    }
+
+    private applyAREnvironmentPolicy(): void {
+        this.renderer.setClearAlpha(
+            this.xrEnvironmentBlendMode === 'alpha-blend'
+                || this.xrEnvironmentBlendMode === 'additive'
+                ? 0
+                : 1
+        );
+        applyARVirtualEnvironmentPolicy(
+            this.scene,
+            this.xrEnvironmentBlendMode,
+            this.skyObject
+        );
+    }
+
+    private queueAREntryFromCurrentCamera(): void {
+        this.flatCamera.updateMatrixWorld(true);
+        this.arAuthoredCameraWorld.copy(this.flatCamera.matrixWorld);
+        this.arEntryPending = true;
+    }
+
+    private applyPendingAREntry(frame?: XRFrame): void {
+        if (!this.arEntryPending || !frame) return;
+        const referenceSpace = this.renderer.xr.getReferenceSpace();
+        if (!referenceSpace) return;
+        const viewerPose = frame.getViewerPose(referenceSpace);
+        if (!viewerPose) return;
+
+        const viewerPoseWorld = new THREE.Matrix4().fromArray(
+            Array.from(viewerPose.transform.matrix)
+        );
+        const entryMatrix = computeARContentEntryMatrix(
+            this.arAuthoredCameraWorld,
+            viewerPoseWorld
+        );
+        entryMatrix.decompose(
+            this.presentationRoot.position,
+            this.presentationRoot.quaternion,
+            this.presentationRoot.scale
+        );
+        this.presentationRoot.matrixAutoUpdate = true;
+        this.presentationRoot.updateMatrixWorld(true);
+        this.arEntryPending = false;
+    }
+
+    private refreshARPresentationForCurrentScene(): void {
+        const state = this.arPresentationState;
+        if (this.xrSessionMode !== 'ar' || !state) return;
+
+        // Loading a new asset replaces its virtual environment. Preserve that new
+        // state for session exit, then apply the current AR blend policy to it.
+        state.virtualEnvironment = captureARVirtualEnvironment(this.scene, this.skyObject);
+        this.applyAREnvironmentPolicy();
+        this.cameraRig.position.set(0, 0, 0);
+        this.cameraRig.quaternion.identity();
+        this.cameraRig.scale.set(1, 1, 1);
+        this.cameraRig.updateMatrixWorld(true);
+        this.queueAREntryFromCurrentCamera();
+    }
+
+    private endARPresentation(): void {
+        const state = this.arPresentationState;
+        if (!state) return;
+
+        restoreARVirtualEnvironment(this.scene, state.virtualEnvironment);
+        this.renderer.setClearAlpha(state.clearAlpha);
+        this.presentationRoot.position.copy(state.presentationPosition);
+        this.presentationRoot.quaternion.copy(state.presentationQuaternion);
+        this.presentationRoot.scale.copy(state.presentationScale);
+        this.presentationRoot.matrix.copy(state.presentationMatrix);
+        this.presentationRoot.matrixAutoUpdate = state.presentationMatrixAutoUpdate;
+        this.presentationRoot.updateMatrixWorld(true);
+        this.cameraRig.position.copy(state.cameraRigPosition);
+        this.cameraRig.quaternion.copy(state.cameraRigQuaternion);
+        this.cameraRig.scale.copy(state.cameraRigScale);
+        this.cameraRig.updateMatrixWorld(true);
+        this.arEntryPending = false;
+        this.arPresentationState = undefined;
+    }
+
     private initializeScene(disposeContent?: () => void | Promise<void>) {
 
         let defaultBackgroundColor : string = this.overrides?.["defaultBackgroundColor"];
@@ -988,6 +1174,7 @@ export class Viewer {
             this.contentRoot.add(this.loadedModel);
         }
         this.configureShadows();
+        this.refreshARPresentationForCurrentScene();
         this.configurePostProcessing();
         this.contentDisposer = disposeContent;
     }
@@ -3214,7 +3401,9 @@ export class Viewer {
         if (!pose || !this.immModule) return;
 
         const xrTransform = pose.transform;
-        this.applyIMMTransform(this.cameraRig, xrTransform);
+        if (this.xrSessionMode !== 'ar') {
+            this.applyIMMTransform(this.cameraRig, xrTransform);
+        }
 
         const desktopPose = this.immModule.desktopIMMViewpoint(pose);
         const transform = desktopPose.transform;
@@ -3222,6 +3411,7 @@ export class Viewer {
         this.flatCamera.near = 0.01;
         this.flatCamera.far = 20000;
         this.flatCamera.updateProjectionMatrix();
+        if (this.xrSessionMode === 'ar') this.queueAREntryFromCurrentCamera();
 
         const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.flatCamera.quaternion);
         const target = this.flatCamera.position.clone().add(forward.multiplyScalar(10));
@@ -4146,6 +4336,14 @@ export class Viewer {
     /** Release viewer-owned rendering services and the active content. */
     public async dispose(): Promise<void> {
         this.renderer.setAnimationLoop(null);
+        const xrSession = this.activeXRSession;
+        this.endARPresentation();
+        this.activeXRSession = undefined;
+        this.xrSessionMode = 'desktop';
+        this.xrEnvironmentBlendMode = 'unknown';
+        if (xrSession) {
+            await xrSession.end().catch(() => {});
+        }
         window.removeEventListener('pointerdown', this.unlockAudio);
         window.removeEventListener('touchstart', this.unlockAudio);
 
