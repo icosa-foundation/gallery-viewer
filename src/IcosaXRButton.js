@@ -1,6 +1,6 @@
 class XRButton {
 
-    static createButton(renderer, sessionInit = {}, allowAR = true) {
+    static createButton(renderer, sessionInit = {}, allowAR = true, callbacks = {}) {
 
         const container = document.createElement('div');
         container.style.position = 'absolute';
@@ -20,12 +20,15 @@ class XRButton {
                 await renderer.xr.setSession(session);
                 button.textContent = `STOP ${label}`;
                 currentSession = session;
+                callbacks.onSessionStarted?.(mode, session);
             }
 
             function onSessionEnded( /*event*/) {
-                currentSession.removeEventListener('end', onSessionEnded);
+                const endedSession = currentSession;
+                endedSession?.removeEventListener('end', onSessionEnded);
                 button.textContent = `START ${label}`;
                 currentSession = null;
+                if (endedSession) callbacks.onSessionEnded?.(mode, endedSession);
             }
 
             button.style.cursor = 'pointer';
@@ -47,7 +50,8 @@ class XRButton {
             button.onclick = function () {
                 if (currentSession === null) {
                     navigator.xr.requestSession(mode, sessionOptions)
-                        .then(onSessionStarted);
+                        .then(onSessionStarted)
+                        .catch((error) => callbacks.onSessionError?.(mode, error));
                 } else {
                     currentSession.end();
                     if (navigator.xr.offerSession !== undefined) {
@@ -55,6 +59,7 @@ class XRButton {
                             .then(onSessionStarted)
                             .catch((err) => {
                                 console.warn(err);
+                                callbacks.onSessionError?.(mode, err);
                             });
                     }
                 }
@@ -65,6 +70,7 @@ class XRButton {
                     .then(onSessionStarted)
                     .catch((err) => {
                         console.warn(err);
+                        callbacks.onSessionError?.(mode, err);
                     });
             }
 
