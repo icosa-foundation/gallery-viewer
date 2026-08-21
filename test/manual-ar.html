@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Icosa Viewer manual AR test</title>
+  <link rel="stylesheet" href="/src/css/style.css">
   <style>
     html, body, #icosa-viewer { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #111; }
     #manual-controls {
@@ -45,6 +46,12 @@
   <div id="icosa-viewer"></div>
   <form id="manual-controls">
     <label>
+      Best curated Icosa assets
+      <select id="gallery-asset" disabled>
+        <option value="">Loading gallery assets…</option>
+      </select>
+    </label>
+    <label>
       Icosa asset ID
       <input id="asset-id" type="text" autocomplete="off" placeholder="Use this or a direct URL">
     </label>
@@ -71,6 +78,7 @@
     import { Viewer } from "/dist/icosa-viewer.module.js";
 
     const params = new URLSearchParams(location.search);
+    const galleryAssetInput = document.getElementById("gallery-asset");
     const assetIdInput = document.getElementById("asset-id");
     const assetUrlInput = document.getElementById("asset-url");
     const formatInput = document.getElementById("asset-format");
@@ -84,7 +92,10 @@
     formatInput.value = params.get("format") ?? "auto";
     environmentInput.checked = params.get("environment") !== "0";
 
-    const viewer = new Viewer(new URL("/", location.href).href, document.getElementById("icosa-viewer"));
+    const viewer = new Viewer(
+      new URL("/dist/sketch_assets/", location.href).href,
+      document.getElementById("icosa-viewer")
+    );
     window.viewer = viewer;
 
     const presentationOverrides = (presentationParams = {}) => ({
@@ -99,24 +110,65 @@
       format?.root?.url && !format.root.url.startsWith("https://web.archive.org/")
     );
 
+    async function populateGalleryAssets() {
+      const galleryUrl = new URL("https://api.icosa.gallery/v1/assets");
+      galleryUrl.searchParams.set("orderBy", "BEST");
+      galleryUrl.searchParams.set("curated", "true");
+      galleryUrl.searchParams.set("pageSize", "36");
+
+      try {
+        const response = await fetch(galleryUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const result = await response.json();
+        const assets = Array.isArray(result.assets) ? result.assets : [];
+
+        galleryAssetInput.replaceChildren(new Option("Select a curated asset…", ""));
+        for (const asset of assets) {
+          if (!asset?.assetId) continue;
+          const name = asset.displayName || asset.name || asset.assetId;
+          const author = asset.authorName ? ` — ${asset.authorName}` : "";
+          galleryAssetInput.add(new Option(`${name}${author}`, asset.assetId));
+        }
+
+        galleryAssetInput.disabled = assets.length === 0;
+        galleryAssetInput.value = assetIdInput.value;
+      } catch (error) {
+        galleryAssetInput.replaceChildren(new Option("Gallery assets unavailable", ""));
+        galleryAssetInput.title = error instanceof Error ? error.message : String(error);
+      }
+    }
+
     async function loadIcosaAsset(assetId) {
       const response = await fetch(`https://api.icosa.gallery/v1/assets/${encodeURIComponent(assetId)}`);
       if (!response.ok) throw new Error(`Icosa metadata request failed with HTTP ${response.status}`);
       const metadata = await response.json();
       const formats = usableFormats(metadata.formats || []);
       const overrides = presentationOverrides(metadata.presentationParams || {});
-      const gltf2 = formats.find((format) => format.formatType === "GLTF2");
-      const tilt = formats.find((format) => format.formatType?.includes("TILT"));
-      const gltf1 = formats.find((format) => format.formatType === "GLTF");
+      const supportedFormats = formats.filter((format) =>
+        format.formatType === "GLTF2"
+        || format.formatType === "GLB"
+        || format.formatType === "GLTF"
+        || format.formatType === "GLTF1"
+        || format.formatType?.includes("TILT")
+      );
+      const preferred = supportedFormats.find((format) => format.isPreferredForGalleryViewer);
+      const gltf2 = supportedFormats.find((format) =>
+        format.formatType === "GLTF2" || format.formatType === "GLB"
+      );
+      const tilt = supportedFormats.find((format) => format.formatType?.includes("TILT"));
+      const gltf1 = supportedFormats.find((format) =>
+        format.formatType === "GLTF" || format.formatType === "GLTF1"
+      );
+      const selectedFormat = preferred || gltf2 || tilt || gltf1;
 
-      if (gltf2) {
-        await viewer.loadGltf(gltf2.root.url, environmentInput.checked, overrides);
-      } else if (tilt) {
-        await viewer.loadTilt(tilt.root.url, overrides);
-      } else if (gltf1) {
-        await viewer.loadGltf1(gltf1.root.url, environmentInput.checked, overrides);
+      if (selectedFormat?.formatType === "GLTF2" || selectedFormat?.formatType === "GLB") {
+        await viewer.loadGltf(selectedFormat.root.url, environmentInput.checked, overrides);
+      } else if (selectedFormat?.formatType?.includes("TILT")) {
+        await viewer.loadTilt(selectedFormat.root.url, overrides);
+      } else if (selectedFormat?.formatType === "GLTF" || selectedFormat?.formatType === "GLTF1") {
+        await viewer.loadGltf1(selectedFormat.root.url, environmentInput.checked, overrides);
       } else {
-        throw new Error("The asset has no usable GLTF2, TILT, or GLTF format");
+        throw new Error("The asset has no usable GLTF2, GLB, GLTF1, GLTF, or TILT format");
       }
     }
 
@@ -167,11 +219,29 @@
       }
     });
 
+    galleryAssetInput.addEventListener("change", () => {
+      if (!galleryAssetInput.value) return;
+      assetIdInput.value = galleryAssetInput.value;
+      assetUrlInput.value = "";
+    });
+
+    assetIdInput.addEventListener("input", () => {
+      galleryAssetInput.value = assetIdInput.value.trim();
+    });
+
+    assetUrlInput.addEventListener("input", () => {
+      if (!assetUrlInput.value.trim()) return;
+      galleryAssetInput.value = "";
+      assetIdInput.value = "";
+    });
+
     const updateSessionStatus = () => {
       sessionStatus.textContent = `Mode: ${viewer.xrSessionMode} · Blend: ${viewer.xrEnvironmentBlendMode}`;
       requestAnimationFrame(updateSessionStatus);
     };
     updateSessionStatus();
+
+    populateGalleryAssets();
 
     if (assetIdInput.value || assetUrlInput.value) {
       loadSelectedAsset().catch((error) => {
