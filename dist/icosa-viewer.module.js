@@ -4018,6 +4018,167 @@ class $707bd002539ed0ea$export$1b293339dff011f9 {
 
 
 
+function $88ac7da5ae34d333$var$hasOwn(object, property) {
+    return object != null && Object.prototype.hasOwnProperty.call(object, property);
+}
+function $88ac7da5ae34d333$var$finiteNumber(value) {
+    if (typeof value === 'number') return Number.isFinite(value) ? value : undefined;
+    if (typeof value === 'string' && value.trim() !== '') {
+        const parsed = Number(value);
+        return Number.isFinite(parsed) ? parsed : undefined;
+    }
+    return undefined;
+}
+function $88ac7da5ae34d333$export$2aa9ac0f39f2ccda(value) {
+    if (typeof value === 'boolean') return value;
+    if (typeof value === 'number') {
+        if (value === 1) return true;
+        if (value === 0) return false;
+        return undefined;
+    }
+    if (typeof value === 'string') {
+        const normalized = value.trim().toLowerCase();
+        if (normalized === 'true' || normalized === '1') return true;
+        if (normalized === 'false' || normalized === '0') return false;
+    }
+    return undefined;
+}
+function $88ac7da5ae34d333$var$resolvedCamera(overrides, presentationParams) {
+    const presentationCamera = presentationParams.camera ?? {};
+    if (overrides.camera !== undefined) return {
+        value: {
+            ...presentationCamera,
+            ...overrides.camera
+        },
+        source: presentationParams.camera !== undefined ? 'presentationParams.camera + overrides.camera' : 'overrides.camera'
+    };
+    if (presentationParams.camera !== undefined) return {
+        value: {
+            ...presentationCamera
+        },
+        source: 'presentationParams.camera'
+    };
+    return {
+        value: {},
+        source: 'fallback.emptyCamera'
+    };
+}
+function $88ac7da5ae34d333$var$resolvedGeometryData(overrides, presentationParams) {
+    if (overrides.geometryData !== undefined) return {
+        value: overrides.geometryData,
+        source: 'overrides.geometryData'
+    };
+    if (presentationParams.geometry_data !== undefined) return {
+        value: presentationParams.geometry_data,
+        source: 'presentationParams.geometry_data'
+    };
+    if (presentationParams.GOOGLE_geometry_data !== undefined) return {
+        value: presentationParams.GOOGLE_geometry_data,
+        source: 'presentationParams.GOOGLE_geometry_data'
+    };
+    return {
+        value: {},
+        source: 'fallback.emptyGeometryData'
+    };
+}
+function $88ac7da5ae34d333$var$recognizedNavigationMode(value) {
+    if (typeof value !== 'string') return undefined;
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'fly' || normalized === 'orbit') return normalized;
+    if (normalized === 'movableorbit') return 'orbit';
+    return undefined;
+}
+function $88ac7da5ae34d333$export$39df5abf996a54bc(overrides = {}, embedded = {}) {
+    const presentationParams = overrides.presentationParams ?? {};
+    const camera = $88ac7da5ae34d333$var$resolvedCamera(overrides, presentationParams);
+    const geometryData = $88ac7da5ae34d333$var$resolvedGeometryData(overrides, presentationParams);
+    const diagnostics = [];
+    const rawCameraMode = camera.value.GOOGLE_camera_settings?.mode;
+    const cameraMode = $88ac7da5ae34d333$var$recognizedNavigationMode(rawCameraMode);
+    const embeddedFlyMode = $88ac7da5ae34d333$export$2aa9ac0f39f2ccda(embedded.TB_FlyMode);
+    let navigation;
+    if (overrides.navigationMode !== undefined) navigation = {
+        mode: overrides.navigationMode,
+        source: 'override.navigationMode',
+        rawCameraMode: rawCameraMode,
+        embeddedFlyMode: embeddedFlyMode
+    };
+    else if (cameraMode !== undefined) navigation = {
+        mode: cameraMode,
+        source: 'camera.GOOGLE_camera_settings.mode',
+        rawCameraMode: rawCameraMode,
+        embeddedFlyMode: embeddedFlyMode
+    };
+    else if (embeddedFlyMode !== undefined) navigation = {
+        mode: embeddedFlyMode ? 'fly' : 'orbit',
+        source: 'embedded.TB_FlyMode',
+        rawCameraMode: rawCameraMode,
+        embeddedFlyMode: embeddedFlyMode
+    };
+    else navigation = {
+        mode: 'orbit',
+        source: 'fallback',
+        rawCameraMode: rawCameraMode
+    };
+    if (rawCameraMode !== undefined && cameraMode === undefined) diagnostics.push(`Unrecognized GOOGLE_camera_settings.mode: ${rawCameraMode}`);
+    if (cameraMode !== undefined && embeddedFlyMode !== undefined && cameraMode !== (embeddedFlyMode ? 'fly' : 'orbit')) diagnostics.push(`Navigation metadata conflict: camera mode is ${cameraMode} but TB_FlyMode resolves to ${embeddedFlyMode ? 'fly' : 'orbit'}`);
+    const geometryRadius = $88ac7da5ae34d333$var$finiteNumber(geometryData.value.stats?.radius);
+    const poseScale = $88ac7da5ae34d333$var$finiteNumber(embedded.TB_PoseScale);
+    const realWorldScale = $88ac7da5ae34d333$var$finiteNumber(presentationParams.GOOGLE_real_world_transform?.scaling_factor);
+    const postProcessing = $88ac7da5ae34d333$var$hasOwn(overrides, 'postProcessing') ? {
+        value: overrides.postProcessing,
+        source: 'overrides.postProcessing'
+    } : $88ac7da5ae34d333$var$hasOwn(presentationParams, 'postProcessing') ? {
+        value: presentationParams.postProcessing,
+        source: 'presentationParams.postProcessing'
+    } : $88ac7da5ae34d333$var$hasOwn(overrides, 'presentationPostProcessing') ? {
+        value: overrides.presentationPostProcessing,
+        source: 'overrides.presentationPostProcessing'
+    } : {
+        value: undefined,
+        source: 'fallback.disabled'
+    };
+    return {
+        camera: camera,
+        geometryData: geometryData,
+        backgroundColor: overrides.defaultBackgroundColor !== undefined ? {
+            value: overrides.defaultBackgroundColor,
+            source: 'overrides.defaultBackgroundColor'
+        } : {
+            value: presentationParams.backgroundColor,
+            source: presentationParams.backgroundColor !== undefined ? 'presentationParams.backgroundColor' : 'fallback.undefined'
+        },
+        colorSpace: overrides.colorSpace !== undefined ? {
+            value: overrides.colorSpace,
+            source: 'overrides.colorSpace'
+        } : presentationParams.colorSpace !== undefined ? {
+            value: presentationParams.colorSpace,
+            source: 'presentationParams.colorSpace'
+        } : {
+            value: 'LINEAR',
+            source: 'fallback.LINEAR'
+        },
+        postProcessing: postProcessing,
+        navigation: navigation,
+        scale: {
+            geometryRadius: geometryRadius === undefined ? undefined : {
+                value: geometryRadius,
+                source: `${geometryData.source}.stats.radius`
+            },
+            poseScale: poseScale === undefined ? undefined : {
+                value: poseScale,
+                source: 'embedded.TB_PoseScale'
+            },
+            realWorldScale: realWorldScale === undefined ? undefined : {
+                value: realWorldScale,
+                source: 'presentationParams.GOOGLE_real_world_transform.scaling_factor'
+            }
+        },
+        diagnostics: diagnostics
+    };
+}
+
+
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
@@ -4136,6 +4297,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             soft: false
         };
         this.loadedContentIsTilt = false;
+        this.overrides = {};
         this.loadingError = false;
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
@@ -6255,7 +6417,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             }
         })[guid];
     }
-    async loadGltf1(url, loadEnvironment, overrides) {
+    async loadGltf1(url, loadEnvironment, overrides = {}) {
         try {
             await this._loadGltf(url, loadEnvironment, overrides, true);
         } catch (error) {
@@ -6264,7 +6426,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
-    async loadGltf(url, loadEnvironment, overrides) {
+    async loadGltf(url, loadEnvironment, overrides = {}) {
         try {
             await this._loadGltf(url, loadEnvironment, overrides, false);
         } catch (error) {
@@ -6364,7 +6526,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             sceneGltf.scene.scale.multiplyScalar(poseScale);
         }
     }
-    async loadTilt(url, overrides) {
+    async loadTilt(url, overrides = {}) {
         try {
             this.overrides = overrides;
             const tiltData = await this.tiltLoader.loadAsync(url);
@@ -6387,7 +6549,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         });
     }
     // Defaults to assuming materials are vertex colored
-    async loadObj(url, overrides) {
+    async loadObj(url, overrides = {}) {
         try {
             const objOverrides = {
                 ...overrides || {}
@@ -6409,7 +6571,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
-    async loadObjWithMtl(objUrl, mtlUrl, overrides) {
+    async loadObjWithMtl(objUrl, mtlUrl, overrides = {}) {
         try {
             const objOverrides = {
                 ...overrides || {}
@@ -6436,7 +6598,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
-    async loadFbx(url, overrides) {
+    async loadFbx(url, overrides = {}) {
         try {
             this.overrides = overrides;
             const fbxData = await this.fbxLoader.loadAsync(url);
@@ -6451,7 +6613,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
-    async loadPly(url, overrides) {
+    async loadPly(url, overrides = {}) {
         try {
             this.overrides = overrides;
             const plyData = await this.plyLoader.loadAsync(url);
@@ -6472,7 +6634,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
-    async loadStl(url, overrides) {
+    async loadStl(url, overrides = {}) {
         try {
             this.overrides = overrides;
             const stlData = await this.stlLoader.loadAsync(url);
@@ -6496,7 +6658,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
-    async loadUsdz(url, overrides) {
+    async loadUsdz(url, overrides = {}) {
         try {
             this.overrides = overrides;
             const usdzData = await this.usdzLoader.loadAsync(url);
@@ -6511,7 +6673,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.loadingError = true;
         }
     }
-    async loadVox(url, overrides) {
+    async loadVox(url, overrides = {}) {
         try {
             this.overrides = overrides;
             let voxModel = new $hBQxr$three.Group();
@@ -6670,7 +6832,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         }
         return this.sparkRenderer;
     }
-    async loadSplat(url, overrides) {
+    async loadSplat(url, overrides = {}) {
         try {
             this.overrides = overrides;
             // Add default camera override for splat files if none supplied
@@ -6794,11 +6956,17 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         let sketchMetaData = new $677737c8a5cbea2f$var$SketchMetadata(scene, userData);
         this.modelBoundingBox = new $hBQxr$three.Box3().setFromObject(scene);
         this.sketchMetadata = sketchMetaData;
+        this.updateResolvedPresentationMetadata(userData);
     }
     setupSketchMetaData(model) {
         let sketchMetaData = new $677737c8a5cbea2f$var$SketchMetadata(model, model.userData);
         this.modelBoundingBox = new $hBQxr$three.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
+        this.updateResolvedPresentationMetadata(model.userData);
+    }
+    updateResolvedPresentationMetadata(userData) {
+        const embedded = userData && typeof userData === 'object' ? userData : {};
+        this.resolvedPresentationMetadata = (0, $88ac7da5ae34d333$export$39df5abf996a54bc)(this.overrides, embedded);
     }
     static verticalFovForAspect(horizontalFov, aspect) {
         return $hBQxr$three.MathUtils.radToDeg(2 * Math.atan(Math.tan(horizontalFov / 2) / aspect));

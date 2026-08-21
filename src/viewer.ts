@@ -40,6 +40,25 @@ import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import {
+    GalleryEmbeddedPresentationMetadata,
+    GalleryResolvedPresentationMetadata,
+    GalleryViewerOverrides,
+    resolveGalleryPresentationMetadata
+} from './metadata/PresentationMetadata';
+
+export type {
+    GalleryCameraMetadata,
+    GalleryCameraSettingsMetadata,
+    GalleryEmbeddedPresentationMetadata,
+    GalleryGeometryMetadata,
+    GalleryGeometryStatsMetadata,
+    GalleryNavigationMode,
+    GalleryPresentationParams,
+    GalleryRealWorldTransformMetadata,
+    GalleryResolvedPresentationMetadata,
+    GalleryViewerOverrides
+} from './metadata/PresentationMetadata';
 
 type SparkModule = typeof import('@sparkjsdev/spark');
 
@@ -392,8 +411,10 @@ export class Viewer {
     public environmentObject?: Object3D;
     public skyObject?: Object3D;
     public sketchMetadata?: SketchMetadata;
+    /** Diagnostic resolution of the current asset's existing presentation metadata. */
+    public resolvedPresentationMetadata?: GalleryResolvedPresentationMetadata<GalleryPostProcessingOptions>;
     private defaultBackgroundColor: THREE.Color; // Used if no environment sky is set
-    private overrides: any;
+    private overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {};
     private cameraRig: THREE.Group;
     private fallbackHeadLightCarrier?: THREE.Group;
     public selectedNode: THREE.Object3D | null;
@@ -2735,7 +2756,11 @@ export class Viewer {
         }[guid];
     }
 
-    public async loadGltf1(url : string, loadEnvironment : boolean, overrides : any) {
+    public async loadGltf1(
+        url: string,
+        loadEnvironment: boolean,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             await this._loadGltf(url, loadEnvironment, overrides, true);
         } catch (error) {
@@ -2745,7 +2770,11 @@ export class Viewer {
         }
     }
 
-    public async loadGltf(url : string, loadEnvironment : boolean, overrides : any) {
+    public async loadGltf(
+        url: string,
+        loadEnvironment: boolean,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             await this._loadGltf(url, loadEnvironment, overrides, false);
         } catch (error) {
@@ -2802,7 +2831,12 @@ export class Viewer {
         }
     }
 
-    private async _loadGltf(url : string, loadEnvironment : boolean, overrides : any, isV1: boolean) {
+    private async _loadGltf(
+        url: string,
+        loadEnvironment: boolean,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions>,
+        isV1: boolean
+    ) {
         let sceneGltf : GLTF;
         this.overrides = overrides;
         this.isV1 = isV1;
@@ -2882,7 +2916,10 @@ export class Viewer {
         }
     }
 
-    public async loadTilt(url: string, overrides : any) {
+    public async loadTilt(
+        url: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             this.overrides = overrides;
             const tiltData = await this.tiltLoader.loadAsync(url);
@@ -2910,7 +2947,10 @@ export class Viewer {
     }
 
     // Defaults to assuming materials are vertex colored
-    public async loadObj(url: string, overrides: any) {
+    public async loadObj(
+        url: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             const objOverrides = { ...(overrides || {}) };
             if (!objOverrides.defaultBackgroundColor) {
@@ -2938,7 +2978,11 @@ export class Viewer {
         }
     }
 
-    public async loadObjWithMtl(objUrl: string, mtlUrl: string, overrides: any) {
+    public async loadObjWithMtl(
+        objUrl: string,
+        mtlUrl: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             const objOverrides = { ...(overrides || {}) };
             if (!objOverrides.defaultBackgroundColor) {
@@ -2970,7 +3014,10 @@ export class Viewer {
         }
     }
 
-    public async loadFbx(url: string, overrides : any) {
+    public async loadFbx(
+        url: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             this.overrides = overrides;
             const fbxData = await this.fbxLoader.loadAsync(url);
@@ -2986,7 +3033,10 @@ export class Viewer {
         }
     }
 
-    public async loadPly(url: string, overrides : any) {
+    public async loadPly(
+        url: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             this.overrides = overrides;
             const plyData = await this.plyLoader.loadAsync(url);
@@ -3005,7 +3055,10 @@ export class Viewer {
         }
     }
 
-    public async loadStl(url: string, overrides : any) {
+    public async loadStl(
+        url: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             this.overrides = overrides;
             const stlData = await this.stlLoader.loadAsync(url);
@@ -3026,7 +3079,10 @@ export class Viewer {
         }
     }
 
-    public async loadUsdz(url: string, overrides : any) {
+    public async loadUsdz(
+        url: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             this.overrides = overrides;
             const usdzData = await this.usdzLoader.loadAsync(url);
@@ -3042,7 +3098,10 @@ export class Viewer {
         }
     }
 
-    public async loadVox(url: string, overrides : any) {
+    public async loadVox(
+        url: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             this.overrides = overrides;
             let voxModel = new THREE.Group();
@@ -3216,7 +3275,10 @@ export class Viewer {
         return this.sparkRenderer;
     }
 
-    public async loadSplat(url: string, overrides : any) {
+    public async loadSplat(
+        url: string,
+        overrides: GalleryViewerOverrides<GalleryPostProcessingOptions> = {}
+    ) {
         try {
             this.overrides = overrides;
 
@@ -3346,12 +3408,24 @@ export class Viewer {
         let sketchMetaData = new SketchMetadata(scene, userData);
         this.modelBoundingBox = new THREE.Box3().setFromObject(scene);
         this.sketchMetadata = sketchMetaData;
+        this.updateResolvedPresentationMetadata(userData);
     }
 
     private setupSketchMetaData(model: Object3D<THREE.Object3DEventMap>) {
         let sketchMetaData = new SketchMetadata(model, model.userData);
         this.modelBoundingBox = new THREE.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
+        this.updateResolvedPresentationMetadata(model.userData);
+    }
+
+    private updateResolvedPresentationMetadata(userData: unknown) {
+        const embedded = userData && typeof userData === 'object'
+            ? userData as GalleryEmbeddedPresentationMetadata
+            : {};
+        this.resolvedPresentationMetadata = resolveGalleryPresentationMetadata(
+            this.overrides,
+            embedded
+        );
     }
 
     private static verticalFovForAspect(horizontalFov: number, aspect: number): number {

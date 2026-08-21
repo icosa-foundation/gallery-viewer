@@ -1,0 +1,196 @@
+[
+  {
+    "name": "current flattened Gallery overrides",
+    "overrides": {
+      "defaultBackgroundColor": "#123456",
+      "camera": {
+        "translation": [1, 2, 3],
+        "GOOGLE_camera_settings": {
+          "mode": "orbit",
+          "pivot": [0, 1, 0]
+        }
+      },
+      "geometryData": {
+        "stats": {
+          "radius": 0.75
+        },
+        "visualCenterPoint": [0, 0.5, 0]
+      },
+      "colorSpace": "GAMMA"
+    },
+    "embedded": {
+      "TB_FlyMode": "false",
+      "TB_PoseScale": "0.1"
+    },
+    "expected": {
+      "cameraSource": "overrides.camera",
+      "geometrySource": "overrides.geometryData",
+      "navigation": "orbit",
+      "navigationSource": "camera.GOOGLE_camera_settings.mode",
+      "geometryRadius": 0.75,
+      "poseScale": 0.1,
+      "backgroundColor": "#123456",
+      "colorSpace": "GAMMA"
+    }
+  },
+  {
+    "name": "full presentation params with top-level camera override",
+    "overrides": {
+      "presentationParams": {
+        "backgroundColor": "#101010",
+        "colorSpace": "LINEAR",
+        "camera": {
+          "translation": [10, 20, 30],
+          "rotation": [0, 0, 0, 1],
+          "GOOGLE_camera_settings": {
+            "mode": "orbit",
+            "pivot": [2, 3, 4]
+          }
+        },
+        "GOOGLE_geometry_data": {
+          "stats": {
+            "radius": 25
+          }
+        }
+      },
+      "camera": {
+        "translation": [4, 5, 6]
+      }
+    },
+    "embedded": {},
+    "expected": {
+      "cameraSource": "presentationParams.camera + overrides.camera",
+      "geometrySource": "presentationParams.GOOGLE_geometry_data",
+      "translation": [4, 5, 6],
+      "rotation": [0, 0, 0, 1],
+      "navigation": "orbit",
+      "navigationSource": "camera.GOOGLE_camera_settings.mode",
+      "geometryRadius": 25,
+      "backgroundColor": "#101010",
+      "colorSpace": "LINEAR"
+    }
+  },
+  {
+    "name": "lowercase geometry data spelling",
+    "overrides": {
+      "presentationParams": {
+        "geometry_data": {
+          "stats": {
+            "radius": 3
+          }
+        },
+        "GOOGLE_geometry_data": {
+          "stats": {
+            "radius": 99
+          }
+        }
+      }
+    },
+    "embedded": {},
+    "expected": {
+      "geometrySource": "presentationParams.geometry_data",
+      "geometryRadius": 3,
+      "navigation": "orbit",
+      "navigationSource": "fallback",
+      "colorSpace": "LINEAR"
+    }
+  },
+  {
+    "name": "embedded fly suggestion",
+    "overrides": {},
+    "embedded": {
+      "TB_FlyMode": "TRUE",
+      "TB_PoseScale": 10
+    },
+    "expected": {
+      "navigation": "fly",
+      "navigationSource": "embedded.TB_FlyMode",
+      "poseScale": 10,
+      "colorSpace": "LINEAR"
+    }
+  },
+  {
+    "name": "explicit false embedded fly value",
+    "overrides": {},
+    "embedded": {
+      "TB_FlyMode": false
+    },
+    "expected": {
+      "navigation": "orbit",
+      "navigationSource": "embedded.TB_FlyMode"
+    }
+  },
+  {
+    "name": "explicit navigation override",
+    "overrides": {
+      "navigationMode": "fly",
+      "camera": {
+        "GOOGLE_camera_settings": {
+          "mode": "orbit"
+        }
+      }
+    },
+    "embedded": {
+      "TB_FlyMode": "false"
+    },
+    "expected": {
+      "navigation": "fly",
+      "navigationSource": "override.navigationMode"
+    }
+  },
+  {
+    "name": "conflicting existing navigation suggestions",
+    "overrides": {
+      "camera": {
+        "GOOGLE_camera_settings": {
+          "mode": "orbit"
+        }
+      }
+    },
+    "embedded": {
+      "TB_FlyMode": "true"
+    },
+    "expected": {
+      "navigation": "orbit",
+      "navigationSource": "camera.GOOGLE_camera_settings.mode",
+      "diagnosticIncludes": "Navigation metadata conflict"
+    }
+  },
+  {
+    "name": "existing Poly real-world transform is observed without being applied",
+    "overrides": {
+      "presentationParams": {
+        "camera": {
+          "GOOGLE_camera_settings": {
+            "mode": "movableOrbit"
+          }
+        },
+        "GOOGLE_real_world_transform": {
+          "scaling_factor": 1
+        }
+      }
+    },
+    "embedded": {},
+    "expected": {
+      "navigation": "orbit",
+      "navigationSource": "camera.GOOGLE_camera_settings.mode",
+      "realWorldScale": 1
+    }
+  },
+  {
+    "name": "unknown camera mode remains visible",
+    "overrides": {
+      "camera": {
+        "GOOGLE_camera_settings": {
+          "mode": "turntable"
+        }
+      }
+    },
+    "embedded": {},
+    "expected": {
+      "navigation": "orbit",
+      "navigationSource": "fallback",
+      "diagnosticIncludes": "Unrecognized GOOGLE_camera_settings.mode"
+    }
+  }
+]
