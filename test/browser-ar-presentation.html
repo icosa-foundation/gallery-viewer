@@ -56,6 +56,8 @@
       scene.fog = originalFog;
       viewer.contentRoot.add(originalSky);
       viewer.skyObject = originalSky;
+      check(viewer.contentRoot.parent === viewer.userPlacementRoot, "importer content is parented under user placement");
+      check(viewer.userPlacementRoot.parent === viewer.arEntryRoot, "user placement is parented under AR entry");
 
       const readCornerAlpha = () => {
         renderer.setRenderTarget(null);
@@ -72,7 +74,9 @@
       const rigPosition = viewer.cameraRig.position.toArray();
       const rigQuaternion = viewer.cameraRig.quaternion.toArray();
       const rigScale = viewer.cameraRig.scale.toArray();
-      const presentationMatrix = viewer.presentationRoot.matrix.clone();
+      const arEntryMatrix = viewer.arEntryRoot.matrix.clone();
+      const userPlacementMatrix = viewer.userPlacementRoot.matrix.clone();
+      const importerScale = viewer.contentRoot.scale.toArray();
       const alphaSession = { environmentBlendMode: "alpha-blend" };
       viewer.handleXRSessionStarted("immersive-ar", alphaSession);
 
@@ -101,12 +105,54 @@
           ? { transform: { matrix: trackedViewer.elements } }
           : null
       });
-      viewer.presentationRoot.updateMatrix();
+      viewer.arEntryRoot.updateMatrix();
       const expectedPlacement = trackedViewer.clone().multiply(authoredCamera.clone().invert());
       check(
-        matrixClose(viewer.presentationRoot.matrix, expectedPlacement),
+        matrixClose(viewer.arEntryRoot.matrix, expectedPlacement),
         "first XR frame applies content-side authored entry placement"
       );
+      check(
+        matrixClose(viewer.userPlacementRoot.matrix, userPlacementMatrix),
+        "authored entry placement leaves user placement unchanged"
+      );
+      check(
+        vectorClose(viewer.contentRoot.scale.toArray(), importerScale),
+        "authored entry placement preserves importer normalization"
+      );
+
+      const appliedEntryMatrix = viewer.arEntryRoot.matrix.clone();
+      viewer.contentRoot.scale.setScalar(0.25);
+      viewer.userPlacementRoot.position.set(2, 0.5, -1);
+      viewer.userPlacementRoot.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), 0.4);
+      viewer.userPlacementRoot.scale.setScalar(1.75);
+      viewer.userPlacementRoot.updateMatrixWorld(true);
+      check(
+        matrixClose(viewer.arEntryRoot.matrix, appliedEntryMatrix),
+        "user placement leaves the AR entry transform unchanged"
+      );
+      check(
+        vectorClose(viewer.contentRoot.scale.toArray(), [0.25, 0.25, 0.25]),
+        "user placement leaves importer normalization unchanged"
+      );
+      viewer.resetUserPlacement();
+      viewer.userPlacementRoot.updateMatrix();
+      check(
+        matrixClose(viewer.userPlacementRoot.matrix, new THREE.Matrix4()),
+        "reset clears only the user-placement transform"
+      );
+      check(
+        matrixClose(viewer.arEntryRoot.matrix, appliedEntryMatrix),
+        "placement reset preserves the AR entry transform"
+      );
+      check(
+        vectorClose(viewer.contentRoot.scale.toArray(), [0.25, 0.25, 0.25]),
+        "placement reset preserves importer normalization"
+      );
+      viewer.contentRoot.scale.fromArray(importerScale);
+      viewer.contentRoot.updateMatrixWorld(true);
+      viewer.userPlacementRoot.position.set(3, 1, 2);
+      viewer.userPlacementRoot.scale.setScalar(2);
+      viewer.userPlacementRoot.updateMatrixWorld(true);
       renderer.xr.getReferenceSpace = originalGetReferenceSpace;
 
       viewer.handleXRSessionEnded("immersive-ar", alphaSession);
@@ -115,7 +161,9 @@
       check(scene.fog === originalFog, "AR end restores fog identity");
       check(originalSky.visible === true, "AR end restores sky visibility");
       check(renderer.getClearAlpha() === 1, "AR end restores opaque clearing");
-      check(matrixClose(viewer.presentationRoot.matrix, presentationMatrix), "AR end restores presentation transform");
+      check(matrixClose(viewer.arEntryRoot.matrix, arEntryMatrix), "AR end restores the AR-entry transform");
+      check(matrixClose(viewer.userPlacementRoot.matrix, userPlacementMatrix), "AR end restores user placement");
+      check(vectorClose(viewer.contentRoot.scale.toArray(), importerScale), "AR end preserves importer normalization");
       check(vectorClose(viewer.cameraRig.position.toArray(), rigPosition), "AR end restores camera-rig position");
       check(vectorClose(viewer.cameraRig.quaternion.toArray(), rigQuaternion), "AR end restores camera-rig rotation");
       check(vectorClose(viewer.cameraRig.scale.toArray(), rigScale), "AR end restores camera-rig scale");
@@ -145,6 +193,9 @@
 
       const reloadSession = { environmentBlendMode: "alpha-blend" };
       viewer.handleXRSessionStarted("immersive-ar", reloadSession);
+      viewer.userPlacementRoot.position.set(4, 2, -3);
+      viewer.userPlacementRoot.scale.setScalar(0.5);
+      viewer.userPlacementRoot.updateMatrixWorld(true);
       await viewer.loadGltf("/test/fixtures/ar-presentation.gltf", false, {
         defaultBackgroundColor: "#6a341d"
       });
@@ -152,9 +203,18 @@
       check(scene.background === null, "asset reload reapplies AR background suppression");
       check(scene.fog === null, "asset reload reapplies AR fog suppression");
       check(viewer.arEntryPending === true, "asset reload queues a new authored entry placement");
+      viewer.userPlacementRoot.updateMatrix();
+      check(
+        matrixClose(viewer.userPlacementRoot.matrix, new THREE.Matrix4()),
+        "asset reload clears session-local user placement"
+      );
       viewer.handleXRSessionEnded("immersive-ar", reloadSession);
       check(scene.background === reloadedEnvironment.background, "AR exit restores the reloaded background");
       check(scene.fog === reloadedEnvironment.fog, "AR exit restores the reloaded fog");
+      check(
+        matrixClose(viewer.userPlacementRoot.matrix, new THREE.Matrix4()),
+        "AR exit keeps reloaded asset placement reset"
+      );
 
       await viewer.dispose();
       publishResult({ passed: true, checks });

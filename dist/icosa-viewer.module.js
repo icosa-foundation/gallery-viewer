@@ -4389,12 +4389,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.scene = new $hBQxr$three.Scene();
         this.persistentRoot = new $hBQxr$three.Group();
         this.persistentRoot.name = 'Viewer services';
-        this.presentationRoot = new $hBQxr$three.Group();
-        this.presentationRoot.name = 'Viewer presentation';
+        this.arEntryRoot = new $hBQxr$three.Group();
+        this.arEntryRoot.name = 'Viewer AR entry';
+        this.userPlacementRoot = new $hBQxr$three.Group();
+        this.userPlacementRoot.name = 'Viewer user placement';
         this.contentRoot = new $hBQxr$three.Group();
         this.contentRoot.name = 'Viewer content';
-        this.presentationRoot.add(this.contentRoot);
-        this.scene.add(this.persistentRoot, this.presentationRoot);
+        this.userPlacementRoot.add(this.contentRoot);
+        this.arEntryRoot.add(this.userPlacementRoot);
+        this.scene.add(this.persistentRoot, this.arEntryRoot);
         this.three = $hBQxr$three;
         const viewer = this;
         const manager = new $hBQxr$three.LoadingManager();
@@ -4759,15 +4762,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     beginARPresentation(session) {
         if (this.arPresentationState) this.endARPresentation();
-        this.presentationRoot.updateMatrix();
         this.arPresentationState = {
             virtualEnvironment: (0, $721a3cf0b2bb84b2$export$9d79c1fffb915072)(this.scene, this.skyObject),
             clearAlpha: this.renderer.getClearAlpha(),
-            presentationMatrixAutoUpdate: this.presentationRoot.matrixAutoUpdate,
-            presentationMatrix: this.presentationRoot.matrix.clone(),
-            presentationPosition: this.presentationRoot.position.clone(),
-            presentationQuaternion: this.presentationRoot.quaternion.clone(),
-            presentationScale: this.presentationRoot.scale.clone(),
+            arEntryTransform: this.captureObjectTransform(this.arEntryRoot),
+            userPlacementTransform: this.captureObjectTransform(this.userPlacementRoot),
             cameraRigPosition: this.cameraRig.position.clone(),
             cameraRigQuaternion: this.cameraRig.quaternion.clone(),
             cameraRigScale: this.cameraRig.scale.clone()
@@ -4800,9 +4799,9 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (!viewerPose) return;
         const viewerPoseWorld = new $hBQxr$three.Matrix4().fromArray(Array.from(viewerPose.transform.matrix));
         const entryMatrix = (0, $721a3cf0b2bb84b2$export$6d2af1765a379b43)(this.arAuthoredCameraWorld, viewerPoseWorld);
-        entryMatrix.decompose(this.presentationRoot.position, this.presentationRoot.quaternion, this.presentationRoot.scale);
-        this.presentationRoot.matrixAutoUpdate = true;
-        this.presentationRoot.updateMatrixWorld(true);
+        entryMatrix.decompose(this.arEntryRoot.position, this.arEntryRoot.quaternion, this.arEntryRoot.scale);
+        this.arEntryRoot.matrixAutoUpdate = true;
+        this.arEntryRoot.updateMatrixWorld(true);
         this.arEntryPending = false;
     }
     refreshARPresentationForCurrentScene() {
@@ -4811,6 +4810,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // Loading a new asset replaces its virtual environment. Preserve that new
         // state for session exit, then apply the current AR blend policy to it.
         state.virtualEnvironment = (0, $721a3cf0b2bb84b2$export$9d79c1fffb915072)(this.scene, this.skyObject);
+        state.userPlacementTransform = this.captureObjectTransform(this.userPlacementRoot);
         this.applyAREnvironmentPolicy();
         this.cameraRig.position.set(0, 0, 0);
         this.cameraRig.quaternion.identity();
@@ -4823,18 +4823,39 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (!state) return;
         (0, $721a3cf0b2bb84b2$export$dbd78d86c4ae556f)(this.scene, state.virtualEnvironment);
         this.renderer.setClearAlpha(state.clearAlpha);
-        this.presentationRoot.position.copy(state.presentationPosition);
-        this.presentationRoot.quaternion.copy(state.presentationQuaternion);
-        this.presentationRoot.scale.copy(state.presentationScale);
-        this.presentationRoot.matrix.copy(state.presentationMatrix);
-        this.presentationRoot.matrixAutoUpdate = state.presentationMatrixAutoUpdate;
-        this.presentationRoot.updateMatrixWorld(true);
+        this.restoreObjectTransform(this.arEntryRoot, state.arEntryTransform);
+        this.restoreObjectTransform(this.userPlacementRoot, state.userPlacementTransform);
         this.cameraRig.position.copy(state.cameraRigPosition);
         this.cameraRig.quaternion.copy(state.cameraRigQuaternion);
         this.cameraRig.scale.copy(state.cameraRigScale);
         this.cameraRig.updateMatrixWorld(true);
         this.arEntryPending = false;
         this.arPresentationState = undefined;
+    }
+    captureObjectTransform(object) {
+        if (object.matrixAutoUpdate) object.updateMatrix();
+        return {
+            matrixAutoUpdate: object.matrixAutoUpdate,
+            matrix: object.matrix.clone(),
+            position: object.position.clone(),
+            quaternion: object.quaternion.clone(),
+            scale: object.scale.clone()
+        };
+    }
+    restoreObjectTransform(object, state) {
+        object.position.copy(state.position);
+        object.quaternion.copy(state.quaternion);
+        object.scale.copy(state.scale);
+        object.matrix.copy(state.matrix);
+        object.matrixAutoUpdate = state.matrixAutoUpdate;
+        object.updateMatrixWorld(true);
+    }
+    resetUserPlacement() {
+        this.userPlacementRoot.position.set(0, 0, 0);
+        this.userPlacementRoot.quaternion.identity();
+        this.userPlacementRoot.scale.set(1, 1, 1);
+        this.userPlacementRoot.matrixAutoUpdate = true;
+        this.userPlacementRoot.updateMatrixWorld(true);
     }
     initializeScene(disposeContent) {
         let defaultBackgroundColor = this.overrides?.["defaultBackgroundColor"];
@@ -4854,6 +4875,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.contentUpdater = undefined;
         this.fallbackHeadLightCarrier?.removeFromParent();
         this.fallbackHeadLightCarrier = undefined;
+        this.resetUserPlacement();
         this.contentRoot.clear();
         this.contentRoot.position.set(0, 0, 0);
         this.contentRoot.quaternion.identity();

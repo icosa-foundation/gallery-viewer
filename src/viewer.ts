@@ -118,14 +118,19 @@ interface IMMModule {
     desktopIMMViewpoint(pose: IMMViewpointPoseLike): IMMViewpointPoseLike;
 }
 
+interface ObjectTransformState {
+    matrixAutoUpdate: boolean;
+    matrix: THREE.Matrix4;
+    position: THREE.Vector3;
+    quaternion: THREE.Quaternion;
+    scale: THREE.Vector3;
+}
+
 interface ARPresentationState {
     virtualEnvironment: ARVirtualEnvironmentSnapshot;
     clearAlpha: number;
-    presentationMatrixAutoUpdate: boolean;
-    presentationMatrix: THREE.Matrix4;
-    presentationPosition: THREE.Vector3;
-    presentationQuaternion: THREE.Quaternion;
-    presentationScale: THREE.Vector3;
+    arEntryTransform: ObjectTransformState;
+    userPlacementTransform: ObjectTransformState;
     cameraRigPosition: THREE.Vector3;
     cameraRigQuaternion: THREE.Quaternion;
     cameraRigScale: THREE.Vector3;
@@ -395,7 +400,8 @@ export class Viewer {
     private environmentPath: URL;
     private scene : THREE.Scene;
     private persistentRoot: THREE.Group;
-    private presentationRoot: THREE.Group;
+    private arEntryRoot: THREE.Group;
+    private userPlacementRoot: THREE.Group;
     private contentRoot: THREE.Group;
     private canvas : HTMLCanvasElement;
     private renderer : THREE.WebGLRenderer;
@@ -510,12 +516,15 @@ export class Viewer {
         this.scene = new THREE.Scene();
         this.persistentRoot = new THREE.Group();
         this.persistentRoot.name = 'Viewer services';
-        this.presentationRoot = new THREE.Group();
-        this.presentationRoot.name = 'Viewer presentation';
+        this.arEntryRoot = new THREE.Group();
+        this.arEntryRoot.name = 'Viewer AR entry';
+        this.userPlacementRoot = new THREE.Group();
+        this.userPlacementRoot.name = 'Viewer user placement';
         this.contentRoot = new THREE.Group();
         this.contentRoot.name = 'Viewer content';
-        this.presentationRoot.add(this.contentRoot);
-        this.scene.add(this.persistentRoot, this.presentationRoot);
+        this.userPlacementRoot.add(this.contentRoot);
+        this.arEntryRoot.add(this.userPlacementRoot);
+        this.scene.add(this.persistentRoot, this.arEntryRoot);
         this.three = THREE;
 
         const viewer = this;
@@ -1013,15 +1022,11 @@ export class Viewer {
     private beginARPresentation(session: XRSession): void {
         if (this.arPresentationState) this.endARPresentation();
 
-        this.presentationRoot.updateMatrix();
         this.arPresentationState = {
             virtualEnvironment: captureARVirtualEnvironment(this.scene, this.skyObject),
             clearAlpha: this.renderer.getClearAlpha(),
-            presentationMatrixAutoUpdate: this.presentationRoot.matrixAutoUpdate,
-            presentationMatrix: this.presentationRoot.matrix.clone(),
-            presentationPosition: this.presentationRoot.position.clone(),
-            presentationQuaternion: this.presentationRoot.quaternion.clone(),
-            presentationScale: this.presentationRoot.scale.clone(),
+            arEntryTransform: this.captureObjectTransform(this.arEntryRoot),
+            userPlacementTransform: this.captureObjectTransform(this.userPlacementRoot),
             cameraRigPosition: this.cameraRig.position.clone(),
             cameraRigQuaternion: this.cameraRig.quaternion.clone(),
             cameraRigScale: this.cameraRig.scale.clone()
@@ -1077,12 +1082,12 @@ export class Viewer {
             viewerPoseWorld
         );
         entryMatrix.decompose(
-            this.presentationRoot.position,
-            this.presentationRoot.quaternion,
-            this.presentationRoot.scale
+            this.arEntryRoot.position,
+            this.arEntryRoot.quaternion,
+            this.arEntryRoot.scale
         );
-        this.presentationRoot.matrixAutoUpdate = true;
-        this.presentationRoot.updateMatrixWorld(true);
+        this.arEntryRoot.matrixAutoUpdate = true;
+        this.arEntryRoot.updateMatrixWorld(true);
         this.arEntryPending = false;
     }
 
@@ -1093,6 +1098,7 @@ export class Viewer {
         // Loading a new asset replaces its virtual environment. Preserve that new
         // state for session exit, then apply the current AR blend policy to it.
         state.virtualEnvironment = captureARVirtualEnvironment(this.scene, this.skyObject);
+        state.userPlacementTransform = this.captureObjectTransform(this.userPlacementRoot);
         this.applyAREnvironmentPolicy();
         this.cameraRig.position.set(0, 0, 0);
         this.cameraRig.quaternion.identity();
@@ -1107,18 +1113,45 @@ export class Viewer {
 
         restoreARVirtualEnvironment(this.scene, state.virtualEnvironment);
         this.renderer.setClearAlpha(state.clearAlpha);
-        this.presentationRoot.position.copy(state.presentationPosition);
-        this.presentationRoot.quaternion.copy(state.presentationQuaternion);
-        this.presentationRoot.scale.copy(state.presentationScale);
-        this.presentationRoot.matrix.copy(state.presentationMatrix);
-        this.presentationRoot.matrixAutoUpdate = state.presentationMatrixAutoUpdate;
-        this.presentationRoot.updateMatrixWorld(true);
+        this.restoreObjectTransform(this.arEntryRoot, state.arEntryTransform);
+        this.restoreObjectTransform(this.userPlacementRoot, state.userPlacementTransform);
         this.cameraRig.position.copy(state.cameraRigPosition);
         this.cameraRig.quaternion.copy(state.cameraRigQuaternion);
         this.cameraRig.scale.copy(state.cameraRigScale);
         this.cameraRig.updateMatrixWorld(true);
         this.arEntryPending = false;
         this.arPresentationState = undefined;
+    }
+
+    private captureObjectTransform(object: THREE.Object3D): ObjectTransformState {
+        if (object.matrixAutoUpdate) object.updateMatrix();
+        return {
+            matrixAutoUpdate: object.matrixAutoUpdate,
+            matrix: object.matrix.clone(),
+            position: object.position.clone(),
+            quaternion: object.quaternion.clone(),
+            scale: object.scale.clone()
+        };
+    }
+
+    private restoreObjectTransform(
+        object: THREE.Object3D,
+        state: ObjectTransformState
+    ): void {
+        object.position.copy(state.position);
+        object.quaternion.copy(state.quaternion);
+        object.scale.copy(state.scale);
+        object.matrix.copy(state.matrix);
+        object.matrixAutoUpdate = state.matrixAutoUpdate;
+        object.updateMatrixWorld(true);
+    }
+
+    private resetUserPlacement(): void {
+        this.userPlacementRoot.position.set(0, 0, 0);
+        this.userPlacementRoot.quaternion.identity();
+        this.userPlacementRoot.scale.set(1, 1, 1);
+        this.userPlacementRoot.matrixAutoUpdate = true;
+        this.userPlacementRoot.updateMatrixWorld(true);
     }
 
     private initializeScene(disposeContent?: () => void | Promise<void>) {
@@ -1145,6 +1178,7 @@ export class Viewer {
         this.contentUpdater = undefined;
         this.fallbackHeadLightCarrier?.removeFromParent();
         this.fallbackHeadLightCarrier = undefined;
+        this.resetUserPlacement();
         this.contentRoot.clear();
         this.contentRoot.position.set(0, 0, 0);
         this.contentRoot.quaternion.identity();
