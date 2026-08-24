@@ -58,6 +58,7 @@ import {
     normalizeEnvironmentBlendMode,
     restoreARVirtualEnvironment
 } from './xr/ARPresentation';
+import { ARHitTestService } from './xr/ARHitTest';
 
 export type {
     GalleryCameraMetadata,
@@ -458,6 +459,7 @@ export class Viewer {
     private arPresentationState?: ARPresentationState;
     private arEntryPending = false;
     private arAuthoredCameraWorld = new THREE.Matrix4();
+    private arHitTest = new ARHitTestService();
     private fallbackHeadLightCarrier?: THREE.Group;
     public selectedNode: THREE.Object3D | null;
     private treeViewRoot: HTMLElement | null;
@@ -657,7 +659,9 @@ export class Viewer {
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.persistentRoot.add(controllerGrip1);
 
-        let xrButton = XRButton.createButton(this.renderer, {}, true, {
+        let xrButton = XRButton.createButton(this.renderer, {
+            optionalFeatures: ['hit-test']
+        }, true, {
             onSessionStarted: (mode, session) => this.handleXRSessionStarted(mode, session),
             onSessionEnded: (mode, session) => this.handleXRSessionEnded(mode, session)
         });
@@ -712,6 +716,7 @@ export class Viewer {
 
                 if (viewer.xrSessionMode === 'ar') {
                     viewer.applyPendingAREntry(xrFrame);
+                    viewer.updateARHitTest(xrFrame);
                 }
 
                 const session = this.renderer.xr.getSession();
@@ -1046,6 +1051,7 @@ export class Viewer {
         this.cameraRig.scale.set(1, 1, 1);
         this.cameraRig.updateMatrixWorld(true);
         this.queueAREntryFromCurrentCamera();
+        void this.arHitTest.start(session);
     }
 
     private applyAREnvironmentPolicy(): void {
@@ -1109,6 +1115,7 @@ export class Viewer {
     }
 
     private endARPresentation(): void {
+        this.arHitTest.stop();
         const state = this.arPresentationState;
         if (!state) return;
 
@@ -1176,6 +1183,21 @@ export class Viewer {
         );
         this.userPlacementRoot.matrixAutoUpdate = true;
         this.userPlacementRoot.updateMatrixWorld(true);
+    }
+
+    private updateARHitTest(frame?: XRFrame): void {
+        if (!frame) return;
+        const referenceSpace = this.renderer.xr.getReferenceSpace();
+        if (!referenceSpace) return;
+        this.arHitTest.update(frame, referenceSpace);
+    }
+
+    /** Commits the current candidate without defining which input confirms it. */
+    private applyCurrentARHitTestPlacement(): boolean {
+        const placementWorld = this.arHitTest.currentWorldMatrix();
+        if (!placementWorld) return false;
+        this.applyUserPlacementWorldMatrix(placementWorld);
+        return true;
     }
 
     private initializeScene(disposeContent?: () => void | Promise<void>) {

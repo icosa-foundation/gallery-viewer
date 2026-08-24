@@ -23,3 +23,5 @@ For each device, manually compare one large traversable scene and one small prop
 4. Confirm that the authored entry view is sensible without changing the tracked head pose.
 5. Confirm that background, fog, and sky match the displayed blend mode.
 6. Exit AR and confirm that desktop presentation is restored.
+
+The current Phase 3 hit-test foundation has no user-facing reticle or confirmation input. It requests hit testing optionally and tracks placement candidates internally, so there is no additional placement interaction to test until the reticle and semantic confirmation action are implemented.

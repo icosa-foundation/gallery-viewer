@@ -4231,6 +4231,79 @@ function $721a3cf0b2bb84b2$export$7e745b0efb1d2a5(parentWorld, desiredWorld, tar
 }
 
 
+
+class $45aedb4c0e6ca069$export$6efa40c8da519d5f {
+    async start(session) {
+        this.stop();
+        const generation = this.generation;
+        this.session = session;
+        this.state = 'initializing';
+        if (!session.requestHitTestSource) {
+            this.state = 'unsupported';
+            return;
+        }
+        try {
+            const viewerSpace = await session.requestReferenceSpace('viewer');
+            if (!this.isCurrent(session, generation)) return;
+            const sourcePromise = session.requestHitTestSource({
+                space: viewerSpace
+            });
+            if (!sourcePromise) {
+                this.state = 'unsupported';
+                return;
+            }
+            const source = await sourcePromise;
+            if (!this.isCurrent(session, generation)) {
+                source.cancel();
+                return;
+            }
+            this.source = source;
+            this.state = 'searching';
+        } catch (error) {
+            if (this.isCurrent(session, generation)) {
+                const errorName = typeof error === 'object' && error !== null && 'name' in error ? String(error.name) : '';
+                this.state = errorName === 'NotSupportedError' ? 'unsupported' : 'error';
+            }
+        }
+    }
+    update(frame, baseSpace) {
+        if (!this.source) return;
+        const result = frame.getHitTestResults(this.source)[0];
+        const pose = result?.getPose(baseSpace);
+        if (!pose) {
+            this.candidateWorldMatrix = undefined;
+            this.state = this.state === 'tracking' || this.state === 'lost' ? 'lost' : 'searching';
+            return;
+        }
+        this.candidateWorldMatrix = new (0, $hBQxr$Matrix4)().fromArray(Array.from(pose.transform.matrix));
+        this.state = 'tracking';
+    }
+    currentWorldMatrix(target) {
+        if (!this.candidateWorldMatrix) return undefined;
+        return (target ?? new (0, $hBQxr$Matrix4)()).copy(this.candidateWorldMatrix);
+    }
+    stop() {
+        this.generation++;
+        try {
+            this.source?.cancel();
+        } catch (_error) {
+        // Cleanup remains idempotent if the runtime already invalidated it.
+        }
+        this.source = undefined;
+        this.session = undefined;
+        this.candidateWorldMatrix = undefined;
+        this.state = 'inactive';
+    }
+    isCurrent(session, generation) {
+        return this.session === session && this.generation === generation;
+    }
+    constructor(){
+        this.generation = 0;
+        this.state = 'inactive';
+    }
+}
+
+
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
@@ -4354,6 +4427,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.xrEnvironmentBlendMode = 'unknown';
         this.arEntryPending = false;
         this.arAuthoredCameraWorld = new $hBQxr$three.Matrix4();
+        this.arHitTest = new (0, $45aedb4c0e6ca069$export$6efa40c8da519d5f)();
         this.loadingError = false;
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
@@ -4501,7 +4575,11 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         controllerGrip1 = this.renderer.xr.getControllerGrip(1);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
         this.persistentRoot.add(controllerGrip1);
-        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {}, true, {
+        let xrButton = (0, $a681b8b24de9c7d6$export$d1c1e163c7960c6).createButton(this.renderer, {
+            optionalFeatures: [
+                'hit-test'
+            ]
+        }, true, {
             onSessionStarted: (mode, session)=>this.handleXRSessionStarted(mode, session),
             onSessionEnded: (mode, session)=>this.handleXRSessionEnded(mode, session)
         });
@@ -4543,7 +4621,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             const delta = clock.getDelta();
             if (this.renderer.xr.isPresenting) {
                 viewer.activeCamera = viewer?.xrCamera;
-                if (viewer.xrSessionMode === 'ar') viewer.applyPendingAREntry(xrFrame);
+                if (viewer.xrSessionMode === 'ar') {
+                    viewer.applyPendingAREntry(xrFrame);
+                    viewer.updateARHitTest(xrFrame);
+                }
                 const session = this.renderer.xr.getSession();
                 const inputSources = viewer.xrSessionMode === 'vr' && session ? Array.from(session.inputSources) : [];
                 const moveSpeed = 0.05;
@@ -4785,6 +4866,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.cameraRig.scale.set(1, 1, 1);
         this.cameraRig.updateMatrixWorld(true);
         this.queueAREntryFromCurrentCamera();
+        this.arHitTest.start(session);
     }
     applyAREnvironmentPolicy() {
         this.renderer.setClearAlpha(this.xrEnvironmentBlendMode === 'alpha-blend' || this.xrEnvironmentBlendMode === 'additive' ? 0 : 1);
@@ -4823,6 +4905,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.queueAREntryFromCurrentCamera();
     }
     endARPresentation() {
+        this.arHitTest.stop();
         const state = this.arPresentationState;
         if (!state) return;
         (0, $721a3cf0b2bb84b2$export$dbd78d86c4ae556f)(this.scene, state.virtualEnvironment);
@@ -4873,6 +4956,18 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         localMatrix.decompose(this.userPlacementRoot.position, this.userPlacementRoot.quaternion, this.userPlacementRoot.scale);
         this.userPlacementRoot.matrixAutoUpdate = true;
         this.userPlacementRoot.updateMatrixWorld(true);
+    }
+    updateARHitTest(frame) {
+        if (!frame) return;
+        const referenceSpace = this.renderer.xr.getReferenceSpace();
+        if (!referenceSpace) return;
+        this.arHitTest.update(frame, referenceSpace);
+    }
+    /** Commits the current candidate without defining which input confirms it. */ applyCurrentARHitTestPlacement() {
+        const placementWorld = this.arHitTest.currentWorldMatrix();
+        if (!placementWorld) return false;
+        this.applyUserPlacementWorldMatrix(placementWorld);
+        return true;
     }
     initializeScene(disposeContent) {
         let defaultBackgroundColor = this.overrides?.["defaultBackgroundColor"];

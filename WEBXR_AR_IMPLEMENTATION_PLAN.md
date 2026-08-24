@@ -361,7 +361,11 @@ Support environments, dioramas, props, and unknown assets through explicit strat
 3. Loading another asset resets session-local user placement without changing importer normalization or introducing an asset classification.
 4. Browser regression coverage verifies hierarchy, transform isolation, placement reset, asset reload, and exact session restoration.
 5. Placement sources can now submit a world-space matrix through one internal operation, with local conversion, snapshot, restore, and reset isolated to the user-placement layer.
-6. No placement UI, hit testing, public placement configuration, or metadata schema was introduced by this foundation.
+6. The initial transform foundation introduced no placement UI, hit testing, public placement configuration, or metadata schema.
+7. AR sessions now request hit testing as an optional capability, so unsupported devices can still start a basic AR session.
+8. A reusable viewer-space hit-test service owns source creation, per-frame pose updates, tracking-state transitions, and race-safe cancellation on session end.
+9. Valid hit poses are retained as world-space placement candidates and can be committed through the existing user-placement operation without changing importer or authored transforms.
+10. Hit-test candidates do not move content automatically. Reticle rendering and input confirmation remain separate follow-up work so this slice does not define touch-, controller-, or gaze-specific UX.
 
 ### Schema decision: deferred
 
