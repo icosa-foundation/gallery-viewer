@@ -59,6 +59,7 @@ import {
     restoreARVirtualEnvironment
 } from './xr/ARPresentation';
 import { ARHitTestService } from './xr/ARHitTest';
+import { ARReticle } from './xr/ARReticle';
 
 export type {
     GalleryCameraMetadata,
@@ -76,6 +77,16 @@ export type {
     GalleryEnvironmentBlendMode,
     GalleryXRSessionMode
 } from './xr/ARPresentation';
+
+export type GalleryARRuntimePlacementMode = 'entry' | 'surface';
+export type GalleryARRuntimeScaleMode = 'authored' | 'fit-volume' | 'user-defined';
+
+export interface GalleryARRuntimeScaleResult {
+    mode: GalleryARRuntimeScaleMode;
+    scale: number;
+    authoredDiameter?: number;
+    targetDiameter?: number;
+}
 
 type SparkModule = typeof import('@sparkjsdev/spark');
 
@@ -133,6 +144,7 @@ interface ARPresentationState {
     clearAlpha: number;
     arEntryTransform: ObjectTransformState;
     userPlacementTransform: ObjectTransformState;
+    userManipulationTransform: ObjectTransformState;
     cameraRigPosition: THREE.Vector3;
     cameraRigQuaternion: THREE.Quaternion;
     cameraRigScale: THREE.Vector3;
@@ -404,6 +416,7 @@ export class Viewer {
     private persistentRoot: THREE.Group;
     private arEntryRoot: THREE.Group;
     private userPlacementRoot: THREE.Group;
+    private userManipulationRoot: THREE.Group;
     private contentRoot: THREE.Group;
     private canvas : HTMLCanvasElement;
     private renderer : THREE.WebGLRenderer;
@@ -459,7 +472,12 @@ export class Viewer {
     private arPresentationState?: ARPresentationState;
     private arEntryPending = false;
     private arAuthoredCameraWorld = new THREE.Matrix4();
-    private arHitTest = new ARHitTestService();
+    private arHitTest = new ARHitTestService(new THREE.Matrix4());
+    private arHitTestWorldMatrix = new THREE.Matrix4();
+    private arReticleLocalMatrix = new THREE.Matrix4();
+    private arReticle = new ARReticle(THREE);
+    private arRuntimePlacementMode: GalleryARRuntimePlacementMode = 'entry';
+    private arPlacementLockUntil = 0;
     private fallbackHeadLightCarrier?: THREE.Group;
     public selectedNode: THREE.Object3D | null;
     private treeViewRoot: HTMLElement | null;
@@ -523,11 +541,15 @@ export class Viewer {
         this.arEntryRoot.name = 'Viewer AR entry';
         this.userPlacementRoot = new THREE.Group();
         this.userPlacementRoot.name = 'Viewer user placement';
+        this.userManipulationRoot = new THREE.Group();
+        this.userManipulationRoot.name = 'Viewer user manipulation';
         this.contentRoot = new THREE.Group();
         this.contentRoot.name = 'Viewer content';
-        this.userPlacementRoot.add(this.contentRoot);
+        this.userManipulationRoot.add(this.contentRoot);
+        this.userPlacementRoot.add(this.userManipulationRoot);
         this.arEntryRoot.add(this.userPlacementRoot);
         this.scene.add(this.persistentRoot, this.arEntryRoot);
+        this.persistentRoot.add(this.arReticle.object);
         this.three = THREE;
 
         const viewer = this;
@@ -649,6 +671,10 @@ export class Viewer {
         controller1 = this.renderer.xr.getController(1);
         this.persistentRoot.add(controller1);
 
+        const confirmARPlacement = () => viewer.confirmARPlacement();
+        controller0.addEventListener('select', confirmARPlacement);
+        controller1.addEventListener('select', confirmARPlacement);
+
         const controllerModelFactory = new XRControllerModelFactory();
 
         controllerGrip0 = this.renderer.xr.getControllerGrip(0);
@@ -716,7 +742,7 @@ export class Viewer {
 
                 if (viewer.xrSessionMode === 'ar') {
                     viewer.applyPendingAREntry(xrFrame);
-                    viewer.updateARHitTest(xrFrame);
+                    viewer.updateARHitTest(xrFrame, animationTime);
                 }
 
                 const session = this.renderer.xr.getSession();
@@ -1033,6 +1059,7 @@ export class Viewer {
             clearAlpha: this.renderer.getClearAlpha(),
             arEntryTransform: this.captureObjectTransform(this.arEntryRoot),
             userPlacementTransform: this.captureUserPlacement(),
+            userManipulationTransform: this.captureUserManipulation(),
             cameraRigPosition: this.cameraRig.position.clone(),
             cameraRigQuaternion: this.cameraRig.quaternion.clone(),
             cameraRigScale: this.cameraRig.scale.clone()
@@ -1051,6 +1078,8 @@ export class Viewer {
         this.cameraRig.scale.set(1, 1, 1);
         this.cameraRig.updateMatrixWorld(true);
         this.queueAREntryFromCurrentCamera();
+        this.arReticle.reset();
+        this.arPlacementLockUntil = 0;
         void this.arHitTest.start(session);
     }
 
@@ -1106,6 +1135,7 @@ export class Viewer {
         // state for session exit, then apply the current AR blend policy to it.
         state.virtualEnvironment = captureARVirtualEnvironment(this.scene, this.skyObject);
         state.userPlacementTransform = this.captureUserPlacement();
+        state.userManipulationTransform = this.captureUserManipulation();
         this.applyAREnvironmentPolicy();
         this.cameraRig.position.set(0, 0, 0);
         this.cameraRig.quaternion.identity();
@@ -1116,6 +1146,8 @@ export class Viewer {
 
     private endARPresentation(): void {
         this.arHitTest.stop();
+        this.arReticle.reset();
+        this.arPlacementLockUntil = 0;
         const state = this.arPresentationState;
         if (!state) return;
 
@@ -1123,6 +1155,7 @@ export class Viewer {
         this.renderer.setClearAlpha(state.clearAlpha);
         this.restoreObjectTransform(this.arEntryRoot, state.arEntryTransform);
         this.restoreUserPlacement(state.userPlacementTransform);
+        this.restoreUserManipulation(state.userManipulationTransform);
         this.cameraRig.position.copy(state.cameraRigPosition);
         this.cameraRig.quaternion.copy(state.cameraRigQuaternion);
         this.cameraRig.scale.copy(state.cameraRigScale);
@@ -1170,6 +1203,22 @@ export class Viewer {
         this.restoreObjectTransform(this.userPlacementRoot, state);
     }
 
+    private resetUserManipulation(): void {
+        this.userManipulationRoot.position.set(0, 0, 0);
+        this.userManipulationRoot.quaternion.identity();
+        this.userManipulationRoot.scale.set(1, 1, 1);
+        this.userManipulationRoot.matrixAutoUpdate = true;
+        this.userManipulationRoot.updateMatrixWorld(true);
+    }
+
+    private captureUserManipulation(): ObjectTransformState {
+        return this.captureObjectTransform(this.userManipulationRoot);
+    }
+
+    private restoreUserManipulation(state: ObjectTransformState): void {
+        this.restoreObjectTransform(this.userManipulationRoot, state);
+    }
+
     private applyUserPlacementWorldMatrix(worldMatrix: THREE.Matrix4): void {
         this.arEntryRoot.updateWorldMatrix(true, false);
         const localMatrix = computeLocalPlacementMatrix(
@@ -1185,11 +1234,49 @@ export class Viewer {
         this.userPlacementRoot.updateMatrixWorld(true);
     }
 
-    private updateARHitTest(frame?: XRFrame): void {
+    public setExperimentalARRuntimePlacementMode(
+        mode: GalleryARRuntimePlacementMode
+    ): void {
+        if (mode !== 'entry' && mode !== 'surface') {
+            throw new Error(`Unsupported AR runtime placement mode: ${mode}`);
+        }
+        if (this.arRuntimePlacementMode === mode) return;
+
+        this.arRuntimePlacementMode = mode;
+        this.arPlacementLockUntil = 0;
+        this.arReticle.reset();
+        if (mode === 'entry') this.resetUserPlacement();
+    }
+
+    private updateARHitTest(frame?: XRFrame, animationTime = 0): void {
         if (!frame) return;
         const referenceSpace = this.renderer.xr.getReferenceSpace();
         if (!referenceSpace) return;
         this.arHitTest.update(frame, referenceSpace);
+
+        if (this.arRuntimePlacementMode !== 'surface') {
+            if (this.arReticle.state !== 'hidden') this.arReticle.reset();
+            return;
+        }
+
+        if (animationTime < this.arPlacementLockUntil) {
+            this.arReticle.setState('locked');
+            return;
+        }
+
+        const candidateWorld = this.arHitTest.currentWorldMatrix(
+            this.arHitTestWorldMatrix
+        );
+        let candidateLocal: THREE.Matrix4 | undefined;
+        if (candidateWorld) {
+            this.persistentRoot.updateWorldMatrix(true, false);
+            candidateLocal = computeLocalPlacementMatrix(
+                this.persistentRoot.matrixWorld,
+                candidateWorld,
+                this.arReticleLocalMatrix
+            );
+        }
+        this.arReticle.updateFromHitTest(this.arHitTest.state, candidateLocal);
     }
 
     /** Commits the current candidate without defining which input confirms it. */
@@ -1198,6 +1285,75 @@ export class Viewer {
         if (!placementWorld) return false;
         this.applyUserPlacementWorldMatrix(placementWorld);
         return true;
+    }
+
+    private confirmARPlacement(): boolean {
+        if (
+            this.xrSessionMode !== 'ar'
+            || this.arRuntimePlacementMode !== 'surface'
+        ) {
+            return false;
+        }
+
+        if (!this.applyCurrentARHitTestPlacement()) return false;
+        this.arPlacementLockUntil = performance.now() + 600;
+        this.arReticle.setState('locked');
+        return true;
+    }
+
+    public setExperimentalARRuntimeScale(
+        mode: GalleryARRuntimeScaleMode,
+        value?: number
+    ): GalleryARRuntimeScaleResult {
+        if (mode === 'authored') {
+            this.userManipulationRoot.scale.set(1, 1, 1);
+            this.userManipulationRoot.updateMatrixWorld(true);
+            return { mode, scale: 1 };
+        }
+
+        if (mode === 'user-defined') {
+            if (!Number.isFinite(value) || value! <= 0) {
+                throw new Error('User-defined AR scale must be a positive finite multiplier');
+            }
+            this.userManipulationRoot.scale.setScalar(value!);
+            this.userManipulationRoot.updateMatrixWorld(true);
+            return { mode, scale: value! };
+        }
+
+        if (mode === 'fit-volume') {
+            if (!Number.isFinite(value) || value! <= 0) {
+                throw new Error('Fit-volume diameter must be a positive finite metre value');
+            }
+            const authoredDiameter = this.measureAuthoredContentDiameter();
+            if (authoredDiameter === undefined) {
+                throw new Error('The loaded asset has no measurable bounds for fit-volume scaling');
+            }
+            const scale = value! / authoredDiameter;
+            this.userManipulationRoot.scale.setScalar(scale);
+            this.userManipulationRoot.updateMatrixWorld(true);
+            return {
+                mode,
+                scale,
+                authoredDiameter,
+                targetDiameter: value
+            };
+        }
+
+        throw new Error(`Unsupported AR runtime scale mode: ${mode}`);
+    }
+
+    private measureAuthoredContentDiameter(): number | undefined {
+        if (!this.modelBoundingBox || this.modelBoundingBox.isEmpty()) return undefined;
+
+        const importerScale = Math.max(
+            Math.abs(this.contentRoot.scale.x),
+            Math.abs(this.contentRoot.scale.y),
+            Math.abs(this.contentRoot.scale.z)
+        );
+        const sourceDiameter = this.modelBoundingBox
+            .getBoundingSphere(new THREE.Sphere()).radius * 2;
+        const diameter = sourceDiameter * importerScale;
+        return Number.isFinite(diameter) && diameter > 0 ? diameter : undefined;
     }
 
     private initializeScene(disposeContent?: () => void | Promise<void>) {
@@ -1225,6 +1381,7 @@ export class Viewer {
         this.fallbackHeadLightCarrier?.removeFromParent();
         this.fallbackHeadLightCarrier = undefined;
         this.resetUserPlacement();
+        this.resetUserManipulation();
         this.contentRoot.clear();
         this.contentRoot.position.set(0, 0, 0);
         this.contentRoot.quaternion.identity();

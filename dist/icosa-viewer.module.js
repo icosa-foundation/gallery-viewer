@@ -4231,8 +4231,13 @@ function $721a3cf0b2bb84b2$export$7e745b0efb1d2a5(parentWorld, desiredWorld, tar
 }
 
 
-
 class $45aedb4c0e6ca069$export$6efa40c8da519d5f {
+    constructor(candidateWorldMatrix){
+        this.candidateWorldMatrix = candidateWorldMatrix;
+        this.hasCandidate = false;
+        this.generation = 0;
+        this.state = 'inactive';
+    }
     async start(session) {
         this.stop();
         const generation = this.generation;
@@ -4271,16 +4276,17 @@ class $45aedb4c0e6ca069$export$6efa40c8da519d5f {
         const result = frame.getHitTestResults(this.source)[0];
         const pose = result?.getPose(baseSpace);
         if (!pose) {
-            this.candidateWorldMatrix = undefined;
+            this.hasCandidate = false;
             this.state = this.state === 'tracking' || this.state === 'lost' ? 'lost' : 'searching';
             return;
         }
-        this.candidateWorldMatrix = new (0, $hBQxr$Matrix4)().fromArray(Array.from(pose.transform.matrix));
+        this.candidateWorldMatrix.fromArray(pose.transform.matrix);
+        this.hasCandidate = true;
         this.state = 'tracking';
     }
     currentWorldMatrix(target) {
-        if (!this.candidateWorldMatrix) return undefined;
-        return (target ?? new (0, $hBQxr$Matrix4)()).copy(this.candidateWorldMatrix);
+        if (!this.hasCandidate) return undefined;
+        return (target ?? this.candidateWorldMatrix.clone()).copy(this.candidateWorldMatrix);
     }
     stop() {
         this.generation++;
@@ -4291,15 +4297,81 @@ class $45aedb4c0e6ca069$export$6efa40c8da519d5f {
         }
         this.source = undefined;
         this.session = undefined;
-        this.candidateWorldMatrix = undefined;
+        this.hasCandidate = false;
         this.state = 'inactive';
     }
     isCurrent(session, generation) {
         return this.session === session && this.generation === generation;
     }
-    constructor(){
-        this.generation = 0;
-        this.state = 'inactive';
+}
+
+
+const $865f85b4b120946d$var$RETICLE_STYLE = {
+    valid: {
+        color: 0x37ff8b,
+        opacity: 0.9
+    },
+    invalid: {
+        color: 0xff4d4d,
+        opacity: 0.9
+    },
+    lost: {
+        color: 0xffb020,
+        opacity: 0.55
+    },
+    locked: {
+        color: 0x4db8ff,
+        opacity: 1
+    }
+};
+class $865f85b4b120946d$export$4cf10bbcd49a09f3 {
+    constructor(three){
+        this.state = 'hidden';
+        this.hasPose = false;
+        const geometry = new three.RingGeometry(0.15, 0.2, 32).rotateX(-Math.PI / 2);
+        const material = new three.MeshBasicMaterial({
+            color: $865f85b4b120946d$var$RETICLE_STYLE.valid.color,
+            opacity: $865f85b4b120946d$var$RETICLE_STYLE.valid.opacity,
+            transparent: true,
+            depthWrite: false,
+            side: three.DoubleSide,
+            toneMapped: false
+        });
+        this.object = new three.Mesh(geometry, material);
+        this.object.name = 'Viewer AR placement reticle';
+        this.object.matrixAutoUpdate = false;
+        this.object.visible = false;
+    }
+    updateFromHitTest(hitTestState, localMatrix) {
+        if (localMatrix) {
+            this.object.matrix.copy(localMatrix);
+            this.object.matrixWorldNeedsUpdate = true;
+            this.hasPose = true;
+        }
+        if (hitTestState === 'tracking') this.setState('valid');
+        else if (hitTestState === 'lost' && this.hasPose) this.setState('lost');
+        else this.setState('hidden');
+    }
+    setState(state) {
+        this.state = state;
+        if (state === 'hidden' || !this.hasPose) {
+            this.object.visible = false;
+            return;
+        }
+        const style = $865f85b4b120946d$var$RETICLE_STYLE[state];
+        this.object.material.color.setHex(style.color);
+        this.object.material.opacity = style.opacity;
+        this.object.visible = true;
+    }
+    reset() {
+        this.hasPose = false;
+        this.setState('hidden');
+        this.object.matrix.identity();
+        this.object.matrixWorldNeedsUpdate = true;
+    }
+    dispose() {
+        this.object.geometry.dispose();
+        this.object.material.dispose();
     }
 }
 
@@ -4427,7 +4499,12 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.xrEnvironmentBlendMode = 'unknown';
         this.arEntryPending = false;
         this.arAuthoredCameraWorld = new $hBQxr$three.Matrix4();
-        this.arHitTest = new (0, $45aedb4c0e6ca069$export$6efa40c8da519d5f)();
+        this.arHitTest = new (0, $45aedb4c0e6ca069$export$6efa40c8da519d5f)(new $hBQxr$three.Matrix4());
+        this.arHitTestWorldMatrix = new $hBQxr$three.Matrix4();
+        this.arReticleLocalMatrix = new $hBQxr$three.Matrix4();
+        this.arReticle = new (0, $865f85b4b120946d$export$4cf10bbcd49a09f3)($hBQxr$three);
+        this.arRuntimePlacementMode = 'entry';
+        this.arPlacementLockUntil = 0;
         this.loadingError = false;
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
@@ -4471,11 +4548,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.arEntryRoot.name = 'Viewer AR entry';
         this.userPlacementRoot = new $hBQxr$three.Group();
         this.userPlacementRoot.name = 'Viewer user placement';
+        this.userManipulationRoot = new $hBQxr$three.Group();
+        this.userManipulationRoot.name = 'Viewer user manipulation';
         this.contentRoot = new $hBQxr$three.Group();
         this.contentRoot.name = 'Viewer content';
-        this.userPlacementRoot.add(this.contentRoot);
+        this.userManipulationRoot.add(this.contentRoot);
+        this.userPlacementRoot.add(this.userManipulationRoot);
         this.arEntryRoot.add(this.userPlacementRoot);
         this.scene.add(this.persistentRoot, this.arEntryRoot);
+        this.persistentRoot.add(this.arReticle.object);
         this.three = $hBQxr$three;
         const viewer = this;
         const manager = new $hBQxr$three.LoadingManager();
@@ -4568,6 +4649,9 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.persistentRoot.add(controller0);
         controller1 = this.renderer.xr.getController(1);
         this.persistentRoot.add(controller1);
+        const confirmARPlacement = ()=>viewer.confirmARPlacement();
+        controller0.addEventListener('select', confirmARPlacement);
+        controller1.addEventListener('select', confirmARPlacement);
         const controllerModelFactory = new (0, $hBQxr$XRControllerModelFactory)();
         controllerGrip0 = this.renderer.xr.getControllerGrip(0);
         controllerGrip0.add(controllerModelFactory.createControllerModel(controllerGrip0));
@@ -4623,7 +4707,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 viewer.activeCamera = viewer?.xrCamera;
                 if (viewer.xrSessionMode === 'ar') {
                     viewer.applyPendingAREntry(xrFrame);
-                    viewer.updateARHitTest(xrFrame);
+                    viewer.updateARHitTest(xrFrame, animationTime);
                 }
                 const session = this.renderer.xr.getSession();
                 const inputSources = viewer.xrSessionMode === 'vr' && session ? Array.from(session.inputSources) : [];
@@ -4852,6 +4936,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             clearAlpha: this.renderer.getClearAlpha(),
             arEntryTransform: this.captureObjectTransform(this.arEntryRoot),
             userPlacementTransform: this.captureUserPlacement(),
+            userManipulationTransform: this.captureUserManipulation(),
             cameraRigPosition: this.cameraRig.position.clone(),
             cameraRigQuaternion: this.cameraRig.quaternion.clone(),
             cameraRigScale: this.cameraRig.scale.clone()
@@ -4866,6 +4951,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.cameraRig.scale.set(1, 1, 1);
         this.cameraRig.updateMatrixWorld(true);
         this.queueAREntryFromCurrentCamera();
+        this.arReticle.reset();
+        this.arPlacementLockUntil = 0;
         this.arHitTest.start(session);
     }
     applyAREnvironmentPolicy() {
@@ -4897,6 +4984,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         // state for session exit, then apply the current AR blend policy to it.
         state.virtualEnvironment = (0, $721a3cf0b2bb84b2$export$9d79c1fffb915072)(this.scene, this.skyObject);
         state.userPlacementTransform = this.captureUserPlacement();
+        state.userManipulationTransform = this.captureUserManipulation();
         this.applyAREnvironmentPolicy();
         this.cameraRig.position.set(0, 0, 0);
         this.cameraRig.quaternion.identity();
@@ -4906,12 +4994,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     endARPresentation() {
         this.arHitTest.stop();
+        this.arReticle.reset();
+        this.arPlacementLockUntil = 0;
         const state = this.arPresentationState;
         if (!state) return;
         (0, $721a3cf0b2bb84b2$export$dbd78d86c4ae556f)(this.scene, state.virtualEnvironment);
         this.renderer.setClearAlpha(state.clearAlpha);
         this.restoreObjectTransform(this.arEntryRoot, state.arEntryTransform);
         this.restoreUserPlacement(state.userPlacementTransform);
+        this.restoreUserManipulation(state.userManipulationTransform);
         this.cameraRig.position.copy(state.cameraRigPosition);
         this.cameraRig.quaternion.copy(state.cameraRigQuaternion);
         this.cameraRig.scale.copy(state.cameraRigScale);
@@ -4950,6 +5041,19 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     restoreUserPlacement(state) {
         this.restoreObjectTransform(this.userPlacementRoot, state);
     }
+    resetUserManipulation() {
+        this.userManipulationRoot.position.set(0, 0, 0);
+        this.userManipulationRoot.quaternion.identity();
+        this.userManipulationRoot.scale.set(1, 1, 1);
+        this.userManipulationRoot.matrixAutoUpdate = true;
+        this.userManipulationRoot.updateMatrixWorld(true);
+    }
+    captureUserManipulation() {
+        return this.captureObjectTransform(this.userManipulationRoot);
+    }
+    restoreUserManipulation(state) {
+        this.restoreObjectTransform(this.userManipulationRoot, state);
+    }
     applyUserPlacementWorldMatrix(worldMatrix) {
         this.arEntryRoot.updateWorldMatrix(true, false);
         const localMatrix = (0, $721a3cf0b2bb84b2$export$7e745b0efb1d2a5)(this.arEntryRoot.matrixWorld, worldMatrix);
@@ -4957,17 +5061,88 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.userPlacementRoot.matrixAutoUpdate = true;
         this.userPlacementRoot.updateMatrixWorld(true);
     }
-    updateARHitTest(frame) {
+    setExperimentalARRuntimePlacementMode(mode) {
+        if (mode !== 'entry' && mode !== 'surface') throw new Error(`Unsupported AR runtime placement mode: ${mode}`);
+        if (this.arRuntimePlacementMode === mode) return;
+        this.arRuntimePlacementMode = mode;
+        this.arPlacementLockUntil = 0;
+        this.arReticle.reset();
+        if (mode === 'entry') this.resetUserPlacement();
+    }
+    updateARHitTest(frame, animationTime = 0) {
         if (!frame) return;
         const referenceSpace = this.renderer.xr.getReferenceSpace();
         if (!referenceSpace) return;
         this.arHitTest.update(frame, referenceSpace);
+        if (this.arRuntimePlacementMode !== 'surface') {
+            if (this.arReticle.state !== 'hidden') this.arReticle.reset();
+            return;
+        }
+        if (animationTime < this.arPlacementLockUntil) {
+            this.arReticle.setState('locked');
+            return;
+        }
+        const candidateWorld = this.arHitTest.currentWorldMatrix(this.arHitTestWorldMatrix);
+        let candidateLocal;
+        if (candidateWorld) {
+            this.persistentRoot.updateWorldMatrix(true, false);
+            candidateLocal = (0, $721a3cf0b2bb84b2$export$7e745b0efb1d2a5)(this.persistentRoot.matrixWorld, candidateWorld, this.arReticleLocalMatrix);
+        }
+        this.arReticle.updateFromHitTest(this.arHitTest.state, candidateLocal);
     }
     /** Commits the current candidate without defining which input confirms it. */ applyCurrentARHitTestPlacement() {
         const placementWorld = this.arHitTest.currentWorldMatrix();
         if (!placementWorld) return false;
         this.applyUserPlacementWorldMatrix(placementWorld);
         return true;
+    }
+    confirmARPlacement() {
+        if (this.xrSessionMode !== 'ar' || this.arRuntimePlacementMode !== 'surface') return false;
+        if (!this.applyCurrentARHitTestPlacement()) return false;
+        this.arPlacementLockUntil = performance.now() + 600;
+        this.arReticle.setState('locked');
+        return true;
+    }
+    setExperimentalARRuntimeScale(mode, value) {
+        if (mode === 'authored') {
+            this.userManipulationRoot.scale.set(1, 1, 1);
+            this.userManipulationRoot.updateMatrixWorld(true);
+            return {
+                mode: mode,
+                scale: 1
+            };
+        }
+        if (mode === 'user-defined') {
+            if (!Number.isFinite(value) || value <= 0) throw new Error('User-defined AR scale must be a positive finite multiplier');
+            this.userManipulationRoot.scale.setScalar(value);
+            this.userManipulationRoot.updateMatrixWorld(true);
+            return {
+                mode: mode,
+                scale: value
+            };
+        }
+        if (mode === 'fit-volume') {
+            if (!Number.isFinite(value) || value <= 0) throw new Error('Fit-volume diameter must be a positive finite metre value');
+            const authoredDiameter = this.measureAuthoredContentDiameter();
+            if (authoredDiameter === undefined) throw new Error('The loaded asset has no measurable bounds for fit-volume scaling');
+            const scale = value / authoredDiameter;
+            this.userManipulationRoot.scale.setScalar(scale);
+            this.userManipulationRoot.updateMatrixWorld(true);
+            return {
+                mode: mode,
+                scale: scale,
+                authoredDiameter: authoredDiameter,
+                targetDiameter: value
+            };
+        }
+        throw new Error(`Unsupported AR runtime scale mode: ${mode}`);
+    }
+    measureAuthoredContentDiameter() {
+        if (!this.modelBoundingBox || this.modelBoundingBox.isEmpty()) return undefined;
+        const importerScale = Math.max(Math.abs(this.contentRoot.scale.x), Math.abs(this.contentRoot.scale.y), Math.abs(this.contentRoot.scale.z));
+        const sourceDiameter = this.modelBoundingBox.getBoundingSphere(new $hBQxr$three.Sphere()).radius * 2;
+        const diameter = sourceDiameter * importerScale;
+        return Number.isFinite(diameter) && diameter > 0 ? diameter : undefined;
     }
     initializeScene(disposeContent) {
         let defaultBackgroundColor = this.overrides?.["defaultBackgroundColor"];
@@ -4988,6 +5163,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.fallbackHeadLightCarrier?.removeFromParent();
         this.fallbackHeadLightCarrier = undefined;
         this.resetUserPlacement();
+        this.resetUserManipulation();
         this.contentRoot.clear();
         this.contentRoot.position.set(0, 0, 0);
         this.contentRoot.quaternion.identity();

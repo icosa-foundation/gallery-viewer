@@ -365,7 +365,13 @@ Support environments, dioramas, props, and unknown assets through explicit strat
 7. AR sessions now request hit testing as an optional capability, so unsupported devices can still start a basic AR session.
 8. A reusable viewer-space hit-test service owns source creation, per-frame pose updates, tracking-state transitions, and race-safe cancellation on session end.
 9. Valid hit poses are retained as world-space placement candidates and can be committed through the existing user-placement operation without changing importer or authored transforms.
-10. Hit-test candidates do not move content automatically. Reticle rendering and input confirmation remain separate follow-up work so this slice does not define touch-, controller-, or gaze-specific UX.
+10. A persistent scene-level reticle adapts the official Three.js ring geometry and hit-pose pattern, showing valid targets and a distinct lost-tracking state without inheriting asset transforms.
+11. Session-local runtime placement defaults to authored entry mode; surface placement must be selected explicitly, so unknown and large assets are not silently moved onto detected surfaces.
+12. WebXR `select` events route through one semantic confirmation operation for transient screen, tracked-pointer, gaze, and other select-capable input sources without user-agent or phone detection.
+13. Confirmation applies the current world-space candidate to the user-placement root and briefly locks the reticle for feedback without changing importer or authored transforms.
+14. A separate user-manipulation root now isolates session-local scale from AR entry, world placement, importer normalization, and asset-authored transforms.
+15. Authored scale remains the default. Explicit fit-volume actions derive a uniform multiplier from descriptive asset bounds and a user-selected target diameter; user-defined multipliers are also supported.
+16. Actual-size selection remains unavailable when reliable source units are unknown. Bounds are not relabeled as proof of real-world units.
 
 ### Schema decision: deferred
 

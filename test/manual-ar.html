@@ -30,6 +30,21 @@
     #manual-controls button { padding: 7px 14px; cursor: pointer; }
     #manual-status { margin-top: 8px; white-space: pre-wrap; }
     #manual-session { color: #9fd3ff; }
+    #manual-placement { color: #b8f7cc; }
+    #manual-instructions { margin-top: 8px; }
+    #manual-instructions summary { cursor: pointer; }
+    #manual-instructions ol { margin: 6px 0 0; padding-left: 22px; }
+    #toggle-controls {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 1001;
+      display: none;
+      padding: 7px 12px;
+    }
+    @media (max-height: 620px), (max-width: 520px) {
+      #manual-controls { max-height: calc(100% - 92px); overflow: auto; }
+    }
   </style>
   <script type="importmap">
     {"imports":{
@@ -69,10 +84,48 @@
       </select>
     </label>
     <label><input id="load-environment" type="checkbox" checked> Load authored environment</label>
+    <label>
+      AR presentation behavior
+      <select id="ar-placement-mode">
+        <option value="entry">Enter at authored viewpoint (large scene)</option>
+        <option value="surface">Place on detected surface (prop or diorama)</option>
+      </select>
+    </label>
+    <label>
+      AR size behavior
+      <select id="ar-scale-mode">
+        <option value="authored">Preserve authored size</option>
+        <option value="fit-0.25">Fit within 25 cm diameter</option>
+        <option value="fit-0.5">Fit within 50 cm diameter</option>
+        <option value="fit-1">Fit within 1 m diameter</option>
+        <option value="user">Custom scale multiplier</option>
+        <option value="actual" disabled>Actual size (reliable units unavailable)</option>
+      </select>
+    </label>
+    <label id="ar-scale-multiplier-label" hidden>
+      Custom scale multiplier
+      <input id="ar-scale-multiplier" type="number" min="0.001" step="any" value="1">
+    </label>
     <button type="submit">Load asset</button>
+    <button id="hide-controls" type="button">Hide controls</button>
     <div id="manual-session">Mode: desktop · Blend: unknown</div>
+    <div id="manual-placement">Hit test: inactive · Reticle: hidden</div>
+    <div id="manual-scale">Scale: authored</div>
     <div id="manual-status">Enter an Icosa asset ID or direct URL.</div>
+    <details id="manual-instructions" open>
+      <summary>Phase 3 surface-target test</summary>
+      <ol>
+        <li>Choose entry mode for a large scene or surface mode for a prop/diorama.</li>
+        <li>Load an asset, then select START AR.</li>
+        <li>Move the device slowly while it scans nearby surfaces.</li>
+        <li>A green ring means a valid surface target.</li>
+        <li>An amber ring means an established target was temporarily lost.</li>
+        <li>In surface mode, select the green target to place the asset. A blue flash confirms placement.</li>
+        <li>Fit-volume and custom scaling are explicit and do not alter importer normalization.</li>
+      </ol>
+    </details>
   </form>
+  <button id="toggle-controls" type="button">Show controls</button>
 
   <script type="module">
     import { Viewer } from "/dist/icosa-viewer.module.js";
@@ -83,20 +136,59 @@
     const assetUrlInput = document.getElementById("asset-url");
     const formatInput = document.getElementById("asset-format");
     const environmentInput = document.getElementById("load-environment");
+    const placementModeInput = document.getElementById("ar-placement-mode");
+    const scaleModeInput = document.getElementById("ar-scale-mode");
+    const scaleMultiplierInput = document.getElementById("ar-scale-multiplier");
+    const scaleMultiplierLabel = document.getElementById("ar-scale-multiplier-label");
     const status = document.getElementById("manual-status");
     const sessionStatus = document.getElementById("manual-session");
+    const placementStatus = document.getElementById("manual-placement");
+    const scaleStatus = document.getElementById("manual-scale");
     const form = document.getElementById("manual-controls");
+    const hideControlsButton = document.getElementById("hide-controls");
+    const toggleControlsButton = document.getElementById("toggle-controls");
 
     assetIdInput.value = params.get("asset") ?? "";
     assetUrlInput.value = params.get("url") ?? "";
     formatInput.value = params.get("format") ?? "auto";
     environmentInput.checked = params.get("environment") !== "0";
+    placementModeInput.value = params.get("placement") === "surface" ? "surface" : "entry";
+    const requestedScaleMode = params.get("scale") ?? "authored";
+    scaleModeInput.value = Array.from(scaleModeInput.options).some((option) => option.value === requestedScaleMode && !option.disabled)
+      ? requestedScaleMode
+      : "authored";
+    scaleMultiplierInput.value = params.get("multiplier") ?? "1";
+    scaleMultiplierLabel.hidden = scaleModeInput.value !== "user";
 
     const viewer = new Viewer(
       new URL("/dist/sketch_assets/", location.href).href,
       document.getElementById("icosa-viewer")
     );
     window.viewer = viewer;
+    viewer.setExperimentalARRuntimePlacementMode(placementModeInput.value);
+    let assetLoaded = false;
+
+    function applyScaleSelection() {
+      if (!assetLoaded) {
+        scaleStatus.textContent = `Scale: ${scaleModeInput.value === "authored" ? "authored" : "waiting for asset"}`;
+        return;
+      }
+
+      let result;
+      if (scaleModeInput.value === "authored") {
+        result = viewer.setExperimentalARRuntimeScale("authored");
+      } else if (scaleModeInput.value === "user") {
+        result = viewer.setExperimentalARRuntimeScale("user-defined", Number(scaleMultiplierInput.value));
+      } else {
+        result = viewer.setExperimentalARRuntimeScale("fit-volume", Number(scaleModeInput.value.slice(4)));
+      }
+
+      if (result.mode === "fit-volume") {
+        scaleStatus.textContent = `Scale: fit ${result.targetDiameter.toFixed(2)} m · multiplier ${result.scale.toPrecision(4)} · measured authored diameter ${result.authoredDiameter.toPrecision(4)}`;
+      } else {
+        scaleStatus.textContent = `Scale: ${result.mode} · multiplier ${result.scale.toPrecision(4)}`;
+      }
+    }
 
     const presentationOverrides = (presentationParams = {}) => ({
       presentationParams,
@@ -195,6 +287,7 @@
       const assetUrl = assetUrlInput.value.trim();
       if (!assetId && !assetUrl) throw new Error("Enter an Icosa asset ID or direct URL");
 
+      assetLoaded = false;
       viewer.loadingError = false;
       status.textContent = "Loading…";
       const nextParams = new URLSearchParams();
@@ -202,11 +295,16 @@
       else nextParams.set("url", assetUrl);
       if (!assetId && formatInput.value !== "auto") nextParams.set("format", formatInput.value);
       if (!environmentInput.checked) nextParams.set("environment", "0");
+      if (placementModeInput.value === "surface") nextParams.set("placement", "surface");
+      if (scaleModeInput.value !== "authored") nextParams.set("scale", scaleModeInput.value);
+      if (scaleModeInput.value === "user") nextParams.set("multiplier", scaleMultiplierInput.value);
       history.replaceState(null, "", `${location.pathname}?${nextParams}`);
 
       if (assetId) await loadIcosaAsset(assetId);
       else await loadDirectUrl(assetUrl);
       if (viewer.loadingError) throw new Error("The viewer reported an asset-loading error; inspect the browser console");
+      assetLoaded = true;
+      applyScaleSelection();
       status.textContent = assetId ? `Loaded Icosa asset ${assetId}` : `Loaded ${assetUrl}`;
     }
 
@@ -235,8 +333,43 @@
       assetIdInput.value = "";
     });
 
+    placementModeInput.addEventListener("change", () => {
+      viewer.setExperimentalARRuntimePlacementMode(placementModeInput.value);
+    });
+
+    scaleModeInput.addEventListener("change", () => {
+      scaleMultiplierLabel.hidden = scaleModeInput.value !== "user";
+      try {
+        applyScaleSelection();
+      } catch (error) {
+        scaleStatus.textContent = error instanceof Error ? error.message : String(error);
+      }
+    });
+
+    scaleMultiplierInput.addEventListener("input", () => {
+      if (scaleModeInput.value !== "user") return;
+      try {
+        applyScaleSelection();
+      } catch (error) {
+        scaleStatus.textContent = error instanceof Error ? error.message : String(error);
+      }
+    });
+
+    hideControlsButton.addEventListener("click", () => {
+      form.style.display = "none";
+      toggleControlsButton.style.display = "block";
+    });
+
+    toggleControlsButton.addEventListener("click", () => {
+      form.style.display = "block";
+      toggleControlsButton.style.display = "none";
+    });
+
     const updateSessionStatus = () => {
-      sessionStatus.textContent = `Mode: ${viewer.xrSessionMode} · Blend: ${viewer.xrEnvironmentBlendMode}`;
+      sessionStatus.textContent = `Mode: ${viewer.xrSessionMode} · Blend: ${viewer.xrEnvironmentBlendMode} · Placement: ${placementModeInput.value}`;
+      const hitTestState = viewer.arHitTest?.state ?? "unavailable";
+      const reticleState = viewer.arReticle?.state ?? "hidden";
+      placementStatus.textContent = `Hit test: ${hitTestState} · Reticle: ${reticleState}`;
       requestAnimationFrame(updateSessionStatus);
     };
     updateSessionStatus();

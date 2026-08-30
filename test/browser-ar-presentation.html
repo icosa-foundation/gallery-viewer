@@ -56,7 +56,8 @@
       scene.fog = originalFog;
       viewer.contentRoot.add(originalSky);
       viewer.skyObject = originalSky;
-      check(viewer.contentRoot.parent === viewer.userPlacementRoot, "importer content is parented under user placement");
+      check(viewer.contentRoot.parent === viewer.userManipulationRoot, "importer content is parented under user manipulation");
+      check(viewer.userManipulationRoot.parent === viewer.userPlacementRoot, "user manipulation is parented under user placement");
       check(viewer.userPlacementRoot.parent === viewer.arEntryRoot, "user placement is parented under AR entry");
 
       const readCornerAlpha = () => {
@@ -76,6 +77,7 @@
       const rigScale = viewer.cameraRig.scale.toArray();
       const arEntryMatrix = viewer.arEntryRoot.matrix.clone();
       const userPlacementMatrix = viewer.userPlacementRoot.matrix.clone();
+      const userManipulationMatrix = viewer.userManipulationRoot.matrix.clone();
       const importerScale = viewer.contentRoot.scale.toArray();
       const alphaSession = { environmentBlendMode: "alpha-blend" };
       viewer.handleXRSessionStarted("immersive-ar", alphaSession);
@@ -141,6 +143,17 @@
         vectorClose(viewer.contentRoot.scale.toArray(), [0.25, 0.25, 0.25]),
         "user placement leaves importer normalization unchanged"
       );
+      const runtimeScale = viewer.setExperimentalARRuntimeScale("user-defined", 0.4);
+      check(runtimeScale.scale === 0.4, "user-defined scale reports its applied multiplier");
+      check(
+        vectorClose(viewer.userManipulationRoot.scale.toArray(), [0.4, 0.4, 0.4]),
+        "user-defined scale is isolated on the manipulation root"
+      );
+      check(
+        matrixClose(viewer.userPlacementRoot.matrixWorld, desiredPlacementWorld),
+        "user-defined scale leaves world placement unchanged"
+      );
+      viewer.setExperimentalARRuntimeScale("authored");
 
       const appliedPlacementSnapshot = viewer.captureUserPlacement();
       const alternatePlacementWorld = new THREE.Matrix4().compose(
@@ -190,6 +203,7 @@
       check(renderer.getClearAlpha() === 1, "AR end restores opaque clearing");
       check(matrixClose(viewer.arEntryRoot.matrix, arEntryMatrix), "AR end restores the AR-entry transform");
       check(matrixClose(viewer.userPlacementRoot.matrix, userPlacementMatrix), "AR end restores user placement");
+      check(matrixClose(viewer.userManipulationRoot.matrix, userManipulationMatrix), "AR end restores user manipulation");
       check(
         matrixClose(viewer.userPlacementRoot.matrix, initialPlacementSnapshot.matrix),
         "AR end restores the captured placement snapshot"
@@ -240,6 +254,11 @@
       check(
         matrixClose(viewer.userPlacementRoot.matrix, new THREE.Matrix4()),
         "asset reload clears session-local user placement"
+      );
+      viewer.userManipulationRoot.updateMatrix();
+      check(
+        matrixClose(viewer.userManipulationRoot.matrix, new THREE.Matrix4()),
+        "asset reload clears session-local user manipulation"
       );
       viewer.handleXRSessionEnded("immersive-ar", reloadSession);
       check(scene.background === reloadedEnvironment.background, "AR exit restores the reloaded background");

@@ -1,4 +1,4 @@
-import { Matrix4 } from 'three';
+import type { Matrix4 } from 'three';
 
 export type GalleryARHitTestState =
     | 'inactive'
@@ -18,10 +18,12 @@ export type GalleryARHitTestState =
 export class ARHitTestService {
     private session?: XRSession;
     private source?: XRHitTestSource;
-    private candidateWorldMatrix?: Matrix4;
+    private hasCandidate = false;
     private generation = 0;
 
     public state: GalleryARHitTestState = 'inactive';
+
+    constructor(private readonly candidateWorldMatrix: Matrix4) {}
 
     public async start(session: XRSession): Promise<void> {
         this.stop();
@@ -70,22 +72,21 @@ export class ARHitTestService {
         const result = frame.getHitTestResults(this.source)[0];
         const pose = result?.getPose(baseSpace);
         if (!pose) {
-            this.candidateWorldMatrix = undefined;
+            this.hasCandidate = false;
             this.state = this.state === 'tracking' || this.state === 'lost'
                 ? 'lost'
                 : 'searching';
             return;
         }
 
-        this.candidateWorldMatrix = new Matrix4().fromArray(
-            Array.from(pose.transform.matrix)
-        );
+        this.candidateWorldMatrix.fromArray(pose.transform.matrix);
+        this.hasCandidate = true;
         this.state = 'tracking';
     }
 
     public currentWorldMatrix(target?: Matrix4): Matrix4 | undefined {
-        if (!this.candidateWorldMatrix) return undefined;
-        return (target ?? new Matrix4()).copy(this.candidateWorldMatrix);
+        if (!this.hasCandidate) return undefined;
+        return (target ?? this.candidateWorldMatrix.clone()).copy(this.candidateWorldMatrix);
     }
 
     public stop(): void {
@@ -97,7 +98,7 @@ export class ARHitTestService {
         }
         this.source = undefined;
         this.session = undefined;
-        this.candidateWorldMatrix = undefined;
+        this.hasCandidate = false;
         this.state = 'inactive';
     }
 

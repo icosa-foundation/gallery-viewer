@@ -24,4 +24,16 @@ For each device, manually compare one large traversable scene and one small prop
 5. Confirm that background, fog, and sky match the displayed blend mode.
 6. Exit AR and confirm that desktop presentation is restored.
 
-The current Phase 3 hit-test foundation has no user-facing reticle or confirmation input. It requests hit testing optionally and tracks placement candidates internally, so there is no additional placement interaction to test until the reticle and semantic confirmation action are implemented.
+The current Phase 3 placement interaction is session-local and intentionally explicit:
+
+1. Use **Enter at authored viewpoint** for a large scene. Hit testing may remain available internally, but no placement reticle or selection action should move the scene.
+2. Use **Place on detected surface** for a prop or diorama.
+3. When the runtime finds a surface in surface mode, a green ring should follow the current hit-test pose.
+4. When an established target is temporarily lost, the ring should remain at its last pose in amber.
+5. While searching, unsupported, outside AR, or in entry mode, the ring should be hidden.
+6. Select a green target using the runtime's primary WebXR select action. This may originate from transient screen input, a tracked controller, or another select-capable input source.
+7. The asset should move through the user-placement root without changing its importer or authored transform. A brief blue reticle confirms the placement.
+8. **Preserve authored size** should leave the user-manipulation scale at one after importer normalization.
+9. A fit-volume choice should scale the asset uniformly to the selected bounding-sphere diameter. This is an explicit diorama/viewing operation, not an inferred asset classification or real-world-size claim.
+10. A custom multiplier should affect only the user-manipulation root and should not change the surface placement or authored entry transform.
+11. **Actual size** remains unavailable unless reliable unit semantics are established for the asset.
