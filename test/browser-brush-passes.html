@@ -20,9 +20,16 @@
     import { Viewer } from "/dist/icosa-viewer.module.js";
     const assets = "https://cdn.jsdelivr.net/gh/icosa-foundation/icosa-sketch-assets@84f35c5e8af118051d2bca0cc08e1df0622a583f/";
     const viewer = new Viewer(assets);
-    const existingSketch = new URLSearchParams(location.search).has("existing-sketch");
+    const params = new URLSearchParams(location.search);
+    const existingSketch = params.has("existing-sketch");
+    const electricityFixture = params.get("electricity");
+    const fixtureUrl = electricityFixture === "new"
+      ? "/test/fixtures/electricity-new-export.gltf"
+      : existingSketch
+        ? "/dist/formats/gltf2/all_brushes.glb"
+        : "/test/fixtures/tube-toon-inverted.gltf";
     await viewer.loadGltf(
-      existingSketch ? "/dist/formats/gltf2/all_brushes.glb" : "/test/fixtures/tube-toon-inverted.gltf",
+      fixtureUrl,
       false,
       {},
     );
@@ -38,14 +45,15 @@
         materialCount: Array.isArray(object.material) ? object.material.length : 1,
         groups: object.geometry.groups.length,
       });
-      if (!Array.isArray(object.material)) return;
-      const passes = object.material;
-      if (passes.some((material) => material.name === "material_Electricity")) {
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      if (materials.some((material) => material.name === "material_Electricity")) {
         electricityMatches.push({
-          passes: passes.map((material) => material.uniforms.u_DisplacementMod?.value),
+          passes: materials.map((material) => material.uniforms.u_DisplacementMod?.value),
           groups: object.geometry.groups.map(({ start, count, materialIndex }) => ({ start, count, materialIndex })),
         });
       }
+      if (!Array.isArray(object.material)) return;
+      const passes = object.material;
       if (passes.some((material) => material.name === "material_Toon")) {
         toonMatches.push({
           passes: passes.map((material) => material.uniforms.u_ToonOutlinePass?.value),
@@ -71,14 +79,20 @@
         match.groups.every((group, index) => group.materialIndex === index && group.count > 0)
       );
       const electricityPassed = electricityMatches.length > 0 && electricityMatches.every((match) =>
+        match.passes.length === 1 && match.passes[0] === 1
+      );
+      const passed = meshes.length >= 40 && shaderMeshCount >= 40 && toonPassed && electricityPassed;
+      window.existingSketchResult = { passed, meshCount: meshes.length, shaderMeshCount, toonMatches, electricityMatches };
+      document.documentElement.dataset.existingSketch = passed ? "pass" : "fail";
+    } else if (electricityFixture === "new") {
+      const passed = electricityMatches.length > 0 && electricityMatches.every((match) =>
         match.passes.length === 3 &&
         match.passes[0] === 1 && match.passes[1] === 1.333 && match.passes[2] === 1.77 &&
         match.groups.length === 3 &&
         match.groups.every((group, index) => group.materialIndex === index && group.count > 0)
       );
-      const passed = meshes.length >= 40 && shaderMeshCount >= 40 && toonPassed && electricityPassed;
-      window.existingSketchResult = { passed, meshCount: meshes.length, shaderMeshCount, toonMatches, electricityMatches };
-      document.documentElement.dataset.existingSketch = passed ? "pass" : "fail";
+      window.electricityResult = { passed, electricityMatches, meshes };
+      document.documentElement.dataset.electricity = passed ? "pass" : "fail";
     } else {
       const passed = matches.length > 0 && matches.every((match) =>
         match.passes.length === 2 &&
