@@ -14,8 +14,17 @@ const cache = new Map();
 const moduleCaptureCache = new Map();
 const assetCache = new Map();
 const legacyAssetRoot = path.resolve(__dirname, '..', 'poly-replay-assets', 'www.tiltbrush.com', 'shaders');
-const comparisonFixtureModule = path.resolve(__dirname, '..', 'dist', 'comparison-fixtures.js');
 const fixedRuntimeAssetId = 'fbDxapxkwY9';
+const polyShellPath = path.resolve(
+    __dirname,
+    '..',
+    'poly-replay-assets',
+    'poly.google.com',
+    'view',
+    fixedRuntimeAssetId,
+    'embed.html'
+);
+const comparisonFixtureModule = path.resolve(__dirname, '..', 'dist', 'comparison-fixtures.js');
 const truckModelUrl = '/__poly_content__/downloads/c/fp/1622752595896720/fbDxapxkwY9/bX0pl9VnRFG/model.gltf';
 const archivedMainModules = 'n73qwf,ws9Tlc,IZT63,e5qFLc,GkRiKb,UUJqVe,O1Gjze,xUdipf,blwjVc,fKUV3e,aurFic,COQbmf,U0aPgd,ZwDk9d,V3dDOb,WO9ee,mI3LFb,h2ivme,O6y8ed,NpD4ec,PrPYRd,iWP1Yb,MpJwZc,O8k1Cd,NwH0H,OmgaI,HLo3Ef,x60fie,xiqEse,lazG7b,AG3oQd,XVMNvd,L1AAkb,KUM7Z,lfpdyf,fFdwef,s39S4,lwddkf,gychg,w9hDv,RMhBfe,qCSYWe,d349jb,SdcwHb,aW3pY,YLQSd,PQaYAf,pw70Gc,EFQ78c,Ulmmrd,ZfAoz,mdR7q,CBlRxf,MdUzUe,xQtZb,lPKSwe,QIhFr,JNoxi,MI6k7c,kjKdXe,pB6Zqd,rHjpXd,yDVVkb,SF3gsd,hKSk3e,iTsyac,hc6Ubd,KG2eXe,SpsfSb,fCrUFd,wfKlkc,tfTN8c,o02Jie,VwDzFe,zbML3c,HDvRde,Uas9Hd,BVgquf,A7fCU,UgAtXe,pjICDe';
 const requestedMainModules = archivedMainModules
@@ -650,10 +659,21 @@ async function localLegacyAssetResponse(localUrl) {
     }
 }
 
+async function localPolyShellResponse() {
+    const body = await fs.readFile(polyShellPath);
+    return {
+        status: 200,
+        contentType: 'text/html; charset=utf-8',
+        body,
+        finalUrl: polyShellPath,
+    };
+}
+
 async function fetchArchived(upstream) {
     if (cache.has(upstream)) return cache.get(upstream);
     let response;
-    for (let attempt = 1; attempt <= 5; attempt += 1) {
+    const maximumAttempts = 5;
+    for (let attempt = 1; attempt <= maximumAttempts; attempt += 1) {
         try {
             response = await fetch(upstream, {
                 headers: {
@@ -661,12 +681,23 @@ async function fetchArchived(upstream) {
                 },
                 redirect: 'follow',
             });
-            break;
         } catch (error) {
-            if (attempt === 5) throw error;
-            console.warn(`[POLY-REPLAY] archive fetch retry ${attempt}/4: ${upstream}`);
+            if (attempt === maximumAttempts) throw error;
+            console.warn(`[POLY-REPLAY] archive network retry ${attempt}/${maximumAttempts - 1}: ${upstream}`);
             await new Promise(resolve => setTimeout(resolve, attempt * 500));
+            continue;
         }
+
+        const transient = response.status === 429 || response.status >= 500;
+        if (!transient || attempt === maximumAttempts) break;
+
+        const retryAfterSeconds = Number(response.headers.get('retry-after'));
+        const delay = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+            ? retryAfterSeconds * 1000
+            : attempt * 500;
+        console.warn(`[POLY-REPLAY] archive HTTP ${response.status} retry ${attempt}/${maximumAttempts - 1}: ${upstream}`);
+        await response.arrayBuffer();
+        await new Promise(resolve => setTimeout(resolve, delay));
     }
     const result = {
         status: response.status,
@@ -783,9 +814,13 @@ const server = http.createServer(async (request, response) => {
         const requestedModules = request.url?.startsWith('/_/scs/')
             ? decodeURIComponent(request.url).split('/m=').at(-1)?.split('?')[0]
             : undefined;
-        let archived = requestedModules && compatibleModuleBatches.has(requestedModules)
-            ? await compatibleModuleResponse(request.url)
-            : await fetchArchived(upstream);
+        const useLocalPolyShell = /^\/view\/[^/]+\/embed$/.test(localUrl.pathname)
+            && localUrl.searchParams.get('original') !== '1';
+        let archived = useLocalPolyShell
+            ? await localPolyShellResponse()
+            : requestedModules && compatibleModuleBatches.has(requestedModules)
+                ? await compatibleModuleResponse(request.url)
+                : await fetchArchived(upstream);
         if (archived.status === 404 && request.url?.startsWith('/_/scs/')) {
             archived = await compatibleModuleResponse(request.url) || archived;
         }
