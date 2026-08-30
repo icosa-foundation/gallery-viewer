@@ -2,7 +2,7 @@
 
 ## Status and purpose
 
-This document proposes a phased implementation of substantial WebXR AR support in Icosa Viewer. It is intended to be discussed and refined before implementation begins.
+This document is the living implementation plan for substantial WebXR AR support in Icosa Viewer. It records completed foundations, deliberately deferred work, and the remaining sequence as of 30 August 2026. Phases are not treated as strict barriers: narrowly scoped foundations from a later phase may be pulled forward when they preserve the architectural boundaries defined here.
 
 The plan deliberately separates five concerns that must not be inferred from one another:
 
@@ -193,6 +193,21 @@ No new runtime library is required for the initial phases. Any later dependency 
 
 Establish a tested compatibility boundary before changing XR behaviour.
 
+### Implementation status: substantially implemented, with integration research remaining
+
+Completed:
+
+1. Existing presentation, camera, geometry, navigation, and real-world-transform metadata have typed representations without breaking the existing load API.
+2. A pure presentation metadata resolver records source precedence while preserving distinctions between missing values and explicit `false`, zero, empty, or fallback values.
+3. Regression fixtures cover flattened overrides, nested `presentationParams`, legacy spellings, conflicting sources, navigation precedence, and scale observations.
+4. The project and its pinned rendering dependencies now target the current Three.js `0.185` compatibility line.
+
+Remaining:
+
+1. Complete the representative production-asset inventory across Icosa Gallery, migrated Poly, Tilt Brush, Open Brush, Blocks, general glTF, splat, and IMM inputs.
+2. Establish authoritative semantics for `GOOGLE_real_world_transform.scaling_factor`, especially zero and missing values, before it can influence actual-size presentation.
+3. Coordinate how the complete existing `presentationParams` object reaches the viewer in deployed Gallery integrations while retaining current flattened overrides.
+
 ### Work
 
 1. Define TypeScript interfaces for the existing load-time override shape without changing the public method signatures yet.
@@ -238,6 +253,24 @@ Do not start content auto-scaling or placement until the existing scale fields a
 ### Objective
 
 Replace the current shared AR/VR presentation branch with an explicit, observable session foundation without yet changing asset placement.
+
+### Implementation status: partially implemented
+
+Completed:
+
+1. The viewer distinguishes desktop, VR, and AR presentation state and prevents VR locomotion policy from running merely because an AR session is presenting.
+2. XR button lifecycle callbacks provide the viewer with session start and end boundaries while preserving the existing combined host control.
+3. The active session's environment blend mode is normalized for presentation policy.
+4. AR optional session features can be requested without making unsupported hit testing fatal to basic AR entry.
+5. Scene and transform state needed by later AR phases is captured and restored idempotently by the implemented presentation lifecycle.
+
+Remaining:
+
+1. Finalize independent host configuration for enabling AR and VR and supplying required and optional session features.
+2. Add a live, public capability snapshot for changing input sources and optional world-understanding features.
+3. Add stable host events for mode, capability, error, visibility, and unexpected session-end changes.
+4. Complete visible unsupported, insecure-context, permission, startup, and request-failure states without relying on browser-specific detection.
+5. Confirm existing VR controller rendering and locomotion on physical hardware after the shared lifecycle changes.
 
 ### Work
 
@@ -289,7 +322,7 @@ Do not add device-specific interaction based on user-agent strings. All later in
 
 Make loaded content render correctly in different AR display environments while preserving physical tracking and existing authored transforms.
 
-### Implementation status (started 21 August 2026)
+### Implementation status: foundation implemented; physical-device and additive-display work remains
 
 Implemented in the initial Phase 2 slice:
 
@@ -354,7 +387,7 @@ Do not add automatic `fit-volume` presentation until explicit presentation inten
 
 Support environments, dioramas, props, and unknown assets through explicit strategies rather than a single AR placement flow.
 
-### Implementation status (started 21 August 2026)
+### Implementation status: placement and scale foundation implemented; strategy coverage remains incomplete
 
 1. The scene hierarchy now separates the AR authored-entry transform, session-local user placement, importer normalization, and asset-authored transforms.
 2. AR session restoration snapshots the entry and user-placement layers independently.
@@ -372,6 +405,16 @@ Support environments, dioramas, props, and unknown assets through explicit strat
 14. A separate user-manipulation root now isolates session-local scale from AR entry, world placement, importer normalization, and asset-authored transforms.
 15. Authored scale remains the default. Explicit fit-volume actions derive a uniform multiplier from descriptive asset bounds and a user-selected target diameter; user-defined multipliers are also supported.
 16. Actual-size selection remains unavailable when reliable source units are unknown. Bounds are not relabeled as proof of real-world units.
+
+Remaining before Phase 3 is complete:
+
+1. Formalize the internal resolved-presentation policy boundary so placement strategies do not consume raw metadata or host inputs directly.
+2. Add floor, table, wall, and unrestricted placement policies where the runtime exposes sufficient hit-test or plane information.
+3. Add controller-ray, gaze, fixed or host-provided transform, and capability-light place-in-front strategies.
+4. Add reliable actual-size and physical-dimension presentation only after source-unit semantics are established.
+5. Add an explicit reset operation that returns placement and scale to the resolved session default.
+6. Decide whether and how placement and scale overrides persist beyond the current page controls without introducing schema commitments.
+7. Evaluate the interaction on representative props, dioramas, unknown assets, and traversable scenes across handheld, headset, smart-glass, and desktop-connected AR hardware.
 
 ### Schema decision: deferred
 
@@ -438,6 +481,10 @@ Consequences of this deferral:
 ### Objective
 
 Provide consistent viewer actions through different input and UI mechanisms without equating AR with touch input.
+
+### Implementation status: one placement action pulled forward; broader phase not started
+
+WebXR `select` currently invokes the same semantic placement-confirmation operation for transient-screen, tracked-pointer, gaze, and other select-capable sources exposed through the controller abstraction. This is a narrow foundation, not the full action router. Cancel, reset, selection, manipulation, navigation, input-source capability changes, DOM-overlay coordination, and spatial UI remain outstanding.
 
 ### Action layer
 
@@ -659,6 +706,8 @@ Some work belongs outside this repository and must be coordinated rather than si
 
 ### Milestone A: Safe AR foundation
 
+Status: partially complete. The core rendering, lifecycle, metadata, and transform foundations are implemented, but the remaining Phase 0 integration research, Phase 1 capability and host-event work, and Phase 2 physical/additive validation keep this milestone open.
+
 Includes Phases 0 through 2.
 
 1. Backwards-compatible metadata resolution.
@@ -672,6 +721,8 @@ Includes Phases 0 through 2.
 This milestone may still use configured or simple in-front placement, but it establishes the invariants needed by every later feature.
 
 ### Milestone B: Usable multi-device placement
+
+Status: in progress. Hit-test targeting, explicit surface placement, semantic selection confirmation, and session-local scale operations are implemented. Additional placement strategies, the full action layer, manipulation, and device-appropriate UI remain outstanding.
 
 Includes Phases 3 and 4.
 
@@ -700,16 +751,23 @@ Includes Phases 7 and 8.
 3. Automated and physical-device matrices.
 4. Documentation and staged release.
 
-## Decisions to resolve before implementing Phase 0 and Phase 1
+## Resolved decisions and remaining coordination questions
 
-The Three.js compatibility target has been resolved: the first AR milestone will target the latest available Three.js release. At the time of the decision, the repository is already on `three` `0.185.1` and `@types/three` `0.185.4`. Gallery deployment import maps must be aligned with this baseline before Phase 1 relies on its current XR addons and manager APIs.
+Resolved:
 
-The remaining decisions are:
+1. The implementation targets the current Three.js `0.185` compatibility line; deployed import maps and peer dependencies must remain aligned with it.
+2. Phase 3 adds no persistent XR presentation metadata fields. Schema design is deferred until the interaction model has been evaluated and coordinated across repositories.
+3. An asset with no reliable presentation intent preserves authored entry and authored scale. Surface placement and fit-volume scaling require explicit user or experimental host choices.
+4. Bounds are descriptive inputs, not evidence of real-world units. Actual-size presentation remains unavailable when unit semantics are unreliable.
+5. Placement confirmation consumes WebXR semantic `select` events and does not classify devices as phones, headsets, glasses, or desktop AR by user agent.
+6. Importer normalization, authored transforms, AR entry, user placement, and user manipulation remain separate transform layers.
 
-1. Should the viewer receive the complete existing `presentationParams` object directly, or should the Gallery normalize every new field into the overrides object?
-2. What values currently occur in `camera.GOOGLE_camera_settings.mode`, and how should they map to the viewer's fly and orbit modes?
-3. Does `GOOGLE_real_world_transform.scaling_factor` describe importer units, an enablement state, or intended display scale, and what does zero mean?
-4. Should XR options be constructor options, a separate configuration method, load-time options, or a combination with documented precedence?
-5. Which viewer events must be stable public API in the first milestone?
-6. What is the conservative default AR presentation for an asset with no reliable intent or scale metadata?
-7. Which physical devices are available for the initial regression matrix?
+Remaining coordination questions:
+
+1. Should the viewer receive the complete existing `presentationParams` object directly, or should Gallery normalize selected fields into the overrides object while also preserving the original object?
+2. What values occur in production for `camera.GOOGLE_camera_settings.mode`, and how should they map to fly and orbit suggestions without implying AR presentation intent?
+3. Does `GOOGLE_real_world_transform.scaling_factor` describe importer units, an enablement state, or intended display scale, and what do zero and missing values mean?
+4. Should stable XR options be constructor options, a configuration method, load-time options, or a combination with documented precedence?
+5. Which mode, capability, lifecycle, and error events must become stable public API?
+6. Which physical handheld, headset, smart-glass, and desktop-connected AR devices are available for the initial regression matrix?
+7. After manual UX evaluation, which presentation choices, if any, should become portable metadata shared by Gallery, editor, exporter, viewer, and client libraries?
