@@ -74,8 +74,27 @@ try {
   if (!existingResult?.passed) throw new Error(`Gallery existing-sketch gate failed: ${JSON.stringify(existingResult)}`);
   if (existingErrors.length > 0) throw new Error(`Gallery existing-sketch errors: ${existingErrors.join("; ")}. Console: ${existingMessages.join("; ")}`);
   await existingPage.close();
+
+  const newElectricityPage = await browser.newPage({ viewport: { width: 1280, height: 720 } });
+  const newElectricityErrors = [];
+  const newElectricityMessages = [];
+  newElectricityPage.on("pageerror", (error) => newElectricityErrors.push(error.message));
+  newElectricityPage.on("console", (message) => newElectricityMessages.push(`${message.type()}: ${message.text()}`));
+  await newElectricityPage.goto(`http://127.0.0.1:${address.port}/test/browser-brush-passes.html?electricity=new`, {
+    waitUntil: "domcontentloaded",
+    timeout: 120_000,
+  });
+  await newElectricityPage.waitForFunction(() => document.documentElement.dataset.electricity, undefined, { timeout: 120_000 });
+  const newElectricityResult = await newElectricityPage.evaluate(() => window.electricityResult);
+  if (!newElectricityResult?.passed) {
+    throw new Error(`Gallery new-export Electricity gate failed: ${JSON.stringify(newElectricityResult)}`);
+  }
+  if (newElectricityErrors.length > 0) {
+    throw new Error(`Gallery new-export Electricity errors: ${newElectricityErrors.join("; ")}. Console: ${newElectricityMessages.join("; ")}`);
+  }
+  await newElectricityPage.close();
   console.log(
-    `Gallery browser smoke passed: ${result.matches.length} Tube Toon Inverted fixture mesh(es); existing sketch ${existingResult.toonMatches.length} Toon and ${existingResult.electricityMatches.length} Electricity mesh(es), with ${existingResult.shaderMeshCount}/${existingResult.meshCount} shader meshes.`,
+    `Gallery browser smoke passed: ${result.matches.length} Tube Toon Inverted fixture mesh(es); existing sketch ${existingResult.toonMatches.length} Toon and ${existingResult.electricityMatches.length} legacy Electricity mesh(es), with ${existingResult.shaderMeshCount}/${existingResult.meshCount} shader meshes; ${newElectricityResult.electricityMatches.length} new-export Electricity mesh(es).`,
   );
 } finally {
   await browser?.close();
