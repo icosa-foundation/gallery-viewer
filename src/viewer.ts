@@ -2456,16 +2456,18 @@ export class Viewer {
     // Defaults to assuming materials are vertex colored
     public async loadObj(url: string, overrides: any) {
         try {
-            this.overrides = overrides;
+            const objOverrides = { ...(overrides || {}) };
+            if (!objOverrides.defaultBackgroundColor) {
+                objOverrides.defaultBackgroundColor = "#ffffff";
+            }
+            this.overrides = objOverrides;
             this.objLoader.loadAsync(url).then((objData) => {
 
                 this.loadedModel = objData;
 
-                let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-                if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
-                this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
+                this.defaultBackgroundColor = new THREE.Color(objOverrides.defaultBackgroundColor);
 
-                let withVertexColors = overrides?.["withVertexColors"];
+                let withVertexColors = objOverrides.withVertexColors;
                 if (withVertexColors) {
                     this.setAllVertexColors(this.loadedModel);
                 }
@@ -2481,18 +2483,20 @@ export class Viewer {
 
     public async loadObjWithMtl(objUrl: string, mtlUrl: string, overrides: any) {
         try {
-            this.overrides = overrides;
+            const objOverrides = { ...(overrides || {}) };
+            if (!objOverrides.defaultBackgroundColor) {
+                objOverrides.defaultBackgroundColor = "#ffffff";
+            }
+            this.overrides = objOverrides;
             this.mtlLoader.loadAsync(mtlUrl).then((materials) => {
                 materials.preload();
                 this.objLoader.setMaterials(materials);
                 this.objLoader.loadAsync(objUrl).then((objData) => {
                     this.loadedModel = objData;
 
-                    let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-                    if (!defaultBackgroundColor) {defaultBackgroundColor = "#000000";}
-                    this.defaultBackgroundColor = new THREE.Color(defaultBackgroundColor);
+                    this.defaultBackgroundColor = new THREE.Color(objOverrides.defaultBackgroundColor);
 
-                    let withVertexColors = overrides?.["withVertexColors"];
+                    let withVertexColors = objOverrides.withVertexColors;
                     if (withVertexColors) {
                         this.setAllVertexColors(this.loadedModel);
                     }

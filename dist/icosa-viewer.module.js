@@ -6030,13 +6030,15 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     // Defaults to assuming materials are vertex colored
     async loadObj(url, overrides) {
         try {
-            this.overrides = overrides;
+            const objOverrides = {
+                ...overrides || {}
+            };
+            if (!objOverrides.defaultBackgroundColor) objOverrides.defaultBackgroundColor = "#ffffff";
+            this.overrides = objOverrides;
             this.objLoader.loadAsync(url).then((objData)=>{
                 this.loadedModel = objData;
-                let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-                if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-                this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
-                let withVertexColors = overrides?.["withVertexColors"];
+                this.defaultBackgroundColor = new $hBQxr$three.Color(objOverrides.defaultBackgroundColor);
+                let withVertexColors = objOverrides.withVertexColors;
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                 this.setupSketchMetaData(this.loadedModel);
                 this.initializeScene();
@@ -6049,16 +6051,18 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadObjWithMtl(objUrl, mtlUrl, overrides) {
         try {
-            this.overrides = overrides;
+            const objOverrides = {
+                ...overrides || {}
+            };
+            if (!objOverrides.defaultBackgroundColor) objOverrides.defaultBackgroundColor = "#ffffff";
+            this.overrides = objOverrides;
             this.mtlLoader.loadAsync(mtlUrl).then((materials)=>{
                 materials.preload();
                 this.objLoader.setMaterials(materials);
                 this.objLoader.loadAsync(objUrl).then((objData)=>{
                     this.loadedModel = objData;
-                    let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-                    if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-                    this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
-                    let withVertexColors = overrides?.["withVertexColors"];
+                    this.defaultBackgroundColor = new $hBQxr$three.Color(objOverrides.defaultBackgroundColor);
+                    let withVertexColors = objOverrides.withVertexColors;
                     if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                     this.setupSketchMetaData(this.loadedModel);
                     this.initializeScene();
