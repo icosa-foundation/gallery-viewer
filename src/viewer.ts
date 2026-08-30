@@ -2286,7 +2286,7 @@ export class Viewer {
             await this._loadGltf(url, loadEnvironment, overrides, true);
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading glTFv1 model");
+            console.error("Error loading glTFv1 model", error);
             this.loadingError = true;
         }
     }
@@ -2296,7 +2296,7 @@ export class Viewer {
             await this._loadGltf(url, loadEnvironment, overrides, false);
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading glTFv2 model");
+            console.error("Error loading glTFv2 model", error);
             this.loadingError = true;
         }
     }
