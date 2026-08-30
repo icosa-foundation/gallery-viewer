@@ -18,7 +18,7 @@
   <div id="icosa-viewer"></div>
   <script type="module">
     import { Viewer } from "/dist/icosa-viewer.module.js";
-    const assets = "https://cdn.jsdelivr.net/gh/icosa-foundation/icosa-sketch-assets@1c06159516aa7359f2bad8ac5ded1f6d7139bde1/";
+    const assets = "https://cdn.jsdelivr.net/gh/icosa-foundation/icosa-sketch-assets@84f35c5e8af118051d2bca0cc08e1df0622a583f/";
     const viewer = new Viewer(assets);
     const existingSketch = new URLSearchParams(location.search).has("existing-sketch");
     await viewer.loadGltf(
