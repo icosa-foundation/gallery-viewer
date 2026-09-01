@@ -70,6 +70,21 @@ try {
     timeout: 120_000,
   });
   await page.waitForFunction(() => window.__galleryImm?.ready === true, undefined, { timeout: 120_000 });
+  const audioUnlockCalls = await page.evaluate(async () => {
+    const asset = window.__galleryImm.viewer.immAsset;
+    if (!asset) return 0;
+    let calls = 0;
+    const enableAudio = asset.enableAudio.bind(asset);
+    asset.enableAudio = async () => {
+      calls += 1;
+      await enableAudio();
+    };
+    window.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true }));
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    asset.enableAudio = enableAudio;
+    return calls;
+  });
+  if (audioUnlockCalls < 1) throw new Error("A pointer gesture did not enable IMM audio");
   const before = await page.evaluate(() => window.__galleryImmDiagnostics());
   await page.waitForTimeout(1_500);
   const after = await page.evaluate(() => window.__galleryImmDiagnostics());
