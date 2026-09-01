@@ -11,6 +11,11 @@ import {VOXLoader as $hBQxr$VOXLoader, VOXMesh as $hBQxr$VOXMesh} from "three/ex
 import {GLTFGoogleTiltBrushMaterialExtension as $hBQxr$GLTFGoogleTiltBrushMaterialExtension} from "three-icosa";
 import {TiltLoader as $hBQxr$TiltLoader} from "three-tiltloader";
 import {XRControllerModelFactory as $hBQxr$XRControllerModelFactory} from "three/examples/jsm/webxr/XRControllerModelFactory.js";
+import {EffectComposer as $hBQxr$EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer.js";
+import {OutputPass as $hBQxr$OutputPass} from "three/examples/jsm/postprocessing/OutputPass.js";
+import {RenderPass as $hBQxr$RenderPass} from "three/examples/jsm/postprocessing/RenderPass.js";
+import {ShaderPass as $hBQxr$ShaderPass} from "three/examples/jsm/postprocessing/ShaderPass.js";
+import {UnrealBloomPass as $hBQxr$UnrealBloomPass} from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 // Copyright 2021-2022 Icosa Gallery
 //
@@ -2715,7 +2720,9 @@ class $81e80e8b2d2d5e9f$export$9559c3115faeb0b0 extends $81e80e8b2d2d5e9f$var$Th
                 "scene": scene,
                 "scenes": scenes,
                 "cameras": cameras,
-                "animations": animations
+                "animations": animations,
+                "asset": json.asset,
+                "userData": json.extras || {}
             };
             callback(glTF);
         });
@@ -4006,6 +4013,11 @@ class $707bd002539ed0ea$export$1b293339dff011f9 {
 
 
 
+
+
+
+
+
 class $677737c8a5cbea2f$var$SketchMetadata {
     constructor(scene, userData){
         // Traverse the scene and return all nodes with a name starting with "node_SceneLight_"
@@ -4035,6 +4047,13 @@ class $677737c8a5cbea2f$var$SketchMetadata {
         this.SkyTexture = userData['TB_SkyTexture'] ?? this.EnvironmentPreset.SkyTexture;
         this.ReflectionTexture = userData['TB_ReflectionTexture'] ?? this.EnvironmentPreset.ReflectionTexture;
         this.ReflectionIntensity = userData['TB_ReflectionIntensity'] ?? this.EnvironmentPreset.ReflectionIntensity;
+        this.HasLightingMetadata = sceneLights.length > 0 || this.EnvironmentPreset.Guid !== null || [
+            'TB_AmbientLightColor',
+            'TB_SceneLight0Color',
+            'TB_SceneLight0Rotation',
+            'TB_SceneLight1Color',
+            'TB_SceneLight1Rotation'
+        ].some((key)=>userData[key] !== undefined && userData[key] !== null);
         // Convert Unity Euler angles (YXZ, left-handed) to Three.js XYZ Euler degrees.
         // Goes through a quaternion to correctly change both Euler order and handedness.
         function unityRotToThreeJSDegrees(rot, label) {
@@ -4105,6 +4124,18 @@ class $677737c8a5cbea2f$var$EnvironmentPreset {
 }
 class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     constructor(assetBaseUrl, frame){
+        this.resolvedBloom = {
+            enabled: false,
+            strength: 0,
+            threshold: 0,
+            radius: 0
+        };
+        this.resolvedVignette = {
+            enabled: false,
+            strength: 0,
+            soft: false
+        };
+        this.loadedContentIsTilt = false;
         this.loadingError = false;
         this.icosa_frame = frame;
         // Attempt to find viewer frame if not assigned
@@ -4211,6 +4242,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             antialias: true
         });
         this.renderer.setPixelRatio(window.devicePixelRatio);
+        // PCFSoftShadowMap is an alias for PCFShadowMap in current Three.js.
+        this.renderer.shadowMap.type = $hBQxr$three.PCFShadowMap;
         this.renderer.outputColorSpace = $hBQxr$three.SRGBColorSpace;
         this.renderer.xr.enabled = true;
         // Use 'local' reference space for full 6DOF tracking without floor offset
@@ -4326,17 +4359,35 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 const needResize = viewer.canvas.width !== viewer.canvas.clientWidth || viewer.canvas.height !== viewer.canvas.clientHeight;
                 if (needResize && viewer?.flatCamera) {
                     this.renderer.setSize(viewer.canvas.clientWidth, viewer.canvas.clientHeight, false);
-                    viewer.flatCamera.aspect = viewer.canvas.clientWidth / viewer.canvas.clientHeight;
+                    viewer.effectComposer?.setSize(viewer.canvas.clientWidth, viewer.canvas.clientHeight);
+                    const aspect = viewer.canvas.clientWidth / viewer.canvas.clientHeight;
+                    viewer.flatCamera.aspect = aspect;
+                    if (viewer.thumbnailCameraHorizontalFov !== undefined) viewer.flatCamera.fov = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.verticalFovForAspect(viewer.thumbnailCameraHorizontalFov, aspect);
                     viewer.flatCamera.updateProjectionMatrix();
                 }
                 if (viewer?.cameraControls) viewer.cameraControls.update(delta);
                 if (viewer?.trackballControls) viewer.trackballControls.update();
             }
-            if (viewer?.activeCamera) this.attachAudioListener(viewer.activeCamera);
+            if (viewer?.activeCamera) {
+                this.attachAudioListener(viewer.activeCamera);
+                if (viewer.fallbackHeadLightCarrier) {
+                    viewer.activeCamera.getWorldPosition(viewer.fallbackHeadLightCarrier.position);
+                    viewer.activeCamera.getWorldQuaternion(viewer.fallbackHeadLightCarrier.quaternion);
+                    viewer.fallbackHeadLightCarrier.updateMatrixWorld(true);
+                }
+            }
             this.tryStartAutoplayAudio(viewer.contentRoot);
             if (viewer?.activeCamera && viewer.contentUpdater) viewer.contentUpdater(animationTime, viewer.activeCamera);
             // SparkRenderer stochastic setup is now handled by GUI toggle
-            if (viewer?.activeCamera) this.renderer.render(viewer.scene, viewer.activeCamera);
+            if (viewer?.activeCamera) {
+                if (viewer.effectComposer && viewer.postProcessingRenderPass && !this.renderer.xr.isPresenting) {
+                    viewer.postProcessingRenderPass.camera = viewer.activeCamera;
+                    viewer.effectComposer.render(delta);
+                } else {
+                    this.renderer.render(viewer.scene, viewer.activeCamera);
+                    viewer.renderVignetteOverlay();
+                }
+            }
         };
         this.dataURLtoBlob = (dataURL)=>{
             let arr = dataURL.split(',');
@@ -4359,26 +4410,47 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             const originalPixelRatio = this.renderer.getPixelRatio();
             // Store original camera aspect ratio
             const originalAspect = this.activeCamera.aspect;
-            // Create render target for offscreen rendering
-            const renderTarget = new $hBQxr$three.WebGLRenderTarget(width, height, {
-                format: $hBQxr$three.RGBAFormat,
-                type: $hBQxr$three.UnsignedByteType,
-                generateMipmaps: false,
-                minFilter: $hBQxr$three.LinearFilter,
-                magFilter: $hBQxr$three.LinearFilter
-            });
-            // Set render target and size
-            this.renderer.setRenderTarget(renderTarget);
-            this.renderer.setSize(width, height, false);
-            this.renderer.setPixelRatio(1); // Use 1:1 pixel ratio for consistent output
+            const originalFov = this.activeCamera.fov;
             // Update camera aspect ratio to match thumbnail dimensions
             this.activeCamera.aspect = width / height;
+            if (this.thumbnailCameraHorizontalFov !== undefined) this.activeCamera.fov = $677737c8a5cbea2f$export$2ec4afd9b3c16a85.verticalFovForAspect(this.thumbnailCameraHorizontalFov, this.activeCamera.aspect);
             this.activeCamera.updateProjectionMatrix();
-            // Render the scene
-            this.renderer.render(this.scene, this.activeCamera);
-            // Read pixels from render target
-            const pixels = new Uint8Array(width * height * 4);
-            this.renderer.readRenderTargetPixels(renderTarget, 0, 0, width, height, pixels);
+            let pixels;
+            let temporaryRenderTarget;
+            if (this.effectComposer && this.postProcessingRenderPass) {
+                const originalRenderToScreen = this.effectComposer.renderToScreen;
+                this.effectComposer.renderToScreen = false;
+                this.effectComposer.setPixelRatio(1);
+                this.effectComposer.setSize(width, height);
+                this.postProcessingRenderPass.camera = this.activeCamera;
+                this.effectComposer.render(0);
+                const halfFloatPixels = new Uint16Array(width * height * 4);
+                this.renderer.readRenderTargetPixels(this.effectComposer.readBuffer, 0, 0, width, height, halfFloatPixels);
+                pixels = new Uint8Array(halfFloatPixels.length);
+                for(let i = 0; i < halfFloatPixels.length; i++){
+                    let value = $hBQxr$three.DataUtils.fromHalfFloat(halfFloatPixels[i]);
+                    if (i % 4 !== 3 && this.renderer.outputColorSpace === $hBQxr$three.SRGBColorSpace) value = value <= 0.0031308 ? value * 12.92 : 1.055 * Math.pow(value, 1 / 2.4) - 0.055;
+                    pixels[i] = Math.round($hBQxr$three.MathUtils.clamp(value, 0, 1) * 255);
+                }
+                this.effectComposer.renderToScreen = originalRenderToScreen;
+                this.effectComposer.setPixelRatio(originalPixelRatio);
+                this.effectComposer.setSize(originalSize.x, originalSize.y);
+            } else {
+                temporaryRenderTarget = new $hBQxr$three.WebGLRenderTarget(width, height, {
+                    format: $hBQxr$three.RGBAFormat,
+                    type: $hBQxr$three.UnsignedByteType,
+                    generateMipmaps: false,
+                    minFilter: $hBQxr$three.LinearFilter,
+                    magFilter: $hBQxr$three.LinearFilter
+                });
+                this.renderer.setRenderTarget(temporaryRenderTarget);
+                this.renderer.setSize(width, height, false);
+                this.renderer.setPixelRatio(1);
+                this.renderer.render(this.scene, this.activeCamera);
+                this.renderVignetteOverlay();
+                pixels = new Uint8Array(width * height * 4);
+                this.renderer.readRenderTargetPixels(temporaryRenderTarget, 0, 0, width, height, pixels);
+            }
             // Create canvas and draw pixels to it
             const canvas = document.createElement('canvas');
             canvas.width = width;
@@ -4402,9 +4474,10 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.renderer.setPixelRatio(originalPixelRatio);
             // Restore original camera aspect ratio
             this.activeCamera.aspect = originalAspect;
+            this.activeCamera.fov = originalFov;
             this.activeCamera.updateProjectionMatrix();
             // Clean up
-            renderTarget.dispose();
+            temporaryRenderTarget?.dispose();
             return dataUrl;
         };
         animate();
@@ -4458,18 +4531,21 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.immModule = undefined;
         }
         this.contentUpdater = undefined;
+        this.fallbackHeadLightCarrier?.removeFromParent();
+        this.fallbackHeadLightCarrier = undefined;
         this.contentRoot.clear();
         this.contentRoot.position.set(0, 0, 0);
         this.contentRoot.quaternion.identity();
         this.contentRoot.scale.set(1, 1, 1);
+        this.renderer.shadowMap.enabled = false;
         this.scene.background = null;
         this.scene.fog = null;
         this.environmentObject = undefined;
         this.skyObject = undefined;
         this.initSceneBackground();
         this.initFog();
-        this.initLights();
         this.initCameras();
+        this.initLights();
         // Compensate for insanely large models
         const LIMIT = 100000;
         let radius = this.overrides?.geometryData?.stats?.radius;
@@ -4483,7 +4559,288 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             if (this.isNewTiltExporter(this.sceneGltf)) this.contentRoot.scale.set(0.1, 0.1, 0.1);
             this.contentRoot.add(this.loadedModel);
         }
+        this.configureShadows();
+        this.configurePostProcessing();
         this.contentDisposer = disposeContent;
+    }
+    mergePostProcessingOptions(base, override) {
+        if (!base && !override) return undefined;
+        const merged = {
+            ...base || {},
+            ...override || {}
+        };
+        const baseBloom = base?.bloom;
+        const overrideBloom = override?.bloom;
+        if (baseBloom && typeof baseBloom === 'object' && overrideBloom && typeof overrideBloom === 'object') merged.bloom = {
+            ...baseBloom,
+            ...overrideBloom
+        };
+        const baseVignette = base?.vignette;
+        const overrideVignette = override?.vignette;
+        if (baseVignette && typeof baseVignette === 'object' && overrideVignette && typeof overrideVignette === 'object') merged.vignette = {
+            ...baseVignette,
+            ...overrideVignette
+        };
+        return merged;
+    }
+    resolvedPostProcessingConfiguration() {
+        const authored = this.overrides?.presentationParams?.postProcessing ?? this.overrides?.presentationPostProcessing;
+        const loadOverrides = this.overrides?.postProcessing;
+        return this.mergePostProcessingOptions(this.mergePostProcessingOptions(authored, loadOverrides), this.runtimePostProcessingOverrides);
+    }
+    polyBloomDefaults() {
+        if (this.loadedContentIsTilt) return {
+            strength: 0.05,
+            threshold: 0,
+            radius: 0
+        };
+        return {
+            strength: 0.3,
+            threshold: 1.2,
+            radius: 0
+        };
+    }
+    resolveBloomOptions() {
+        const configured = this.resolvedPostProcessingConfiguration();
+        const defaults = this.polyBloomDefaults();
+        const bloom = configured?.bloom;
+        if (!configured || configured.mode === 'off' || bloom === false || bloom === 'off') return {
+            enabled: false,
+            ...defaults
+        };
+        const bloomOptions = bloom && typeof bloom === 'object' ? bloom : undefined;
+        const requested = configured.mode === 'on' || configured.mode === 'auto' || bloom === true || bloom === 'on' || bloom === 'auto' || bloomOptions !== undefined;
+        if (!requested || bloomOptions?.mode === 'off') return {
+            enabled: false,
+            ...defaults
+        };
+        const finiteOrDefault = (value, fallback)=>Number.isFinite(value) ? value : fallback;
+        return {
+            enabled: true,
+            strength: Math.max(0, finiteOrDefault(bloomOptions?.strength, defaults.strength)),
+            threshold: Math.max(0, finiteOrDefault(bloomOptions?.threshold, defaults.threshold)),
+            radius: $hBQxr$three.MathUtils.clamp(finiteOrDefault(bloomOptions?.radius, defaults.radius), 0, 1)
+        };
+    }
+    resolveVignetteOptions() {
+        const configured = this.resolvedPostProcessingConfiguration();
+        const defaults = this.loadedContentIsTilt ? {
+            strength: 0.5,
+            soft: false
+        } : {
+            strength: 1,
+            soft: true
+        };
+        const vignette = configured?.vignette;
+        if (!configured || configured.mode === 'off' || vignette === false || vignette === 'off') return {
+            enabled: false,
+            ...defaults
+        };
+        const vignetteOptions = vignette && typeof vignette === 'object' ? vignette : undefined;
+        const requested = vignette === true || vignette === 'on' || vignette === 'auto' || vignetteOptions !== undefined || this.loadedContentIsTilt && (configured.mode === 'on' || configured.mode === 'auto');
+        if (!requested || vignetteOptions?.mode === 'off') return {
+            enabled: false,
+            ...defaults
+        };
+        const configuredStrength = vignetteOptions?.strength;
+        return {
+            enabled: true,
+            strength: Math.max(0, Number.isFinite(configuredStrength) ? configuredStrength : defaults.strength),
+            soft: vignetteOptions?.soft ?? defaults.soft
+        };
+    }
+    createVignettePass() {
+        return new (0, $hBQxr$ShaderPass)({
+            name: 'IcosaViewer.PolyVignette',
+            uniforms: {
+                tDiffuse: {
+                    value: null
+                },
+                vignetteStrength: {
+                    value: this.resolvedVignette.strength
+                },
+                softVignetteSelect: {
+                    value: this.resolvedVignette.soft ? 1 : 0
+                }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D tDiffuse;
+                uniform float vignetteStrength;
+                uniform float softVignetteSelect;
+                varying vec2 vUv;
+
+                float softLight(float a, float b) {
+                    return (1.0 - 2.0 * b) * a * a + 2.0 * b * a;
+                }
+
+                vec3 vignette(vec3 color) {
+                    float distanceFromCenter = length(vUv - 0.5);
+                    float b = 1.0 - distanceFromCenter * distanceFromCenter * vignetteStrength;
+                    vec3 softColor = vec3(
+                        softLight(color.r, b - 0.5),
+                        softLight(color.g, b - 0.5),
+                        softLight(color.b, b - 0.5)
+                    );
+                    vec3 multColor = color * b;
+                    return mix(multColor, softColor, softVignetteSelect);
+                }
+
+                void main() {
+                    vec4 fragment = texture2D(tDiffuse, vUv);
+                    gl_FragColor = vec4(vignette(fragment.rgb), fragment.a);
+                }
+            `
+        });
+    }
+    usesDirectVignetteOverlay() {
+        return this.loadedContentIsTilt && this.resolvedVignette.enabled && !this.resolvedVignette.soft && !this.resolvedBloom.enabled;
+    }
+    configureVignetteOverlay() {
+        if (!this.usesDirectVignetteOverlay()) {
+            this.disposeVignetteOverlay();
+            return;
+        }
+        if (!this.vignetteOverlayScene) {
+            this.vignetteOverlayScene = new $hBQxr$three.Scene();
+            this.vignetteOverlayCamera = new $hBQxr$three.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+            this.vignetteOverlayMaterial = new $hBQxr$three.ShaderMaterial({
+                uniforms: {
+                    vignetteStrength: {
+                        value: this.resolvedVignette.strength
+                    }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+
+                    void main() {
+                        vUv = uv;
+                        gl_Position = vec4(position.xy, 0.0, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float vignetteStrength;
+                    varying vec2 vUv;
+
+                    void main() {
+                        float distanceFromCenter = length(vUv - 0.5);
+                        float opacity = clamp(
+                            distanceFromCenter * distanceFromCenter * vignetteStrength,
+                            0.0,
+                            1.0
+                        );
+                        gl_FragColor = vec4(0.0, 0.0, 0.0, opacity);
+                    }
+                `,
+                transparent: true,
+                depthTest: false,
+                depthWrite: false
+            });
+            this.vignetteOverlayScene.add(new $hBQxr$three.Mesh(new $hBQxr$three.PlaneGeometry(2, 2), this.vignetteOverlayMaterial));
+        }
+        this.vignetteOverlayMaterial.uniforms.vignetteStrength.value = this.resolvedVignette.strength;
+    }
+    renderVignetteOverlay() {
+        if (!this.vignetteOverlayScene || !this.vignetteOverlayCamera || this.renderer.xr.isPresenting) return;
+        const originalAutoClear = this.renderer.autoClear;
+        this.renderer.autoClear = false;
+        this.renderer.render(this.vignetteOverlayScene, this.vignetteOverlayCamera);
+        this.renderer.autoClear = originalAutoClear;
+    }
+    disposeVignetteOverlay() {
+        this.vignetteOverlayScene?.traverse((object)=>{
+            if (object instanceof $hBQxr$three.Mesh) object.geometry.dispose();
+        });
+        this.vignetteOverlayMaterial?.dispose();
+        this.vignetteOverlayScene = undefined;
+        this.vignetteOverlayCamera = undefined;
+        this.vignetteOverlayMaterial = undefined;
+    }
+    configurePostProcessing() {
+        this.resolvedBloom = this.resolveBloomOptions();
+        this.resolvedVignette = this.resolveVignetteOptions();
+        this.configureVignetteOverlay();
+        if (this.usesDirectVignetteOverlay()) {
+            this.disposePostProcessing();
+            return;
+        }
+        if (!this.resolvedBloom.enabled && !this.resolvedVignette.enabled) {
+            this.disposePostProcessing();
+            return;
+        }
+        if (!this.loadedModel || !this.flatCamera) {
+            this.disposePostProcessing();
+            return;
+        }
+        const passSelectionChanged = this.effectComposer && (Boolean(this.bloomPass) !== this.resolvedBloom.enabled || Boolean(this.vignettePass) !== this.resolvedVignette.enabled || !this.outputPass);
+        if (passSelectionChanged) this.disposePostProcessing();
+        const width = Math.max(1, this.canvas.clientWidth);
+        const height = Math.max(1, this.canvas.clientHeight);
+        if (!this.effectComposer) {
+            const maxSamples = Number.isFinite(this.renderer.capabilities.maxSamples) ? this.renderer.capabilities.maxSamples : 0;
+            const renderTarget = new $hBQxr$three.WebGLRenderTarget(width, height, {
+                type: $hBQxr$three.HalfFloatType,
+                samples: Math.min(4, maxSamples)
+            });
+            renderTarget.texture.name = 'IcosaViewer.PostProcessing';
+            this.effectComposer = new (0, $hBQxr$EffectComposer)(this.renderer, renderTarget);
+            this.effectComposer.setPixelRatio(this.renderer.getPixelRatio());
+            this.postProcessingRenderPass = new (0, $hBQxr$RenderPass)(this.scene, this.flatCamera);
+            this.effectComposer.addPass(this.postProcessingRenderPass);
+            if (this.resolvedBloom.enabled) {
+                this.bloomPass = new (0, $hBQxr$UnrealBloomPass)(new $hBQxr$three.Vector2(width, height), this.resolvedBloom.strength, this.resolvedBloom.radius, this.resolvedBloom.threshold);
+                this.effectComposer.addPass(this.bloomPass);
+            }
+            if (this.resolvedVignette.enabled) {
+                this.vignettePass = this.createVignettePass();
+                this.effectComposer.addPass(this.vignettePass);
+            }
+            this.outputPass = new (0, $hBQxr$OutputPass)();
+            this.effectComposer.addPass(this.outputPass);
+        }
+        this.effectComposer.setSize(width, height);
+        if (this.bloomPass) {
+            this.bloomPass.strength = this.resolvedBloom.strength;
+            this.bloomPass.threshold = this.resolvedBloom.threshold;
+            this.bloomPass.radius = this.resolvedBloom.radius;
+        }
+        if (this.vignettePass) {
+            this.vignettePass.uniforms.vignetteStrength.value = this.resolvedVignette.strength;
+            this.vignettePass.uniforms.softVignetteSelect.value = this.resolvedVignette.soft ? 1 : 0;
+        }
+    }
+    disposePostProcessing() {
+        this.bloomPass?.dispose();
+        this.vignettePass?.dispose();
+        this.outputPass?.dispose();
+        this.effectComposer?.dispose();
+        this.effectComposer = undefined;
+        this.postProcessingRenderPass = undefined;
+        this.bloomPass = undefined;
+        this.vignettePass = undefined;
+        this.outputPass = undefined;
+    }
+    setPostProcessing(options) {
+        this.runtimePostProcessingOverrides = options;
+        this.configurePostProcessing();
+    }
+    getPostProcessing() {
+        return {
+            enabled: this.resolvedBloom.enabled || this.resolvedVignette.enabled,
+            bloom: {
+                ...this.resolvedBloom
+            },
+            vignette: {
+                ...this.resolvedVignette
+            }
+        };
     }
     attachAudioListener(camera) {
         if (!camera) return;
@@ -5903,7 +6260,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             await this._loadGltf(url, loadEnvironment, overrides, true);
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading glTFv1 model");
+            console.error("Error loading glTFv1 model", error);
             this.loadingError = true;
         }
     }
@@ -5912,7 +6269,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             await this._loadGltf(url, loadEnvironment, overrides, false);
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading glTFv2 model");
+            console.error("Error loading glTFv2 model", error);
             this.loadingError = true;
         }
     }
@@ -5965,16 +6322,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         if (overrides?.tiltUrl) this.tiltData = await this.tiltLoader.loadAsync(tiltUrl);
         this.loadedModel = sceneGltf.scene;
         this.sceneGltf = sceneGltf;
+        this.loadedContentIsTilt = this.isAnyTiltExporter(sceneGltf);
         this.initializeScene();
         const evt = new Event("icosa-viewer-init-scene-gltf", {
             bubbles: true,
             cancelable: false
         });
         document.dispatchEvent(evt);
-    }
-    isLegacyTiltExporter(sceneGltf) {
-        const generator = sceneGltf.asset?.generator;
-        return generator && !generator.includes('Tilt Brush');
     }
     isNewTiltExporter(sceneGltf) {
         return sceneGltf?.scene?.userData?.isNewTiltExporter ?? false;
@@ -6015,11 +6369,13 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.overrides = overrides;
             const tiltData = await this.tiltLoader.loadAsync(url);
             this.loadedModel = tiltData;
+            this.loadedContentIsTilt = true;
             this.setupSketchMetaData(tiltData);
             this.initializeScene();
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading Tilt model");
+            const detail = error instanceof Error ? error.stack ?? error.message : String(error);
+            console.error(`Error loading Tilt model: ${detail}`);
             this.loadingError = true;
         }
     }
@@ -6034,13 +6390,16 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     // Defaults to assuming materials are vertex colored
     async loadObj(url, overrides) {
         try {
-            this.overrides = overrides;
+            const objOverrides = {
+                ...overrides || {}
+            };
+            if (!objOverrides.defaultBackgroundColor) objOverrides.defaultBackgroundColor = "#ffffff";
+            this.overrides = objOverrides;
             this.objLoader.loadAsync(url).then((objData)=>{
                 this.loadedModel = objData;
-                let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-                if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-                this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
-                let withVertexColors = overrides?.["withVertexColors"];
+                this.loadedContentIsTilt = false;
+                this.defaultBackgroundColor = new $hBQxr$three.Color(objOverrides.defaultBackgroundColor);
+                let withVertexColors = objOverrides.withVertexColors;
                 if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                 this.setupSketchMetaData(this.loadedModel);
                 this.initializeScene();
@@ -6053,16 +6412,19 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
     }
     async loadObjWithMtl(objUrl, mtlUrl, overrides) {
         try {
-            this.overrides = overrides;
+            const objOverrides = {
+                ...overrides || {}
+            };
+            if (!objOverrides.defaultBackgroundColor) objOverrides.defaultBackgroundColor = "#ffffff";
+            this.overrides = objOverrides;
             this.mtlLoader.loadAsync(mtlUrl).then((materials)=>{
                 materials.preload();
                 this.objLoader.setMaterials(materials);
                 this.objLoader.loadAsync(objUrl).then((objData)=>{
                     this.loadedModel = objData;
-                    let defaultBackgroundColor = overrides?.["defaultBackgroundColor"];
-                    if (!defaultBackgroundColor) defaultBackgroundColor = "#000000";
-                    this.defaultBackgroundColor = new $hBQxr$three.Color(defaultBackgroundColor);
-                    let withVertexColors = overrides?.["withVertexColors"];
+                    this.loadedContentIsTilt = false;
+                    this.defaultBackgroundColor = new $hBQxr$three.Color(objOverrides.defaultBackgroundColor);
+                    let withVertexColors = objOverrides.withVertexColors;
                     if (withVertexColors) this.setAllVertexColors(this.loadedModel);
                     this.setupSketchMetaData(this.loadedModel);
                     this.initializeScene();
@@ -6080,6 +6442,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.overrides = overrides;
             const fbxData = await this.fbxLoader.loadAsync(url);
             this.loadedModel = fbxData;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(fbxData);
             this.initializeScene();
             this.frameScene();
@@ -6100,6 +6463,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             });
             const plyModel = new $hBQxr$three.Mesh(plyData, material);
             this.loadedModel = plyModel;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(plyModel);
             this.initializeScene();
             this.frameScene();
@@ -6123,6 +6487,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             });
             const stlModel = new $hBQxr$three.Mesh(stlData, material);
             this.loadedModel = stlModel;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(stlModel);
             this.initializeScene();
             this.frameScene();
@@ -6137,6 +6502,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.overrides = overrides;
             const usdzData = await this.usdzLoader.loadAsync(url);
             this.loadedModel = usdzData;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(usdzData);
             this.initializeScene();
             this.frameScene();
@@ -6158,6 +6524,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 voxModel.add(mesh);
             }
             this.loadedModel = voxModel;
+            this.loadedContentIsTilt = false;
             this.setupSketchMetaData(voxModel);
             this.initializeScene();
             this.frameScene();
@@ -6199,6 +6566,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.sceneGltf = undefined;
             this.isV1 = false;
             this.loadedModel = asset.scene;
+            this.loadedContentIsTilt = false;
             this.immAsset = asset;
             this.immModule = immModule;
             this.setupSketchMetaData(asset.scene);
@@ -6350,6 +6718,7 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 // Apply coordinate system correction - splat files are upside-down compared to other formats
                 splatModel.rotation.x = Math.PI;
                 this.loadedModel = splatModel;
+                this.loadedContentIsTilt = false;
                 this.setupSketchMetaData(splatModel);
                 // TODO make fly mode explicit and overridable
                 this.sketchMetadata.FlyMode = true;
@@ -6432,6 +6801,9 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.modelBoundingBox = new $hBQxr$three.Box3().setFromObject(model);
         this.sketchMetadata = sketchMetaData;
     }
+    static verticalFovForAspect(horizontalFov, aspect) {
+        return $hBQxr$three.MathUtils.radToDeg(2 * Math.atan(Math.tan(horizontalFov / 2) / aspect));
+    }
     initCameras() {
         this.cameraControls?.dispose();
         this.trackballControls?.dispose();
@@ -6451,8 +6823,14 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                 sketchCam[2] * poseScale
             ];
         }
-        const fov = cameraOverrides?.perspective?.yfov / (Math.PI / 180) || 75;
         const aspect = 2;
+        const overrideFov = cameraOverrides?.perspective?.yfov / (Math.PI / 180);
+        const thumbnailCamera = this.sketchMetadata.FlyMode && gltfCamera instanceof $hBQxr$three.PerspectiveCamera ? gltfCamera : undefined;
+        // Recent Tilt/Open Brush exports embed the thumbnail camera with both a
+        // vertical FOV and an aspect ratio. Preserve its horizontal frustum when
+        // displaying it in a differently shaped viewer canvas.
+        this.thumbnailCameraHorizontalFov = thumbnailCamera ? 2 * Math.atan(Math.tan($hBQxr$three.MathUtils.degToRad(thumbnailCamera.fov) / 2) * thumbnailCamera.aspect) : undefined;
+        const fov = overrideFov || (this.thumbnailCameraHorizontalFov !== undefined ? $677737c8a5cbea2f$export$2ec4afd9b3c16a85.verticalFovForAspect(this.thumbnailCameraHorizontalFov, aspect) : undefined) || 45;
         const near = cameraOverrides?.perspective?.znear || 0.01;
         const far = 6000;
         this.flatCamera = new $hBQxr$three.PerspectiveCamera(fov, aspect, near, far);
@@ -6525,7 +6903,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             (0, $7f098f70bc341b4e$export$fc22e28a11679cb8)(this.cameraControls);
         } else {
             let pivot = cameraOverrides?.GOOGLE_camera_settings?.pivot;
-            if (pivot) // TODO this pivot should be recalculated to take into account
+            const hasExplicitPivot = Array.isArray(pivot) && pivot.some((component)=>Math.abs(component) > 1e-9);
+            if (hasExplicitPivot) // TODO this pivot should be recalculated to take into account
             //  any camera rotation adjustment applied above
             cameraTarget = new $hBQxr$three.Vector3(pivot[0], pivot[1], pivot[2]);
             else if (this.sketchMetadata.CameraTargetDistance) {
@@ -6548,9 +6927,17 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
                         ];
                     }
                 }
-                let visualCenterPoint = new $hBQxr$three.Vector3(vp[0], vp[1], vp[2]);
-                cameraTarget = this.calculatePivot(this.flatCamera, visualCenterPoint);
-                cameraTarget = cameraTarget || visualCenterPoint;
+                const forward = new $hBQxr$three.Vector3();
+                this.flatCamera.getWorldDirection(forward);
+                cameraTarget = this.flatCamera.position.clone().add(forward);
+                if (vp) {
+                    const visualCenterPoint = new $hBQxr$three.Vector3(vp[0], vp[1], vp[2]);
+                    const ray = new $hBQxr$three.Ray(this.flatCamera.position, forward);
+                    cameraTarget = ray.closestPointToPoint(visualCenterPoint, cameraTarget);
+                    // Poly uses a one-unit forward target when the visual centre is at
+                    // or behind the camera, preserving the authored camera orientation.
+                    if (cameraTarget.clone().sub(this.flatCamera.position).dot(forward) <= 1e-4) cameraTarget.copy(this.flatCamera.position).add(forward);
+                }
             }
             (0, $e1f901905a002d12$export$2e2bcd8739ae039).install({
                 THREE: $hBQxr$three
@@ -6582,23 +6969,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.cameraRig.rotation.y = yaw + Math.PI;
         this.xrCamera.updateProjectionMatrix();
     }
-    calculatePivot(camera, centroid) {
-        // 1. Get the camera's forward vector
-        const forward = new $hBQxr$three.Vector3();
-        camera.getWorldDirection(forward); // This gives the forward vector in world space.
-        // 2. Define a plane based on the centroid and facing the camera
-        const planeNormal = forward.clone().negate(); // Plane facing the camera
-        const plane = new $hBQxr$three.Plane().setFromNormalAndCoplanarPoint(planeNormal, centroid);
-        // 3. Calculate the intersection point of the forward vector with the plane
-        const cameraPosition = camera.position.clone();
-        const ray = new $hBQxr$three.Ray(cameraPosition, forward);
-        const intersectionPoint = new $hBQxr$three.Vector3();
-        if (ray.intersectPlane(plane, intersectionPoint)) return intersectionPoint; // This is your calculated pivot point.
-        else {
-            console.error("No intersection between camera forward vector and plane.");
-            return null; // Handle the error case gracefully.
-        }
-    }
     initLights() {
         // Logic for scene light creation:
         // 1. Are there explicit GLTF scene lights? If so use them and skip the rest
@@ -6611,22 +6981,43 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         function toEuler(rot, order = 'XYZ') {
             return new $hBQxr$three.Euler($hBQxr$three.MathUtils.degToRad(rot.x), $hBQxr$three.MathUtils.degToRad(rot.y), $hBQxr$three.MathUtils.degToRad(rot.z), order);
         }
+        const authoredSceneLights = [];
+        this.loadedModel?.traverse((object)=>{
+            if (object.isLight) authoredSceneLights.push(object);
+        });
+        if (authoredSceneLights.length > 0) {
+            this.initEmbeddedPolyLighting(authoredSceneLights);
+            return;
+        }
+        const usesExporterLighting = this.isAnyTiltExporter(this.sceneGltf) || this.sketchMetadata?.HasLightingMetadata;
+        if (!usesExporterLighting) {
+            this.initFallbackLights();
+            return;
+        }
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) {
             const light = new $hBQxr$three.DirectionalLight(0xffffff, 1);
+            light.name = "FallbackKeyLight";
+            light.userData.isKeyLight = true;
             light.position.set(10, 10, 10).normalize();
             this.loadedModel.add(light);
             return;
         }
         let l0 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight0Color, 1.0);
         l0.name = "SceneLight0";
+        l0.userData.isKeyLight = true;
         let l1 = new $hBQxr$three.DirectionalLight(this.sketchMetadata.SceneLight1Color, 1.0);
         l1.name = "SceneLight1";
-        const lightEulerOrder = this.isNewTiltExporter(this.sceneGltf) ? 'YXZ' : 'XYZ';
+        l1.userData.isHeadLight = true;
+        const isNewTiltExporter = this.isNewTiltExporter(this.sceneGltf);
+        const lightEulerOrder = isNewTiltExporter ? 'YXZ' : 'XYZ';
         let light0Euler = toEuler(this.sketchMetadata.SceneLight0Rotation, lightEulerOrder);
         let light1Euler = toEuler(this.sketchMetadata.SceneLight1Rotation, lightEulerOrder);
-        const light0Direction = new $hBQxr$three.Vector3(0, 0, -1).applyEuler(light0Euler);
+        // New Tilt/Open Brush exporters use Unity's forward axis. Other formats
+        // retain the original Gallery Viewer fallback-light convention.
+        const lightForwardZ = isNewTiltExporter ? -1 : 1;
+        const light0Direction = new $hBQxr$three.Vector3(0, 0, lightForwardZ).applyEuler(light0Euler);
         l0.position.copy(light0Direction).multiplyScalar(10);
-        const light1Direction = new $hBQxr$three.Vector3(0, 0, -1).applyEuler(light1Euler);
+        const light1Direction = new $hBQxr$three.Vector3(0, 0, lightForwardZ).applyEuler(light1Euler);
         l1.position.copy(light1Direction).multiplyScalar(10);
         // DirectionalLight points from its position toward its target, so attach
         // local targets to the sketch root to keep lighting relative to the sketch.
@@ -6638,8 +7029,6 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         light1Target.name = "SceneLight1Target";
         light1Target.position.set(0, 0, 0);
         l1.target = light1Target;
-        l0.castShadow = true;
-        l1.castShadow = false;
         this.loadedModel?.add(light0Target);
         this.loadedModel?.add(light1Target);
         this.loadedModel?.add(l0);
@@ -6647,6 +7036,127 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         const ambientLight = new $hBQxr$three.AmbientLight();
         ambientLight.color = this.sketchMetadata.AmbientLightColor;
         this.contentRoot.add(ambientLight);
+    }
+    initEmbeddedPolyLighting(authoredSceneLights) {
+        const generator = this.sceneGltf?.asset?.generator ?? '';
+        const sceneUserData = this.sceneGltf?.scene?.userData ?? {};
+        const gltfUserData = this.sceneGltf?.userData ?? {};
+        const hemisphereMetadata = sceneUserData.GOOGLE_hemi_light ?? gltfUserData.GOOGLE_hemi_light;
+        const lightingRigMetadata = gltfUserData.GOOGLE_lighting_rig ?? sceneUserData.GOOGLE_lighting_rig;
+        // Poly's updated GLTFs contain the original key/head lights, while the
+        // hemisphere portion of the rig remains in GOOGLE_hemi_light metadata.
+        // Their intensities also predate Three.js's physically-correct units.
+        if (!generator.includes('glTF 1-to-2 Upgrader for Google') || !hemisphereMetadata || !lightingRigMetadata) return;
+        authoredSceneLights.forEach((light)=>{
+            light.intensity *= Math.PI;
+        });
+        const sourceGroundColor = Array.isArray(hemisphereMetadata.groundColor) ? hemisphereMetadata.groundColor : [
+            1,
+            1,
+            1
+        ];
+        const groundColor = new $hBQxr$three.Color().fromArray(sourceGroundColor).lerp(new $hBQxr$three.Color(1, 1, 1), 0.7);
+        const hemisphere = new $hBQxr$three.HemisphereLight(new $hBQxr$three.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1), groundColor, 0.78);
+        hemisphere.name = "PolyHemisphereLight";
+        this.contentRoot.add(hemisphere);
+    }
+    initFallbackLights() {
+        const fallbackScale = 1.5;
+        const headMultiplier = 1.35;
+        const hemisphereMultiplier = 0.2;
+        const intensityScale = Math.PI * fallbackScale;
+        const sphere = this.modelBoundingBox?.getBoundingSphere(new $hBQxr$three.Sphere()) ?? new $hBQxr$three.Sphere(new $hBQxr$three.Vector3(), 1);
+        const centroid = sphere.center;
+        const radius = Math.max(sphere.radius, 0.001);
+        const warmWhite = new $hBQxr$three.Color().setRGB(1, 0xee / 0xff, 0xdd / 0xff);
+        const keyDirection = new $hBQxr$three.Vector3(-1, 2, -1).normalize();
+        const key = new $hBQxr$three.DirectionalLight(warmWhite, 0.325 * intensityScale);
+        key.name = "FallbackKeyLight";
+        key.userData.isKeyLight = true;
+        key.position.copy(centroid).addScaledVector(keyDirection, 1.01 * radius);
+        key.target.position.copy(centroid);
+        key.target.name = "FallbackKeyLightTarget";
+        this.contentRoot.add(key.target, key);
+        const head = new $hBQxr$three.DirectionalLight(warmWhite, 0.25 * intensityScale * headMultiplier);
+        head.name = "FallbackHeadLight";
+        head.userData.isHeadLight = true;
+        head.position.set(-radius, 0.5 * radius, 0.5 * radius);
+        head.target.position.copy(centroid);
+        head.target.name = "FallbackHeadLightTarget";
+        const headCarrier = new $hBQxr$three.Group();
+        headCarrier.name = "FallbackHeadLightCarrier";
+        headCarrier.add(head);
+        this.activeCamera.getWorldPosition(headCarrier.position);
+        this.activeCamera.getWorldQuaternion(headCarrier.quaternion);
+        this.persistentRoot.add(headCarrier);
+        this.contentRoot.add(head.target);
+        this.fallbackHeadLightCarrier = headCarrier;
+        const groundColor = new $hBQxr$three.Color().fromArray([
+            0.2705882352941176,
+            0.3529411764705883,
+            0.392156862745098
+        ]).lerp(new $hBQxr$three.Color(1, 1, 1), 0.7);
+        const hemisphere = new $hBQxr$three.HemisphereLight(new $hBQxr$three.Color().setRGB(0xef / 0xff, 0xef / 0xff, 1), groundColor, 0.78 * intensityScale * hemisphereMultiplier);
+        hemisphere.name = "FallbackHemisphereLight";
+        this.contentRoot.add(hemisphere);
+    }
+    configureShadows() {
+        if (!this.loadedModel || this.isAnyTiltExporter(this.sceneGltf)) {
+            this.renderer.shadowMap.enabled = false;
+            return;
+        }
+        const sceneUserData = this.sceneGltf?.scene?.userData ?? {};
+        const gltfUserData = this.sceneGltf?.userData ?? {};
+        const lightingRigMetadata = this.overrides?.GOOGLE_lighting_rig ?? this.overrides?.lightingRig ?? gltfUserData.GOOGLE_lighting_rig ?? sceneUserData.GOOGLE_lighting_rig;
+        if (lightingRigMetadata?.disableShadows === true) {
+            this.renderer.shadowMap.enabled = false;
+            return;
+        }
+        this.loadedModel.traverse((object)=>{
+            if (!object.isMesh) return;
+            const materials = Array.isArray(object.material) ? object.material : [
+                object.material
+            ];
+            object.castShadow = materials.some((material)=>this.polyMaterialCastsShadow(material));
+            object.receiveShadow = materials.some((material)=>material?.userData?.receiveShadow !== false);
+            materials.forEach((material)=>{
+                if (material) material.shadowSide = $hBQxr$three.FrontSide;
+            });
+        });
+        const sphere = this.modelBoundingBox?.getBoundingSphere(new $hBQxr$three.Sphere()) ?? new $hBQxr$three.Sphere(new $hBQxr$three.Vector3(), 1);
+        const radius = Math.max(sphere.radius, 0.001);
+        let keyLight;
+        this.contentRoot.traverse((object)=>{
+            if (!object.isDirectionalLight) return;
+            object.castShadow = false;
+            const normalizedName = object.name.toLowerCase();
+            if (!keyLight && (object.userData?.isKeyLight || normalizedName.includes('keylight'))) keyLight = object;
+        });
+        if (!keyLight) {
+            this.renderer.shadowMap.enabled = false;
+            return;
+        }
+        keyLight.castShadow = true;
+        keyLight.shadow.mapSize.set(2048, 2048);
+        keyLight.shadow.bias = -0.004;
+        keyLight.shadow.radius = 5;
+        keyLight.shadow.intensity = 0.8;
+        const keyDistance = keyLight.position.distanceTo(sphere.center);
+        const shadowCamera = keyLight.shadow.camera;
+        shadowCamera.near = Math.max(0.001, keyDistance - radius);
+        shadowCamera.far = Math.max(shadowCamera.near + 0.001, keyDistance + radius);
+        shadowCamera.top = radius;
+        shadowCamera.left = -radius;
+        shadowCamera.right = radius;
+        shadowCamera.bottom = -radius;
+        shadowCamera.updateProjectionMatrix();
+        this.renderer.shadowMap.enabled = true;
+    }
+    polyMaterialCastsShadow(material) {
+        if (!material) return false;
+        if (typeof material.userData?.castsShadows === 'boolean') return material.userData.castsShadows;
+        // Poly's glass and gem surface passes explicitly opt out of casting.
+        return !/^(Blocks|Poly)(Glass|Gem)/i.test(material.name ?? '');
     }
     initFog() {
         if (this.sketchMetadata == undefined || this.sketchMetadata == null) return;
@@ -6834,6 +7344,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
         this.sparkRenderer?.removeFromParent();
         this.sparkRenderer?.dispose();
         this.sparkRenderer = undefined;
+        this.disposePostProcessing();
+        this.disposeVignetteOverlay();
         this.audioListener.removeFromParent();
         this.scene.clear();
         this.renderer.dispose();

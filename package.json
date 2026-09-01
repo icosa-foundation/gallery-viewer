@@ -5,8 +5,8 @@
   "scripts": {
     "watch": "parcel watch",
     "build": "parcel build --no-cache",
-    "build:pinned": "parcel build --no-cache && shx cp \"node_modules/three-icosa/dist/three-icosa.module.js\" \"dist/three-icosa.module.js\"",
-    "build:local": "parcel build --no-cache && shx cp \"../three-icosa/dist/three-icosa.module.js\" \"dist/three-icosa.module.js\"",
+    "build:pinned": "parcel build --no-cache && shx cp \"node_modules/three-icosa/dist/three-icosa.module.js\" \"dist/three-icosa.module.js\" && shx cp \"node_modules/three-tiltloader/dist/three-tiltloader.module.js\" \"dist/three-tiltloader.module.js\"",
+    "build:local": "parcel build --no-cache && shx cp \"../three-icosa/dist/three-icosa.module.js\" \"dist/three-icosa.module.js\" && shx cp \"../three-tiltloader/dist/three-tiltloader.module.js\" \"dist/three-tiltloader.module.js\"",
     "download-three-icosa": "curl -o dist/three-icosa.module.js https://cdn.jsdelivr.net/npm/three-icosa@0.4.2-alpha.18/dist/three-icosa.module.js",
     "setup-cdn": "node scripts/setup-cdn-importmap.js",
     "test": "node npm-test.js",
@@ -43,23 +43,23 @@
     "@parcel/packager-ts": "^2.12.0",
     "@parcel/transformer-typescript-types": "^2.12.0",
     "@sparkjsdev/spark": "^2.1.0",
-    "@types/three": "^0.180.0",
+    "@types/three": "^0.185.4",
     "parcel": "^2.12.0",
     "playwright": "^1.61.1",
     "shx": "^0.3.4",
+    "three": "^0.185.1",
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@depasquale/three-immersive-controls": "^0.0.15",
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
-    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/18682538402ecf8470c4eee91f817ca6093acfa2.tar.gz",
-    "three-tiltloader": "^0.4.2-alpha.4"
+    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/6ad0a056c0ffc3c5029061fe87173bacf5b4032c.tar.gz",
+    "three-tiltloader": "https://github.com/icosa-foundation/three-tiltloader/archive/075dcea70f656de2e1f110c5cc5153cf0b8fff95.tar.gz"
   },
   "peerDependencies": {
     "@immersive-foundation/three-imm-loader": "*",
     "@sparkjsdev/spark": "^2.1.0",
-    "three": ">=0.180 <0.181.0"
+    "three": ">=0.185 <0.186.0"
   },
   "peerDependenciesMeta": {
     "@immersive-foundation/three-imm-loader": {
