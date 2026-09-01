@@ -7026,7 +7026,8 @@ class $677737c8a5cbea2f$export$2ec4afd9b3c16a85 {
             this.initializeScene();
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading Tilt model");
+            const detail = error instanceof Error ? error.stack ?? error.message : String(error);
+            console.error(`Error loading Tilt model: ${detail}`);
             this.loadingError = true;
         }
     }

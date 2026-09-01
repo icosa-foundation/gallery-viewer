@@ -3382,7 +3382,10 @@ export class Viewer {
             this.initializeScene();
         } catch (error) {
             this.showErrorIcon();
-            console.error("Error loading Tilt model");
+            const detail = error instanceof Error
+                ? error.stack ?? error.message
+                : String(error);
+            console.error(`Error loading Tilt model: ${detail}`);
             this.loadingError = true;
         }
     }
