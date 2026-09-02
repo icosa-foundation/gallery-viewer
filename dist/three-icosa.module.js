@@ -282,10 +282,10 @@ const $893dd13f874e2f96$export$9ca3db12bec15353 = {
         "renderBackfaces": true
     },
     "Digital": {
-        "renderBackfaces": false
+        "renderBackfaces": true
     },
     "Race": {
-        "renderBackfaces": false
+        "renderBackfaces": true
     },
     "SmoothHull": {
         "renderBackfaces": false
@@ -2140,6 +2140,15 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_ScrollJitterFrequency: {
                 value: 0.2
             },
+            u_SpreadRate: {
+                value: 1.539
+            },
+            u_GeniusParticlePreviewLifetime: {
+                value: 0.2
+            },
+            u_isTiltInput: {
+                value: false
+            },
             u_SceneLight_0_matrix: {
                 value: [
                     1,
@@ -2715,6 +2724,15 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
     },
     "Dots": {
         uniforms: {
+            u_time: {
+                value: new $fugmd$Vector4()
+            },
+            u_GeniusParticlePreviewLifetime: {
+                value: 0.2
+            },
+            u_isTiltInput: {
+                value: false
+            },
             u_SceneLight_0_matrix: {
                 value: [
                     1,
@@ -3009,6 +3027,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             },
             u_EmissionGain: {
                 value: 0.2
+            },
+            u_isTiltInput: {
+                value: false
             }
         },
         glslVersion: $fugmd$GLSL3,
@@ -3037,6 +3058,15 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             },
             u_ScrollJitterFrequency: {
                 value: 5
+            },
+            u_SpreadRate: {
+                value: 1.539
+            },
+            u_GeniusParticlePreviewLifetime: {
+                value: 0.2
+            },
+            u_isTiltInput: {
+                value: false
             },
             u_TintColor: {
                 value: new $fugmd$Vector4(1, 1, 1, 1)
@@ -3549,6 +3579,15 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             },
             u_MainTex: {
                 value: "HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9/HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9-v10.0-MainTex.png"
+            },
+            u_Opacity: {
+                value: 1.0
+            },
+            u_isNewTiltExporter: {
+                value: false
+            },
+            u_time: {
+                value: new $fugmd$Vector4()
             }
         },
         glslVersion: $fugmd$GLSL3,
@@ -3811,6 +3850,7 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
                 value: new $fugmd$Vector4(0.0010, 0.0078, 1024, 128)
             }
         },
+        isSurfaceShader: true,
         glslVersion: $fugmd$GLSL3,
         vertexShader: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-vertex.glsl",
         fragmentShader: "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487/Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-fragment.glsl",
@@ -4215,6 +4255,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
                     0,
                     1
                 ]
+            },
+            u_ambient_light_color: {
+                value: new $fugmd$Vector4(0.3922, 0.3922, 0.3922, 1)
             },
             u_SceneLight_0_color: {
                 value: new $fugmd$Vector4(0.7780, 0.8157, 0.9914, 1)
@@ -4698,6 +4741,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_MainTex_ST: {
                 value: new $fugmd$Vector4(0.5, 1.0, 0.0, 0.0)
             },
+            u_isTiltInput: {
+                value: false
+            },
             u_time: {
                 value: new $fugmd$Vector4()
             }
@@ -4866,6 +4912,12 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_time: {
                 value: new $fugmd$Vector4()
             },
+            u_GeniusParticlePreviewLifetime: {
+                value: 0.2
+            },
+            u_isTiltInput: {
+                value: false
+            },
             u_SceneLight_0_matrix: {
                 value: [
                     1,
@@ -4939,6 +4991,15 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             },
             u_ScrollJitterFrequency: {
                 value: 12
+            },
+            u_SpreadRate: {
+                value: 1.539
+            },
+            u_GeniusParticlePreviewLifetime: {
+                value: 0.2
+            },
+            u_isTiltInput: {
+                value: false
             },
             u_TintColor: {
                 value: new $fugmd$Vector4(1, 1, 1, 1)
@@ -5210,6 +5271,15 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             },
             u_SparkleRate: {
                 value: 5.3
+            },
+            u_SpreadRate: {
+                value: 1.539
+            },
+            u_GeniusParticlePreviewLifetime: {
+                value: 0.2
+            },
+            u_isTiltInput: {
+                value: false
             },
             u_MainTex: {
                 value: "Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711/Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711-v10.0-MainTex.png"
@@ -6476,7 +6546,13 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
                 value: new $fugmd$Vector3(0.75, 0.75, 0.75)
             },
             u_SqueezeAmount: {
-                value: 0.473
+                value: 0.873
+            },
+            u_isTiltInput: {
+                value: false
+            },
+            u_isNewTiltExporter: {
+                value: false
             },
             u_Strength: {
                 value: 0.5
@@ -6642,6 +6718,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             },
             u_Bulge: {
                 value: 2.25
+            },
+            u_isNewTiltExporter: {
+                value: false
             }
         },
         glslVersion: $fugmd$GLSL3,
@@ -6652,7 +6731,13 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: false,
         depthTest: true,
-        blending: 2
+        blending: 5,
+        blendDstAlpha: 201,
+        blendDst: 201,
+        blendEquationAlpha: 103,
+        blendEquation: 100,
+        blendSrcAlpha: 201,
+        blendSrc: 201
     },
     "DryBrush": {
         uniforms: {
@@ -7077,6 +7162,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_ZWrite: {
                 value: 1.0
             },
+            u_isTiltInput: {
+                value: false
+            },
             u_time: {
                 value: new $fugmd$Vector4()
             }
@@ -7362,6 +7450,12 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             },
             u_SpreadRate: {
                 value: 1.25
+            },
+            u_GeniusParticlePreviewLifetime: {
+                value: 0.2
+            },
+            u_isTiltInput: {
+                value: false
             },
             u_SpreadSize: {
                 value: 1.25
@@ -8418,10 +8512,13 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
                 value: "WaveformParticles-6a1cf9f9-032c-45ec-9b6e-a6680bee30f7/WaveformParticles-6a1cf9f9-032c-45ec-9b6e-a6680bee30f7-v10.0-MainTex.png"
             },
             u_TintColor: {
-                value: new $fugmd$Vector4(0.5, 0.5, 0.5, 0.5)
+                value: new $fugmd$Vector4(1, 1, 1, 1)
             },
             u_Opacity: {
                 value: 1.0
+            },
+            u_isTiltInput: {
+                value: false
             },
             u_time: {
                 value: new $fugmd$Vector4()
@@ -8536,6 +8633,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_TintColor: {
                 value: new $fugmd$Vector4(0.617647, 0.617647, 0.617647, 1)
             },
+            u_isTiltInput: {
+                value: false
+            },
             u_time: {
                 value: new $fugmd$Vector4()
             }
@@ -8611,11 +8711,14 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_time: {
                 value: new $fugmd$Vector4()
             },
+            u_isNewTiltExporter: {
+                value: false
+            },
             u_MainTex: {
                 value: "DanceFloor-6a1cf9f9-032c-45ec-311e-a6680bee32e9/DanceFloor-6a1cf9f9-032c-45ec-311e-a6680bee32e9-v10.0-MainTex.png"
             },
             u_TintColor: {
-                value: new $fugmd$Vector4(0.5, 0.5, 0.5, 0.5)
+                value: new $fugmd$Vector4(1, 1, 1, 1)
             }
         },
         glslVersion: $fugmd$GLSL3,
@@ -8626,7 +8729,7 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
         depthFunc: 2,
         depthWrite: true,
         depthTest: true,
-        blending: 5,
+        blending: 0,
         blendDstAlpha: 201,
         blendDst: 201,
         blendEquationAlpha: 103,
@@ -10272,6 +10375,9 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
             u_fogDensity: {
                 value: 0
             },
+            u_EmissionGain: {
+                value: 0.51785713
+            },
             u_time: {
                 value: new $fugmd$Vector4()
             }
@@ -11539,7 +11645,7 @@ const $4fdc68aa1ebb2033$var$tiltBrushMaterialParams = {
 
 
 const $16cff2322f67c674$export$c1bb71fdd9aa3dc9 = "9871385a-df73-4396-9e33-31e4e4930b27";
-const $16cff2322f67c674$export$18e64de72c17bfe = 0.05;
+const $16cff2322f67c674$export$18e64de72c17bfe = 0.005;
 const $16cff2322f67c674$export$6c8c313f844ab31d = "4391385a-df73-4396-9e33-31e4e4930b27";
 const $16cff2322f67c674$export$898562a301a76693 = "f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51";
 const $16cff2322f67c674$export$31cff25809951ff3 = [
@@ -12036,6 +12142,7 @@ class $e02d07ddc3ccd105$export$2b011a5b12963d65 {
                 mesh.geometry.name = "geometry_Disco";
                 setAttributeIfExists(mesh, "position", "a_position");
                 setAttributeIfExists(mesh, "normal", "a_normal");
+                setAttributeIfExists(mesh, "tangent", "a_tangent");
                 copyFixColorAttribute(mesh);
                 renameAttribute(mesh, "_tb_unity_texcoord_0", "a_texcoord0");
                 renameAttribute(mesh, "texcoord_0", "a_texcoord0");

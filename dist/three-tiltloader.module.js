@@ -1252,7 +1252,8 @@ const $08377cc0b05604b7$export$8024ed36c08440c = {
             "particleSizeRatio": [
                 1,
                 1
-            ]
+            ],
+            "hullFaceted": false
         }
     },
     "39ee7377-7a9e-47a7-a0f8-0c77712f75d3": {
@@ -10990,6 +10991,9 @@ class $8fc1e38b542b44db$export$36ca96fcead4fad7 extends (0, $rINUR$Loader) {
             if (geometry.getAttribute("position").count === 0) continue;
             const materialName = this.tiltShaderLoader.lookupMaterialName(brushGuid);
             const material = await this.tiltShaderLoader.loadAsync(materialName);
+            material.uniforms.u_isTiltInput = {
+                value: true
+            };
             const mesh = new (0, $rINUR$Mesh)(geometry, material);
             const scope = this;
             mesh.onBeforeRender = (renderer, scene, camera, geometry, material, group)=>{

@@ -53,8 +53,8 @@
   "dependencies": {
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
-    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/6ad0a056c0ffc3c5029061fe87173bacf5b4032c.tar.gz",
-    "three-tiltloader": "https://github.com/icosa-foundation/three-tiltloader/archive/075dcea70f656de2e1f110c5cc5153cf0b8fff95.tar.gz"
+    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/fcf577fbf1cb37f31abf6c6886eaed3509f70573.tar.gz",
+    "three-tiltloader": "https://github.com/icosa-foundation/three-tiltloader/archive/f8b0e0affc9a5a4d3e950185febecb430f59077c.tar.gz"
   },
   "peerDependencies": {
     "@immersive-foundation/three-imm-loader": "*",
