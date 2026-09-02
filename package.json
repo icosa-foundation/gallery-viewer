@@ -9,7 +9,9 @@
     "build:local": "parcel build --no-cache && shx cp \"../three-icosa/dist/three-icosa.module.js\" \"dist/three-icosa.module.js\" && shx cp \"../three-tiltloader/dist/three-tiltloader.module.js\" \"dist/three-tiltloader.module.js\"",
     "download-three-icosa": "curl -o dist/three-icosa.module.js https://cdn.jsdelivr.net/npm/three-icosa@0.4.2-alpha.18/dist/three-icosa.module.js",
     "setup-cdn": "node scripts/setup-cdn-importmap.js",
-    "test": "node npm-test.js",
+    "test": "npm run check:pins && npm run check:pinned-bundles && node npm-test.js",
+    "check:pins": "node scripts/check-library-pins.mjs",
+    "check:pinned-bundles": "node scripts/check-pinned-bundles.mjs",
     "test:browser:brush-passes": "node scripts/browser-brush-passes-smoke.mjs",
     "test:browser:imm": "node scripts/browser-imm-smoke.mjs"
   },
@@ -53,8 +55,8 @@
   "dependencies": {
     "camera-controls": "^2.8.4",
     "hold-event": "0.0.1",
-    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/f55b30ddbb3cdb36d90984e6c94518f771ae07ea.tar.gz",
-    "three-tiltloader": "https://github.com/icosa-foundation/three-tiltloader/archive/3b8903ac25d0afb8844b25bd9c3b06406dd357e6.tar.gz"
+    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/25fe4ca1f7e52174e7d9dca90c811e307216ba1f.tar.gz",
+    "three-tiltloader": "https://github.com/icosa-foundation/three-tiltloader/archive/6c92f0035911e8e61755fec3270beb7604d5dc81.tar.gz"
   },
   "peerDependencies": {
     "@immersive-foundation/three-imm-loader": "*",
